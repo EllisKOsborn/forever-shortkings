@@ -135,6 +135,8 @@ function Identity:ApplyRoster(entries, complete, now)
 		m.name, m.class, m.level = e.name, e.class or m.class, e.level or m.level
 		m.rank, m.rankIndex = e.rank or m.rank, e.rankIndex or m.rankIndex
 		m.online = e.online
+		m.note = e.note
+		m.officerNote = e.officerNote -- only present when the game lets us read it
 		if e.online then
 			m.lastSeen = now
 		elseif e.lastOnlineHours then

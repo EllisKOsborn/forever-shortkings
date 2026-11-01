@@ -12,7 +12,12 @@ local DEFAULTS = {
 		debug = false,
 		minimap = { hide = false, minimapPos = 210 },
 		window = { point = "CENTER", x = 0, y = 0, scale = 1 },
+		share = { gear = true, recipes = true }, -- privacy toggles (A7)
+		groupAlts = true,                         -- Roster: alts under their main
+		main = nil,                               -- guid of the player's main
 	},
+	own = {},             -- [guid] = full profile of our own characters (never sent)
+	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns
 	account = {},  -- [guid] = true for characters seen on this account
 	guilds = {},
 }

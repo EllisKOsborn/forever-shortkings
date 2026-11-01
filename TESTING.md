@@ -53,6 +53,29 @@ the `/sk debug` text when something looks wrong.
         you is offline ("relayed by a guildmate").
 21. [ ] Nobody gets disconnected, and chat shows no "No player named …" spam.
 
+## v0.1.x additions
+
+22. [ ] **Status dots** in the Roster's Online column: green = online with
+        Short Kings, yellow = online without it, grey = offline.
+23. [ ] **Group alts** (ticked by default): log in on two characters at least
+        once each. They show as one row, "+1", with the alt in the tooltip.
+        Untick it and both show separately.
+24. [ ] Character tab → **Make this my main** on an alt. The Roster then lists
+        that character first.
+25. [ ] **Notes**: a member's public note shows in the Roster tooltip and on
+        the Character tab. If you're an officer, the officer note shows too.
+        Search finds words in notes.
+26. [ ] **Ver** column shows each member's addon version. Older ones are
+        orange, and the counter says "N need an update".
+27. [ ] **Missing enchants**: take an unenchanted item (e.g. new boots). Its
+        slot gets a small orange "!" corner, its tooltip says "no enchant",
+        and the paperdoll says "1 missing enchant".
+28. [ ] **Cooldowns**: do a transmute (or another cooldown craft), `/reload`
+        without opening Alchemy, and the cooldown still counts down correctly.
+29. [ ] **Privacy**: Settings → untick "Share my gear and talents". A
+        guildmate now sees "hidden by this player" on your character, while
+        you still see your own gear. Tick it again and it comes back.
+
 ## Known gaps in v0.1
 
 - No Crafters, Professions or Raids tabs yet (v0.2 and v0.3).

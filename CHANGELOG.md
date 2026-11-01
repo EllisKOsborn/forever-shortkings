@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.1.1 (unreleased, not yet tested in game)
+
+- Roster: **status dots** (online with addon / without / offline), a **Ver**
+  column with "needs an update", **alts grouped under their main**, public
+  and officer **notes** in tooltips and search.
+- Character: **missing-enchant markers**, an alts list, notes, and a
+  **Make this my main** button.
+- **Cooldowns** stay accurate without opening the profession window.
+- **Privacy**: choose whether to share your gear/talents and your recipes.
+
 ## v0.1.0 (unreleased, not yet tested in game)
 
 - Collects, for every character you log in on: name, class, race, level,

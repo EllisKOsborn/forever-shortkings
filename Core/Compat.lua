@@ -130,6 +130,14 @@ function Compat.RequestRoster()
 	end
 end
 
+-- Officer notes are read only where the game allows it, and never synced.
+function Compat.CanViewOfficerNote()
+	if has("C_GuildInfo", "CanViewOfficerNote") then
+		return C_GuildInfo.CanViewOfficerNote() and true or false
+	end
+	return CanViewOfficerNote and CanViewOfficerNote() and true or false
+end
+
 local function hoursAgo(years, months, days, hours)
 	return ((years or 0) * 365 + (months or 0) * 30 + (days or 0)) * 24 + (hours or 0)
 end
@@ -138,15 +146,17 @@ local function readLegacyRoster()
 	if not (GetNumGuildMembers and GetGuildRosterInfo) then return nil end
 	local total = GetNumGuildMembers()
 	if not total or total == 0 then return nil end
+	local canOfficer = Compat.CanViewOfficerNote()
 	local out = {}
 	for i = 1, total do
-		local name, rankName, rankIndex, level, _, _, _, _, online, _, classFile,
+		local name, rankName, rankIndex, level, _, _, note, officerNote, online, _, classFile,
 			_, _, _, _, _, guid = GetGuildRosterInfo(i)
 		name, guid = clean(name), clean(guid)
 		if name and guid then
 			local entry = {
 				name = name, guid = guid, rank = clean(rankName), rankIndex = clean(rankIndex),
 				level = clean(level), class = clean(classFile), online = clean(online) and true or false,
+				note = clean(note), officerNote = canOfficer and clean(officerNote) or nil,
 			}
 			if not entry.online and GetGuildRosterLastOnline then
 				local y, m, d, h = GetGuildRosterLastOnline(i)
@@ -174,6 +184,7 @@ local function readClubRoster()
 	local ids = C_Club.GetClubMembers(clubId)
 	if not ids or #ids == 0 then return nil end
 	local out = {}
+	local canOfficer = Compat.CanViewOfficerNote()
 	local OFFLINE = Enum and Enum.ClubMemberPresence and Enum.ClubMemberPresence.Offline or 3
 	local UNKNOWN = Enum and Enum.ClubMemberPresence and Enum.ClubMemberPresence.Unknown or 0
 	for _, memberId in ipairs(ids) do
@@ -186,6 +197,8 @@ local function readClubRoster()
 				rankIndex = info.guildRankOrder and (info.guildRankOrder - 1) or nil,
 				level = clean(info.level), class = classFileFromID(clean(info.classID)),
 				online = presence ~= nil and presence ~= OFFLINE and presence ~= UNKNOWN,
+				note = clean(info.memberNote),
+				officerNote = canOfficer and clean(info.officerNote) or nil,
 			}
 			if not entry.online and info.lastOnlineYear then
 				entry.lastOnlineHours = hoursAgo(info.lastOnlineYear, info.lastOnlineMonth,
@@ -422,6 +435,38 @@ end
 ---------------------------------------------------------------------------
 -- Items / spells (for display)
 ---------------------------------------------------------------------------
+-- Enchant ID from an item link ("item:itemID:enchantID:..."), 0 if none.
+function Compat.EnchantFromLink(link)
+	if type(link) ~= "string" then return nil end
+	local e = link:match("item:%-?%d+:(%-?%d*)")
+	return tonumber(e) or 0
+end
+
+-- equipLoc, classID, subClassID without needing the item cache.
+function Compat.ItemEquipInfo(itemID)
+	local fn = (C_Item and C_Item.GetItemInfoInstant) or GetItemInfoInstant
+	if not fn or not itemID then return nil end
+	local _, _, _, equipLoc, _, classID, subClassID = fn(itemID)
+	return equipLoc, classID, subClassID
+end
+
+-- Seconds until a (profession) spell is ready: >0 cooling down, 0 ready,
+-- nil unknown. Ignores the 1.5 s global cooldown.
+function Compat.SpellCooldownRemaining(spellID)
+	local start, duration
+	if has("C_Spell", "GetSpellCooldown") then
+		local ok, info = pcall(C_Spell.GetSpellCooldown, spellID)
+		if not ok or not info then return nil end
+		start, duration = clean(info.startTime), clean(info.duration)
+	elseif GetSpellCooldown then
+		local ok, a, b = pcall(GetSpellCooldown, spellID)
+		if not ok then return nil end
+		start, duration = clean(a), clean(b)
+	end
+	if not start or not duration then return nil end
+	if duration <= 1.5 or start == 0 then return 0 end
+	return math.max(0, start + duration - GetTime())
+end
 function Compat.ItemIDFromLink(link)
 	if type(link) ~= "string" then return nil end
 	local id = link:match("item:(%d+)")
@@ -474,7 +519,8 @@ Compat.PROBES = {
 	"C_Reputation.GetFactionDataByIndex", "C_Reputation.GetFactionDataByID", "GetFactionInfo",
 	"C_QuestLog.IsQuestFlaggedCompleted", "C_QuestLog.GetTitleForQuestID",
 	"C_Calendar.GetNumDayEvents", "C_Calendar.EventSignUp", "C_Calendar.OpenEvent",
-	"C_Item.GetItemIconByID", "C_Spell.GetSpellName",
+	"C_Item.GetItemIconByID", "C_Item.GetItemInfoInstant", "C_Spell.GetSpellName", "C_Spell.GetSpellCooldown",
+	"C_GuildInfo.CanViewOfficerNote",
 }
 
 function Compat.ProbeAll()

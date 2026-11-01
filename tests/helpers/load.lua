@@ -9,8 +9,8 @@ local LIBS = {
 }
 
 local FILES = {
-	"Core/Init.lua", "Core/Log.lua", "Core/Compat.lua", "Core/DB.lua", "Core/Identity.lua",
-	"Data/Professions.lua", "Data/Attunements.lua", "Data/Factions.lua",
+	"Core/Init.lua", "Core/Log.lua", "Core/Compat.lua", "Core/DB.lua", "Core/Identity.lua", "Core/Alts.lua",
+	"Data/Professions.lua", "Data/Attunements.lua", "Data/Factions.lua", "Data/Enchants.lua",
 	"Collect/Character.lua", "Collect/Talents.lua", "Collect/Professions.lua",
 	"Collect/Reputation.lua", "Collect/Attunements.lua", "Collect/Profile.lua",
 	"Sync/Codec.lua", "Sync/Merge.lua", "Sync/Sync.lua",

@@ -322,6 +322,11 @@ function Sync:Handle(text, dist, sender)
 	end
 	if from == myGUID() or SK.DB.account[from] then return end -- our own echo
 	SK.Identity:NoteSender(from, sender)
+	-- Any message proves the sender runs the addon (status dots, version column).
+	local m = SK.Identity:Member(from)
+	if m and type(msg.v) == "string" then
+		m.addon, m.addonSeen = msg.v, Compat.Now()
+	end
 	local h = handlers[msg.t]
 	if h then h(self, msg, from, dist) end
 end

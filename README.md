@@ -37,8 +37,11 @@
 
 ### Roster
 Every guild member at a glance: class colours, level, rank, talent spec,
-professions, item level and when they were last online. Click a column to
-sort, type to search ("tailoring", "holy", a name…) and hover for details.
+professions, item level, addon version and when they were last online.
+A coloured dot shows who's online **with** Short Kings (green), online
+without it (yellow) or offline (grey). **Alts fold under their main**, so the
+list stays short. Click a column to sort, type to search ("tailoring",
+"holy", a name, a word from their note) and hover for details and notes.
 
 <p align="center"><img src="docs/images/roster.webp" alt="Roster tab mockup" width="100%"></p>
 
@@ -46,13 +49,14 @@ sort, type to search ("tailoring", "holy", a name…) and hover for details.
 A paperdoll for anyone in the guild. Hover a slot for the **real item
 tooltip**, or Shift-click it to link it in chat. Alongside it: talents,
 profession levels and recipe counts, cooldowns (transmutes and the like),
-attunements and reputations.
+attunements and reputations. Items **missing an enchant** get a small orange
+"!" so raid prep is easy to check.
 
 <p align="center"><img src="docs/images/character.webp" alt="Character tab mockup" width="100%"></p>
 
 ### Settings
-Turn sync on or off, hide the minimap button, change the window size, and see
-exactly what the addon is doing.
+Turn sync on or off, choose whether to share your gear and recipes, hide the
+minimap button, change the window size, and see exactly what the addon is doing.
 
 <details>
 <summary>Show the Settings tab</summary>
@@ -187,11 +191,11 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 ## 🗺️ Roadmap
 
 - [x] **v0.1**: data collection, guild sync, Roster, Character and Settings tabs, `/sk debug`
-- [ ] **v0.1.x**: online/addon status dots, alts under mains, roster notes, version column, missing-enchant markers, privacy toggle
+- [x] **v0.1.1**: online/addon status dots, alts under mains, notes, version column, missing-enchant markers, accurate cooldowns, privacy toggles
 - [ ] **v0.2**: **Crafters** (search an item, see who can make it, Whisper) and **Professions** (coverage, cooldown board, recipes nobody has), plus "Crafted by" on item tooltips
 - [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar: sign-up status, roles, line-up with attunement check, reminders, invite-all
 - [ ] **v0.4**: theme polish (ember sparks on the title bar), attunement and faction tables confirmed for Forever
-- [ ] **Later**: craft requests, raid attendance, export to text. See the [feature review](docs/FEATURE-REVIEW.md)
+- [ ] **Later**: craft requests, export to text, raid attendance, shopping lists, guild bank viewer, and more in the [plan](PLAN.md#later-in-rough-priority-order)
 - [ ] CurseForge release
 
 Testing it in game? Work through the checklist in [TESTING.md](TESTING.md).

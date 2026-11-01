@@ -17,7 +17,7 @@ SK.Merge = Merge
 Merge.MAX_FUTURE = 300
 
 local TABLE_FIELDS = { gear = true, talents = true, profs = true, recipes = true,
-	cds = true, reps = true, att = true, family = true }
+	cds = true, reps = true, att = true, family = true, hidden = true }
 
 -- Basic shape check so a malformed message can never break the UI.
 function Merge.Validate(p)
@@ -29,7 +29,7 @@ function Merge.Validate(p)
 	for k in pairs(TABLE_FIELDS) do
 		if p[k] ~= nil and type(p[k]) ~= "table" then return false, "bad field " .. k end
 	end
-	for _, k in ipairs({ "name", "class", "race", "addon" }) do
+	for _, k in ipairs({ "name", "class", "race", "addon", "main" }) do
 		if p[k] ~= nil and type(p[k]) ~= "string" then return false, "bad field " .. k end
 	end
 	return true

@@ -27,7 +27,7 @@ dedicated addons.
 
 Effort: **S** = an evening, **M** = a few days, **L** = a week or more.
 
-### A. Add now (v0.1.x, small, uses data we already have)
+### A. Add now (v0.1.x, small, uses data we already have): ✅ built in v0.1.1
 
 | # | Feature | Seen in | Why | Effort | Notes |
 |---|---|---|---|---|---|

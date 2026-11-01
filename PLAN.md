@@ -1,6 +1,6 @@
 # Short Kings — addon plan (awaiting approval)
 
-> Status: **approved 1 Nov; v0.1 code complete (not yet tested in game).**
+> Status: **v0.1 and v0.1.1 code complete (not yet tested in game).**
 > Researched against Blizzard's own UI source for the Forever client,
 > build **1.60.1.70532** (Gethe/wow-ui-source, `forever` branch), plus
 > warcraft.wiki.gg's *Patch 1.60.1/API changes* page.
@@ -233,26 +233,69 @@ is closed, to avoid interfering with it.
 them with no roles, but members without the addon can't see them,
 someone has to be online to share them, and they're easy to spam.
 
-## 7. Milestones
+## 7. Milestones and future plans
 
-(Updated after the feature review in [docs/FEATURE-REVIEW.md](docs/FEATURE-REVIEW.md); IDs like A1 refer to it.)
+Item IDs (A1, B1 …) refer to [docs/FEATURE-REVIEW.md](docs/FEATURE-REVIEW.md),
+which explains where each idea came from.
 
-- **v0.1** — collection, sync, Roster and Character tabs, `/sk`, `/sk debug`,
-  minimap button, basic theme, tests, CI, packager. *(done, awaiting in-game test)*
-- **v0.1.x** — small additions using data we already have: status dots (A1),
-  alts under main (A2), roster notes (A3), addon version column (A4),
-  missing-enchant markers (A5), accurate cooldowns (A6), privacy toggle (A7).
-- **v0.2** — Crafters and Professions tabs, scan reminders, plus "Crafted by"
-  item tooltips (B1), reagents (B2), specialisations (B3), cooldown board (B4),
-  coverage gaps (B5), favourites (B6), post-to-chat button (B7).
-- **v0.3** — Raids tab on Blizzard's calendar: statuses and two roles (C1),
-  line-up with attunement check (C2), reminders (C3), invite-all (C4),
-  raid templates (C5).
-- **v0.4** — theme polish (ember effect), attunement and faction tables confirmed.
-- **Later** — craft requests (D1), attendance (D2), export to text (D8),
-  others in the review as the guild asks for them.
+### Done (awaiting in-game test)
+- **v0.1**: collection, sync, Roster/Character/Settings tabs, `/sk`,
+  `/sk debug`, minimap button, theme, tests, CI, packager.
+- **v0.1.1**:
+  - A1 status dots (online with addon / without / offline)
+  - A2 alts grouped under their main (mutually confirmed), "Make this my main"
+  - A3 public and officer notes (officer only where allowed, never synced)
+  - A4 addon version column and "needs an update"
+  - A5 missing-enchant markers
+  - A6 cooldowns refreshed from the spell API
+  - A7 privacy toggles (share gear/talents, share recipes)
 
-Each version ends with an in-game test checklist.
+### v0.2: Crafters and Professions
+- Crafters tab: search a recipe or item, see who can make it, Whisper button
+- Professions tab: guild coverage, recipes nobody has (from scanned lists)
+- Scan reminders in the UI
+- B1 "Crafted by" lines on every item tooltip (`TooltipDataProcessor`)
+- B2 reagents per recipe (recorded during the owner's scan)
+- B3 specialisations (transmute/elixir/potion master, gnomish/goblin,
+  dragonscale/elemental/tribal, armor/weaponsmith); spell IDs to be verified
+- B4 guild cooldown board (who can transmute or make cloth right now)
+- B5 coverage gaps: professions and specialisations nobody has
+- B6 favourite recipes and crafters (local only)
+- B7 button to post a crafter list to guild chat
+
+### v0.3: Raids (on Blizzard's guild calendar, see section 6)
+- C1 sign-up status (signed / tentative / late / bench / can't), main and second role
+- C2 line-up view: counts by role and class, attunement check for that raid
+- C3 raid reminders (chat or pop-up before start)
+- C4 "invite everyone signed up" button for the raid leader
+- C5 raid templates with sizes: Barrow Deeps 10, Hyjal Summit 20, Onyxia 40
+
+### v0.4: Polish
+- Ember/spark animation on the title bar, roster and settings flourishes
+- Fix the design issues the mockups showed: long spec names truncate in the
+  Roster; the Character tab's empty right side could use two columns
+- Attunement and faction tables confirmed for Forever (quest/faction IDs)
+
+### Later (in rough priority order)
+- D1 craft requests: "ask to craft", the crafter accepts, reagent totals
+- D8 copy/export roster, crafters or a raid line-up as text (for Discord)
+- D2 raid attendance from the raid group (30/60/90 days)
+- D6 shopping list and reagent totals
+- D5 guild bank snapshot viewer (only if the guild uses the bank)
+- D3 loot history of epic drops. Check Midnight restrictions on loot events
+  in raids first, and consider recommending Gargul instead
+- D7 `!sk <item>` guild-chat lookup for members without the addon. Only if
+  Forever allows automatic guild-chat replies (`SendChatMessage` is restricted)
+- D4 missing recipes with where to get them (needs a recipe-source table)
+- D9 guild fun events (raffles, fishing derby, contests)
+- CurseForge release
+
+### Not planned (and why)
+Loot council, DKP and soft reserves (use Gargul); consumable and world-buff
+checks (Party Buff Tracker Forever, and Midnight blocks reading auras in
+raids); officer kick/promote scripts (GRM); replacing Blizzard's guild window
+(taint risk); website or Discord sync (against the brief); layers, bounties,
+blacklists and group finder (not useful for a PvE guild of 50).
 
 ## 8. Decisions so far
 

@@ -107,13 +107,14 @@ function W.reset()
 
 	_G.IsInGuild = function() return W.guild ~= nil end
 	_G.GetGuildInfo = function() if W.guild then return W.guild.name, "Member", 3, nil end end
-	_G.C_GuildInfo = { GuildRoster = noop }
+	W.officer = false
+	_G.C_GuildInfo = { GuildRoster = noop, CanViewOfficerNote = function() return W.officer end }
 	_G.GetGuildRosterShowOffline = function() return W.showOffline end
 	_G.GetNumGuildMembers = function() return #W.roster end
 	_G.GetGuildRosterInfo = function(i)
 		local e = W.roster[i]
 		if not e then return nil end
-		return e.name, e.rank or "Member", e.rankIndex or 3, e.level or 60, "Mage", "Zone", "", "",
+		return e.name, e.rank or "Member", e.rankIndex or 3, e.level or 60, "Mage", "Zone", e.note or "", e.officerNote or "",
 			e.online and true or false, 0, e.class or "MAGE", 0, 0, false, false, 0, e.guid
 	end
 	_G.GetGuildRosterLastOnline = function(i)
@@ -123,6 +124,25 @@ function W.reset()
 
 	_G.GetInventoryItemLink = function(_, slot) return W.gear[slot] end
 	_G.GetAverageItemLevel = function() return 61.04, 60.96 end
+
+	-- Items: itemID -> { equipLoc, classID, subClassID }
+	W.items = {}
+	_G.C_Item = {
+		GetItemInfoInstant = function(id)
+			local i = W.items[id] or { "INVTYPE_HEAD", 4, 4 }
+			return id, "Armor", "Plate", i[1], 1, i[2], i[3]
+		end,
+		GetItemIconByID = function() return 134400 end,
+	}
+	-- Spell cooldowns: spellID -> { start, duration } (GetTime clock = W.now)
+	W.spellCD = {}
+	_G.C_Spell = {
+		GetSpellCooldown = function(id)
+			local c = W.spellCD[id] or { 0, 0 }
+			return { startTime = c[1], duration = c[2], isEnabled = true, isActive = c[2] > 0, modRate = 1 }
+		end,
+		GetSpellName = function(id) return "Spell " .. id end,
+	}
 
 	_G.C_QuestLog = {
 		IsQuestFlaggedCompleted = function(id) return W.quests[id] == true end,

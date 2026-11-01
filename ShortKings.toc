@@ -15,10 +15,12 @@ Core\Log.lua
 Core\Compat.lua
 Core\DB.lua
 Core\Identity.lua
+Core\Alts.lua
 
 Data\Professions.lua
 Data\Attunements.lua
 Data\Factions.lua
+Data\Enchants.lua
 
 Collect\Character.lua
 Collect\Talents.lua

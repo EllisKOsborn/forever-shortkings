@@ -51,6 +51,7 @@ function Commands.BuildReport()
 	add("In guild: %s, name %q, key %q", yesno(Compat.IsInGuild()), tostring(SK.guildName), tostring(SK.guildKey))
 	add("Roster: source=%s loaded=%s sample name=%q", tostring(SK.Identity.rosterSource),
 		yesno(SK.Identity.loaded), tostring(SK.Identity.rosterSample))
+	add("Can view officer notes: %s", yesno(Compat.CanViewOfficerNote()))
 	local guild = SK.DBM:Guild()
 	if guild then
 		local active, left, withData = 0, 0, 0
@@ -87,7 +88,12 @@ function Commands.BuildReport()
 			add("Profession %s (%d): %d/%d, scanned %s, %d recipes", tostring(p.name), skillLine, p.rank or 0,
 				p.max or 0, p.scanned and "yes" or "NO", SK.Count(own.recipes and own.recipes[skillLine]))
 		end
-		add("Cooldowns: %d  Reputations: %d", SK.Count(own.cds), SK.Count(own.reps))
+		add("Cooldowns: %d (%d tracked recipes)  Reputations: %d", SK.Count(own.cds),
+			SK.Count(SK.DB.cooldownSpells[own.guid]), SK.Count(own.reps))
+		add("Missing enchants: %d   Sharing: gear=%s recipes=%s   Main: %s",
+			#SK.Data.Enchants.Missing(own.gear, own.class), yesno(SK.DB.settings.share.gear),
+			yesno(SK.DB.settings.share.recipes), tostring(SK.DB.settings.main))
+		add("Family (alts on this account in the guild): %d", own.family and #own.family or 0)
 	else
 		add("No profile yet (needs a guild and a loaded roster).")
 	end

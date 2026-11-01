@@ -55,10 +55,25 @@ local function slotButton(parent, slot)
 	b.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	b.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
 	Theme.Border(b, 2, false)
+	-- Missing-enchant marker: small ember corner with "!"
+	b.warn = b:CreateTexture(nil, "OVERLAY")
+	b.warn:SetSize(12, 12)
+	b.warn:SetPoint("TOPRIGHT", -1, -1)
+	Theme.Gradient(b.warn, "VERTICAL", "ember", "flame")
+	b.warnText = Theme.Text(b, 10, "plumDark", "OVERLAY")
+	b.warnText:SetPoint("CENTER", b.warn, "CENTER", 0, 0)
+	b.warnText:SetText("!")
+	b.warnText:SetShadowOffset(0, 0)
+	b.warn:Hide(); b.warnText:Hide()
 	b:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		if self.link then
 			GameTooltip:SetHyperlink(self.link)
+			if self.missingEnchant then
+				GameTooltip:AddLine(" ")
+				GameTooltip:AddLine("Short Kings: no enchant on this item", 1, 0.48, 0.1)
+				GameTooltip:Show()
+			end
 		else
 			GameTooltip:SetText(SLOT_NAMES[self.slot] or "Empty")
 			GameTooltip:AddLine("Empty", 0.7, 0.6, 0.65)
@@ -69,8 +84,11 @@ local function slotButton(parent, slot)
 	b:SetScript("OnClick", function(self)
 		if self.link and HandleModifiedItemClick then HandleModifiedItemClick(self.link) end
 	end)
-	function b:SetItem(link)
+	function b:SetItem(link, missingEnchant)
 		self.link = link
+		self.missingEnchant = missingEnchant
+		self.warn:SetShown(missingEnchant and true or false)
+		self.warnText:SetShown(missingEnchant and true or false)
 		local icon = link and Compat.ItemIcon(link)
 		if icon then
 			self.icon:SetTexture(icon)
@@ -103,6 +121,11 @@ function Char:Build(page)
 		end
 	end)
 	self.whisper:SetPoint("LEFT", self.mine, "RIGHT", 6, 0)
+	self.makeMain = W.Button(page, "Make this my main", 140, 22, function()
+		if Char.shownGuid then SK.Profile:SetMain(Char.shownGuid); Char:Refresh() end
+	end)
+	self.makeMain.tooltip = "Your main is shown first when alts are grouped in the Roster."
+	self.makeMain:SetPoint("LEFT", self.mine, "RIGHT", 6, 0)
 
 	self.name = Theme.Text(page, 18, "pink")
 	self.name:SetPoint("TOPLEFT", 0, -32)
@@ -140,6 +163,9 @@ function Char:Build(page)
 	self.specText = Theme.Text(doll, 12, "pink")
 	self.specText:SetPoint("TOP", self.ilvlLabel, "BOTTOM", 0, -16)
 	self.specText:SetWidth(150)
+	self.enchantText = Theme.Text(doll, 11, "ember")
+	self.enchantText:SetPoint("TOP", self.specText, "BOTTOM", 0, -14)
+	self.enchantText:SetWidth(150)
 
 	-- Details
 	self.details = W.TextPanel(page)
@@ -158,12 +184,29 @@ local function section(lines, title)
 end
 
 -- Text for the details panel. Pure-ish; uses only the profile.
-function Char.DetailText(p, now)
+function Char.DetailText(p, now, extra)
 	local lines = {}
 	local C = Theme.Code
+	extra = extra or {}
+	if extra.alts and #extra.alts > 0 then
+		section(lines, extra.isMain and "Alts" or "Same player")
+		for _, a in ipairs(extra.alts) do
+			lines[#lines + 1] = "  " .. Theme.ClassText(a.name, a.class) .. (a.isMain and (C("flame") .. "  (main)|r") or "")
+		end
+	end
+	if (extra.note and extra.note ~= "") or (extra.officerNote and extra.officerNote ~= "") then
+		section(lines, "Notes")
+		if extra.note and extra.note ~= "" then lines[#lines + 1] = "  " .. extra.note end
+		if extra.officerNote and extra.officerNote ~= "" then
+			lines[#lines + 1] = "  " .. C("flame") .. "Officer: |r" .. extra.officerNote
+		end
+	end
+	local hidden = p.hidden or {}
 	-- Talents
 	section(lines, "Talents")
-	if p.talents and p.talents.trees then
+	if hidden.gear then
+		lines[#lines + 1] = C("muted") .. "  hidden by this player|r"
+	elseif p.talents and p.talents.trees then
 		for _, t in ipairs(p.talents.trees) do
 			lines[#lines + 1] = string.format("  %s  %s%d|r", t.n or "?", C("flame"), t.p or 0)
 		end
@@ -182,6 +225,8 @@ function Char.DetailText(p, now)
 		local note
 		if SK.Data.GATHERING[e.id] then
 			note = ""
+		elseif hidden.recipes then
+			note = "  " .. C("muted") .. "recipes hidden|r"
 		elseif pr.scanned then
 			note = string.format("  %s%d recipes|r", C("muted"), SK.Count(recipes))
 		else
@@ -236,14 +281,35 @@ function Char.DetailText(p, now)
 	return table.concat(lines, "\n")
 end
 
+-- Alts of `guid` (mutually confirmed), for the details panel.
+local function altsOf(guild, guid)
+	local profiles = {}
+	for g, p in pairs(guild.profiles) do profiles[g] = p end
+	local groupOf = SK.Alts.Groups(profiles, function(g) return SK.Identity:IsMember(g) end)
+	local group = groupOf[guid]
+	if not group or #group.members < 2 then return nil, true end
+	local list = {}
+	for _, g in ipairs(group.members) do
+		if g ~= guid then
+			local m, p = guild.members[g], profiles[g]
+			list[#list + 1] = { name = (m and m.name) or (p and p.name) or "?", class = (m and m.class) or (p and p.class),
+				isMain = g == group.main }
+		end
+	end
+	return list, group.main == guid
+end
+
 function Char:Refresh()
 	if not self.slots then return end
 	local guild = SK.DBM:Guild()
 	local guid = self.guid or Compat.PlayerGUID()
-	local p = guild and guid and guild.profiles[guid]
+	self.shownGuid = guid
+	local p = guild and SK.Profile:Get(guid, guild)
 	local m = guild and guid and guild.members[guid]
 	local now = Compat.Now()
-	self.whisper:SetShown(self.guid ~= nil and not SK.DB.account[self.guid])
+	local mine = guid and SK.DB.account[guid] or false
+	self.whisper:SetShown(not mine and guid ~= nil)
+	self.makeMain:SetShown(mine and SK.DB.settings.main ~= guid)
 
 	if not p then
 		self.name:SetText(m and Theme.ClassText(m.name, m.class) or "No character")
@@ -252,6 +318,7 @@ function Char:Refresh()
 		for _, b in pairs(self.slots) do b:SetItem(nil) end
 		self.ilvl:SetText("")
 		self.specText:SetText("")
+		self.enchantText:SetText("")
 		self.details:SetText("")
 		return
 	end
@@ -265,11 +332,26 @@ function Char:Refresh()
 	local source = p.source == "self" and "this account" or (p.source == "owner" and "from them" or "relayed by a guildmate")
 	self.meta:SetText(string.format("Updated %s ago (%s)  ·  Short Kings %s", Theme.Ago(p.updated, now), source, p.addon or "?"))
 
-	for slot, b in pairs(self.slots) do b:SetItem(p.gear and p.gear[slot]) end
-	self.ilvl:SetText(p.ilvl and string.format("%.1f", p.ilvl) or "?")
-	local spec, main = SK.Talents.Summary(p.talents)
-	self.specText:SetText(spec and ((main or "") .. "\n" .. spec) or "")
-	self.details:SetText(Char.DetailText(p, now))
+	local hidden = p.hidden or {}
+	local missing = {}
+	for _, slot in ipairs(SK.Data.Enchants.Missing(p.gear, p.class)) do missing[slot] = true end
+	for slot, b in pairs(self.slots) do b:SetItem(p.gear and p.gear[slot], missing[slot]) end
+	if hidden.gear then
+		self.ilvl:SetText("")
+		self.specText:SetText(Theme.Code("muted") .. "Gear and talents\nhidden by this player|r")
+		self.enchantText:SetText("")
+	else
+		self.ilvl:SetText(p.ilvl and string.format("%.1f", p.ilvl) or "?")
+		local spec, main = SK.Talents.Summary(p.talents)
+		self.specText:SetText(spec and ((main or "") .. "\n" .. spec) or "")
+		local n = SK.Count(missing)
+		self.enchantText:SetText(n > 0 and string.format("%d missing enchant%s", n, n == 1 and "" or "s") or "")
+	end
+
+	local alts, isMain = altsOf(guild, guid)
+	self.details:SetText(Char.DetailText(p, now, {
+		alts = alts, isMain = isMain, note = m and m.note, officerNote = m and m.officerNote,
+	}))
 end
 
 SK.MainFrame:AddTab("character", "Character", Char)
