@@ -1,97 +1,242 @@
-# Short Kings
+<p align="center">
+  <img src="docs/images/banner.webp" alt="Short Kings: Small in stature. Big in loot." width="100%">
+</p>
 
-*Small in stature. Big in loot.*
+<p align="center">
+  <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-D94FA0?labelColor=2A1220">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1%20alpha-FF7A1A?labelColor=2A1220">
+  <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FFC24A?labelColor=2A1220">
+</p>
 
-A World of Warcraft: **Forever** addon for the Short Kings guild (Alliance, PvE).
-Everyone who installs it can browse every other member's gear, talents,
-professions, known recipes, reputations and attunements in one window. Data is
-shared through the guild's addon channel. There's no website, no server and
-nothing is uploaded.
+<p align="center">
+  <b>The guild addon for the Short Kings of World of Warcraft: Forever.</b><br>
+  See every member's gear, talents, professions and recipes in one window.<br>
+  No website, no server, no uploads: it all travels over the guild's addon channel.
+</p>
 
-> **Status: v0.1, not yet tested in game.** It is built against Blizzard's
-> Forever 1.60.1 interface code and unit-tested with a fake WoW API.
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#whats-inside">What's inside</a> ·
+  <a href="#commands">Commands</a> ·
+  <a href="#faq">FAQ</a> ·
+  <a href="#roadmap">Roadmap</a>
+</p>
 
-## Installing (for guildmates)
+> [!NOTE]
+> **v0.1 is an alpha that hasn't been run in game yet.** It's built against
+> Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
+> client. The pictures below are **mockups** drawn from the addon's real
+> colours and layout. Item icons are placeholders; in game you see the real ones.
 
-1. Download the latest `ShortKings-x.y.z.zip` from this repository's
-   **Releases** page.
-2. Unzip it. You get a folder called **`ShortKings`**.
-3. Move that folder into your Forever AddOns folder:
-   - **Windows:** `C:\Program Files (x86)\World of Warcraft\_forever_\Interface\AddOns\`
-   - **Mac:** `/Applications/World of Warcraft/_forever_/Interface/AddOns/`
+---
 
-   Not sure where yours is? In the Battle.net app, select WoW Forever, click
-   the gear ⚙ next to Play, then *Show in Explorer / Show in Finder*. Then
-   open `Interface`, then `AddOns`. Create the `AddOns` folder if it's missing,
-   spelled exactly like that.
-4. Restart the game (or `/reload`). On the character screen, the
-   **AddOns** button should list *Short Kings*.
+<a id="whats-inside"></a>
 
-The folder must be called `ShortKings` and sit directly inside `AddOns`, so
-`AddOns/ShortKings/ShortKings.toc`. A folder inside a folder won't load.
+## 🧨 What's inside
 
-Later we'll publish to CurseForge, and the CurseForge app will install and
-update it for you.
+### Roster
+Every guild member at a glance: class colours, level, rank, talent spec,
+professions, item level and when they were last online. Click a column to
+sort, type to search ("tailoring", "holy", a name…) and hover for details.
 
-## Using it
+<p align="center"><img src="docs/images/roster.webp" alt="Roster tab mockup" width="100%"></p>
 
-| Command | What it does |
+### Character
+A paperdoll for anyone in the guild. Hover a slot for the **real item
+tooltip**, or Shift-click it to link it in chat. Alongside it: talents,
+profession levels and recipe counts, cooldowns (transmutes and the like),
+attunements and reputations.
+
+<p align="center"><img src="docs/images/character.webp" alt="Character tab mockup" width="100%"></p>
+
+### Settings
+Turn sync on or off, hide the minimap button, change the window size, and see
+exactly what the addon is doing.
+
+<details>
+<summary>Show the Settings tab</summary>
+<p align="center"><img src="docs/images/settings.webp" alt="Settings tab mockup" width="100%"></p>
+</details>
+
+### Under the hood
+- **Your own data always wins.** A copy passed on by someone else can never overwrite a newer copy from the character themselves.
+- **Light on the network.** Only small fingerprints are broadcast, and full profiles are whispered to whoever needs them. Everything is rate-limited, so nobody gets disconnected.
+- **Stays out of your way.** Sync pauses in combat, in dungeons, raids, battlegrounds and arenas, and whenever the game locks addon chat.
+- **Tidies up.** Members who leave the guild are forgotten 30 days later.
+
+---
+
+<a id="install"></a>
+
+## 📦 Install
+
+1. Download the latest **`ShortKings-x.y.z.zip`** from
+   [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases).
+2. Unzip it. You'll get a folder called **`ShortKings`**.
+3. Move that folder into your Forever **AddOns** folder:
+
+   | | Folder |
+   |---|---|
+   | 🪟 Windows | `C:\Program Files (x86)\World of Warcraft\_forever_\Interface\AddOns\` |
+   | 🍎 Mac | `/Applications/World of Warcraft/_forever_/Interface/AddOns/` |
+
+4. Restart the game. *Short Kings* should be listed under **AddOns** on the character screen.
+
+> [!TIP]
+> **Can't find the folder?** In the Battle.net app, pick **WoW Forever**,
+> click the **⚙** next to Play, then **Show in Explorer** (Windows) or
+> **Show in Finder** (Mac). Open `Interface`, then `AddOns`. If there's no
+> `AddOns` folder, create one, spelled exactly like that.
+
+> [!IMPORTANT]
+> The result must be `AddOns/ShortKings/ShortKings.toc`. A `ShortKings`
+> folder inside another `ShortKings` folder won't load.
+
+**First time in game:**
+- Open each of your **profession windows once** so your recipes are recorded. The addon reminds you which ones are left.
+- Log in on each **alt** once, too.
+
+---
+
+<a id="commands"></a>
+
+## ⌨️ Commands
+
+| Type this | To |
 |---|---|
-| `/sk` | open or close the window (also the minimap button) |
-| `/sk debug` | a copyable report of what the addon can see. Send this when something's wrong |
-| `/sk log` | the same report plus the recent log |
-| `/sk scan` | re-read your character now |
+| `/sk` | open or close the window (the minimap button does the same) |
+| `/sk debug` | get a copyable report of what the addon can see. **Send this when something's wrong** |
+| `/sk log` | get the same report plus the recent log |
+| `/sk scan` | re-read your character right now |
 | `/sk sync` | share your data now and ask for anything missing |
-| `/sk reset` | move the window back to the middle |
+| `/sk reset` | put the window back in the middle of the screen |
 
-Open each of your **profession windows once**, so your recipes are recorded.
-The addon reminds you which ones are missing. Log in on each alt once, too.
+`/shortkings` works too, if another addon already uses `/sk`.
 
-**Trial accounts** can't send addon messages, so they show up as
-"no addon/trial" for everyone else.
+---
 
-## How sync works (short version)
+<a id="faq"></a>
 
-- Each player announces a tiny fingerprint (hash and timestamp) of **their own**
-  characters on the guild channel when they log in, and every 10 minutes.
-- Anyone missing that data, or holding an older copy, asks for it by whisper.
-- When you log in, one other member (picked at random) offers to fill in
-  people who are offline.
-- A character's own data always wins. A copy passed on by someone else can
-  never overwrite a newer copy from the character themselves.
-- Sync pauses in combat, in every instance (dungeons, raids, battlegrounds,
-  arenas) and whenever the game blocks addon chat. Everything is rate-limited
-  through ChatThrottleLib.
-- Members who left the guild are deleted 30 days after they left.
+## ❓ FAQ
 
-The full design is in [PLAN.md](PLAN.md).
+<details>
+<summary><b>Someone shows "no addon/trial". Why?</b></summary>
 
-## For developers
+They don't have Short Kings installed, haven't logged in since installing it,
+or are on a **trial account**. Trial accounts can't send addon messages, so
+their data can't reach anyone. From the outside, the addon can't tell these
+cases apart.
+</details>
 
+<details>
+<summary><b>My alt is missing.</b></summary>
+
+The game only lets an addon read the character you're logged in as. Log in on
+the alt once and it will be saved and shared.
+</details>
+
+<details>
+<summary><b>My recipes aren't showing.</b></summary>
+
+Open that profession's window once. Recipes are read from the profession
+window, so the Character tab says "not scanned yet" until you do.
+</details>
+
+<details>
+<summary><b>It says "out of date" on the AddOns screen.</b></summary>
+
+Tick **Load out of date AddOns** for now, and tell an officer. The addon
+needs a new interface number for the latest game patch.
+</details>
+
+<details>
+<summary><b>Will it get me disconnected or slow my game down?</b></summary>
+
+It shouldn't. Messages are small, compressed and rate-limited through
+ChatThrottleLib, and nothing is sent during combat or inside instances.
+Recipe scans are spread over several frames.
+</details>
+
+<details>
+<summary><b>How does syncing actually work?</b></summary>
+
+```mermaid
+sequenceDiagram
+    participant You
+    participant Guild as Guild channel
+    participant Bob
+    You->>Guild: HI: my characters (hash + timestamp)
+    Bob->>Bob: compare with what I have
+    Bob->>You: RQ (whisper): please send Pip's profile
+    You->>Bob: PR (whisper): Pip's profile, compressed
+    Note over You,Bob: On login, one random member also offers<br/>copies of anyone who is offline (SQ / SO)
 ```
-luacheck .     # lint
-busted         # unit tests (Lua 5.1, stubbed WoW API in tests/helpers)
+
+The full design, data format and merge rules are in [PLAN.md](PLAN.md).
+</details>
+
+---
+
+<a id="roadmap"></a>
+
+## 🗺️ Roadmap
+
+- [x] **v0.1**: data collection, guild sync, Roster, Character and Settings tabs, `/sk debug`
+- [ ] **v0.2**: **Crafters** (search an item and see who can make it, with a Whisper button) and **Professions** (guild coverage, and recipes nobody has)
+- [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar sign-ups, with each sign-up's spec, role and attunement
+- [ ] **v0.4**: theme polish (ember sparks on the title bar), attunement and faction tables confirmed for Forever
+- [ ] CurseForge release
+
+Testing it in game? Work through the checklist in [TESTING.md](TESTING.md).
+
+---
+
+<details>
+<summary><b>🛠️ For developers</b></summary>
+
+```sh
+luacheck .    # lint
+busted        # unit tests: Lua 5.1, stubbed WoW API in tests/helpers/
+node docs/mockups/render.js [font.woff2]   # regenerate the README pictures
 ```
 
-- `Core/Compat.lua` is the only file that touches client-specific APIs.
-- Releases: push a tag like `v0.1.0`. The **Release** workflow runs the
-  BigWigs packager, which builds the zip and attaches it to a GitHub Release.
-  For CurseForge, add the `CF_API_KEY` repository secret and an
-  `## X-Curse-Project-ID:` line to `ShortKings.toc`.
-- Every push also produces a **test build** (Actions → Tests → artifact
-  `ShortKings-test-build`), which is never published anywhere.
+| Folder | What lives there |
+|---|---|
+| `Core/` | start-up, events, saved data, guild roster; `Compat.lua` is the **only** file that touches client-specific APIs |
+| `Collect/` | reads gear, talents, professions, recipes, reputation and attunements |
+| `Sync/` | encoding (LibSerialize + LibDeflate), merge rules, the HI/RQ/PR/SQ/SO protocol |
+| `UI/` | theme, widgets and tabs (colours and gradients only, no image files) |
+| `Data/` | profession, attunement and faction tables (IDs are verified or marked TODO, never guessed) |
 
-## Credits
+**Releasing:** push a tag like `v0.1.0`. The *Release* workflow runs the
+BigWigs packager, which builds `ShortKings-0.1.0.zip` and attaches it to a
+GitHub Release. For CurseForge, add a `CF_API_KEY` repository secret and an
+`## X-Curse-Project-ID:` line to `ShortKings.toc`. Every push also produces
+an unpublished **test build** (Actions → Tests → `ShortKings-test-build`).
 
-- No code was copied from other guild-sync addons. API facts come from
-  [warcraft.wiki.gg](https://warcraft.wiki.gg/wiki/Patch_1.60.1/API_changes),
-  Blizzard's own UI source (mirrored at
-  [Gethe/wow-ui-source](https://github.com/Gethe/wow-ui-source), `forever`
-  branch), and public notes in the
-  [Everloot](https://github.com/Everloot/everloot/pull/49) and
-  [bff-wow](https://github.com/Shtian/bff-wow/issues/3) projects.
-- Libraries: Ace3 (AceComm, CallbackHandler, LibStub, ChatThrottleLib),
-  LibSerialize by Ross Nichols, LibDeflate by Haoqian He, LibDataBroker,
-  LibDBIcon. See [Libs/README.md](Libs/README.md).
+**Theme palette** (from `UI/Theme.lua`):
 
-Licence: MIT.
+| Plum dark | Plum | Magenta | Hot pink | Ember | Flame | Leather | Gold |
+|---|---|---|---|---|---|---|---|
+| `#2A1220` | `#3D1A2E` | `#D94FA0` | `#F07ACB` | `#FF7A1A` | `#FFC24A` | `#6B3E1E` | `#D4AF37` |
+</details>
+
+## 🙏 Credits
+
+No code was copied from other guild-sync addons. API facts come from
+[warcraft.wiki.gg](https://warcraft.wiki.gg/wiki/Patch_1.60.1/API_changes),
+Blizzard's own UI source (mirrored at
+[Gethe/wow-ui-source](https://github.com/Gethe/wow-ui-source), `forever`
+branch), and public notes in the
+[Everloot](https://github.com/Everloot/everloot/pull/49) and
+[bff-wow](https://github.com/Shtian/bff-wow/issues/3) projects.
+
+Libraries: Ace3 (AceComm, CallbackHandler, LibStub, ChatThrottleLib),
+[LibSerialize](https://github.com/rossnichols/LibSerialize) by Ross Nichols,
+[LibDeflate](https://github.com/SafeteeWoW/LibDeflate) by Haoqian He,
+LibDataBroker and LibDBIcon. Licences are listed in [Libs/README.md](Libs/README.md).
+The README mockups use [Marcellus](https://fonts.google.com/specimen/Marcellus)
+(SIL OFL) as a stand-in for the game's font.
+
+Released under the [MIT licence](LICENSE). Made with 💖 and 🧨 by the Short Kings.

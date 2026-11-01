@@ -1,0 +1,320 @@
+<!doctype html>
+<!--
+  Short Kings UI mockup. This is NOT a game screenshot: it redraws the addon's
+  window in HTML using the same colours (UI/Theme.lua), sizes and layout
+  (UI/MainFrame.lua, RosterTab.lua, CharacterTab.lua, SettingsTab.lua).
+  Item icons are placeholders (the game shows the real item icons).
+  Regenerate the images with: node docs/mockups/render.js [marcellus.woff2]
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Short Kings UI mockup</title>
+<style>
+@font-face { font-family: "SKFriz"; src: url("marcellus.woff2") format("woff2");
+  unicode-range: U+0020-002F, U+003A-00FF, U+2013-2026; }
+@font-face { font-family: "SKFriz"; src: local("Bitstream Charter"), local("Charter"), local("Georgia"); unicode-range: U+0030-0039; }
+:root {
+  --plumDark:#2A1220; --plum:#3D1A2E; --plumLift:#4E2440; --magenta:#D94FA0; --pink:#F07ACB;
+  --ember:#FF7A1A; --flame:#FFC24A; --leather:#6B3E1E; --gold:#D4AF37; --text:#F5E6EE;
+  --muted:#B89AAA; --good:#7CD67C; --bad:#E06060;
+}
+* { box-sizing: border-box; }
+body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Quadrata TT",Georgia,serif;
+  color:var(--text); text-shadow:1px -1px 0 rgba(0,0,0,.8); }
+.scene { position:relative; width:940px; padding:40px; margin-bottom:40px;
+  background: radial-gradient(ellipse at 30% 20%, #3b4a3a 0%, #22301f 45%, #141a12 100%); }
+.scene.banner { padding:0; width:auto; display:inline-block; background:none; }
+.win { position:relative; width:860px; height:560px;
+  background:linear-gradient(to top, var(--plumDark), var(--plum));
+  border:3px solid var(--leather); box-shadow:0 12px 40px rgba(0,0,0,.6); }
+.win::before { content:""; position:absolute; inset:0; border:1px solid var(--gold); pointer-events:none; }
+.titlebar { position:absolute; left:0; right:0; top:0; height:54px;
+  background:linear-gradient(to right, rgba(217,79,160,.55), rgba(61,26,46,.05)); }
+.titlebar::after { content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
+  background:linear-gradient(to right, rgba(255,122,26,1), rgba(255,194,74,.2)); }
+.title { position:absolute; left:16px; top:7px; font-size:22px; color:var(--pink); }
+.tagline { position:absolute; left:18px; top:34px; font-size:11px; color:var(--flame); }
+.status { position:absolute; right:40px; top:20px; font-size:11px; color:var(--muted); }
+.close { position:absolute; right:6px; top:6px; width:24px; height:24px; border-radius:50%;
+  background:radial-gradient(circle at 40% 35%, #c33, #611); border:2px solid #b8a06a;
+  color:#fff; font:bold 14px/20px Arial,sans-serif; text-align:center; text-shadow:none; }
+.tabs { position:absolute; left:9px; top:59px; display:flex; gap:4px; }
+.btn { position:relative; height:26px; padding:0 14px; min-width:90px; display:flex; align-items:center;
+  justify-content:center; font-size:12px; color:var(--text);
+  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
+.btn.small { height:22px; min-width:0; padding:0 10px; }
+.btn.active { color:var(--flame); border-color:var(--ember); }
+.btn.active::after { content:""; position:absolute; left:2px; right:2px; bottom:2px; height:2px;
+  background:linear-gradient(to right, var(--ember), var(--flame)); }
+.btn.hover { color:var(--flame); border-color:var(--ember); }
+.content { position:absolute; left:9px; right:9px; top:93px; bottom:9px; }
+.search { position:absolute; left:0; top:0; width:260px; height:22px; background:var(--plumDark);
+  border:1px solid var(--leather); font-size:12px; color:var(--muted); padding:3px 8px; }
+.count { position:absolute; left:272px; top:4px; font-size:12px; color:var(--muted); }
+.list { position:absolute; left:0; right:0; top:30px; bottom:0; }
+.header { position:absolute; left:0; right:12px; top:0; height:22px;
+  background:linear-gradient(to top, rgba(42,18,32,1), rgba(217,79,160,.35)); display:flex; padding-left:4px; }
+.header div, .row div { flex:none; padding:0 4px; white-space:nowrap; overflow:hidden; }
+.header div { color:var(--pink); font-size:12px; line-height:22px; }
+.rows { position:absolute; left:0; right:12px; top:22px; }
+.row { height:20px; display:flex; padding-left:4px; font-size:12px; line-height:20px; position:relative; }
+.row:nth-child(odd) { background:rgba(78,36,64,.15); }
+.row:nth-child(even) { background:rgba(78,36,64,.35); }
+.row.hover::before { content:""; position:absolute; inset:0;
+  background:linear-gradient(to right, rgba(255,122,26,.25), rgba(255,194,74,.05)); }
+.row div { position:relative; }
+.r { text-align:right; }
+.m { color:var(--muted); } .g { color:var(--good); } .f { color:var(--flame); } .e { color:var(--ember); }
+.p { color:var(--pink); } .bd { color:var(--bad); }
+.scroll { position:absolute; right:0; top:22px; bottom:0; width:10px; background:rgba(42,18,32,.9); }
+.scroll .thumb { position:absolute; left:0; right:0; top:0; height:30px; background:var(--magenta); }
+.tooltip { position:absolute; background:rgba(4,8,20,.92); border:1px solid #9aa4b8; border-radius:4px;
+  padding:7px 10px; font-family:"SKFriz",Georgia,serif; font-size:12px; line-height:17px; color:#fff;
+  box-shadow:0 4px 14px rgba(0,0,0,.6); white-space:nowrap; }
+.tooltip .dl { display:flex; justify-content:space-between; gap:24px; }
+/* character */
+.name { position:absolute; left:0; top:32px; font-size:18px; }
+.info { position:absolute; left:0; top:56px; font-size:12px; }
+.meta { position:absolute; left:0; top:73px; font-size:11px; color:var(--muted); }
+.doll { position:absolute; left:0; top:92px; width:250px; height:370px;
+  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:2px solid var(--leather); }
+.doll::before { content:""; position:absolute; inset:0; border:1px solid var(--gold); }
+.slot.hover { box-shadow:0 0 0 2px var(--flame); }
+.slot { position:absolute; width:38px; height:38px; border:2px solid var(--leather); background:var(--plumDark); }
+.slot i { position:absolute; inset:2px; display:block; }
+.slot b { position:absolute; left:0; right:0; bottom:1px; text-align:center; font:9px/9px Arial,sans-serif;
+  color:rgba(255,255,255,.75); text-shadow:0 0 2px #000; font-weight:normal; }
+.ilvl { position:absolute; left:0; right:0; top:120px; text-align:center; font-size:20px; color:var(--flame); }
+.ilvlLabel { position:absolute; left:0; right:0; top:146px; text-align:center; font-size:11px; color:var(--muted); }
+.spec { position:absolute; left:0; right:0; top:176px; text-align:center; font-size:12px; color:var(--pink); line-height:16px; }
+.details { position:absolute; left:268px; top:92px; right:14px; bottom:0; font-size:12px; line-height:14.5px;
+  white-space:pre; overflow:hidden; }
+/* settings */
+.h { position:absolute; left:0; top:0; font-size:16px; color:var(--pink); }
+.check { position:absolute; left:4px; display:flex; align-items:center; gap:8px; font-size:12px; }
+.box { width:18px; height:18px; background:var(--plumDark); border:1px solid var(--leather); position:relative; }
+.box.on::after { content:""; position:absolute; inset:3px; background:linear-gradient(to top, var(--ember), var(--flame)); }
+.rowbtns { position:absolute; left:4px; display:flex; gap:8px; align-items:center; }
+.panel { position:absolute; left:4px; right:14px; font-size:12px; line-height:15px; white-space:pre; }
+/* banner */
+.bannerbox { width:1020px; height:250px; position:relative; overflow:hidden;
+  background:linear-gradient(to top, var(--plumDark), var(--plum)); border:3px solid var(--leather); }
+.bannerbox::before { content:""; position:absolute; inset:0; border:1px solid var(--gold); z-index:2; }
+.bannerbox .glow { position:absolute; inset:0; background:
+  radial-gradient(ellipse at 18% 120%, rgba(255,122,26,.45), transparent 55%),
+  radial-gradient(ellipse at 85% -20%, rgba(217,79,160,.55), transparent 60%),
+  linear-gradient(to right, rgba(217,79,160,.35), rgba(61,26,46,0) 70%); }
+.bannerbox .big { position:absolute; left:60px; top:52px; font-size:76px; color:var(--pink);
+  text-shadow:3px 3px 0 #000, 0 0 30px rgba(240,122,203,.35); letter-spacing:1px; }
+.bannerbox .sub { position:absolute; left:66px; top:150px; font-size:24px; color:var(--flame); }
+.bannerbox .line { position:absolute; left:66px; top:194px; width:420px; height:3px;
+  background:linear-gradient(to right, var(--ember), rgba(255,194,74,0)); }
+.bannerbox .meta2 { position:absolute; left:66px; top:208px; font-size:13px; color:var(--muted); }
+.spark { position:absolute; width:4px; height:4px; border-radius:50%; background:var(--flame);
+  box-shadow:0 0 6px 2px rgba(255,122,26,.8); }
+.fuse { position:absolute; right:110px; top:50px; width:170px; height:170px; }
+</style>
+</head>
+<body>
+
+<!-- ============ BANNER ============ -->
+<div class="scene banner" id="banner">
+  <div class="bannerbox">
+    <div class="glow"></div>
+    <div class="big">Short Kings</div>
+    <div class="sub">Small in stature. Big in loot.</div>
+    <div class="line"></div>
+    <div class="meta2">A guild addon for World of Warcraft: Forever &nbsp;·&nbsp; gear · professions · recipes · raids</div>
+    <!-- a stick of dynamite, drawn with CSS -->
+    <svg class="fuse" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="stick" x1="0" x2="1"><stop offset="0" stop-color="#8f1d3b"/><stop offset=".5" stop-color="#D94FA0"/><stop offset="1" stop-color="#7a1734"/></linearGradient>
+        <radialGradient id="flare"><stop offset="0" stop-color="#fff6c8"/><stop offset=".35" stop-color="#FFC24A"/><stop offset=".7" stop-color="#FF7A1A" stop-opacity=".7"/><stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/></radialGradient>
+      </defs>
+      <g transform="rotate(-28 75 90)">
+        <rect x="52" y="52" width="46" height="88" rx="8" fill="url(#stick)" stroke="#2A1220" stroke-width="3"/>
+        <rect x="52" y="74" width="46" height="9" fill="#6B3E1E"/><rect x="52" y="112" width="46" height="9" fill="#6B3E1E"/>
+        <rect x="52" y="74" width="46" height="1.5" fill="#D4AF37"/><rect x="52" y="112" width="46" height="1.5" fill="#D4AF37"/>
+        <path d="M75 52 C 75 36, 88 32, 84 18" stroke="#c9b28a" stroke-width="3" fill="none"/>
+      </g>
+      <circle cx="49" cy="22" r="20" fill="url(#flare)"/>
+    </svg>
+    <div class="spark" style="left:792px;top:44px"></div>
+    <div class="spark" style="left:770px;top:28px;width:3px;height:3px"></div>
+    <div class="spark" style="left:820px;top:36px;width:2px;height:2px"></div>
+    <div class="spark" style="left:800px;top:16px;width:2px;height:2px"></div>
+  </div>
+</div>
+
+<!-- ============ ROSTER ============ -->
+<div class="scene" id="roster">
+  <div class="win">
+    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
+    <div class="tabs"><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Settings</div></div>
+    <div class="content">
+      <div class="search">Search name, profession, spec...</div>
+      <div class="count">13 members · 11 with Short Kings data</div>
+      <div class="list">
+        <div class="header" id="rhead"></div>
+        <div class="rows" id="rrows"></div>
+        <div class="scroll"><div class="thumb"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="tooltip" style="left:430px;top:262px">
+    <div style="color:#FFFFFF">Fizzle Brightbeard</div>
+    <div>Holy 21/30/0</div>
+    <div class="dl"><span>Alchemy</span><span>300</span></div>
+    <div class="dl"><span>Herbalism</span><span>300</span></div>
+    <div class="dl"><span>Cooking</span><span>225</span></div>
+    <div style="color:#b39aa6">Short Kings 0.1.0</div>
+    <div style="color:#FFC24A">Click to view character</div>
+  </div>
+</div>
+
+<!-- ============ CHARACTER ============ -->
+<div class="scene" id="character">
+  <div class="win">
+    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
+    <div class="tabs"><div class="btn">Roster</div><div class="btn active">Character</div><div class="btn">Settings</div></div>
+    <div class="content">
+      <div style="position:absolute;left:0;top:0;display:flex;gap:6px">
+        <div class="btn small">&lt; Roster</div><div class="btn small">Me</div><div class="btn small hover">Whisper</div></div>
+      <div class="name" style="color:#C69B6D">Bramble Cogwhistle</div>
+      <div class="info">Level 60 Gnome Warrior &nbsp;·&nbsp; Guild Master</div>
+      <div class="meta">Updated 2m ago (from them) &nbsp;·&nbsp; Short Kings 0.1.0</div>
+      <div class="doll" id="doll">
+        <div class="ilvl">63.4</div><div class="ilvlLabel">average item level</div>
+        <div class="spec">Protection<br>5/5/41</div>
+      </div>
+      <div class="details" id="details"></div>
+      <div class="scroll" style="top:92px;right:2px"><div class="thumb" style="height:120px"></div></div>
+    </div>
+  </div>
+  <div class="tooltip" style="left:640px;top:236px;width:250px;white-space:normal">
+    <div style="color:#a335ee">Cogwork Crown of Wrath</div>
+    <div style="color:#ffd100">Item Level 66</div>
+    <div>Binds when picked up</div>
+    <div class="dl"><span>Head</span><span>Plate</span></div>
+    <div>742 Armor</div>
+    <div>+24 Strength</div>
+    <div>+21 Stamina</div>
+    <div style="color:#1eff00">Equip: Increases your chance to block attacks with a shield by 2%.</div>
+  </div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div class="scene" id="settings">
+  <div class="win">
+    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
+    <div class="tabs"><div class="btn">Roster</div><div class="btn">Character</div><div class="btn active">Settings</div></div>
+    <div class="content">
+      <div class="h">Settings</div>
+      <div class="check" style="top:30px"><div class="box on"></div>Share and receive guild data (sync)</div>
+      <div class="check" style="top:58px"><div class="box on"></div>Show minimap button</div>
+      <div class="check" style="top:86px"><div class="box"></div>Debug logging in chat</div>
+      <div class="rowbtns" style="top:114px"><span style="font-size:12px;margin-right:4px">Window size</span>
+        <div class="btn" style="width:54px;min-width:54px;padding:0">70%</div><div class="btn" style="width:54px;min-width:54px;padding:0">80%</div>
+        <div class="btn" style="width:54px;min-width:54px;padding:0">90%</div><div class="btn active" style="width:54px;min-width:54px;padding:0">100%</div>
+        <div class="btn" style="width:54px;min-width:54px;padding:0">110%</div><div class="btn" style="width:54px;min-width:54px;padding:0">120%</div>
+        <div class="btn" style="width:54px;min-width:54px;padding:0">130%</div></div>
+      <div class="rowbtns" style="top:154px">
+        <div class="btn small" style="width:170px;height:24px">Rescan my character</div>
+        <div class="btn small hover" style="width:170px;height:24px">Sync now</div>
+        <div class="btn small" style="width:170px;height:24px">Reset window position</div>
+        <div class="btn small" style="width:170px;height:24px">Debug report</div></div>
+      <div class="panel" style="top:198px"><span class="p">Status</span>
+  Version 0.1.0   ·   Guild: Short Kings
+  Sync: <span class="g">running</span>
+  Sending: allowed
+  Messages: 48 sent, 131 received, 11 accepted, 0 rejected, 0 queued
+  Your data updated 4m ago
+  <span class="f">Open these profession windows once: Enchanting</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Class colours as used in game (RAID_CLASS_COLORS).
+const CLS = { WARRIOR:"#C69B6D", MAGE:"#3FC7EB", PRIEST:"#FFFFFF", ROGUE:"#FFF468", WARLOCK:"#8788EE",
+  HUNTER:"#AAD372", DRUID:"#FF7C0A", PALADIN:"#F48CBA" };
+const cols = [["Name",180],["Lvl",40,"r"],["Rank",100],["Spec",120],["Professions",170],["iLvl",45,"r"],["Online",70],["Data",85]];
+document.getElementById("rhead").innerHTML = cols.map(c => `<div class="${c[2]||""}" style="width:${c[1]}px">${c[0]}</div>`).join("");
+const rows = [
+  ["Pip Sparkfuse","MAGE",60,"Officer","Fire","0/31/20","Tail 300, Ench 285",61,"on","now",true],
+  ["Bramble Cogwhistle","WARRIOR",60,"Guild Master","Protection","5/5/41","BS 300, Mine 300",63,"on","2m"],
+  ["Fizzle Brightbeard","PRIEST",60,"Raider","Holy","21/30/0","Alch 300, Herb 300",59,"on","5m"],
+  ["Widget Boltbrace","HUNTER",60,"Member","Marksmanship","5/31/15","LW 300, Skin 300",58,"on","1m"],
+  ["Dabble Fizzwick","PALADIN",60,"Officer","Holy","31/20/0","BS 300, Mine 300",60,"on","12m"],
+  ["Zib Ratchetwhirl","WARRIOR",60,"Raider","Fury","31/20/0","Eng 300, Mine 300",62,"on","3m"],
+  ["Peb Sparklecog","PRIEST",57,"Member","Shadow","5/15/31","Tail 270, Ench 250",50,"3h","3h"],
+  ["Tink Gearloose","ROGUE",58,"Member","Combat","15/31/5","Eng 290, Mine 275",52,"5h","5h"],
+  ["Nim Copperkettle","WARLOCK",60,"Raider","Affliction","30/0/21","Tail 300, Ench 300",60,"1d","1d"],
+  ["Gilly Pumpkinspark","DRUID",60,"Raider","Restoration","11/0/40","Herb 300, Alch 300",58,"2d","2d"],
+  ["Mossy Twinklegear","MAGE",60,"Member","Frost","10/0/41","Tail 300, Ench 300",57,"4d","4d"],
+  ["Quill Tinderbox","MAGE",42,"Initiate","","","",null,"6d",null],
+  ["Rivet Gobbleton","ROGUE",31,"Initiate","","","",null,"9d",null],
+];
+document.getElementById("rrows").innerHTML = rows.map((r,i) => {
+  const cells = [
+    `<span style="color:${CLS[r[1]]}">${r[0]}</span>${r[10] ? ' <span class="m">(you)</span>' : ""}`,
+    r[2], `<span class="m">${r[3]}</span>`,
+    r[4] ? `${r[4]} <span class="m">${r[5]}</span>` : "", r[6], r[7] ?? "",
+    r[8] === "on" ? '<span class="g">Online</span>' : `<span class="m">${r[8]}</span>`,
+    r[9] ? r[9] : '<span class="m">no addon/trial</span>'];
+  return `<div class="row${i===2?" hover":""}">` + cells.map((c,j) =>
+    `<div class="${cols[j][2]||""}" style="width:${cols[j][1]}px">${c}</div>`).join("") + "</div>";
+}).join("");
+
+// Paperdoll: same positions as UI/CharacterTab.lua. Icons are placeholders.
+const Q = { e:"#a335ee", r:"#0070dd", u:"#1eff00", c:"#ffffff" };
+const tint = { e:["#5b2a7a","#2b1340"], r:["#1f4f8a","#0f2240"], u:["#2f6b2a","#14300f"], c:["#6b6b6b","#2e2e2e"] };
+const L = [["Head","e"],["Neck","r"],["Shoulder","e"],["Back","r"],["Chest","e"],["Shirt","c"],["Tabard","c"],["Wrist","r"]];
+const R = [["Hands","e"],["Waist","r"],["Legs","e"],["Feet","r"],["Finger","e"],["Finger","u"],["Trinket","r"],["Trinket","e"]];
+const B = [["Main Hand","e"],["Off Hand","e"],["Ranged","r"]];
+const doll = document.getElementById("doll");
+function slot(x, y, s) {
+  const [a,b] = tint[s[1]];
+  return `<div class="slot" style="left:${x}px;top:${y}px;border-color:${Q[s[1]]}">` +
+    `<i style="background:radial-gradient(circle at 35% 30%, ${a}, ${b})"></i><b>${s[0].split(" ")[0]}</b></div>`;
+}
+let html = "";
+L.forEach((s,i) => html += slot(8, 8 + i*42, s).replace('class="slot"', i===0 ? 'class="slot hover"' : 'class="slot"'));
+R.forEach((s,i) => html += slot(250-4-8-38, 8 + i*42, s));
+B.forEach((s,i) => html += slot(125-2-19 + (i-1)*46, 370-4-8-38, s));
+doll.insertAdjacentHTML("beforeend", html);
+
+document.getElementById("details").innerHTML =
+`<span class="p">Talents</span>
+  Arms  <span class="f">5</span>
+  Fury  <span class="f">5</span>
+  Protection  <span class="f">41</span>
+
+<span class="p">Professions</span>
+  Blacksmithing  300/300  <span class="m">142 recipes</span>
+  Cooking  150/300  <span class="e">not scanned yet</span>
+  Mining  300/300
+
+<span class="p">Cooldowns</span>
+  Smelt Arcanite  <span class="g">ready</span>
+
+<span class="p">Attunements</span>
+  Onyxia's Lair  <span class="g">done</span>
+  Molten Core  <span class="g">done</span>
+  Blackwing Lair  <span class="bd">not done</span>
+  Barrow Deeps  <span class="m">unknown (TODO)</span>
+  Hyjal Summit  <span class="m">unknown (TODO)</span>
+  Naxxramas  <span class="m">unknown (TODO)</span>
+
+<span class="p">Reputation</span>
+  Argent Dawn  <span class="f">Revered</span>
+  Hydraxian Waterlords  <span class="f">Honored</span>
+  Thorium Brotherhood  <span class="f">Friendly</span>
+  Stormwind  <span class="m">Exalted</span>`;
+</script>
+</body>
+</html>
