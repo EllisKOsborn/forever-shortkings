@@ -35,38 +35,101 @@
 
 ## 🧨 What's inside
 
-### Roster
-Every guild member at a glance: class colours, level, rank, talent spec,
-professions, item level, addon version and when they were last online.
-A coloured dot shows who's online **with** Short Kings (green), online
-without it (yellow) or offline (grey). **Alts fold under their main**, so the
-list stays short. Click a column to sort, type to search ("tailoring",
-"holy", a name, a word from their note) and hover for details and notes.
+| | What you get |
+|---|---|
+| 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains |
+| 🛡️ **Character** | Anyone's gear, talents, professions, cooldowns, attunements and reputations |
+| ⚙️ **Settings** | Sync and privacy switches, window size, and a live status read-out |
+| 🧨 **Everywhere** | `/sk`, a minimap button, reminders, and a copyable debug report |
 
+### 👥 Roster
 <p align="center"><img src="docs/images/roster.webp" alt="Roster tab mockup" width="100%"></p>
 
-### Character
-A paperdoll for anyone in the guild. Hover a slot for the **real item
-tooltip**, or Shift-click it to link it in chat. Alongside it: talents,
-profession levels and recipe counts, cooldowns (transmutes and the like),
-attunements and reputations. Items **missing an enchant** get a small orange
-"!" so raid prep is easy to check.
+- **Every guild member**, including people without the addon.
+- **Columns:**
+  - **Name** in class colour, marked *(you)* for your characters, plus a **+2** when alts are folded in.
+  - **Level** and **rank**.
+  - **Spec**: main talent tree and points, e.g. *Holy 21/30/0*.
+  - **Professions** with skill levels.
+  - **Item level**.
+  - **Online**: a coloured dot, then *Online*, *on alt* or how long ago they were last seen.
+  - **Ver**: their Short Kings version, in orange when out of date.
+  - **Data**: how fresh their profile is.
+- **Status dots:** 🟩 online with Short Kings · 🟨 online without it · ⬜ offline.
+- **Group alts** (on by default) folds each player's characters into one row, under the character they chose as their main.
+- **Sort** by clicking any column. Online members come first.
+- **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name.
+- **Counter** at the top: characters, how many have data, and how many need an addon update.
+- **Hover a row** to see:
+  - their online status;
+  - all their professions, including Cooking, First Aid and Fishing;
+  - missing enchants;
+  - the public note, plus the officer note if you're an officer;
+  - their alts, with each alt's online status;
+  - their addon version.
+- **Click a row** to open that character.
 
+### 🛡️ Character
 <p align="center"><img src="docs/images/character.webp" alt="Character tab mockup" width="100%"></p>
 
-### Settings
-Turn sync on or off, choose whether to share your gear and recipes, hide the
-minimap button, change the window size, and see exactly what the addon is doing.
+- **Buttons:** *< Roster*, *Me* (your own character), *Whisper* (opens a whisper to them), and *Make this my main* on your own alts.
+- **Header:** name, level, race, class and guild rank. It also shows how old the data is and where it came from: *this account*, *from them*, or *relayed by a guildmate*.
+- **Paperdoll** with all 19 slots, borders coloured by item quality.
+  - Hover a slot for the **real item tooltip**.
+  - **Shift-click** to link the item in chat.
+  - **Ctrl-click** to preview it in the dressing room.
+- **Average item level** and main talent tree in the middle of the paperdoll.
+- **Missing enchants:** an orange **!** on the slot, a note in the tooltip, and a count such as "2 missing enchants".
+- **Details** beside the paperdoll:
+  - **Alts** (same player) and **notes**.
+  - **Talents**: points in each tree.
+  - **Professions**: skill level, number of known recipes, or *not scanned yet*.
+  - **Cooldowns** (transmutes, Mooncloth and the like): time left, or *ready*.
+  - **Attunements**: Onyxia, Molten Core, Blackwing Lair (*done* / *not done*), plus the new Forever raids, shown as unknown until their quests are confirmed.
+  - **Reputations**: raid and crafting factions first, then every faction at Friendly or above.
+- **Privacy:** if someone hides their gear or recipes, it says *hidden by this player* instead.
 
+### ⚙️ Settings
 <details>
 <summary>Show the Settings tab</summary>
 <p align="center"><img src="docs/images/settings.webp" alt="Settings tab mockup" width="100%"></p>
 </details>
 
-### Under the hood
+- **Share and receive guild data**: turns sync on or off entirely.
+- **Share my gear and talents** / **Share my recipes and cooldowns**: privacy switches.
+- **Show minimap button**, and **debug logging** in chat.
+- **Window size**: 70% to 130%.
+- **Buttons:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
+- **Live status:**
+  - version and guild;
+  - whether sync is running or paused, and why (combat, instance, …);
+  - whether this account may send;
+  - message counts;
+  - when your data last updated;
+  - which profession windows you still need to open.
+
+### 🧨 Everywhere
+- **Open it** with `/sk` (or `/shortkings`) or the **minimap button**.
+  - Left-click opens the window.
+  - Right-click opens Settings.
+  - Drag the button to move it around the minimap.
+- **The window** can be dragged by its title bar and remembers its place and size. **Esc** closes it, and the title bar shows your guild and whether sync is on.
+- **Automatic collection.** Every character you log in on is recorded:
+  - gear and item level, talents and reputations;
+  - professions, recipes (when you open the profession window) and cooldowns;
+  - attunements;
+  - your other characters.
+
+  It refreshes whenever something changes.
+- **Chat reminders:** which profession windows you still need to open, when a guildmate has a newer Short Kings, and a notice if a trial account can't share data.
+- **`/sk debug`** opens a copyable report of what the addon can see. Send it when something looks wrong. `/sk log` adds the recent activity log.
+
+### 🔒 Under the hood
 - **Your own data always wins.** A copy passed on by someone else can never overwrite a newer copy from the character themselves.
 - **Light on the network.** Only small fingerprints are broadcast, and full profiles are whispered to whoever needs them. Everything is rate-limited, so nobody gets disconnected.
-- **Stays out of your way.** Sync pauses in combat, in dungeons, raids, battlegrounds and arenas, and whenever the game locks addon chat.
+- **Stays out of your way.** Sync pauses in combat, in dungeons, raids, battlegrounds and arenas, and whenever the game locks addon chat. Big recipe lists are read a little at a time, so there are no hitches.
+- **Private by default where it matters.** Notes and officer notes are never sent, nor are gold, bags or chat. You choose whether gear and recipes are shared.
+- **Fair to everyone.** Members without the addon still appear in the roster. Trial accounts can still see their own data.
 - **Tidies up.** Members who leave the guild are forgotten 30 days later.
 
 ---
