@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-D94FA0?labelColor=2A1220">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1%20alpha-FF7A1A?labelColor=2A1220">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.1.1%20alpha-FF7A1A?labelColor=2A1220">
   <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FFC24A?labelColor=2A1220">
 </p>
 
@@ -24,7 +24,7 @@
 </p>
 
 > [!NOTE]
-> **v0.1 is an alpha that hasn't been run in game yet.** It's built against
+> **v0.1.1 is an alpha that hasn't been run in game yet.** It's built against
 > Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
 > client. The pictures below are **mockups** drawn from the addon's real
 > colours and layout. Item icons are placeholders; in game you see the real ones.
@@ -142,6 +142,24 @@ cases apart.
 
 The game only lets an addon read the character you're logged in as. Log in on
 the alt once and it will be saved and shared.
+</details>
+
+<details>
+<summary><b>My alt isn't grouped under my main.</b></summary>
+
+Log in on **both** characters at least once with the addon. Alts are only
+linked when each character confirms the other (so nobody can claim someone
+else as their alt). To choose which one is shown first, open that character
+on the Character tab and press **Make this my main**.
+</details>
+
+<details>
+<summary><b>Can I keep my gear or recipes private?</b></summary>
+
+Yes. In **Settings**, untick *Share my gear and talents* or *Share my recipes
+and cooldowns*. Guildmates then see "hidden by this player"; you still see
+your own. Your name, level and profession levels are always shared, as the
+guild roster already shows them. Notes and officer notes are never sent.
 </details>
 
 <details>
