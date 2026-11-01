@@ -1,6 +1,6 @@
 # Short Kings — addon plan (awaiting approval)
 
-> Status: **approved 1 Nov; v0.1 in progress.**
+> Status: **approved 1 Nov; v0.1 code complete (not yet tested in game).**
 > Researched against Blizzard's own UI source for the Forever client,
 > build **1.60.1.70532** (Gethe/wow-ui-source, `forever` branch), plus
 > warcraft.wiki.gg's *Patch 1.60.1/API changes* page.
@@ -255,6 +255,13 @@ Each version ends with an in-game test checklist.
   and LibDBIcon are pulled in by the packager (`.pkgmeta` externals). Without
   them the addon falls back to its own simple minimap button.
 - Mac AddOns path: **still to confirm** (Battle.net → Forever → ⚙ → Show in Finder).
+
+## 10. Waiting on you (next time you're at the Mac)
+
+1. Confirm the AddOns folder path (Battle.net → Forever → ⚙ → Show in Finder).
+2. In game: `/dump select(4, GetBuildInfo())` and tell me the number.
+3. Install a test build, run `/sk debug`, and send me the text.
+4. Work through [TESTING.md](TESTING.md).
 
 ## 9. Credits / licence
 
