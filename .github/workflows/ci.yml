@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: "5.1"
+      - uses: leafo/gh-actions-luarocks@v4
+      - name: Install busted and luacheck
+        run: |
+          luarocks install busted
+          luarocks install luacheck
+      - name: Lint
+        run: luacheck .
+      - name: Unit tests (stubbed WoW API)
+        run: busted
+
+  # A test build you can download from the Actions tab (not published anywhere).
+  test-build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Subversion (needed to fetch LibDBIcon)
+        run: sudo apt-get update && sudo apt-get install -y subversion
+      - uses: BigWigsMods/packager@v2
+        with:
+          args: -d
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ShortKings-test-build
+          # Both paths share .release/, so the download contains a ready
+          # "ShortKings" folder (plus the zip the packager made).
+          path: |
+            .release/ShortKings/
+            .release/*.zip

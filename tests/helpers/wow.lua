@@ -34,13 +34,42 @@ function W.reset()
 	_G.Enum = { SendAddonMessageResult = { Success = 0, AddOnMessageLockdown = 11 },
 		ClubMemberPresence = { Unknown = 0, Online = 1, Offline = 3 } }
 
-	_G.CreateFrame = function()
-		local f = { events = {} }
+	-- Widget stub: Create* returns another stub, Get* returns 0, Is* false,
+	-- everything else is a no-op. Enough to smoke-test that UI code builds.
+	local function stub()
+		local f = { events = {}, scripts = {}, shown = false }
 		function f:RegisterEvent(e) self.events[e] = true end
 		function f:UnregisterEvent(e) self.events[e] = nil end
-		function f:SetScript(name, fn) self[name] = fn end
-		return setmetatable(f, { __index = function() return noop end })
+		function f:SetScript(name, fn) self.scripts[name] = fn end
+		function f:GetScript(name) return self.scripts[name] end
+		function f:Show() self.shown = true; if self.scripts.OnShow then self.scripts.OnShow(self) end end
+		function f:Hide() self.shown = false end
+		function f:SetShown(v) if v then self:Show() else self:Hide() end end
+		function f:IsShown() return self.shown end
+		function f:GetPoint() return "CENTER", nil, "CENTER", 0, 0 end
+		function f:GetMinMaxValues() return 0, 0 end
+		function f:GetFont() return "Fonts\\FRIZQT__.TTF", 12 end
+		function f:GetText() return self.text or "" end
+		function f:SetText(t) self.text = t end
+		return setmetatable(f, { __index = function(_, k)
+			if type(k) ~= "string" then return nil end
+			if k:find("^Create") or k:find("^Get.*Texture$") then return function() return stub() end end
+			if k:find("^Get") then return function() return 0 end end
+			if k:find("^Is") then return function() return false end end
+			return noop
+		end })
 	end
+	W.stub = stub
+	_G.CreateFrame = function() return stub() end
+	_G.UIParent = stub()
+	_G.Minimap = stub()
+	_G.GameTooltip = stub()
+	_G.GameFontNormal = stub()
+	_G.UISpecialFrames = {}
+	_G.tinsert = table.insert
+	_G.SlashCmdList = {}
+	_G.CreateColor = function(r, g, b, a) return { r = r, g = g, b = b, a = a } end
+	_G.GetCursorPosition = function() return 0, 0 end
 
 	_G.C_Timer = {
 		After = function(sec, fn) W.timers[#W.timers + 1] = { at = W.now + sec, fn = fn } end,

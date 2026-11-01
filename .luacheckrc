@@ -7,6 +7,7 @@ ignore = {
 	"212/_.*",    -- unused arguments starting with _
 	"211/_.*",
 	"213/_.*",
+	"432/self",   -- nested scripts reuse the name self
 }
 
 globals = {
@@ -24,7 +25,7 @@ read_globals = {
 	"CreateFrame", "UIParent", "GameTooltip", "Minimap", "DEFAULT_CHAT_FRAME", "GameFontNormal",
 	"CreateColor", "BackdropTemplateMixin", "UIPanelCloseButton", "STANDARD_TEXT_FONT",
 	"PlaySound", "SOUNDKIT", "IsShiftKeyDown", "IsControlKeyDown", "ChatEdit_InsertLink",
-	"ChatFrame_SendTell", "ChatFrame_OpenChat", "HandleModifiedItemClick", "GetCursorPosition",
+	"ChatFrame_SendTell", "ChatFrame_OpenChat", "ChatFrameUtil", "HandleModifiedItemClick", "GetCursorPosition",
 	"RAID_CLASS_COLORS", "ITEM_QUALITY_COLORS", "Settings", "ToggleCalendar", "Calendar_Toggle",
 	"FACTION_BAR_COLORS", "ColorPickerFrame", "SetPortraitTexture", "GetScreenWidth", "GetScreenHeight",
 	-- C_ namespaces
@@ -41,5 +42,5 @@ read_globals = {
 	"GetTalentTabInfo", "GetNumTalents", "GetTalentInfo", "GetProfessions", "GetProfessionInfo",
 	"GetNumTradeSkills", "GetTradeSkillInfo", "GetTradeSkillLine", "GetTradeSkillRecipeLink",
 	"GetTradeSkillItemLink", "GetNumFactions", "GetFactionInfo", "IsQuestFlaggedCompleted",
-	"GetItemIcon", "GetSpellInfo", "GetItemInfo", "GetItemQualityColor",
+	"GetItemIcon", "GetSpellInfo", "GetItemInfo", "GetItemQualityColor", "GetInventorySlotInfo",
 }

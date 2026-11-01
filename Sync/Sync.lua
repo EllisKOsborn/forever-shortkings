@@ -281,7 +281,10 @@ Sync.handlers = handlers
 ---------------------------------------------------------------------------
 local versionWarned = false
 
+-- Only real release versions ("0.2.0", "v1.0.1-beta") are compared; test
+-- builds named after a commit hash are ignored.
 local function versionNewer(a, b)
+	if not tostring(a):match("^v?%d+%.%d+") or not tostring(b):match("^v?%d+%.%d+") then return false end
 	local function parts(v)
 		local out = {}
 		for n in tostring(v):gmatch("%d+") do out[#out + 1] = tonumber(n) end
