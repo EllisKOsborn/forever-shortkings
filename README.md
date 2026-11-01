@@ -76,10 +76,14 @@ exactly what the addon is doing.
 2. Unzip it. You'll get a folder called **`ShortKings`**.
 3. Move that folder into your Forever **AddOns** folder:
 
-   | | Folder |
-   |---|---|
-   | 🪟 Windows | `C:\Program Files (x86)\World of Warcraft\_forever_\Interface\AddOns\` |
-   | 🍎 Mac | `/Applications/World of Warcraft/_forever_/Interface/AddOns/` |
+   🍎 **Mac**
+   ```
+   /Applications/World of Warcraft/_forever_/Interface/AddOns/
+   ```
+   🪟 **Windows**
+   ```
+   C:\Program Files (x86)\World of Warcraft\_forever_\Interface\AddOns\
+   ```
 
 4. Restart the game. *Short Kings* should be listed under **AddOns** on the character screen.
 
