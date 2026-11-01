@@ -235,12 +235,22 @@ someone has to be online to share them, and they're easy to spam.
 
 ## 7. Milestones
 
+(Updated after the feature review in [docs/FEATURE-REVIEW.md](docs/FEATURE-REVIEW.md); IDs like A1 refer to it.)
+
 - **v0.1** — collection, sync, Roster and Character tabs, `/sk`, `/sk debug`,
-  minimap button, basic theme, tests, CI, packager.
-- **v0.2** — Crafters and Professions tabs, scan reminders, cooldown display.
-- **v0.3** — Raids tab (calendar sign-ups with spec and role).
-- **v0.4** — theme polish (gradients, ember effect on the title bar),
-  attunement and faction tables filled in as they're verified.
+  minimap button, basic theme, tests, CI, packager. *(done, awaiting in-game test)*
+- **v0.1.x** — small additions using data we already have: status dots (A1),
+  alts under main (A2), roster notes (A3), addon version column (A4),
+  missing-enchant markers (A5), accurate cooldowns (A6), privacy toggle (A7).
+- **v0.2** — Crafters and Professions tabs, scan reminders, plus "Crafted by"
+  item tooltips (B1), reagents (B2), specialisations (B3), cooldown board (B4),
+  coverage gaps (B5), favourites (B6), post-to-chat button (B7).
+- **v0.3** — Raids tab on Blizzard's calendar: statuses and two roles (C1),
+  line-up with attunement check (C2), reminders (C3), invite-all (C4),
+  raid templates (C5).
+- **v0.4** — theme polish (ember effect), attunement and faction tables confirmed.
+- **Later** — craft requests (D1), attendance (D2), export to text (D8),
+  others in the review as the guild asks for them.
 
 Each version ends with an in-game test checklist.
 

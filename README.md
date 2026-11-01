@@ -187,9 +187,11 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 ## 🗺️ Roadmap
 
 - [x] **v0.1**: data collection, guild sync, Roster, Character and Settings tabs, `/sk debug`
-- [ ] **v0.2**: **Crafters** (search an item and see who can make it, with a Whisper button) and **Professions** (guild coverage, and recipes nobody has)
-- [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar sign-ups, with each sign-up's spec, role and attunement
+- [ ] **v0.1.x**: online/addon status dots, alts under mains, roster notes, version column, missing-enchant markers, privacy toggle
+- [ ] **v0.2**: **Crafters** (search an item, see who can make it, Whisper) and **Professions** (coverage, cooldown board, recipes nobody has), plus "Crafted by" on item tooltips
+- [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar: sign-up status, roles, line-up with attunement check, reminders, invite-all
 - [ ] **v0.4**: theme polish (ember sparks on the title bar), attunement and faction tables confirmed for Forever
+- [ ] **Later**: craft requests, raid attendance, export to text. See the [feature review](docs/FEATURE-REVIEW.md)
 - [ ] CurseForge release
 
 Testing it in game? Work through the checklist in [TESTING.md](TESTING.md).
