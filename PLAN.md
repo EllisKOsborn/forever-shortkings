@@ -1,6 +1,6 @@
 # Short Kings — addon plan (awaiting approval)
 
-> Status: **plan only, no addon code yet.**
+> Status: **approved 1 Nov; v0.1 in progress.**
 > Researched against Blizzard's own UI source for the Forever client,
 > build **1.60.1.70532** (Gethe/wow-ui-source, `forever` branch), plus
 > warcraft.wiki.gg's *Patch 1.60.1/API changes* page.
@@ -193,17 +193,70 @@ runtime and copes if it's missing.
 
 ---
 
-## 6. Milestones
+## 6. Raid sign-ups (added 1 Nov)
+
+**Recommendation: build on Blizzard's in-game calendar instead of making our own.**
+
+Forever ships Blizzard's full calendar (`C_Calendar`, `Blizzard_Calendar`).
+Its own code lets **any guild member create a "Guild Event"** (a sign-up
+event). Only ranks with the "edit guild event" permission can create
+"Guild Announcements". So **no custom roles are needed**: anyone can
+already create a raid, and only the creator (or officers) can edit it.
+
+Why build on it:
+- Events live on Blizzard's servers. They're there when the creator is
+  offline, and members **without the addon** can still sign up.
+- No sync conflicts, and no one can fake, spam or delete other people's events.
+- Addon code isn't allowed to create events (`C_Calendar.AddEvent` is
+  flagged as restricted), so the **"New raid" button opens Blizzard's calendar**.
+
+What our **Raids tab** adds:
+- Upcoming guild sign-up events for the next 30 days.
+- For each event, everyone who signed up: name (class colour), status
+  (signed up / tentative / declined), **role**, **spec** (main talent tree
+  + points, e.g. "Holy 31/20/0"), item level and attunement for that raid.
+- Counts per role (e.g. "Tanks 2 · Healers 6 · DPS 18") and missing roles.
+- **Role**: Blizzard's sign-up records no role. Each member picks
+  Tank/Healer/DPS in our tab. The default comes from their talent tree
+  (`Data/Roles.lua`), and the choice is shared as a small owner-only
+  `RL` message `{eventID, guid, role, updated}`. Members without the
+  addon show a greyed-out guess based on their spec.
+- Sign-up / Tentative / Decline buttons, if the game lets addons press
+  them. If it doesn't, the button opens Blizzard's calendar on that event.
+
+Check in game: whether `eventID` is the same on every client; whether
+sign-up calls are protected; and reading the sign-up list needs
+`C_Calendar.OpenEvent`, so we only read it while Blizzard's calendar window
+is closed, to avoid interfering with it.
+
+*Alternative, not recommended:* addon-only events. Anyone could create
+them with no roles, but members without the addon can't see them,
+someone has to be online to share them, and they're easy to spam.
+
+## 7. Milestones
 
 - **v0.1** — collection, sync, Roster and Character tabs, `/sk`, `/sk debug`,
   minimap button, basic theme, tests, CI, packager.
 - **v0.2** — Crafters and Professions tabs, scan reminders, cooldown display.
-- **v0.3** — theme polish (gradients, ember effect on the title bar),
+- **v0.3** — Raids tab (calendar sign-ups with spec and role).
+- **v0.4** — theme polish (gradients, ember effect on the title bar),
   attunement and faction tables filled in as they're verified.
 
 Each version ends with an in-game test checklist.
 
-## 7. Credits / licence
+## 8. Decisions so far
+
+- Licence: **MIT**.
+- Guild size about **50**, so sync timings assume 50 online at most
+  (`HI` every 10 min = ~5 small guild messages a minute in total).
+- Libraries: LibStub, CallbackHandler, AceComm + ChatThrottleLib (Ace3
+  trunk, BSD), LibSerialize (MIT) and LibDeflate (zlib) are **committed in
+  `Libs/`**, with their licence files, so tests use the real code. LibDataBroker
+  and LibDBIcon are pulled in by the packager (`.pkgmeta` externals). Without
+  them the addon falls back to its own simple minimap button.
+- Mac AddOns path: **still to confirm** (Battle.net → Forever → ⚙ → Show in Finder).
+
+## 9. Credits / licence
 
 No code copied from other guild-sync addons (Perpetua, ForeverArtisan and
 others were not read for code). API facts come from warcraft.wiki.gg,

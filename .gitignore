@@ -1,0 +1,8 @@
+.release/
+.luarocks/
+luacov.*
+*.zip
+.DS_Store
+# Fetched by the packager (.pkgmeta externals)
+Libs/LibDataBroker-1.1/
+Libs/LibDBIcon-1.0/

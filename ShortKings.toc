@@ -1,0 +1,43 @@
+## Interface: 16001
+## Title: |cffD94FA0Short Kings|r
+## Notes: Guild gear, professions, recipes and raid sign-ups for the Short Kings guild. Small in stature. Big in loot.
+## Author: Short Kings guild
+## Version: @project-version@
+## SavedVariables: ShortKingsDB
+## IconTexture: Interface\Icons\INV_Misc_Bomb_04
+## X-License: MIT
+## X-Website: https://github.com/elliskosborn/forever-shortkings
+
+embeds.xml
+
+Core\Init.lua
+Core\Log.lua
+Core\Compat.lua
+Core\DB.lua
+Core\Identity.lua
+
+Data\Professions.lua
+Data\Attunements.lua
+Data\Factions.lua
+
+Collect\Character.lua
+Collect\Talents.lua
+Collect\Professions.lua
+Collect\Reputation.lua
+Collect\Attunements.lua
+Collect\Profile.lua
+
+Sync\Codec.lua
+Sync\Merge.lua
+Sync\Sync.lua
+
+UI\Theme.lua
+UI\Widgets.lua
+UI\MainFrame.lua
+UI\RosterTab.lua
+UI\CharacterTab.lua
+UI\SettingsTab.lua
+UI\DebugWindow.lua
+UI\Minimap.lua
+
+Commands.lua

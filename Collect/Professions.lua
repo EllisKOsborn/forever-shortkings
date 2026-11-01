@@ -1,0 +1,171 @@
+-- Professions: skill levels (always) and known recipes (scanned when the
+-- player opens their own profession window).
+local _, SK = ...
+
+local Prof = SK:NewModule("Professions")
+local Compat = SK.Compat
+
+Prof.CHUNK = 50          -- recipes processed per frame
+Prof.lastScan = nil      -- summary for /sk debug
+
+function Prof.ReadSkills()
+	return Compat.ReadProfessions()
+end
+
+---------------------------------------------------------------------------
+-- Scanning
+---------------------------------------------------------------------------
+local scanning = false
+local retries = 0
+
+-- Process recipe IDs in chunks so a big profession never causes a hitch.
+-- `done(result)` gets { learned = {[id]=itemID|0}, universe = {...}, cds = {[id]=seconds} }
+function Prof.ProcessRecipes(ids, done, runNow)
+	local result = { learned = {}, universe = {}, cds = {} }
+	local i = 1
+	local function step()
+		local last = math.min(i + Prof.CHUNK - 1, #ids)
+		for n = i, last do
+			local id = ids[n]
+			local info = Compat.RecipeInfo(id)
+			if info then
+				local itemID = info.itemID or 0
+				result.universe[id] = itemID
+				if info.learned then
+					result.learned[id] = itemID
+					local cd = Compat.RecipeCooldown(id)
+					if cd then result.cds[id] = cd end
+				end
+			end
+		end
+		i = last + 1
+		if i <= #ids then
+			if runNow then step() else SK.After(0, step) end
+		else
+			done(result)
+		end
+	end
+	if #ids == 0 then done(result) else step() end
+end
+
+local function scanModern()
+	local T = C_TradeSkillUI
+	if T.IsDataSourceChanging and T.IsDataSourceChanging() then return "retry" end
+	if not Compat.IsOwnTradeSkill() then return "not own" end
+	local skillLine, name, rank, max = Compat.OpenProfession()
+	if not skillLine then return "retry" end
+	local ids, complete = Compat.RecipeIDs()
+	if #ids == 0 then return "retry" end
+	scanning = true
+	Prof.ProcessRecipes(ids, function(result)
+		scanning = false
+		result.skillLine, result.name, result.rank, result.max = skillLine, name, rank, max
+		result.complete = complete
+		Prof:StoreScan(result)
+	end)
+	return "started"
+end
+
+-- Classic fallback (not present in Forever 1.60.1, kept for safety).
+local function scanClassic()
+	local name, rank, max = GetTradeSkillLine()
+	if not name or name == "UNKNOWN" then return "retry" end
+	local skillLine
+	for id, p in pairs(Compat.ReadProfessions()) do
+		if p.name == name then skillLine = id end
+	end
+	if not skillLine then return "unknown profession" end
+	local result = { learned = {}, universe = {}, cds = {}, skillLine = skillLine,
+		name = name, rank = rank, max = max, complete = true }
+	for i = 1, GetNumTradeSkills() do
+		local _, kind = GetTradeSkillInfo(i)
+		if kind ~= "header" and kind ~= "subheader" then
+			local link = GetTradeSkillRecipeLink and GetTradeSkillRecipeLink(i)
+			local spellID = link and tonumber(link:match("enchant:(%d+)"))
+			local itemID = Compat.ItemIDFromLink(GetTradeSkillItemLink and GetTradeSkillItemLink(i)) or 0
+			if spellID then
+				result.learned[spellID] = itemID
+				result.universe[spellID] = itemID
+			end
+		end
+	end
+	Prof:StoreScan(result)
+	return "started"
+end
+
+function Prof:Scan()
+	if scanning then return end
+	local api = Compat.TradeSkillAPI()
+	local ok, status
+	if api == "modern" then
+		ok, status = pcall(scanModern)
+	elseif api == "classic" then
+		ok, status = pcall(scanClassic)
+	else
+		status = "no trade skill API"
+	end
+	if ok == false then
+		scanning = false
+		SK:Debug("recipe scan error: %s", tostring(status))
+		return
+	end
+	if status == "retry" and retries < 5 then
+		retries = retries + 1
+		SK:Debounce("tradeskill", 1, function() Prof:Scan() end)
+	elseif status ~= "started" then
+		SK:Debug("recipe scan skipped: %s", tostring(status))
+	end
+	if status == "started" then retries = 0 end
+end
+
+-- Save a finished scan into our own profile and the guild recipe list.
+function Prof:StoreScan(result)
+	local now = Compat.Now()
+	local nLearned = SK.Count(result.learned)
+	Prof.lastScan = { skillLine = result.skillLine, name = result.name, learned = nLearned,
+		total = SK.Count(result.universe), complete = result.complete, at = now }
+	SK:Debug("scanned %s: %d learned of %d (complete list: %s)", tostring(result.name),
+		nLearned, Prof.lastScan.total, tostring(result.complete))
+	local cds = {}
+	for id, seconds in pairs(result.cds) do cds[id] = now + math.floor(seconds) end
+	SK.Profile:SetScan(result.skillLine, {
+		name = result.name, rank = result.rank, max = result.max,
+		learned = result.learned, universe = result.universe, cds = cds, at = now,
+	})
+end
+
+---------------------------------------------------------------------------
+-- Reminders
+---------------------------------------------------------------------------
+-- Crafting professions whose recipes have never been scanned.
+function Prof.Unscanned(profile)
+	local out = {}
+	if not profile or not profile.profs then return out end
+	for skillLine, p in pairs(profile.profs) do
+		if not SK.Data.GATHERING[skillLine] and not p.scanned then
+			out[#out + 1] = p.name or tostring(skillLine)
+		end
+	end
+	table.sort(out)
+	return out
+end
+
+function Prof:Remind()
+	local own = SK.Profile:Own()
+	local missing = Prof.Unscanned(own)
+	if #missing > 0 then
+		SK:Print("Open your %s window once so the guild can see your recipes.",
+			table.concat(missing, ", "))
+	end
+end
+
+function Prof:OnLogin()
+	local function queue()
+		SK:Debounce("tradeskill", 1, function() Prof:Scan() end)
+	end
+	SK:RegisterEvent("TRADE_SKILL_SHOW", function() retries = 0; queue() end)
+	SK:RegisterEvent("TRADE_SKILL_LIST_UPDATE", queue)
+	SK:RegisterEvent("TRADE_SKILL_DATA_SOURCE_CHANGED", queue)
+	SK:RegisterEvent("NEW_RECIPE_LEARNED", queue)
+	SK.After(45, function() Prof:Remind() end)
+end
