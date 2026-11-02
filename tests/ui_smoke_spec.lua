@@ -72,6 +72,12 @@ describe("UI smoke test", function()
 		assert.is_nil(text:find("Molten Core", 1, true)) -- not in the first wave
 		assert.truthy(text:find("Argent Dawn", 1, true))
 		assert.truthy(text:find("Revered", 1, true))
+		-- Two columns: talents on the left, reputation on the right.
+		local left = SK.CharacterTab.DetailText(SK.Profile:Own(), W.now, nil, 1)
+		local right = SK.CharacterTab.DetailText(SK.Profile:Own(), W.now, nil, 2)
+		assert.truthy(left:find("TALENTS", 1, true))
+		assert.is_nil(left:find("REPUTATION", 1, true))
+		assert.truthy(right:find("REPUTATION", 1, true))
 	end)
 
 	it("handles every slash command", function()

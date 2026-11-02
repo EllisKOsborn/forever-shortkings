@@ -22,6 +22,7 @@ const GLYPHS = {
   search: '<circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/>',
   chevron: { body: '<path d="M4 8l8 8 8-8"/>', stroke: 3 },
   chevronUp: { body: '<path d="M4 16l8-8 8 8"/>', stroke: 3 },
+  chevronLeft: { body: '<path d="M16 4l-8 8 8 8"/>', stroke: 3 },
   copy: '<rect x="8" y="8" width="12" height="12"/><path d="M4 16V4h12"/>',
   inbox: '<path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/>',
   whisper: '<path d="M4 5h16v11H9l-5 4z"/>',

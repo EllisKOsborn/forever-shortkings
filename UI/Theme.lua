@@ -47,7 +47,7 @@ Theme.FLOORS = { primary = 7.0, other = 4.5 }
 Theme.ICON_PATH = "Interface\\AddOns\\ShortKings\\Media\\Icons\\"
 Theme.ICONS = {
 	overview = true, roster = true, character = true, crafters = true, settings = true, raids = true,
-	professions = true, close = true, search = true, chevron = true, chevronUp = true, copy = true,
+	professions = true, close = true, search = true, chevron = true, chevronUp = true, chevronLeft = true, copy = true,
 	inbox = true, whisper = true, refresh = true, statusHollow = true,
 }
 Theme.WHITE = "Interface\\Buttons\\WHITE8X8"
