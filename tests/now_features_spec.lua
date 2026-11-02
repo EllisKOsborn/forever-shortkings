@@ -1,12 +1,7 @@
 -- Tests for the v0.1.x "now" features from docs/FEATURE-REVIEW.md (A1-A7).
 local H = require("tests.helpers.load")
 
-local function loadUI(SK)
-	for _, f in ipairs({ "UI/Theme.lua", "UI/Widgets.lua", "UI/MainFrame.lua", "UI/RosterTab.lua",
-		"UI/CharacterTab.lua", "UI/SettingsTab.lua", "UI/DebugWindow.lua", "UI/Minimap.lua", "Commands.lua" }) do
-		assert(loadfile(f))("ShortKings", SK)
-	end
-end
+local loadUI = H.loadUI
 
 local function profile(SK, guid, fields)
 	local p = { v = 1, guid = guid, name = guid, updated = 1, gear = {} }

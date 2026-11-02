@@ -241,6 +241,8 @@ end
 --   setCell = function(fontString, item, column) end,  -- fill a cell
 --   onClick = function(item, button) end,
 --   onEnter = function(row, item) end,                  -- optional tooltip
+--   decorate = function(row) end,                       -- optional: add widgets to a new row
+--   update = function(row, item) end,                   -- optional: after a row is filled
 -- }
 ---------------------------------------------------------------------------
 function W.List(parent, opts)
@@ -309,6 +311,10 @@ function W.List(parent, opts)
 			local hl = row:CreateTexture(nil, "HIGHLIGHT")
 			hl:SetAllPoints()
 			Theme.Gradient(hl, "HORIZONTAL", "ember", "flame", 0.25, 0.05)
+			row.sel = row:CreateTexture(nil, "BORDER")
+			row.sel:SetAllPoints()
+			Theme.Gradient(row.sel, "HORIZONTAL", "magenta", "plum", 0.45, 0.05)
+			row.sel:Hide()
 			row.cells = {}
 			local cx = 4
 			for c, col in ipairs(opts.columns) do
@@ -327,6 +333,7 @@ function W.List(parent, opts)
 				if self.item and opts.onEnter then opts.onEnter(self, self.item) end
 			end)
 			row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+			if opts.decorate then opts.decorate(row) end
 			self.rows[i] = row
 		end
 	end
@@ -340,6 +347,12 @@ function W.List(parent, opts)
 				return col.sort(a, b)
 			end)
 		end
+		self:Draw()
+	end
+
+	-- Optional: isSelected(item) -> bool marks rows with a steady highlight.
+	function list:SetSelected(isSelected)
+		self.isSelected = isSelected
 		self:Draw()
 	end
 
@@ -360,6 +373,8 @@ function W.List(parent, opts)
 			row.item = item
 			if item then
 				for c, col in ipairs(opts.columns) do opts.setCell(row.cells[c], item, col) end
+				if opts.update then opts.update(row, item) end
+				row.sel:SetShown(self.isSelected ~= nil and self.isSelected(item) and true or false)
 				row:Show()
 			else
 				row:Hide()

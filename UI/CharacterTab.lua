@@ -112,13 +112,7 @@ function Char:Build(page)
 	self.mine:SetPoint("LEFT", self.back, "RIGHT", 6, 0)
 	self.whisper = W.Button(page, "Whisper", 80, 22, function()
 		local target = Char.guid and SK.Identity:WhisperTarget(Char.guid)
-		if not target then return end
-		-- Forever (12.x UI) uses ChatFrameUtil.SendTell; older clients ChatFrame_SendTell.
-		if ChatFrameUtil and ChatFrameUtil.SendTell then
-			ChatFrameUtil.SendTell(target)
-		elseif ChatFrame_SendTell then
-			ChatFrame_SendTell(target)
-		end
+		if target then Compat.SendTell(target) end
 	end)
 	self.whisper:SetPoint("LEFT", self.mine, "RIGHT", 6, 0)
 	self.askLatest = W.Button(page, "Ask for latest", 110, 22, function()

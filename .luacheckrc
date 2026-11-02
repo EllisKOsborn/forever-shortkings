@@ -27,7 +27,7 @@ read_globals = {
 	"PlaySound", "SOUNDKIT", "IsShiftKeyDown", "IsControlKeyDown", "ChatEdit_InsertLink",
 	"ChatFrame_SendTell", "ChatFrame_OpenChat", "ChatFrameUtil", "HandleModifiedItemClick", "GetCursorPosition",
 	"RAID_CLASS_COLORS", "ITEM_QUALITY_COLORS", "Settings", "ToggleCalendar", "Calendar_Toggle",
-	"FACTION_BAR_COLORS", "ColorPickerFrame", "SetPortraitTexture", "GetScreenWidth", "GetScreenHeight",
+	"FACTION_BAR_COLORS", "TooltipDataProcessor", "ItemRefTooltip", "unpack", "ColorPickerFrame", "SetPortraitTexture", "GetScreenWidth", "GetScreenHeight",
 	-- C_ namespaces
 	"C_Timer", "C_AddOns", "C_ChatInfo", "C_GuildInfo", "C_Club", "C_CreatureInfo", "C_Traits",
 	"C_SpecializationInfo", "C_ClassTalents", "C_TradeSkillUI", "C_SkillInfo", "C_Reputation",

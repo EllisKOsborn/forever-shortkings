@@ -2,11 +2,7 @@
 -- UI file loads and every tab builds and refreshes without Lua errors.
 local H = require("tests.helpers.load")
 
-local UI_FILES = {
-	"UI/Theme.lua", "UI/Widgets.lua", "UI/MainFrame.lua", "UI/RosterTab.lua",
-	"UI/CharacterTab.lua", "UI/SettingsTab.lua", "UI/DebugWindow.lua", "UI/Minimap.lua",
-	"Commands.lua",
-}
+local UI_FILES = H.UI_FILES
 
 describe("UI smoke test", function()
 	local SK, W

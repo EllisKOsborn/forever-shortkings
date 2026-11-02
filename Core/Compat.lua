@@ -489,6 +489,117 @@ function Compat.SpellName(spellID)
 	if GetSpellInfo then return (GetSpellInfo(spellID)) end
 end
 
+-- Item and spell names load asynchronously. These return nil until the
+-- data is cached; Request* asks the client to load it, and the client then
+-- fires ITEM_DATA_LOAD_RESULT / SPELL_DATA_LOAD_RESULT (itemID|spellID, success).
+-- All checked in Blizzard's Forever ItemDocumentation / SpellDocumentation.
+function Compat.ItemName(itemID)
+	if not itemID or itemID == 0 then return nil end
+	if has("C_Item", "GetItemNameByID") then return clean(C_Item.GetItemNameByID(itemID)) end
+	if GetItemInfo then return clean((GetItemInfo(itemID))) end
+end
+
+function Compat.RequestItem(itemID)
+	if itemID and itemID ~= 0 and has("C_Item", "RequestLoadItemDataByID") then
+		pcall(C_Item.RequestLoadItemDataByID, itemID)
+		return true
+	end
+	return false
+end
+
+function Compat.RequestSpell(spellID)
+	if spellID and has("C_Spell", "RequestLoadSpellData") then
+		pcall(C_Spell.RequestLoadSpellData, spellID)
+		return true
+	end
+	return false
+end
+
+-- "ffRRGGBB" for the item's quality, or nil while the item isn't cached.
+function Compat.ItemQualityHex(itemID)
+	if not itemID or itemID == 0 or not has("C_Item", "GetItemQualityByID") then return nil end
+	local q = clean(C_Item.GetItemQualityByID(itemID))
+	if not q then return nil end
+	local r, g, b
+	if has("C_Item", "GetItemQualityColor") then
+		r, g, b = C_Item.GetItemQualityColor(q)
+	elseif ITEM_QUALITY_COLORS and ITEM_QUALITY_COLORS[q] then
+		local c = ITEM_QUALITY_COLORS[q]
+		r, g, b = c.r, c.g, c.b
+	end
+	if not r then return nil end
+	return string.format("ff%02x%02x%02x", r * 255, g * 255, b * 255)
+end
+
+function Compat.SpellIcon(spellID)
+	if has("C_Spell", "GetSpellTexture") then return C_Spell.GetSpellTexture(spellID) end
+end
+
+-- Chat links for "Post to guild chat"; nil when not cached yet.
+function Compat.ItemLink(itemID)
+	if not itemID or itemID == 0 then return nil end
+	if has("C_Item", "GetItemInfo") then
+		local _, link = C_Item.GetItemInfo(itemID)
+		return clean(link)
+	end
+	if GetItemInfo then return clean(select(2, GetItemInfo(itemID))) end
+end
+
+function Compat.SpellLink(spellID)
+	if has("C_Spell", "GetSpellLink") then return clean(C_Spell.GetSpellLink(spellID)) end
+end
+
+---------------------------------------------------------------------------
+-- Chat box (SendChatMessage is restricted on Forever, so we only ever open
+-- or pre-fill the chat box; the player presses Enter themselves).
+---------------------------------------------------------------------------
+-- Opens a whisper to `name`. Forever's 12.x UI has ChatFrameUtil.SendTell
+-- (Blizzard_ChatFrameBase/Shared/ChatFrameUtil.lua); ChatFrame_SendTell is
+-- the older global.
+function Compat.SendTell(name)
+	if not name then return false end
+	if ChatFrameUtil and ChatFrameUtil.SendTell then
+		ChatFrameUtil.SendTell(name)
+		return true
+	elseif ChatFrame_SendTell then
+		ChatFrame_SendTell(name)
+		return true
+	end
+	return false
+end
+
+-- Opens the chat box with `text` already typed. ChatFrameUtil.OpenChat is
+-- in the same Forever file; its edit box parses a leading "/g " into the
+-- guild channel (ParseText on the next frame).
+function Compat.OpenChat(text)
+	if ChatFrameUtil and ChatFrameUtil.OpenChat then
+		ChatFrameUtil.OpenChat(text)
+		return true
+	elseif ChatFrame_OpenChat then
+		ChatFrame_OpenChat(text)
+		return true
+	end
+	return false
+end
+
+---------------------------------------------------------------------------
+-- Item tooltips: TooltipDataProcessor (Blizzard_SharedXMLGame/Tooltip/
+-- TooltipDataHandler.lua) with Enum.TooltipDataType.Item (= 0 in
+-- TooltipInfoSharedDocumentation). fn(tooltip, itemID).
+---------------------------------------------------------------------------
+function Compat.HookItemTooltips(fn)
+	local kind = Enum and Enum.TooltipDataType and Enum.TooltipDataType.Item
+	if not (kind and TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall) then return false end
+	TooltipDataProcessor.AddTooltipPostCall(kind, function(tooltip, data)
+		local id = data and clean(data.id)
+		if type(id) == "number" and tooltip and tooltip.AddLine then
+			local ok, err = pcall(fn, tooltip, id)
+			if not ok and SK.Debug then SK:Debug("tooltip error: %s", tostring(err)) end
+		end
+	end)
+	return true
+end
+
 function Compat.ClassColor(classFile)
 	local c
 	if has("C_ClassColor", "GetClassColor") and classFile then c = C_ClassColor.GetClassColor(classFile) end
@@ -521,6 +632,11 @@ Compat.PROBES = {
 	"C_Calendar.GetNumDayEvents", "C_Calendar.EventSignUp", "C_Calendar.OpenEvent",
 	"C_Item.GetItemIconByID", "C_Item.GetItemInfoInstant", "C_Spell.GetSpellName", "C_Spell.GetSpellCooldown",
 	"C_GuildInfo.CanViewOfficerNote",
+	-- v0.2 Crafters and tooltips
+	"C_Item.GetItemNameByID", "C_Item.RequestLoadItemDataByID", "C_Item.GetItemQualityByID",
+	"C_Item.GetItemQualityColor", "C_Item.GetItemInfo", "C_Spell.RequestLoadSpellData",
+	"C_Spell.GetSpellTexture", "C_Spell.GetSpellLink",
+	"ChatFrameUtil.SendTell", "ChatFrameUtil.OpenChat", "TooltipDataProcessor.AddTooltipPostCall",
 }
 
 function Compat.ProbeAll()

@@ -112,6 +112,14 @@ function Commands.BuildReport()
 	end
 
 	add("")
+	add("== Crafters ==")
+	local idx = SK.CraftIndex:Get()
+	add("Index: %d recipes from %d crafters, %d items", idx.recipeCount, idx.crafterCount, SK.Count(idx.byItem))
+	add("Item tooltip line: hooked=%s, setting=%s", yesno(SK.Tooltip.hooked), yesno(SK.DB.settings.craftTooltips))
+	add("Names cached: %d items, %d spells; waiting for %d items, %d spells", SK.Count(SK.CraftIndex.itemNames),
+		SK.Count(SK.CraftIndex.spellNames), SK.Count(SK.CraftIndex.pendingItems), SK.Count(SK.CraftIndex.pendingSpells))
+
+	add("")
 	add("== Attunement quests ==")
 	for _, a in ipairs(SK.Data.ATTUNEMENTS) do
 		for _, q in ipairs(a.quests) do

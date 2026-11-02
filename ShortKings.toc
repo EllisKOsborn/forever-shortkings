@@ -16,6 +16,7 @@ Core\Compat.lua
 Core\DB.lua
 Core\Identity.lua
 Core\Alts.lua
+Core\CraftIndex.lua
 
 Data\Professions.lua
 Data\Attunements.lua
@@ -38,8 +39,10 @@ UI\Widgets.lua
 UI\MainFrame.lua
 UI\RosterTab.lua
 UI\CharacterTab.lua
+UI\CraftersTab.lua
 UI\SettingsTab.lua
 UI\DebugWindow.lua
 UI\Minimap.lua
+UI\Tooltip.lua
 
 Commands.lua

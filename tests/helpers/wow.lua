@@ -60,7 +60,12 @@ function W.reset()
 		end })
 	end
 	W.stub = stub
-	_G.CreateFrame = function() return stub() end
+	W.frames = {}
+	_G.CreateFrame = function()
+		local f = stub()
+		W.frames[#W.frames + 1] = f
+		return f
+	end
 	_G.UIParent = stub()
 	_G.Minimap = stub()
 	_G.GameTooltip = stub()
@@ -134,6 +139,40 @@ function W.reset()
 		end,
 		GetItemIconByID = function() return 134400 end,
 	}
+	-- Item names load asynchronously: W.itemNames[id] = name exists on the
+	-- "server"; W.itemCached[id] says whether the client has it yet.
+	-- RequestLoadItemDataByID caches it and fires ITEM_DATA_LOAD_RESULT 0.2 s later.
+	W.itemNames, W.itemCached, W.itemQuality = {}, {}, {}
+	W.requestedItems = {}
+	_G.C_Item.GetItemNameByID = function(id) return W.itemCached[id] and W.itemNames[id] or nil end
+	_G.C_Item.GetItemQualityByID = function(id) return W.itemCached[id] and (W.itemQuality[id] or 3) or nil end
+	_G.C_Item.GetItemQualityColor = function() return 0, 0.44, 0.87, "ff0070dd" end
+	_G.C_Item.GetItemInfo = function(id)
+		if not W.itemCached[id] then return nil end
+		local n = W.itemNames[id]
+		return n, "|cff0070dd|Hitem:" .. id .. "::::::::60:::::|h[" .. n .. "]|h|r"
+	end
+	_G.C_Item.RequestLoadItemDataByID = function(id)
+		W.requestedItems[#W.requestedItems + 1] = id
+		C_Timer.After(0.2, function()
+			if W.itemNames[id] then W.itemCached[id] = true end
+			W.fire("ITEM_DATA_LOAD_RESULT", id, W.itemNames[id] ~= nil)
+		end)
+	end
+	-- Spell names: W.spellNames[id] (default "Spell <id>"); W.spellUncached[id]
+	-- makes GetSpellName return nil until RequestLoadSpellData.
+	W.spellNames, W.spellUncached = {}, {}
+	W.tooltipHooks = {}
+	_G.TooltipDataProcessor = {
+		AddTooltipPostCall = function(kind, fn) W.tooltipHooks[#W.tooltipHooks + 1] = { kind, fn } end,
+	}
+	_G.Enum.TooltipDataType = { Item = 0, Spell = 1 }
+	W.chat = {}
+	_G.ChatFrameUtil = {
+		SendTell = function(name) W.chat[#W.chat + 1] = { "tell", name } end,
+		OpenChat = function(text) W.chat[#W.chat + 1] = { "open", text } end,
+	}
+
 	-- Spell cooldowns: spellID -> { start, duration } (GetTime clock = W.now)
 	W.spellCD = {}
 	_G.C_Spell = {
@@ -141,7 +180,18 @@ function W.reset()
 			local c = W.spellCD[id] or { 0, 0 }
 			return { startTime = c[1], duration = c[2], isEnabled = true, isActive = c[2] > 0, modRate = 1 }
 		end,
-		GetSpellName = function(id) return "Spell " .. id end,
+		GetSpellName = function(id)
+			if W.spellUncached[id] then return nil end
+			return W.spellNames[id] or ("Spell " .. id)
+		end,
+		RequestLoadSpellData = function(id)
+			C_Timer.After(0.2, function()
+				W.spellUncached[id] = nil
+				W.fire("SPELL_DATA_LOAD_RESULT", id, true)
+			end)
+		end,
+		GetSpellTexture = function() return 136240 end,
+		GetSpellLink = function(id) return "|cff71d5ff|Hspell:" .. id .. "|h[" .. (W.spellNames[id] or ("Spell " .. id)) .. "]|h|r" end,
 	}
 
 	_G.C_QuestLog = {
@@ -231,6 +281,13 @@ function W.reset()
 			end
 		end,
 	}
+end
+
+-- Deliver a WoW event to every frame that registered it.
+function W.fire(event, ...)
+	for _, f in ipairs(W.frames) do
+		if f.events[event] and f.scripts.OnEvent then f.scripts.OnEvent(f, event, ...) end
+	end
 end
 
 -- Run timers that are due, advancing the clock.
