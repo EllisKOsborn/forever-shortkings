@@ -16,7 +16,7 @@ local Sync = SK:NewModule("Sync")
 local Compat = SK.Compat
 
 Sync.HELLO_INTERVAL = 600      -- seconds between HI broadcasts
-Sync.HELLO_DEBOUNCE = 60       -- after own data changes
+Sync.HELLO_DEBOUNCE = 30       -- after own data changes
 Sync.QUERY_DELAY = 60          -- SQ this long after the first HI
 Sync.OFFER_DELAY_MIN = 2
 Sync.OFFER_DELAY_MAX = 8
@@ -24,6 +24,8 @@ Sync.MAX_WANT = 60             -- profiles per RQ / SO
 Sync.MAX_BUFFER = 200          -- buffered incoming messages
 Sync.SENDS_PER_FLUSH = 4
 Sync.MAX_TRIES = 5
+Sync.FRESH_INTERVAL = 30        -- "Ask for latest": at most one request per target per 30 s
+Sync.REBUILD_INTERVAL = 10      -- an RQ for our own character rebuilds it at most every 10 s
 
 Sync.queue = {}
 Sync.queued = {}               -- key -> queue item
@@ -33,6 +35,8 @@ Sync.offerAcceptedAt = nil
 Sync.stats = { sent = 0, received = 0, dropped = 0, accepted = 0, rejected = 0 }
 Sync.lastReject = nil
 Sync.lastSender = nil          -- raw sender string of the last message (debug)
+Sync.freshAt = {}              -- guid -> time of our last "Ask for latest"
+Sync.lastRebuild = nil         -- time we last rebuilt our profile for an RQ
 
 local LOCKDOWN = Enum and Enum.SendAddonMessageResult and Enum.SendAddonMessageResult.AddOnMessageLockdown or 11
 
@@ -160,6 +164,40 @@ local function request(self, ownerGUID, wantList)
 	self:Enqueue(key, "WHISPER", target, "NORMAL", { t = "RQ", w = w })
 end
 
+-- The character to whisper for a fresh copy of `guid`: the character itself
+-- when it is online with the addon, otherwise one of its linked alts that is.
+function Sync:FreshSource(guid, now)
+	local guild = SK.DBM:Guild()
+	if not guild or not guid or SK.DB.account[guid] then return nil end
+	now = now or Compat.Now()
+	local function reachable(g)
+		local m = guild.members[g]
+		return m and not m.leftAt and SK.Identity.Status(m, false, now) == "addon"
+	end
+	if reachable(guid) then return guid end
+	local groupOf = SK.Alts.Groups(guild.profiles, function(g) return SK.Identity:IsMember(g) end)
+	local group = groupOf[guid]
+	if group then
+		for _, g in ipairs(group.members) do
+			if g ~= guid and reachable(g) and not SK.DB.account[g] then return g end
+		end
+	end
+	return nil
+end
+
+-- "Ask for latest": whisper an RQ for one character. Returns ok, reason
+-- ("offline" = nobody to ask, "wait" = asked less than 30 s ago).
+function Sync:RequestFresh(guid)
+	local now = Compat.Now()
+	local source = self:FreshSource(guid, now)
+	if not source then return false, "offline" end
+	local last = self.freshAt[guid]
+	if last and now - last < self.FRESH_INTERVAL then return false, "wait" end
+	self.freshAt[guid] = now
+	request(self, source, { guid })
+	return true
+end
+
 ---------------------------------------------------------------------------
 -- Handlers
 ---------------------------------------------------------------------------
@@ -194,8 +232,26 @@ handlers.HI = function(self, msg, from)
 	request(self, from, want)
 end
 
+-- Someone asked for the character we're logged in as: rebuild it first so
+-- the answer is fresh (not in combat, at most once per REBUILD_INTERVAL).
+function Sync:RefreshOwnFor(wanted)
+	local me = myGUID()
+	local asked = false
+	for i = 1, math.min(#wanted, self.MAX_WANT) do
+		if wanted[i] == me then asked = true end
+	end
+	if not asked or Compat.InCombat() then return false end
+	local now = Compat.Now()
+	if self.lastRebuild and now - self.lastRebuild < self.REBUILD_INTERVAL then return false end
+	self.lastRebuild = now
+	local ok, err = pcall(SK.Profile.BuildSelf, SK.Profile)
+	if not ok then SK:Debug("rebuild for RQ failed: %s", tostring(err)) end
+	return ok
+end
+
 handlers.RQ = function(self, msg, from)
 	if type(msg.w) ~= "table" then return end
+	self:RefreshOwnFor(msg.w)
 	local guild = SK.DBM:Guild()
 	local target = SK.Identity:WhisperTarget(from)
 	for i = 1, math.min(#msg.w, self.MAX_WANT) do
@@ -220,6 +276,8 @@ handlers.PR = function(self, msg, from)
 	local guild = SK.DBM:Guild()
 	local stored = guild.profiles[prof.guid]
 	if SK.DB.account[prof.guid] then return end
+	-- Tell the UI an answer arrived, even when it changes nothing ("Ask for latest").
+	SK:Fire("PROFILE_ANSWERED", prof.guid)
 	local isOwner = SK.Merge.IsOwnerCopy(from, prof, stored)
 	local accept, reason = SK.Merge.Decide(stored, prof, isOwner, Compat.Now(), SK.Identity:IsMember(prof.guid))
 	if accept then

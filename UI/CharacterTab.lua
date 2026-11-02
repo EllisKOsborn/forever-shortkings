@@ -121,6 +121,21 @@ function Char:Build(page)
 		end
 	end)
 	self.whisper:SetPoint("LEFT", self.mine, "RIGHT", 6, 0)
+	self.askLatest = W.Button(page, "Ask for latest", 110, 22, function()
+		local guid = Char.shownGuid
+		if not guid then return end
+		local ok, why = SK.Sync:RequestFresh(guid)
+		if ok then
+			Char.asked[guid] = Compat.Now()
+			SK.After(SK.Sync.FRESH_INTERVAL, function() Char:Refresh() end)
+		elseif why == "wait" then
+			SK:Print("Already asked. Give it a few seconds.")
+		end
+		Char:Refresh()
+	end)
+	self.askLatest.tooltip = "Ask them (or their online alt) for their newest data"
+	self.askLatest.disabledTooltip = "Offline: showing their last known data"
+	self.askLatest:SetPoint("LEFT", self.whisper, "RIGHT", 6, 0)
 	self.makeMain = W.Button(page, "Make this my main", 140, 22, function()
 		if Char.shownGuid then SK.Profile:SetMain(Char.shownGuid); Char:Refresh() end
 	end)
@@ -171,6 +186,27 @@ function Char:Build(page)
 	self.details = W.TextPanel(page)
 	self.details:SetPoint("TOPLEFT", doll, "TOPRIGHT", 18, 0)
 	self.details:SetPoint("BOTTOMRIGHT", -14, 0)
+end
+
+Char.asked = {}    -- guid -> when we pressed "Ask for latest" (cleared by the answer)
+Char.answered = {} -- guid -> when the answer arrived
+
+SK:On("PROFILE_ANSWERED", function(guid)
+	if Char.asked[guid] then
+		Char.asked[guid] = nil
+		Char.answered[guid] = Compat.Now()
+		if guid == Char.shownGuid then Char:Refresh() end
+	end
+end)
+
+-- Status line for "Ask for latest". Pure; tested.
+function Char.AskStatus(askedAt, answeredAt, now, timeout)
+	if askedAt then
+		if now - askedAt < timeout then return "Asked for the latest data…" end
+		return "No answer yet: showing their last known data"
+	end
+	if answeredAt and now - answeredAt < 60 then return "Got their latest data" end
+	return nil
 end
 
 function Char:ShowCharacter(guid)
@@ -309,12 +345,20 @@ function Char:Refresh()
 	local now = Compat.Now()
 	local mine = guid and SK.DB.account[guid] or false
 	self.whisper:SetShown(not mine and guid ~= nil)
+	self.askLatest:SetShown(not mine and guid ~= nil)
+	if not mine and guid then
+		self.askLatest:SetDisabled(SK.Sync:FreshSource(guid, now) == nil)
+	end
+	local ask = guid and Char.AskStatus(Char.asked[guid], Char.answered[guid], now, SK.Sync.FRESH_INTERVAL)
+	if ask and Char.asked[guid] and now - Char.asked[guid] >= SK.Sync.FRESH_INTERVAL then Char.asked[guid] = nil end
+	local askText = ask and ("  ·  " .. Theme.Code("flame") .. ask .. "|r") or ""
 	self.makeMain:SetShown(mine and SK.DB.settings.main ~= guid)
 
 	if not p then
 		self.name:SetText(m and Theme.ClassText(m.name, m.class) or "No character")
 		self.info:SetText(m and ("Level " .. (m.level or "?") .. " · " .. (m.rank or "")) or "")
-		self.meta:SetText("No Short Kings data yet: they may not have the addon, or be on a trial account (trials can't sync).")
+		self.meta:SetText("No Short Kings data yet: they may not have the addon, or be on a trial account (trials can't sync)."
+			.. askText)
 		for _, b in pairs(self.slots) do b:SetItem(nil) end
 		self.ilvl:SetText("")
 		self.specText:SetText("")
@@ -330,7 +374,9 @@ function Char:Refresh()
 		(p.class or ""):sub(1, 1) .. (p.class or ""):sub(2):lower(),
 		m and m.rank and ("  ·  " .. m.rank) or ""))
 	local source = p.source == "self" and "this account" or (p.source == "owner" and "from them" or "relayed by a guildmate")
-	self.meta:SetText(string.format("Updated %s ago (%s)  ·  Short Kings %s", Theme.Ago(p.updated, now), source, p.addon or "?"))
+	local ago = Theme.Ago(p.updated, now)
+	ago = ago == "now" and "just now" or (ago .. " ago")
+	self.meta:SetText(string.format("Updated %s (%s)  ·  Short Kings %s", ago, source, p.addon or "?") .. askText)
 
 	local hidden = p.hidden or {}
 	local missing = {}

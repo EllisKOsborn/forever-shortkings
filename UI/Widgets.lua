@@ -22,12 +22,15 @@ function W.Button(parent, text, width, height, onClick)
 	b.label:SetPoint("CENTER")
 	b.label:SetText(text)
 	b:SetScript("OnEnter", function(self)
-		if self.disabled then return end
-		self.label:SetTextColor(Theme.RGB("flame"))
-		Theme.SetBorderColor(self, "ember")
-		if self.tooltip then
+		-- A disabled button still explains itself (disabledTooltip).
+		local tip = self.disabled and self.disabledTooltip or (not self.disabled and self.tooltip)
+		if not self.disabled then
+			self.label:SetTextColor(Theme.RGB("flame"))
+			Theme.SetBorderColor(self, "ember")
+		end
+		if tip then
 			GameTooltip:SetOwner(self, "ANCHOR_TOP")
-			GameTooltip:SetText(self.tooltip, 1, 1, 1, 1, true)
+			GameTooltip:SetText(tip, 1, 1, 1, 1, true)
 			GameTooltip:Show()
 		end
 	end)
@@ -92,6 +95,92 @@ function W.Check(parent, label, getter, setter)
 	function c:Refresh() self:SetChecked(getter() and true or false) end
 	c:Refresh()
 	return c
+end
+
+---------------------------------------------------------------------------
+-- Menu: a button that opens a small themed pop-up list (no Blizzard
+-- dropdown templates). opts = {
+--   width = 150, items = function() return { {value=, text=}, ... } end,
+--   get = function() return value end, set = function(value) end,
+-- }
+---------------------------------------------------------------------------
+local openMenu
+
+function W.Menu(parent, opts)
+	local width = opts.width or 150
+	local b = W.Button(parent, "", width, 22)
+	local arrow = Theme.Text(b, 10, "muted")
+	arrow:SetPoint("RIGHT", -6, 0)
+	arrow:SetText("v")
+	b.label:ClearAllPoints()
+	b.label:SetPoint("LEFT", 8, 0)
+	b.label:SetPoint("RIGHT", -16, 0)
+	b.label:SetJustifyH("LEFT")
+	b.label:SetWordWrap(false)
+
+	local pop = CreateFrame("Frame", nil, b)
+	pop:SetPoint("TOPLEFT", b, "BOTTOMLEFT", 0, -2)
+	pop:SetWidth(width)
+	pop:SetFrameStrata("FULLSCREEN_DIALOG")
+	pop:EnableMouse(true)
+	Theme.Panel(pop, { thickness = 1, gold = false })
+	pop:Hide()
+	pop.entries = {}
+	b.pop = pop
+
+	function b:Refresh()
+		local current = opts.get()
+		for _, it in ipairs(opts.items()) do
+			if it.value == current then self:SetText(it.text) return end
+		end
+		self:SetText("")
+	end
+
+	function b:Close()
+		pop:Hide()
+		if openMenu == self then openMenu = nil end
+	end
+
+	function b:Open()
+		if openMenu and openMenu ~= self then openMenu:Close() end
+		local items = opts.items()
+		local current = opts.get()
+		for i, it in ipairs(items) do
+			local e = pop.entries[i]
+			if not e then
+				e = CreateFrame("Button", nil, pop)
+				e:SetHeight(20)
+				e:SetPoint("TOPLEFT", 2, -2 - (i - 1) * 20)
+				e:SetPoint("TOPRIGHT", -2, -2 - (i - 1) * 20)
+				local hl = e:CreateTexture(nil, "HIGHLIGHT")
+				hl:SetAllPoints()
+				Theme.Gradient(hl, "HORIZONTAL", "ember", "flame", 0.3, 0.05)
+				e.text = Theme.Text(e, 12, "text")
+				e.text:SetPoint("LEFT", 8, 0)
+				e:SetScript("OnClick", function(self)
+					b:Close()
+					opts.set(self.value)
+					b:Refresh()
+				end)
+				pop.entries[i] = e
+			end
+			e.value = it.value
+			e.text:SetText(it.text)
+			e.text:SetTextColor(Theme.RGB(it.value == current and "flame" or "text"))
+			e:Show()
+		end
+		for i = #items + 1, #pop.entries do pop.entries[i]:Hide() end
+		pop:SetHeight(#items * 20 + 4)
+		pop:Show()
+		openMenu = self
+	end
+
+	b:SetScript("OnClick", function(self)
+		if pop:IsShown() then self:Close() else self:Open() end
+	end)
+	b:SetScript("OnHide", function(self) self:Close() end)
+	b:Refresh()
+	return b
 end
 
 ---------------------------------------------------------------------------

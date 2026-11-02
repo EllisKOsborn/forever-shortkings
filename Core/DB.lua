@@ -15,6 +15,8 @@ local DEFAULTS = {
 		share = { gear = true, recipes = true }, -- privacy toggles (A7)
 		groupAlts = true,                         -- Roster: alts under their main
 		main = nil,                               -- guid of the player's main
+		roster = { raid = nil, attFilter = "all", maxLevelOnly = true }, -- Raid filter (v0.1.2)
+		craftTooltips = true,                     -- "Crafted by" lines on item tooltips (v0.2)
 	},
 	own = {},             -- [guid] = full profile of our own characters (never sent)
 	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns

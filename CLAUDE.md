@@ -140,6 +140,7 @@ Alts link only when **both** profiles list each other in `family`.
 - **Recipes:** the full recipe list per profession is already recorded and
   synced. The UI shows only counts until the Crafters tab ships.
 - **Update speed:** comes from players' own games, not Blizzard's armory.
-  Changes reach guildmates about 1–2 min later (target 30–60 s after
-  v0.1.2). Offline members show their last state. Paused in
-  instances and combat. Recipes refresh when the profession window is opened.
+  Since v0.1.2, changes reach guildmates in about 30–60 seconds while
+  they're online ("Ask for latest" on the Character tab gets it sooner).
+  Offline members show their last state. Paused in instances and combat.
+  Recipes refresh when the profession window is opened.

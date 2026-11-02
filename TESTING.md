@@ -76,6 +76,32 @@ the `/sk debug` text when something looks wrong.
         guildmate now sees "hidden by this player" on your character, while
         you still see your own gear. Tick it again and it comes back.
 
+## v0.1.2 additions
+
+30. [ ] **Raid picker** (Roster toolbar, next to the search box): pick
+        *Onyxia's Lair*. An **Attuned** column appears with a green tick
+        *yes*, red cross *no* or grey *unknown*. (Do the icons show? If you
+        see empty boxes, tell me.)
+31. [ ] With a raid picked, alts get their own rows, and hovering an alt says
+        "alt of <main>". "Group alts" is hidden while a raid is picked.
+32. [ ] **All / Attuned / Not attuned / Unknown** buttons filter the list, and
+        the counter ("N attuned · N not · N unknown") matches what you see.
+33. [ ] **Max level only (60)** is ticked by default and hides lower
+        characters. Untick it and they come back.
+34. [ ] Pick *Barrow Deeps*: everyone is *unknown* and the line says
+        "Attunement quests for this raid aren't known yet."
+35. [ ] `/reload`: the raid and filter you picked are still selected.
+        Pick *All raids* to get the normal Roster back.
+36. [ ] **Ask for latest** (Character tab, on a guildmate who is online with
+        Short Kings): the header says "Asked for the latest data…", then
+        "Got their latest data" a few seconds later. Pressing it again
+        within 30 s says "Already asked".
+37. [ ] On someone who is offline, the button is greyed out and its tooltip
+        says "Offline: showing their last known data". If their alt is online
+        with the addon, the button works and the alt answers.
+38. [ ] **Faster updates:** change a piece of gear. A guildmate sees it in
+        about 30–60 seconds.
+
 ## Known gaps in v0.1
 
 - No Crafters, Professions or Raids tabs yet (v0.2 and v0.3).

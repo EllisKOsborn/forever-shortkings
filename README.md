@@ -60,6 +60,15 @@
 - **Sort** by clicking any column. Online members come first.
 - **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name.
 - **Counter** at the top: characters, how many have data, and how many need an addon update.
+- **Raid picker** (*All raids*, Onyxia's Lair, Molten Core, Blackwing Lair, Barrow Deeps, Hyjal Summit, Naxxramas). Pick a raid to see who's attuned:
+  - an **Attuned** column: green tick *yes*, red cross *no*, grey *unknown* (no Short Kings data, gear hidden, or the raid's quests aren't known yet);
+  - filter buttons **All / Attuned / Not attuned / Unknown**;
+  - a counter such as "23 attuned · 9 not · 6 unknown";
+  - **Max level only** (on by default), where max level is the highest level in the guild;
+  - every character on its own row, even alts, with "alt of X" in the tooltip;
+  - a note for raids whose attunement quests aren't known yet.
+
+  Your raid and filter choices are remembered.
 - **Hover a row** to see:
   - their online status;
   - all their professions, including Cooking, First Aid and Fishing;
@@ -72,7 +81,8 @@
 ### 🛡️ Character
 <p align="center"><img src="docs/images/character.webp" alt="Character tab mockup" width="100%"></p>
 
-- **Buttons:** *< Roster*, *Me* (your own character), *Whisper* (opens a whisper to them), and *Make this my main* on your own alts.
+- **Buttons:** *< Roster*, *Me* (your own character), *Whisper* (opens a whisper to them), *Ask for latest*, and *Make this my main* on your own alts.
+- **Ask for latest** asks them (or their alt, if that's who is online) for their newest data. Their addon re-reads their character first. It works only while they're online with Short Kings, at most once every 30 seconds; otherwise it's greyed out with "Offline: showing their last known data". The header says "Asked for the latest data…" until the answer arrives.
 - **Header:** name, level, race, class and guild rank. It also shows how old the data is and where it came from: *this account*, *from them*, or *relayed by a guildmate*.
 - **Paperdoll** with all 19 slots, borders coloured by item quality.
   - Hover a slot for the **real item tooltip**.
@@ -233,6 +243,17 @@ window, so the Character tab says "not scanned yet" until you do.
 </details>
 
 <details>
+<summary><b>How quickly do changes show up for guildmates?</b></summary>
+
+The data comes from players' own games, not from Blizzard's armory. While
+you're both online, a change (new gear, a talent, a level) reaches
+guildmates in about **30–60 seconds**. **Ask for latest** on the Character
+tab gets it sooner. Offline members show what they had when they last
+played. Nothing is sent in combat or inside instances, so changes made there
+arrive once you're out. Recipes refresh when you open the profession window.
+</details>
+
+<details>
 <summary><b>It says "out of date" on the AddOns screen.</b></summary>
 
 Tick **Load out of date AddOns** for now, and tell an officer. The addon
@@ -273,6 +294,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 
 - [x] **v0.1**: data collection, guild sync, Roster, Character and Settings tabs, `/sk debug`
 - [x] **v0.1.1**: online/addon status dots, alts under mains, notes, version column, missing-enchant markers, accurate cooldowns, privacy toggles
+- [x] **v0.1.2**: raid attunement filter on the Roster, "Ask for latest", faster updates (30–60 s)
 - [ ] **v0.2**: **Crafters** (search an item, see who can make it, Whisper) and **Professions** (coverage, cooldown board, recipes nobody has), plus "Crafted by" on item tooltips
 - [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar: sign-up status, roles, line-up with attunement check, reminders, invite-all
 - [ ] **v0.4**: theme polish (ember sparks on the title bar), attunement and faction tables confirmed for Forever
