@@ -166,6 +166,7 @@
 ### 🔒 Under the hood
 - **Your own data always wins.** A copy passed on by someone else can never overwrite a newer copy from the character themselves.
 - **Light on the network.** Only small fingerprints are broadcast, and full profiles are whispered to whoever needs them. Everything is rate-limited, so nobody gets disconnected.
+- **Careful with what it receives.** Messages over 32 KB are refused before unpacking, every profile is checked before it's stored, and no guildmate can flood you (60 messages a minute each).
 - **Stays out of your way.** Sync pauses in combat, in dungeons, raids, battlegrounds and arenas, and whenever the game locks addon chat. Big recipe lists are read a little at a time, so there are no hitches.
 - **Private by default where it matters.** Notes and officer notes are never sent, nor are gold, bags or chat. You choose whether gear and recipes are shared.
 - **Fair to everyone.** Members without the addon still appear in the roster. Trial accounts can still see their own data.

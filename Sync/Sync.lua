@@ -24,6 +24,8 @@ Sync.MAX_WANT = 60             -- profiles per RQ / SO
 Sync.MAX_BUFFER = 200          -- buffered incoming messages
 Sync.SENDS_PER_FLUSH = 4
 Sync.MAX_TRIES = 5
+Sync.RATE_WINDOW = 60          -- incoming messages per sender are limited per window
+Sync.RATE_MAX = 60             -- a full backfill (SO -> up to 60 PRs) still fits
 Sync.FRESH_INTERVAL = 30        -- "Ask for latest": at most one request per target per 30 s
 Sync.REBUILD_INTERVAL = 10      -- an RQ for our own character rebuilds it at most every 10 s
 
@@ -32,7 +34,8 @@ Sync.queued = {}               -- key -> queue item
 Sync.buffer = {}
 Sync.pendingOffers = {}        -- requester guid -> true while our SO waits
 Sync.offerAcceptedAt = nil
-Sync.stats = { sent = 0, received = 0, dropped = 0, accepted = 0, rejected = 0 }
+Sync.stats = { sent = 0, received = 0, dropped = 0, accepted = 0, rejected = 0, limited = 0 }
+Sync.rate = {}                 -- sender -> { start, count }
 Sync.lastReject = nil
 Sync.lastSender = nil          -- raw sender string of the last message (debug)
 Sync.freshAt = {}              -- guid -> time of our last "Ask for latest"
@@ -108,7 +111,10 @@ function Sync:Flush()
 		if item.key then self.queued[item.key] = nil end
 		item.requeued = false
 		local ok, text = pcall(SK.Codec.Encode, item.msg)
-		if ok then
+		if ok and #text > SK.Codec.MAX_ENCODED then
+			-- Receivers would drop it anyway; say so instead of failing silently.
+			SK:RecordError("send " .. tostring(item.msg.t), "message too large (" .. #text .. " bytes)")
+		elseif ok then
 			self.transport(text, item.dist, item.target, item.prio, onChunkSent, item)
 			self.stats.sent = self.stats.sent + 1
 		else
@@ -389,10 +395,31 @@ function Sync:Handle(text, dist, sender)
 	if h then h(self, msg, from, dist) end
 end
 
+-- At most RATE_MAX messages per sender per RATE_WINDOW seconds, checked
+-- before any decoding. Returns false when the message should be dropped.
+function Sync:AllowFrom(sender, now)
+	local key = tostring(sender)
+	local r = self.rate[key]
+	if not r or now - r.start >= self.RATE_WINDOW then
+		r = { start = now, count = 0 }
+		self.rate[key] = r
+	end
+	r.count = r.count + 1
+	if r.count > self.RATE_MAX then
+		if r.count == self.RATE_MAX + 1 then SK:Debug("rate limit: dropping messages from %s", key) end
+		return false
+	end
+	return true
+end
+
 function Sync:OnCommReceived(prefix, text, dist, sender)
 	if prefix ~= SK.PREFIX or not self:Enabled() then return end
 	self.stats.received = self.stats.received + 1
 	self.lastSender = sender
+	if not self:AllowFrom(sender, Compat.Now()) then
+		self.stats.limited = self.stats.limited + 1
+		return
+	end
 	if self:IsPaused() then
 		if #self.buffer >= self.MAX_BUFFER then table.remove(self.buffer, 1) end
 		self.buffer[#self.buffer + 1] = { text, dist, sender }

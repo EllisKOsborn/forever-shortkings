@@ -125,6 +125,10 @@ Merge rules (`Sync/Merge.lua`, tested):
 
 Alts link only when **both** profiles list each other in `family`.
 
+Input limits (v0.2.1): `Codec.MAX_ENCODED` 32 KB (worst-case profile ~11 KB),
+max 60 incoming messages per sender per minute (`Sync.RATE_MAX`), and
+oversized outgoing messages are recorded as errors, not sent.
+
 ## Dev environment notes (cloud sessions)
 - Lua 5.1 tooling: `apt-get install lua5.1 liblua5.1-0-dev luarocks`, then
   `luarocks --lua-version=5.1 install busted luacheck`. GitHub *archive*

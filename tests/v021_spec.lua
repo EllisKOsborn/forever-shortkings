@@ -135,3 +135,45 @@ describe("v0.2.1 live-client checks and error capture", function()
 		assert.equal("where15", SK.errors[1].where)
 	end)
 end)
+
+describe("v0.2.1 sync hardening", function()
+	local SK, W
+	before_each(function()
+		SK, W = H.load()
+		W.member("Pip", W.player.guid)
+		W.member("Bob", "Player-1-B")
+		SK.Identity:ReadRoster()
+		SK.Profile:BuildSelf()
+	end)
+
+	it("refuses oversized messages before decompressing", function()
+		assert.equal(32 * 1024, SK.Codec.MAX_ENCODED)
+		local msg, why = SK.Codec.Decode(string.rep("a", 32 * 1024 + 1))
+		assert.is_nil(msg)
+		assert.equal("too large", why)
+	end)
+
+	it("does not send a message receivers would refuse, and records why", function()
+		local sent = H.captureSends(SK)
+		local big = {}
+		math.randomseed(7)
+		for i = 1, 15000 do big[i] = math.random(1, 2 ^ 30) end -- incompressible
+		SK.Sync:Enqueue("X", "GUILD", nil, "NORMAL", { t = "XX", junk = big })
+		SK.Sync:Flush()
+		assert.equal(0, #sent)
+		assert.truthy(SK.errors[1].msg:find("too large", 1, true))
+	end)
+
+	it("limits incoming messages per sender, per minute", function()
+		local handled = 0
+		SK.Sync.Handle = function() handled = handled + 1 end
+		for _ = 1, 70 do SK.Sync:OnCommReceived(SK.PREFIX, "x", "GUILD", "Bob") end
+		assert.equal(60, handled)
+		assert.equal(10, SK.Sync.stats.limited)
+		SK.Sync:OnCommReceived(SK.PREFIX, "x", "GUILD", "Cat") -- others unaffected
+		assert.equal(61, handled)
+		W.advance(61)
+		SK.Sync:OnCommReceived(SK.PREFIX, "x", "GUILD", "Bob") -- new window
+		assert.equal(62, handled)
+	end)
+end)

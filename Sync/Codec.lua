@@ -12,7 +12,11 @@ local LibDeflate = LibStub("LibDeflate")
 -- hash computed by the owner can be re-checked by everyone else.
 local STABLE = { stable = true }
 
-Codec.MAX_ENCODED = 96 * 1024 -- refuse anything bigger than this
+-- Refuse anything bigger than this, before decompressing. A worst-case
+-- profile (four professions of 450 recipes, 150 reputations) encodes to
+-- about 11 KB, so 32 KB leaves room while limiting how much a malformed
+-- message could expand to (LibDeflate has no output limit).
+Codec.MAX_ENCODED = 32 * 1024
 
 function Codec.Serialize(t)
 	return LibSerialize:SerializeEx(STABLE, t)

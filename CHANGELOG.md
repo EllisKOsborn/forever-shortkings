@@ -17,6 +17,9 @@ Launch readiness, after reviewing the GPT, Manus and Perplexity plans
   lists unlearned recipes, whether the calendar works, error count), and the
   **last 10 Lua errors** caught in Short Kings code, so problems show up even
   without an error addon. One failing part no longer stops the rest.
+- **Sync safety:** messages over 32 KB are refused before unpacking (a large
+  crafter profile is about 11 KB), oversized messages are never sent, and
+  each guildmate is limited to 60 messages a minute.
 
 ## v0.2.0 (unreleased, not yet tested in game)
 

@@ -97,8 +97,8 @@ function Commands.BuildReport()
 	add("Combat: %s  Instance: %s (%s)  Chat lockdown: %s", yesno(Compat.InCombat()), yesno(inInst),
 		tostring(kind), yesno(Compat.InChatLockdown()))
 	local st = SK.Sync.stats
-	add("Sent %d, received %d, accepted %d, rejected %d, dropped %d, queued %d, buffered %d",
-		st.sent, st.received, st.accepted, st.rejected, st.dropped, #SK.Sync.queue, #SK.Sync.buffer)
+	add("Sent %d, received %d, accepted %d, rejected %d, dropped %d, rate-limited %d, queued %d, buffered %d",
+		st.sent, st.received, st.accepted, st.rejected, st.dropped, st.limited, #SK.Sync.queue, #SK.Sync.buffer)
 	add("Last raw sender: %q   Last reject reason: %s", tostring(SK.Sync.lastSender), tostring(SK.Sync.lastReject))
 
 	add("")
