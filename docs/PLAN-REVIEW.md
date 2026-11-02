@@ -122,6 +122,10 @@ The decisions are also recorded in its section 7.
 
 ## 7. Revised roadmap (copied into PLAN.md section 7)
 
+Update 2 Nov: the owner asked for the Overview now, so it shipped as
+**v0.2.2** and the post-test fixes become v0.2.3. PLAN.md section 7 is current.
+
+
 | Release | When | Contents |
 |---|---|---|
 | **v0.2.1 launch readiness** | now (before 4 Nov) | P1 attunement fix + amulet check · P2 · P3 probes · P4 error capture · P18/P19 hardening · sharing preview · data-state labels · Copy as text · "update available" line |

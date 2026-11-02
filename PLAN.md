@@ -290,11 +290,12 @@ section is the single source of truth for order and status.
   - sharing preview in Settings; clearer "relayed / stale / not scanned" labels
   - Copy as text (Roster, Crafters) for Discord (D8)
   - "update available" in the Roster counter
-- **Test gate** (4–7 Nov): owner runs TESTING.md; **v0.2.2** = fixes only,
+- **v0.2.2 Overview** — ✅ code complete 2 Nov (moved ahead of the test gate
+  at the owner's request; read-only, no protocol change): Overview tab with
+  Guild, Raids, Data health, Professions (B5 coverage), Recipes
+  (single-crafter) and Recent milestones (P7, local only, never synced).
+- **Test gate** (4–7 Nov): owner runs TESTING.md; **v0.2.3** = fixes only,
   plus an API contract check in CI (P17).
-- **v0.2.3 Overview** (Nov): a small Overview tab from existing data:
-  population, data health, profession coverage (B5), single-crafter recipes,
-  attunement summary, and a local levelling feed (P7, never synced).
 - **v0.3 Raids** (before 9 Dec): `docs/prompts/next-v0.3-raids.md`, plus a
   readiness card (P11) and a duplicate-alt sign-up check. Addon-native events
   (P13) only if the calendar turns out to be unusable.

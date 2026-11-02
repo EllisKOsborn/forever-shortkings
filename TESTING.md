@@ -165,6 +165,25 @@ the `/sk debug` text when something looks wrong.
         no notes. Try it with a raid picked too.
 59. [ ] Crafters → pick a result → **Copy**: the crafter list as plain text.
 
+## v0.2.2 additions (Overview)
+
+60. [ ] `/sk` opens on the **Overview** the first time. Switch to another tab,
+        close and reopen: it remembers that tab.
+61. [ ] **Guild** card numbers match the Roster: members, online, and the
+        level bands.
+62. [ ] **Raids** card: days until 9 Dec look right; Onyxia counts match the
+        Roster with Onyxia picked (button **Onyxia list** takes you there).
+63. [ ] **Data health**: **Oldest first** opens the Roster with people
+        without data at the top, then the oldest data.
+64. [ ] **Professions**: counts look right; a profession nobody has shows
+        "nobody" in red. **Recipes**: "only one character knows" lists real
+        recipes.
+65. [ ] **Recent milestones**: when a guildmate with the addon levels up (or
+        reaches 75/150/225/300 in a profession), a line appears within a
+        minute or two. **Grats** types "Grats <name> on level N!" into guild
+        chat without sending it.
+66. [ ] Settings → untick **Record guild milestones**: no new lines appear.
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).

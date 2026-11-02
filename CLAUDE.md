@@ -94,13 +94,15 @@ Core/     Init (events, timers, modules), Log (+ error capture: SK:Safe,
           SK:RecordError), Compat, DB (SavedVariables, pruning), Identity
           (roster, sender→GUID, Status dots, GUID-stability check), Alts
           (mutual-link groups), CraftIndex (recipe/item → crafters, async
-          names), Export (plain text for Copy)
+          names), Export (plain text for Copy), Feed (local milestones,
+          never synced), Overview (numbers for the Overview tab)
 Data/     Professions, Attunements (quest IDs), Factions, Enchants
 Collect/  Character, Talents, Professions (recipe scan), Reputation,
           Attunements, Profile (full/public copies, cooldowns, main)
 Sync/     Codec (LibSerialize stable → LibDeflate), Merge (rules), Sync (protocol)
 UI/       Theme (colours/gradients only), Widgets (Button, Tab, Check, Menu,
-          SearchBox, List, TextPanel), MainFrame, RosterTab (+ raid filter),
+          SearchBox, List, TextPanel), MainFrame, OverviewTab (first tab,
+          six cards with deep links), RosterTab (+ raid filter, Oldest first),
           CharacterTab (+ Ask for latest), CraftersTab, SettingsTab,
           DebugWindow, Minimap, Tooltip ("Crafted by" line)
 Libs/     vendored Ace3 bits, LibSerialize, LibDeflate; LDB + LibDBIcon via .pkgmeta
@@ -143,7 +145,8 @@ oversized outgoing messages are recorded as errors, not sent.
   Marcellus from fonts.gstatic.com (don't commit the font).
 
 ## Status (2 Nov 2026)
-- v0.1 to v0.2.1 are code complete, **not tested in game**. See CHANGELOG.md.
+- v0.1 to v0.2.2 are code complete, **not tested in game**. See CHANGELOG.md.
+  v0.2.2 = the Overview dashboard (owner asked for it before the test gate).
   (`docs/prompts/next-v0.1.2-v0.2.md` is done; v0.2.1 = launch readiness
   from `docs/PLAN-REVIEW.md`.)
 - Roadmap and future plans: `PLAN.md` section 7. Background and reasoning:
@@ -153,7 +156,7 @@ oversized outgoing messages are recorded as errors, not sent.
   `docs/PLAN-REVIEW.md`, agreed order in **PLAN.md section 7** (the single
   roadmap). Don't build from the proposal files directly.
 - **Next:** the in-game test gate (TESTING.md, `/sk debug` "Live-client
-  checks"), v0.2.2 fixes only, v0.2.3 Overview, and **v0.3 Raids** before 9 Dec
+  checks"), v0.2.3 fixes only, and **v0.3 Raids** before 9 Dec
   (`docs/prompts/next-v0.3-raids.md`). Professions tab is v0.4.
 - Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
   `AddEvent` is `HasRestrictions`; `GetDayEvent`/`EventGetInvite` are secret
@@ -171,6 +174,15 @@ oversized outgoing messages are recorded as errors, not sent.
     (event approach, not the Item mixin), at most 200 requests per search.
   - "Post to guild chat" uses `ChatFrameUtil.OpenChat("/g …")`; never
     `SendChatMessage`.
+- Decisions in v0.2.2:
+  - Overview numbers come from `Core/Overview.lua` (pure); attunement logic
+    lives in `Collect/Attunements.lua` (`Att.StateOf`), shared by Roster,
+    Character and Overview.
+  - Milestones (`Core/Feed.lua`) are derived from old vs new profile copies
+    in `Sync` (PR accepted) and `Profile:Commit`; first copy = no events;
+    stored in `ShortKingsDB.feed` (max 50), never sent.
+  - The window opens on the Overview once (`settings.overviewShown`), then
+    the last tab.
 
 ## Waiting on the user (remind them when relevant)
 1. Confirm the Mac AddOns folder (Battle.net → Forever → ⚙ → Show in Finder).

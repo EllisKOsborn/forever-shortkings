@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.2.2 (unreleased, not yet tested in game)
+
+- New **Overview** tab, first in the window: the guild at a glance in six
+  cards, each with a button to the place where you can act on it.
+  - **Guild**: members, roughly how many players, online, online with Short
+    Kings, shared data, and levels by band.
+  - **Raids**: days until 9 Dec; Barrow Deeps and Hyjal (no attunement,
+    level 60 count); Onyxia attuned / not / unknown and amulets not in bags.
+  - **Data health**: no data, older than a week, profession windows not
+    opened, old addon versions.
+  - **Professions**: characters per crafting profession, how many at 300,
+    professions nobody has, gathering counts.
+  - **Recipes**: total, crafters, and recipes only one character knows.
+  - **Recent milestones**: level-ups, profession 75/150/225/300, Onyxia
+    attunement and new recipes, with a **Grats** button that pre-fills guild
+    chat. Worked out locally, kept on your computer only (last 50), never sent.
+- The window opens on the Overview once, then remembers your last tab.
+- Setting: **Record guild milestones (Overview)**.
+- Roster: *Oldest first* view (used by the Data health card).
+- Fixed: buttons are explicitly enabled when created (the test stub could
+  treat a never-enabled button as disabled).
+
 ## v0.2.1 (unreleased, not yet tested in game)
 
 Launch readiness, after reviewing the GPT, Manus and Perplexity plans
