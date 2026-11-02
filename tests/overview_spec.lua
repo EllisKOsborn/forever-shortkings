@@ -126,7 +126,7 @@ describe("v0.2.2 Overview numbers", function()
 		assert.equal(1, o.stale)       -- Ben, 10 days old
 		assert.equal(2, o.unscanned)   -- Pip's Tailoring (we never opened it) and Ann Alt's Alchemy
 		assert.equal(1, o.outdated)    -- Ben runs 0.0.1
-		assert.truthy(SK.OverviewTab.HealthText(o):find("1|r member without Short Kings data", 1, true))
+		assert.truthy(SK.OverviewTab.HealthText(o):find("1 member without Short Kings data", 1, true))
 	end)
 
 	it("summarises professions and recipes", function()
@@ -152,8 +152,11 @@ describe("v0.2.2 Overview numbers", function()
 		assert.equal(3, o.raids[1].eligible)
 		assert.equal(math.ceil((1796774400 - W.now) / 86400), o.raidDays)
 		local text = SK.OverviewTab.RaidText(o)
-		assert.truthy(text:find("1 without the amulet in their bags", 1, true))
-		assert.truthy(text:find("no attunement needed", 1, true))
+		assert.truthy(text:find("1 without the amulet", 1, true))
+		assert.truthy(text:find("no attunement", 1, true))
+		assert.equal("1,284", SK.OverviewTab.Thousands(1284))
+		assert.equal("12", SK.OverviewTab.Thousands(12))
+		assert.equal("1,000,000", SK.OverviewTab.Thousands(1000000))
 	end)
 
 	it("handles no guild at all", function()
