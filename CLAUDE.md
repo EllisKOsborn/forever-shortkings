@@ -84,8 +84,9 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   - updates to `README.md` ("What's inside" lists **everything**), `CHANGELOG.md` and `TESTING.md`;
   - updated mockups in `docs/mockups/` when the UI changes (`node docs/mockups/render.js <font>`).
 - Commit as you go. Never create a PR unless asked. Push to your designated branch.
-- **`main`** holds the released state (created 2 Nov 2026 with v0.2.0).
-  Push to `main` only when the user asks; the README's test badge tracks it.
+- **`main`** holds the released state (created 2 Nov 2026 with v0.2.0;
+  v0.2.2 pushed 2 Nov). Push to `main` only when the user asks; the README's
+  test badge tracks it.
 
 ## Layout
 ```
@@ -155,8 +156,9 @@ oversized outgoing messages are recorded as errors, not sent.
   `docs/PERPLEXITY-PLAN.md`) were reviewed on 2 Nov: verdicts in
   `docs/PLAN-REVIEW.md`, agreed order in **PLAN.md section 7** (the single
   roadmap). Don't build from the proposal files directly.
-- **Next:** the in-game test gate (TESTING.md, `/sk debug` "Live-client
-  checks"), v0.2.3 fixes only, and **v0.3 Raids** before 9 Dec
+- **Next:** PLAN.md **section 10, "Once Forever is live"**: the in-game test
+  gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
+  v0.2.3 fixes only, a first tagged release, and **v0.3 Raids** before 9 Dec
   (`docs/prompts/next-v0.3-raids.md`). Professions tab is v0.4.
 - Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
   `AddEvent` is `HasRestrictions`; `GetDayEvent`/`EventGetInvite` are secret
@@ -185,6 +187,7 @@ oversized outgoing messages are recorded as errors, not sent.
     the last tab.
 
 ## Waiting on the user (remind them when relevant)
+Full post-launch checklist: PLAN.md section 10.
 1. Confirm the Mac AddOns folder (Battle.net → Forever → ⚙ → Show in Finder).
    Expected: `/Applications/World of Warcraft/_forever_/Interface/AddOns`.
 2. In game, run `/dump select(4, GetBuildInfo())` (expect 16001).

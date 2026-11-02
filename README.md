@@ -206,6 +206,9 @@ Settings ("Record guild milestones").
 
 1. Download the latest **`ShortKings-x.y.z.zip`** from
    [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases).
+   *No release is tagged yet:* until then, open
+   [**Actions → Tests**](https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml),
+   pick the latest run on `main`, and download **ShortKings-test-build**.
 2. Unzip it. You'll get a folder called **`ShortKings`**.
 3. Move that folder into your Forever **AddOns** folder:
 
@@ -374,6 +377,8 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [ ] CurseForge release
 
 Testing it in game? Work through the checklist in [TESTING.md](TESTING.md).
+The plan for launch week (what to check first, and what each result changes)
+is in [PLAN.md section 10](PLAN.md#10-once-forever-is-live-from-4-nov-2026).
 
 ---
 

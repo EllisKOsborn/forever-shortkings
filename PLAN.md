@@ -343,13 +343,6 @@ secret is synced).
   them the addon falls back to its own simple minimap button.
 - Mac AddOns path: **still to confirm** (Battle.net → Forever → ⚙ → Show in Finder).
 
-## 10. Waiting on you (next time you're at the Mac)
-
-1. Confirm the AddOns folder path (Battle.net → Forever → ⚙ → Show in Finder).
-2. In game: `/dump select(4, GetBuildInfo())` and tell me the number.
-3. Install a test build, run `/sk debug`, and send me the text.
-4. Work through [TESTING.md](TESTING.md).
-
 ## 9. Credits / licence
 
 No code copied from other guild-sync addons (Perpetua, ForeverArtisan and
@@ -357,3 +350,70 @@ others were not read for code). API facts come from warcraft.wiki.gg,
 Blizzard's UI source as mirrored by Gethe/wow-ui-source, and public notes in
 the Everloot and bff-wow GitHub issues and PRs. These are credited in
 README.md.
+
+## 10. Once Forever is live (from 4 Nov 2026)
+
+Everything up to v0.2.2 is built but has only run against a simulated
+client. This is the order of work once the game is live. Nothing new gets
+built until steps 1 to 3 are done.
+
+### Step 1: first evening on your own (about 30 minutes)
+1. Get a test build: GitHub → **Actions** → **Tests** → the latest run on
+   `main` → download **ShortKings-test-build**. Unzip it so you have
+   `AddOns/ShortKings/ShortKings.toc` (path in the README's Install section).
+2. Character screen → **AddOns**: Short Kings is listed and not "out of date"
+   (if it is, tick *Load out of date AddOns* and tell me).
+3. In game, type `/console scriptErrors 1` once so Lua errors show.
+4. Type `/dump select(4, GetBuildInfo())` and note the number (expect 16001).
+5. Open each of your **profession windows** once, and open the **Calendar** once.
+6. Type `/sk debug`, copy everything and send it to me. The parts that matter
+   most are **"Live-client checks"**, any **"missing:"** lines and
+   **"Recent errors"**.
+7. Log out and back in on the same character, then `/sk debug` again (checks
+   that your character's ID stays the same).
+8. Work through TESTING.md items 1–15 and 22–29 (on your own), plus 50–66.
+
+### Step 2: with one guildmate who also has the addon
+TESTING.md items 16–21, 30–49: you see each other's data, Ask for latest,
+Crafters and tooltips, Copy, the Overview's numbers and milestones.
+
+### Step 3: what your report decides
+
+| Check (from `/sk debug`) | If it's fine | If not |
+|---|---|---|
+| Interface number is 16001 | nothing to do | change `## Interface:` in `ShortKings.toc`, new build |
+| No Lua errors | carry on | fix them first (v0.2.3) |
+| "missing:" API lines | carry on | replace or drop what uses them (v0.2.3) |
+| You and a guildmate see each other's data | carry on | fix sync before anything else (sender format, roster names) |
+| GUID stable between logins | carry on | stop and redesign how characters are identified |
+| Profession window lists unlearned recipes | "recipes nobody has" goes into v0.4 | drop that idea; keep coverage and single-crafter counts |
+| Calendar present and guild events listed | build v0.3 Raids on Blizzard's calendar | plan addon-only raid events instead (Perplexity P13) before building |
+| Drakefire Amulet line resolves | carry on | fix the amulet check |
+
+### Step 4: build queue after the test
+1. **v0.2.3: fixes only** from steps 1–3, plus an automatic check in CI that
+   every game function we use still exists in Blizzard's Forever code (P17).
+2. **First proper release:** tag `v0.2.3` so GitHub builds a downloadable zip
+   on the Releases page (the README's Install section points there). When you
+   have CurseForge or Wago accounts, the same build can go there (P5); I
+   prepare it, you do the upload.
+3. **v0.3.0 Raids, read-only** (target: before raids open on 9 Dec): raid
+   events from the calendar, who signed up with role, spec, item level and
+   attunement, role counts, readiness card, Copy. Prompt:
+   `docs/prompts/next-v0.3-raids.md`.
+4. **v0.3.1 Raids actions:** Sign up / Tentative / Decline buttons, a
+   reminder before raids, and "invite everyone signed up" for the raid leader.
+5. **v0.4 Professions** (December): cooldown board, specialisations,
+   reagents, favourites; camp planner if step 5 confirms the data.
+6. **v0.5 Coordination** (January): craft requests, a short status line,
+   lockout board.
+
+### Step 5: things the guild can find out in game (they unblock later ideas)
+- **Onyxia attunement quest IDs** for each step (Wowhead Forever pages show
+  them): unlocks the step-by-step attunement tracker (P10).
+- **Camping objects**: which professions make which camp objects, at what
+  skill, and how they're learned: unlocks the camp planner (P6).
+- **Raid lockouts**: whether `/dump GetNumSavedInstances()` returns a number
+  after a dungeon (it isn't in the 1.60.1 docs): decides the lockout board (P15).
+- **Horde members**: if there are any, their Onyxia chain is different.
+- What players ask for in the first two weeks. Real requests beat any plan.
