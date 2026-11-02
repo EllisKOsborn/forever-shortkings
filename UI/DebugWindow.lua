@@ -22,6 +22,7 @@ function Debug:Build()
 	tinsert(UISpecialFrames, "ShortKingsDebugFrame")
 
 	local title = Theme.Text(f, 16, "pink")
+	f.title = title
 	title:SetPoint("TOPLEFT", 14, -12)
 	title:SetText("Short Kings debug report")
 	local hint = Theme.Text(f, 11, "muted")
@@ -52,9 +53,11 @@ function Debug:Build()
 	f.edit = edit
 
 	local refresh = W.Button(f, "Refresh", 90, 22, function() Debug:Open() end)
+	f.refresh = refresh
 	refresh:SetPoint("BOTTOMLEFT", 14, 12)
 	local log = W.Button(f, "Show log", 90, 22, function() Debug:Open(true) end)
 	log:SetPoint("LEFT", refresh, "RIGHT", 8, 0)
+	f.log = log
 	self.frame = f
 	return f
 end
@@ -68,7 +71,23 @@ function Debug:Open(withLog)
 	end
 	self.text = table.concat(lines, "\n")
 	local f = self:Build()
+	f.title:SetText("Short Kings debug report")
+	f.refresh:Show()
+	f.log:Show()
 	f.edit:SetText(self.text)
 	f.edit:SetCursorPosition(0)
 	f:Show()
+end
+
+-- "Copy as text": the same copyable window with any plain text.
+function Debug:ShowText(title, text)
+	self.text = text
+	local f = self:Build()
+	f.title:SetText(title)
+	f.refresh:Hide()
+	f.log:Hide()
+	f.edit:SetText(text)
+	f.edit:SetCursorPosition(0)
+	f:Show()
+	if f.edit.HighlightText then f.edit:SetFocus(); f.edit:HighlightText() end
 end

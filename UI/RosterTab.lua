@@ -347,7 +347,7 @@ end
 function Roster:Build(page)
 	local rs = SK.DB.settings.roster
 	self.filter = ""
-	self.search = W.SearchBox(page, 240, "Search name, profession, spec, note...", function(text)
+	self.search = W.SearchBox(page, 210, "Search name, profession, note...", function(text)
 		Roster.filter = text
 		Roster:Refresh()
 	end)
@@ -369,6 +369,14 @@ function Roster:Build(page)
 	self.groupCheck:SetPoint("LEFT", self.raidMenu, "RIGHT", 14, 0)
 	self.count = Theme.Text(page, 12, "muted")
 	self.count:SetPoint("LEFT", self.groupCheck.label, "RIGHT", 16, 0)
+	self.copy = W.Button(page, "Copy", 56, 22, function() Roster:CopyText() end)
+	self.copy:SetPoint("TOPRIGHT", 0, 0)
+	self.copy.tooltip = "Copy this list as plain text (for Discord). Notes are never included."
+	-- The counter stops at the Copy button (long texts are cut, not overlapped).
+	self.count:SetPoint("RIGHT", self.copy, "LEFT", -8, 0)
+	self.count:SetJustifyH("LEFT")
+	self.count:SetWordWrap(false)
+
 
 	-- Second toolbar row, shown only while a raid is selected.
 	local bar = CreateFrame("Frame", nil, page)
@@ -414,6 +422,18 @@ function Roster:Build(page)
 	self.attList = makeList(ATT_COLUMNS, 7)    -- online first
 	self.attList:SetPoint("TOPLEFT", 0, -58)
 	self.attList:Hide()
+end
+
+-- The list as shown (current filters and sort) as plain text.
+function Roster:CopyText()
+	local rs = SK.DB.settings.roster
+	local raid = rs.raid and Roster.Raid(rs.raid)
+	local list = raid and self.attList or self.list
+	local title = "Short Kings roster" .. (raid and (": " .. raid.name) or "")
+	if self.filter and self.filter ~= "" then title = title .. " (search: " .. self.filter .. ")" end
+	local text = SK.Export.Roster(list.items, { title = title, hideOwnGear = SK.DB.settings.share.gear == false })
+	SK.DebugWindow:ShowText("Copy as text", text)
+	return text
 end
 
 function Roster:Refresh()
@@ -462,6 +482,10 @@ function Roster:Refresh()
 	end
 	local text = string.format("%d characters · %d with data", total, withData)
 	if outdated > 0 then text = text .. " · " .. Theme.Code("ember") .. outdated .. " need an update|r" end
+	local newest = Roster.NewestVersion(guild)
+	if guild and newest and SK.VERSION ~= "dev" and SK.Sync.versionNewer(newest, SK.VERSION) then
+		text = text .. " · " .. Theme.Code("flame") .. "Short Kings " .. newest .. " is out (you have " .. SK.VERSION .. ")|r"
+	end
 	self.count:SetText(text)
 	self.groupCheck:Refresh()
 	self.list:SetItems(rows)

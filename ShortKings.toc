@@ -17,6 +17,7 @@ Core\DB.lua
 Core\Identity.lua
 Core\Alts.lua
 Core\CraftIndex.lua
+Core\Export.lua
 
 Data\Professions.lua
 Data\Attunements.lua

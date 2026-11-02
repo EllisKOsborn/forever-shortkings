@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-D94FA0?labelColor=2A1220">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.2.0%20alpha-FF7A1A?labelColor=2A1220">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.2.1%20alpha-FF7A1A?labelColor=2A1220">
   <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FFC24A?labelColor=2A1220">
 </p>
 
@@ -24,7 +24,7 @@
 </p>
 
 > [!NOTE]
-> **v0.2.0 is an alpha that hasn't been run in game yet.** It's built against
+> **v0.2.1 is an alpha that hasn't been run in game yet.** It's built against
 > Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
 > client. The pictures below are **mockups** drawn from the addon's real
 > colours and layout. Item icons are placeholders; in game you see the real ones.
@@ -60,7 +60,8 @@
 - **Group alts** (on by default) folds each player's characters into one row, under the character they chose as their main.
 - **Sort** by clicking any column. Online members come first.
 - **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name.
-- **Counter** at the top: characters, how many have data, and how many need an addon update.
+- **Counter** at the top: characters, how many have data, how many need an addon update, and whether a newer Short Kings is out.
+- **Copy** (top right) gives the list exactly as shown, as plain text to paste into Discord. Notes are never included.
 - **Raid picker** (*All raids*, Barrow Deeps (10), Hyjal Summit (20), Onyxia's Lair (40), the raids in Forever's first wave). Pick a raid to see who's attuned:
   - Barrow Deeps and Hyjal Summit need no attunement, so they just say so;
   - for Onyxia, an **Attuned** column: green tick *yes* (quest done, or the Drakefire Amulet in their bags), red cross *no*, grey *unknown* (no Short Kings data or gear hidden); an orange **!** means the quest is done but the amulet isn't in their bags (you need it in your bags to enter);
@@ -123,6 +124,7 @@
   - a **Whisper** button (greyed out when nobody on that player's characters is online);
   - hover a crafter to see when their recipes were recorded; click to open their character.
 - **Post to guild chat** types "[Item] can be made by: A, B, C" into your chat box. You press Enter to send it.
+- **Copy** gives the crafter list as plain text for Discord.
 - Recipes come from what each crafter recorded when they last opened their profession window. If nobody has yet, the tab says so. People who hide their recipes aren't listed.
 - Item names load from the game a little at a time, so the first search can take a few seconds to fill in.
 
@@ -339,9 +341,12 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.1.1**: online/addon status dots, alts under mains, notes, version column, missing-enchant markers, accurate cooldowns, privacy toggles
 - [x] **v0.1.2**: raid attunement filter on the Roster, "Ask for latest", faster updates (30–60 s)
 - [x] **v0.2.0**: **Crafters** tab (search an item, see who can make it, Whisper, post to guild chat) and "Crafted by" on item tooltips
-- [ ] **v0.2.x**: **Professions** tab (coverage, cooldown board, specialisations, reagents, recipes nobody has)
-- [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar: sign-up status, roles, line-up with attunement check, reminders, invite-all
-- [ ] **v0.4**: theme polish (ember sparks on the title bar), attunement and faction tables confirmed for Forever
+- [x] **v0.2.1**: launch readiness: Forever's real raid attunements (Onyxia amulet check), `/sk debug` live-client checks and error capture, sync safety limits, sharing preview, "may be out of date" labels, Copy as text
+- [ ] **In-game test round** after launch (4 Nov), then fixes (v0.2.2)
+- [ ] **v0.2.3**: **Overview** tab: guild population, data health, profession coverage, attunement summary, levelling feed
+- [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar: sign-up status, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
+- [ ] **v0.4**: **Professions** tab (cooldown board, specialisations, reagents, favourites)
+- [ ] **v0.5**: craft requests, a short status line, lockout board
 - [ ] **Later**: craft requests, export to text, raid attendance, shopping lists, guild bank viewer, and more in the [plan](PLAN.md#later-in-rough-priority-order)
 - [ ] CurseForge release
 

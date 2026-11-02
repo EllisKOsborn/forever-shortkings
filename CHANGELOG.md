@@ -26,6 +26,14 @@ Launch readiness, after reviewing the GPT, Manus and Perplexity plans
 - **Old data is labelled:** data more than a week old shows in orange in the
   Roster's Data column, with "may be out of date" in the tooltip and on the
   Character tab. Crafters tooltips say when a crafter's recipes were recorded.
+- **Copy as text** (for Discord): a **Copy** button on the Roster (the list
+  as shown, including the raid view) and on the Crafters side panel. Plain
+  text, no colour codes; notes are never included, and your own gear and
+  talents are left out if you don't share them.
+- The Roster counter says when a newer Short Kings is out ("Short Kings 0.2.2
+  is out (you have 0.2.1)").
+- Mockups updated (Copy buttons, raid sizes, Settings preview and the
+  tooltip setting that was missing from the v0.2.0 picture).
 
 ## v0.2.0 (unreleased, not yet tested in game)
 

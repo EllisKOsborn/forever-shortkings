@@ -92,7 +92,8 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
 ShortKings.toc  embeds.xml  Commands.lua (/sk, /sk debug report)
 Core/     Init (events, timers, modules), Log, Compat, DB (SavedVariables,
           pruning), Identity (roster, sender→GUID, Status dots), Alts
-          (mutual-link groups), CraftIndex (recipe/item → crafters, async names)
+          (mutual-link groups), CraftIndex (recipe/item → crafters, async names), Export
+          (plain text for Copy), Log (+ error capture: SK:Safe/RecordError)
 Data/     Professions, Attunements (quest IDs), Factions, Enchants
 Collect/  Character, Talents, Professions (recipe scan), Reputation,
           Attunements, Profile (full/public copies, cooldowns, main)
@@ -141,16 +142,17 @@ oversized outgoing messages are recorded as errors, not sent.
   Marcellus from fonts.gstatic.com (don't commit the font).
 
 ## Status (2 Nov 2026)
-- v0.1, v0.1.1, v0.1.2 and v0.2.0 are code complete, **not tested in game**.
-  See CHANGELOG.md. (`docs/prompts/next-v0.1.2-v0.2.md` is done.)
+- v0.1 to v0.2.1 are code complete, **not tested in game**. See CHANGELOG.md.
+  (`docs/prompts/next-v0.1.2-v0.2.md` is done; v0.2.1 = launch readiness
+  from `docs/PLAN-REVIEW.md`.)
 - Roadmap and future plans: `PLAN.md` section 7. Background and reasoning:
   `docs/FEATURE-REVIEW.md`.
 - Outside proposals (`docs/GPT-PLAN.md`, `docs/MANUS-PLAN.md`,
   `docs/PERPLEXITY-PLAN.md`) were reviewed on 2 Nov: verdicts in
   `docs/PLAN-REVIEW.md`, agreed order in **PLAN.md section 7** (the single
   roadmap). Don't build from the proposal files directly.
-- **Next:** v0.2.1 launch readiness (PLAN.md section 7), then the in-game
-  test gate (TESTING.md), v0.2.3 Overview, and **v0.3 Raids** before 9 Dec
+- **Next:** the in-game test gate (TESTING.md, `/sk debug` "Live-client
+  checks"), v0.2.2 fixes only, v0.2.3 Overview, and **v0.3 Raids** before 9 Dec
   (`docs/prompts/next-v0.3-raids.md`). Professions tab is v0.4.
 - Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
   `AddEvent` is `HasRestrictions`; `GetDayEvent`/`EventGetInvite` are secret

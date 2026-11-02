@@ -160,6 +160,11 @@ the `/sk debug` text when something looks wrong.
 57. [ ] A guildmate whose data is more than a week old shows an orange age in
         the Roster's Data column and "may be out of date" on their Character tab.
 
+58. [ ] Roster → **Copy**: a window opens with the list as plain text,
+        already selected. Ctrl+C (Cmd+C), paste into Discord: no colour codes,
+        no notes. Try it with a raid picked too.
+59. [ ] Crafters → pick a result → **Copy**: the crafter list as plain text.
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).

@@ -254,3 +254,79 @@ describe("v0.2.1 sharing preview and data freshness", function()
 		assert.is_not_nil(list[1].scanned)
 	end)
 end)
+
+describe("v0.2.1 Copy as text", function()
+	local SK, W
+	before_each(function()
+		SK, W = H.load()
+		H.loadUI(SK)
+		W.member("Pip", W.player.guid, { note = "secret note", officerNote = "officer secret" })
+		W.member("Bob", "Player-1-B", { online = false, note = "bob's note" })
+		W.professions = { { name = "Tailoring", rank = 300, max = 300, skillLine = 197 } }
+		W.gear[1] = "|cffa335ee|Hitem:16914::::|h[Netherwind Crown]|h|r"
+		W.talentNodes = { { id = 1, rank = 5, groups = { 2 }, spellID = 1001 } }
+		SK.Identity:ReadRoster()
+		SK.Profile:BuildSelf()
+	end)
+
+	it("strips colours, icons and links", function()
+		assert.equal("Netherwind Crown x", SK.Export.Plain("|cffa335ee|Hitem:16914::::|h[Netherwind Crown]|h|r x"):gsub("[%[%]]", ""))
+		assert.equal("yes", SK.Export.Plain("|A:UI-LFG-ReadyMark:12:12|a|cff7CD67Cyes|r"))
+		assert.equal("a b", SK.Export.Plain("|T134400:14:14|ta b"))
+		assert.equal("", SK.Export.Plain(nil))
+	end)
+
+	it("copies the Roster as shown, without notes or colour codes", function()
+		SK.MainFrame:Show("roster")
+		local text = SK.RosterTab:CopyText()
+		assert.truthy(text:find("^Short Kings roster\n"))
+		assert.truthy(text:find("- Pip · lvl 60 · Fire 0/5/0 · Tail 300 · ilvl 61 · online", 1, true))
+		assert.truthy(text:find("- Bob · lvl 60 · offline", 1, true))
+		assert.is_nil(text:find("note", 1, true))
+		assert.is_nil(text:find("secret", 1, true))
+		assert.is_nil(text:find("|c", 1, true))
+		assert.equal(text, SK.DebugWindow.text)
+	end)
+
+	it("leaves your own gear and talents out when you don't share them", function()
+		SK.DB.settings.share.gear = false
+		SK.MainFrame:Show("roster")
+		local text = SK.RosterTab:CopyText()
+		assert.is_nil(text:find("ilvl", 1, true))
+		assert.is_nil(text:find("Fire", 1, true))
+	end)
+
+	it("copies the raid view with attunement", function()
+		SK.DB.settings.roster.raid = "ony"
+		SK.MainFrame:Show("roster")
+		local text = SK.RosterTab:CopyText()
+		assert.truthy(text:find("Short Kings roster: Onyxia's Lair", 1, true))
+		assert.truthy(text:find("not attuned", 1, true))
+	end)
+
+	it("copies a crafter list", function()
+		local text = SK.Export.Crafters("|cff1eff00Arcanite Bar|r", "Alchemy", {
+			{ name = "Ann", skill = 300, status = "addon" },
+			{ name = "Dot", skill = 290, status = "online", via = "x", viaName = "Dotty", altOf = "Bob" },
+			{ name = "Ben", skill = 0, status = "offline" },
+		})
+		assert.equal("Arcanite Bar (Alchemy) can be made by:\n- Ann (skill 300, online)\n" ..
+			"- Dot (skill 290, online on Dotty, alt of Bob)\n- Ben (offline)", text)
+		assert.truthy(SK.Export.Crafters("X", nil, {}):find("nobody yet", 1, true))
+	end)
+end)
+
+describe("v0.2.1 update available", function()
+	it("says so in the Roster counter when a guildmate runs a newer version", function()
+		local SK, W = H.load()
+		H.loadUI(SK)
+		W.member("Pip", W.player.guid)
+		W.member("Bob", "Player-1-B")
+		SK.Identity:ReadRoster()
+		SK.MainFrame:Show("roster")
+		assert.is_nil(SK.RosterTab.count:GetText():find("is out", 1, true))
+		SK.Identity:Member("Player-1-B").addon = "0.9.0"
+		SK.RosterTab:Refresh()
+		assert.truthy(SK.RosterTab.count:GetText():find("Short Kings 0.9.0 is out (you have 0.1.0)", 1, true))
+	end)
+end)

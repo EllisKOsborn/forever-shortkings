@@ -144,6 +144,9 @@ function Crafters:Build(page)
 	self.crafters:SetPoint("BOTTOMRIGHT", -6, 40)
 	self.post = W.Button(side, "Post to guild chat", 150, 24, function() Crafters:PostToGuild() end)
 	self.post:SetPoint("BOTTOMLEFT", 8, 8)
+	self.copy = W.Button(side, "Copy", 56, 24, function() Crafters:CopyText() end)
+	self.copy:SetPoint("LEFT", self.post, "RIGHT", 8, 0)
+	self.copy.tooltip = "Copy the crafter list as plain text (for Discord)."
 	self.post.tooltip = "Types the list into your chat box. Press Enter to send it."
 	self.empty = Theme.Text(side, 12, "muted")
 	self.empty:SetPoint("CENTER")
@@ -174,6 +177,16 @@ function Crafters:PostToGuild()
 	if not Compat.OpenChat("/g " .. CI.ChatText(label, list, 240)) then
 		SK:Print("Couldn't open the chat box on this client.")
 	end
+end
+
+function Crafters:CopyText()
+	local index = CI:Get()
+	local r = self.selected and index.recipes[self.selected]
+	if not r then return end
+	local list = CI.Crafters(index, r.recipeID, SK.DBM:Guild(), Compat.Now())
+	local text = SK.Export.Crafters(CI.NameOf(r) or "?", profName(r.skillLine), list)
+	SK.DebugWindow:ShowText("Copy as text", text)
+	return text
 end
 
 function Crafters:Refresh()
@@ -208,6 +221,7 @@ function Crafters:Refresh()
 	local r = self.selected and index.recipes[self.selected]
 	self.crafters:SetShown(r ~= nil)
 	self.post:SetShown(r ~= nil)
+	self.copy:SetShown(r ~= nil)
 	self.empty:SetShown(r == nil)
 	if not r then
 		self.title:SetText("")

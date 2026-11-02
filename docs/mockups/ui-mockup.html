@@ -175,10 +175,11 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
     <div class="tabs"><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
     <div class="content">
-      <div class="search" style="width:240px">Search name, profession, spec, note...</div>
-      <div class="menu" style="left:250px;top:0;width:150px">All raids</div>
-      <div class="check" style="left:414px;top:2px"><div class="box on"></div>Group alts</div>
-      <div class="count" style="left:540px">15 characters · 12 with data · <span class="e">1 need an update</span></div>
+      <div class="search" style="width:210px">Search name, profession, note...</div>
+      <div class="menu" style="left:220px;top:0;width:150px">All raids</div>
+      <div class="check" style="left:384px;top:2px"><div class="box on"></div>Group alts</div>
+      <div class="count" style="left:510px">15 characters · 12 with data · <span class="e">1 need an update</span></div>
+      <div class="btn small" style="position:absolute;right:0;top:0;width:56px">Copy</div>
       <div class="list">
         <div class="header" id="rhead"></div>
         <div class="rows" id="rrows"></div>
@@ -246,25 +247,33 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
       <div class="check" style="top:30px"><div class="box on"></div>Share and receive guild data (sync)</div>
       <div class="check" style="top:58px"><div class="box on"></div>Share my gear and talents</div>
       <div class="check" style="top:86px"><div class="box on"></div>Share my recipes and cooldowns</div>
-      <div class="check" style="top:114px"><div class="box on"></div>Show minimap button</div>
-      <div class="check" style="top:142px"><div class="box"></div>Debug logging in chat</div>
-      <div class="rowbtns" style="top:170px"><span style="font-size:12px;margin-right:4px">Window size</span>
+      <div class="check" style="top:114px"><div class="box on"></div>Show guild crafters in item tooltips</div>
+      <div class="check" style="top:142px"><div class="box on"></div>Show minimap button</div>
+      <div class="check" style="top:170px"><div class="box"></div>Debug logging in chat</div>
+      <div class="rowbtns" style="top:198px"><span style="font-size:12px;margin-right:4px">Window size</span>
         <div class="btn" style="width:54px;min-width:54px;padding:0">70%</div><div class="btn" style="width:54px;min-width:54px;padding:0">80%</div>
         <div class="btn" style="width:54px;min-width:54px;padding:0">90%</div><div class="btn active" style="width:54px;min-width:54px;padding:0">100%</div>
         <div class="btn" style="width:54px;min-width:54px;padding:0">110%</div><div class="btn" style="width:54px;min-width:54px;padding:0">120%</div>
         <div class="btn" style="width:54px;min-width:54px;padding:0">130%</div></div>
-      <div class="rowbtns" style="top:210px">
+      <div class="rowbtns" style="top:238px">
         <div class="btn small" style="width:170px;height:24px">Rescan my character</div>
         <div class="btn small hover" style="width:170px;height:24px">Sync now</div>
         <div class="btn small" style="width:170px;height:24px">Reset window position</div>
         <div class="btn small" style="width:170px;height:24px">Debug report</div></div>
-      <div class="panel" style="top:254px"><span class="p">Status</span>
-  Version 0.1.1   ·   Guild: Short Kings
-  Sync: <span class="g">running</span>
-  Sending: allowed
+      <div class="panel" style="top:282px;bottom:0;overflow:hidden"><span class="p">Status</span>
+  Version 0.2.1   ·   Guild: Short Kings
+  Sync: <span class="g">running</span>   ·   Sending: allowed
   Messages: 48 sent, 131 received, 11 accepted, 0 rejected, 0 queued
   Your data updated 4m ago
-  <span class="f">Open these profession windows once: Enchanting</span></div>
+
+<span class="p">What guildmates see from you</span>
+  <span class="g">shared</span>   Name, class, race, level and addon version
+  <span class="m">private</span>  Gear and item level
+  <span class="m">private</span>  Talents
+  <span class="g">shared</span>   Profession skill levels
+  <span class="g">shared</span>   Recipes
+  <span class="g">shared</span>   Profession cooldowns</div>
+      <div class="scroll" style="top:282px;right:2px"><div class="thumb" style="height:70px"></div></div>
     </div>
   </div>
 </div>
@@ -277,9 +286,10 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
     <div class="tabs"><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
     <div class="content">
-      <div class="search" style="width:240px">Search name, profession, spec, note...</div>
-      <div class="menu hover" style="left:250px;top:0;width:150px">Onyxia's Lair</div>
-      <div class="count" style="left:414px">14 characters</div>
+      <div class="search" style="width:210px">Search name, profession, note...</div>
+      <div class="menu hover" style="left:220px;top:0;width:150px">Onyxia's Lair (40)</div>
+      <div class="count" style="left:384px">14 characters</div>
+      <div class="btn small" style="position:absolute;right:0;top:0;width:56px">Copy</div>
       <div style="position:absolute;left:0;top:28px;display:flex;gap:4px">
         <div class="btn small active" style="min-width:90px">All</div><div class="btn small" style="min-width:90px">Attuned</div>
         <div class="btn small" style="min-width:90px">Not attuned</div><div class="btn small" style="min-width:90px">Unknown</div></div>
@@ -322,6 +332,7 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
           <div class="rows" id="krows"></div>
         </div>
         <div class="btn small hover" style="position:absolute;left:8px;bottom:8px;width:150px;height:24px">Post to guild chat</div>
+        <div class="btn small" style="position:absolute;left:166px;bottom:8px;width:56px;height:24px">Copy</div>
       </div>
     </div>
   </div>
@@ -429,7 +440,7 @@ document.getElementById("details").innerHTML =
 // Roster with a raid picked: every character on its own row.
 const acols = [["Name",170],["Lvl",36,"r"],["Rank",90],["Spec",120],["Attuned",100],["iLvl",40,"r"],["Online",82],["Data",70]];
 document.getElementById("ahead").innerHTML = acols.map(c => `<div class="${c[2]||""}" style="width:${c[1]}px">${c[0]}</div>`).join("");
-const MARK = { y:'<span class="mark y">✓</span><span class="g">yes</span>', n:'<span class="mark n">✗</span><span class="bd">no</span>',
+const MARK = { "y!":'<span class="mark y">✓</span><span class="g">yes</span> <span class="e">!</span>', y:'<span class="mark y">✓</span><span class="g">yes</span>', n:'<span class="mark n">✗</span><span class="bd">no</span>',
   u:'<span class="mark u">?</span><span class="m">unknown</span>' };
 const arows = [
   ["Bramble Cogwhistle","WARRIOR","Guild Master","Protection","5/5/41","y",63,"addon","2m"],
@@ -438,7 +449,7 @@ const arows = [
   ["Widget Boltbrace","HUNTER","Member","Marksman","5/31/15","n",58,"addon","1m"],
   ["Zib Ratchetwhirl","WARRIOR","Raider","Fury","31/20/0","y",62,"addon","3m"],
   ["Brambelle","PALADIN","Alt","Holy","31/20/0","y",54,"off:1d","1d"],
-  ["Dabble Fizzwick","PALADIN","Officer","Holy","31/20/0","y",60,"off:3h","3h"],
+  ["Dabble Fizzwick","PALADIN","Officer","Holy","31/20/0","y!",60,"off:3h","3h"],
   ["Nim Copperkettle","WARLOCK","Raider","Affliction","30/0/21","n",60,"off:1d","1d"],
   ["Gilly Pumpkinspark","DRUID","Raider","Restoration","11/0/40","y",58,"off:2d","2d"],
   ["Mossy Twinklegear","MAGE","Member","Frost","10/0/41","y",57,"off:4d","4d"],

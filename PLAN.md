@@ -282,7 +282,7 @@ which explains where each idea came from.
 How each proposal was judged: [docs/PLAN-REVIEW.md](docs/PLAN-REVIEW.md). This
 section is the single source of truth for order and status.
 
-- **v0.2.1 launch readiness** (now, before 4 Nov). No new message types:
+- **v0.2.1 launch readiness** — ✅ code complete 2 Nov. No new message types:
   - attunement fix: Barrow Deeps and Hyjal need none; Onyxia quest **and**
     Drakefire Amulet in bags; MC/BWL/Naxx hidden from the picker
   - `/sk debug`: last errors, calendar probes, GUID stability, unlearned recipes
