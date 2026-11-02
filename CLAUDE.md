@@ -81,6 +81,8 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   - updates to `README.md` ("What's inside" lists **everything**), `CHANGELOG.md` and `TESTING.md`;
   - updated mockups in `docs/mockups/` when the UI changes (`node docs/mockups/render.js <font>`).
 - Commit as you go. Never create a PR unless asked. Push to your designated branch.
+- **`main`** holds the released state (created 2 Nov 2026 with v0.2.0).
+  Push to `main` only when the user asks; the README's test badge tracks it.
 
 ## Layout
 ```
