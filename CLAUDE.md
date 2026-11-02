@@ -58,8 +58,11 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
 - **Realmless:** characters have two-part names that are unique per region.
   Key everything by **player GUID**. The `sender` format in addon messages is
   unconfirmed, so `Core/Identity.lua` matches it several ways.
-- Launch was 4 Nov 2026. Raids open 9 Dec: Barrow Deeps (10), Hyjal Summit
-  (20), Onyxia (40). Molten Core isn't in the first wave.
+- Forever launches **4 Nov 2026** (written 2 Nov; update once the live client
+  has been checked). Raids open 9 Dec: Barrow Deeps (10) and Hyjal Summit (20)
+  need **no attunement**; Onyxia's Lair (40) needs the **Drakefire Amulet
+  (item 16309) in your bags**, not equipped (Blizzard's raid overview, checked
+  2 Nov). Molten Core, BWL and Naxxramas aren't in the first wave.
 
 ## Rules
 - **`Core/Compat.lua` is the only file that calls client-specific APIs.**
@@ -138,12 +141,13 @@ Alts link only when **both** profiles list each other in `family`.
   See CHANGELOG.md. (`docs/prompts/next-v0.1.2-v0.2.md` is done.)
 - Roadmap and future plans: `PLAN.md` section 7. Background and reasoning:
   `docs/FEATURE-REVIEW.md`.
-- Proposed follow-up priorities from the Manus review: `docs/MANUS-PLAN.md`.
-  This is for review; it does not replace the existing roadmap or authorize
-  implementation without the user's direction.
-- **Next:** in-game testing (TESTING.md), then **v0.3 Raids** before raids
-  open on 9 Dec: prompt `docs/prompts/next-v0.3-raids.md` (v0.3.0 read-only,
-  v0.3.1 actions). After that, the Professions tab and B2–B6 (PLAN.md v0.2.x).
+- Outside proposals (`docs/GPT-PLAN.md`, `docs/MANUS-PLAN.md`,
+  `docs/PERPLEXITY-PLAN.md`) were reviewed on 2 Nov: verdicts in
+  `docs/PLAN-REVIEW.md`, agreed order in **PLAN.md section 7** (the single
+  roadmap). Don't build from the proposal files directly.
+- **Next:** v0.2.1 launch readiness (PLAN.md section 7), then the in-game
+  test gate (TESTING.md), v0.2.3 Overview, and **v0.3 Raids** before 9 Dec
+  (`docs/prompts/next-v0.3-raids.md`). Professions tab is v0.4.
 - Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
   `AddEvent` is `HasRestrictions`; `GetDayEvent`/`EventGetInvite` are secret
   during chat lockdown; `C_PartyInfo.InviteUnit` and `ConvertToRaid` exist.
@@ -161,18 +165,13 @@ Alts link only when **both** profiles list each other in `family`.
   - "Post to guild chat" uses `ChatFrameUtil.OpenChat("/g …")`; never
     `SendChatMessage`.
 
-## Pending review: Perplexity Plan
-`docs/PERPLEXITY-PLAN.md` holds proposals from an outside review (2 Nov 2026):
-attunement data fixes, in-game proof pass, levelling-phase and raid-season ideas.
-Review it first, record Accept / Modify / Reject per item in its section 7, and
-tell the owner your decisions before building anything.
-
 ## Waiting on the user (remind them when relevant)
 1. Confirm the Mac AddOns folder (Battle.net → Forever → ⚙ → Show in Finder).
    Expected: `/Applications/World of Warcraft/_forever_/Interface/AddOns`.
 2. In game, run `/dump select(4, GetBuildInfo())` (expect 16001).
 3. Install a test build, send the `/sk debug` text, and work through `TESTING.md`.
-4. Forever attunement quest IDs for Barrow Deeps and Hyjal Summit (if the guild knows them).
+4. Onyxia attunement: whether any Horde members exist (Horde chain differs), and
+   in-game check that the Drakefire Amulet check works.
 
 ## Answers already given to the guild (stay consistent)
 - **Alts:** linked automatically once each alt has logged in with the addon

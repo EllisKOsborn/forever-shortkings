@@ -261,19 +261,19 @@ Fill this in as you go. One row per item.
 
 | Item | Decision (Accept / Modify / Reject) | Reason | Status |
 |---|---|---|---|
-| P1 | | | |
-| P2 | | | |
-| P3 | | | |
-| P4 | | | |
-| P5 | | | |
-| P6 | | | |
-| P7 | | | |
-| P8 | | | |
-| P9 | | | |
-| P10 | | | |
-| P11 | | | |
-| P12 / P13 | | | |
-| P14-P20 | | | |
+| P1 | Modify | Verified (Blizzard overview + Icy Veins; item 16309 via wiki.gg + Wowhead Forever). Amulet shown alongside the quest, not replacing it | v0.2.1 |
+| P2 | Accept | Dated wording | v0.2.1 |
+| P3 | Accept | Calendar, GUID stability, sender and unlearned-recipe probes | v0.2.1 (owner runs it) |
+| P4 | Accept | Last 10 errors in the report | v0.2.1 |
+| P5 | Modify | "Update available" line now; store releases need the owner's accounts | v0.2.1 (line) |
+| P6 | Reject for now (defer) | Camp objects and spells unverified | after verification |
+| P7 | Accept | Local only, after the first test round | v0.2.3 |
+| P8 | Reject for now (defer) | Free text on the wire + protocol change before validation | v0.5 |
+| P9 | Accept | = PLAN D8 | v0.2.1 |
+| P10 | Modify | Quest + amulet now; per-step tracker needs verified quest IDs | partly v0.2.1 |
+| P11 | Modify | Merged into the v0.3 line-up | v0.3 |
+| P12 / P13 | Accept P12; P13 only if P3 shows the calendar is unusable | | v0.3 |
+| P14-P20 | P14 defer, P15 defer, P16 defer, P17 accept (v0.2.2), P18 accept, P19 accept, P20 reject | See docs/PLAN-REVIEW.md | |
 
 ## 8. Sources
 

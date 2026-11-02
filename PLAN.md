@@ -1,6 +1,6 @@
 # Short Kings — addon plan (awaiting approval)
 
-> Status: **v0.1 to v0.2.0 code complete (not yet tested in game).**
+> Status: **v0.1 to v0.2.1 code complete (not yet tested in game).** Roadmap: section 7.
 > Researched against Blizzard's own UI source for the Forever client,
 > build **1.60.1.70532** (Gethe/wow-ui-source, `forever` branch), plus
 > warcraft.wiki.gg's *Patch 1.60.1/API changes* page.
@@ -277,32 +277,38 @@ which explains where each idea came from.
   - Crafters tab: search a recipe or item, see who can make it, Whisper, post to guild chat (B7)
   - B1 "Crafted by" lines on every item tooltip (`TooltipDataProcessor`)
 
-### v0.2.x: Professions (Crafters and B1/B7 shipped in v0.2.0)
-- Professions tab: guild coverage, recipes nobody has (from scanned lists)
-- Scan reminders in the UI
-- B2 reagents per recipe (recorded during the owner's scan)
-- B3 specialisations (transmute/elixir/potion master, gnomish/goblin,
-  dragonscale/elemental/tribal, armor/weaponsmith); spell IDs to be verified
-- B4 guild cooldown board (who can transmute or make cloth right now)
-- B5 coverage gaps: professions and specialisations nobody has
-- B6 favourite recipes and crafters (local only)
+### Agreed roadmap (revised 2 Nov 2026 after the GPT, Manus and Perplexity reviews)
 
-### v0.3: Raids (on Blizzard's guild calendar, see section 6; next up, before 9 Dec)
-- C1 sign-up status (signed / tentative / late / bench / can't), main and second role
-- C2 line-up view: counts by role and class, attunement check for that raid
-- C3 raid reminders (chat or pop-up before start)
-- C4 "invite everyone signed up" button for the raid leader
-- C5 raid templates with sizes: Barrow Deeps 10, Hyjal Summit 20, Onyxia 40
+How each proposal was judged: [docs/PLAN-REVIEW.md](docs/PLAN-REVIEW.md). This
+section is the single source of truth for order and status.
 
-### v0.4: Polish
-- Ember/spark animation on the title bar, roster and settings flourishes
-- Fix the design issues the mockups showed: long spec names truncate in the
-  Roster; the Character tab's empty right side could use two columns
-- Attunement and faction tables confirmed for Forever (quest/faction IDs)
+- **v0.2.1 launch readiness** (now, before 4 Nov). No new message types:
+  - attunement fix: Barrow Deeps and Hyjal need none; Onyxia quest **and**
+    Drakefire Amulet in bags; MC/BWL/Naxx hidden from the picker
+  - `/sk debug`: last errors, calendar probes, GUID stability, unlearned recipes
+  - sync hardening: 32 KB message cap, per-sender rate limit
+  - sharing preview in Settings; clearer "relayed / stale / not scanned" labels
+  - Copy as text (Roster, Crafters) for Discord (D8)
+  - "update available" in the Roster counter
+- **Test gate** (4–7 Nov): owner runs TESTING.md; **v0.2.2** = fixes only,
+  plus an API contract check in CI (P17).
+- **v0.2.3 Overview** (Nov): a small Overview tab from existing data:
+  population, data health, profession coverage (B5), single-crafter recipes,
+  attunement summary, and a local levelling feed (P7, never synced).
+- **v0.3 Raids** (before 9 Dec): `docs/prompts/next-v0.3-raids.md`, plus a
+  readiness card (P11) and a duplicate-alt sign-up check. Addon-native events
+  (P13) only if the calendar turns out to be unusable.
+- **v0.4 Professions** (Dec): cooldown board (B4), specialisations (B3),
+  reagents (B2), favourites (B6); camp planner (P6) once its data is verified.
+- **v0.5 Coordination** (Jan): craft requests (D1), status line (P8),
+  lockout board (P15).
+- **v0.6 Polish:** ember animation, long spec names, two-column Character tab.
 
 ### Later (in rough priority order)
-- D1 craft requests: "ask to craft", the crafter accepts, reagent totals
-- D8 copy/export roster, crafters or a raid line-up as text (for Discord)
+(D1 craft requests moved to v0.5; D8 export moved to v0.2.1.)
+- Per-step Onyxia attunement tracker (P10), once its quest IDs are verified
+- Legacy/guild goals (P16, Manus stage 4), if the client exposes them
+- Officer announcements and short guild notes (GPT 4.7, kept small)
 - D2 raid attendance from the raid group (30/60/90 days)
 - D6 shopping list and reagent totals
 - D5 guild bank snapshot viewer (only if the guild uses the bank)
@@ -319,7 +325,10 @@ Loot council, DKP and soft reserves (use Gargul); consumable and world-buff
 checks (Party Buff Tracker Forever, and Midnight blocks reading auras in
 raids); officer kick/promote scripts (GRM); replacing Blizzard's guild window
 (taint risk); website or Discord sync (against the brief); layers, bounties,
-blacklists and group finder (not useful for a PvE guild of 50).
+blacklists and group finder (not useful for a PvE guild of 50); addon-observed
+activity metrics (feel like surveillance, and the roster already shows last
+online); a Retail version (the guild plays Forever); a stronger hash (nothing
+secret is synced).
 
 ## 8. Decisions so far
 
