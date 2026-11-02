@@ -87,6 +87,10 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
 - **`main`** holds the released state (created 2 Nov 2026 with v0.2.0;
   v0.2.2 pushed 2 Nov). Push to `main` only when the user asks; the README's
   test badge tracks it.
+- **Releases:** pushing a tag `vX.Y.Z` on `main` runs `.github/workflows/release.yml`
+  (BigWigs packager): it builds `ShortKings-vX.Y.Z.zip` and a GitHub Release
+  whose notes come from CHANGELOG.md (`.pkgmeta` manual-changelog). First
+  release: **v0.2.2** (2 Nov 2026, the launch build). Tag only when the user asks.
 
 ## Layout
 ```

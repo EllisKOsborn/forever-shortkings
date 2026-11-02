@@ -2,6 +2,11 @@ package-as: ShortKings
 
 enable-nolib-creation: no
 
+# Release notes on GitHub come from our changelog, not the commit list.
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
 # LibStub, CallbackHandler, AceComm, LibSerialize and LibDeflate are committed
 # in Libs/. These two are fetched when the release zip is built.
 externals:

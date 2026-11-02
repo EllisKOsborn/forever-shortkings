@@ -358,9 +358,9 @@ client. This is the order of work once the game is live. Nothing new gets
 built until steps 1 to 3 are done.
 
 ### Step 1: first evening on your own (about 30 minutes)
-1. Get a test build: GitHub → **Actions** → **Tests** → the latest run on
-   `main` → download **ShortKings-test-build**. Unzip it so you have
-   `AddOns/ShortKings/ShortKings.toc` (path in the README's Install section).
+1. Download **ShortKings-v0.2.2.zip** from the GitHub **Releases** page
+   (under *Assets*). Unzip it so you have `AddOns/ShortKings/ShortKings.toc`
+   (path in the README's Install section). Share the same link with the guild.
 2. Character screen → **AddOns**: Short Kings is listed and not "out of date"
    (if it is, tick *Load out of date AddOns* and tell me).
 3. In game, type `/console scriptErrors 1` once so Lua errors show.
@@ -393,10 +393,9 @@ Crafters and tooltips, Copy, the Overview's numbers and milestones.
 ### Step 4: build queue after the test
 1. **v0.2.3: fixes only** from steps 1–3, plus an automatic check in CI that
    every game function we use still exists in Blizzard's Forever code (P17).
-2. **First proper release:** tag `v0.2.3` so GitHub builds a downloadable zip
-   on the Releases page (the README's Install section points there). When you
-   have CurseForge or Wago accounts, the same build can go there (P5); I
-   prepare it, you do the upload.
+2. **Release v0.2.3** with the fixes (v0.2.2, released 2 Nov, is the launch
+   build). When you have CurseForge or Wago accounts, releases can go there
+   too (P5); I prepare it, you do the upload.
 3. **v0.3.0 Raids, read-only** (target: before raids open on 9 Dec): raid
    events from the calendar, who signed up with role, spec, item level and
    attunement, role counts, readiness card, Copy. Prompt:

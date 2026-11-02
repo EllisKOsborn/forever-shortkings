@@ -1,6 +1,15 @@
 # Changelog
 
-## v0.2.2 (unreleased, not yet tested in game)
+## v0.2.2 (2 Nov 2026): first release, for launch day
+
+The first downloadable release, and the version the guild starts with when
+Forever launches on 4 Nov. It includes everything below (v0.1.0 to v0.2.1
+were never released separately). **It hasn't been run in game yet:** it's
+built against Blizzard's Forever 1.60.1 interface code and tested with a
+simulated client. Please report problems with the `/sk debug` text.
+
+New in this version:
+
 
 - New **Overview** tab, first in the window: the guild at a glance in six
   cards, each with a button to the place where you can act on it.
@@ -22,7 +31,7 @@
 - Fixed: buttons are explicitly enabled when created (the test stub could
   treat a never-enabled button as disabled).
 
-## v0.2.1 (unreleased, not yet tested in game)
+## v0.2.1 (included in v0.2.2)
 
 Launch readiness, after reviewing the GPT, Manus and Perplexity plans
 (`docs/PLAN-REVIEW.md`).
@@ -57,7 +66,7 @@ Launch readiness, after reviewing the GPT, Manus and Perplexity plans
 - Mockups updated (Copy buttons, raid sizes, Settings preview and the
   tooltip setting that was missing from the v0.2.0 picture).
 
-## v0.2.0 (unreleased, not yet tested in game)
+## v0.2.0 (included in v0.2.2)
 
 - New **Crafters** tab: search an item or recipe name (3+ letters), see one
   row per recipe with icon, quality-coloured name, profession and
@@ -69,7 +78,7 @@ Launch readiness, after reviewing the GPT, Manus and Perplexity plans
 - `/sk debug` reports the crafter index, the tooltip hook and name loading,
   and probes every new API.
 
-## v0.1.2 (unreleased, not yet tested in game)
+## v0.1.2 (included in v0.2.2)
 
 - Roster: a **Raid** picker (*All raids*, Onyxia's Lair, Molten Core,
   Blackwing Lair, Barrow Deeps, Hyjal Summit, Naxxramas). With a raid picked:
@@ -84,7 +93,7 @@ Launch readiness, after reviewing the GPT, Manus and Perplexity plans
   (was 60 s).
 - Fixed "Updated now ago" on the Character tab (now "Updated just now").
 
-## v0.1.1 (unreleased, not yet tested in game)
+## v0.1.1 (included in v0.2.2)
 
 - Roster: **status dots** (online with addon / without / offline), a **Ver**
   column with "needs an update", **alts grouped under their main**, public
@@ -94,7 +103,7 @@ Launch readiness, after reviewing the GPT, Manus and Perplexity plans
 - **Cooldowns** stay accurate without opening the profession window.
 - **Privacy**: choose whether to share your gear/talents and your recipes.
 
-## v0.1.0 (unreleased, not yet tested in game)
+## v0.1.0 (included in v0.2.2)
 
 - Collects, for every character you log in on: name, class, race, level,
   guild rank, talents (points per tree plus each talent), equipped gear with

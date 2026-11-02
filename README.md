@@ -24,7 +24,7 @@
 </p>
 
 > [!NOTE]
-> **v0.2.2 is an alpha that hasn't been run in game yet.** It's built against
+> **v0.2.2 is the first release, for launch day, and hasn't been run in game yet.** It's built against
 > Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
 > client. The pictures below are **mockups** drawn from the addon's real
 > colours and layout. Item icons are placeholders; in game you see the real ones.
@@ -205,10 +205,8 @@ Settings ("Record guild milestones").
 ## 📦 Install
 
 1. Download the latest **`ShortKings-x.y.z.zip`** from
-   [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases).
-   *No release is tagged yet:* until then, open
-   [**Actions → Tests**](https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml),
-   pick the latest run on `main`, and download **ShortKings-test-build**.
+   [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases)
+   (under *Assets*). The first release is **v0.2.2**, for launch day.
 2. Unzip it. You'll get a folder called **`ShortKings`**.
 3. Move that folder into your Forever **AddOns** folder:
 
