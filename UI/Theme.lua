@@ -27,13 +27,6 @@ Theme.HEX = {
 	ember     = "FF7A1A", -- fuse and sparks only; never text
 }
 
--- Old names (v0.1–v0.2.2) keep working; they resolve to the new tokens.
-Theme.LEGACY = {
-	plumDark = "sidebar", plum = "bg", plumLift = "panelAlt", magenta = "brand", pink = "accent",
-	flame = "warning", leather = "panelAlt", gold = "warning", muted = "textMuted",
-	good = "success", bad = "danger",
-}
-
 -- White washes (alpha), never a new hue.
 Theme.WASH = { hairline = 0.10, hover = 0.06, selected = 0.09, pressed = 0.12, zebra = 0.02, strong = 0.20 }
 
@@ -58,9 +51,9 @@ function Theme.Icon(name)
 	return Theme.ICON_PATH .. name .. ".tga"
 end
 
--- Token name (new or legacy) or a raw "RRGGBB" -> hex.
+-- Token name or a raw "RRGGBB" -> hex.
 function Theme.Hex(name)
-	return Theme.HEX[name] or Theme.HEX[Theme.LEGACY[name] or ""] or name
+	return Theme.HEX[name] or name
 end
 
 local cache = {}
@@ -180,20 +173,14 @@ function Theme.Edge(frame, side, color, alpha)
 	return t
 end
 
--- Legacy name: every border is a hairline now (thickness is ignored).
-function Theme.Border(frame)
-	return Theme.Hairline(frame)
-end
-
 -- Recolour an outline: a token, or nil for the plain hairline.
 function Theme.SetBorderColor(frame, name, alpha)
 	if not frame.border then return end
-	if name == nil or name == "leather" then paintLines(frame.border, nil, alpha)
+	if name == nil then paintLines(frame.border, nil, alpha)
 	else paintLines(frame.border, name, alpha or 1) end
 end
 
 -- Flat ground plus hairline. opts = { tone = "panel", border = true }.
--- Legacy opts (from/to/thickness/gold) are accepted and ignored.
 function Theme.Panel(frame, opts)
 	opts = opts or {}
 	local bg = frame:CreateTexture(nil, "BACKGROUND", nil, -7) -- above Theme.Shadow (-8)

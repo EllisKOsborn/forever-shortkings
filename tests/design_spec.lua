@@ -33,13 +33,19 @@ describe("design system", function()
 		end
 	end)
 
-	it("keeps the old colour names working", function()
-		assert.equal(Theme.HEX.accent, Theme.Hex("pink"))
-		assert.equal(Theme.HEX.textMuted, Theme.Hex("muted"))
-		assert.equal("|cff" .. Theme.HEX.success, Theme.Code("good"))
+	it("only uses design tokens (the old v0.2 colour names are gone)", function()
+		local OLD = { "pink", "flame", "muted", "good", "bad", "plum", "plumDark", "plumLift", "magenta", "leather", "gold" }
+		local files = { "UI/Theme.lua", "UI/Widgets.lua", "UI/MainFrame.lua", "UI/OverviewTab.lua", "UI/RosterTab.lua",
+			"UI/CharacterTab.lua", "UI/CraftersTab.lua", "UI/SettingsTab.lua", "UI/DebugWindow.lua", "UI/Minimap.lua",
+			"UI/Tooltip.lua", "Commands.lua" }
+		for _, f in ipairs(files) do
+			local src = assert(readFile(f))
+			for _, name in ipairs(OLD) do
+				assert.is_nil(src:find('"' .. name .. '"', 1, true), f .. " uses " .. name)
+			end
+		end
 		assert.equal("123456", Theme.Hex("123456"))
-		local r, g, b = Theme.RGB("bad")
-		assert.near(0xF5 / 255, r, 1e-9); assert.near(0x73 / 255, g, 1e-9); assert.near(0x73 / 255, b, 1e-9)
+		assert.equal("|cff" .. Theme.HEX.success, Theme.Code("success"))
 	end)
 
 	it("meets the contrast floors on every surface text can sit on", function()

@@ -16,8 +16,8 @@ local function onClick(_, button)
 end
 
 local function onTooltip(tt)
-	tt:AddLine(Theme.Code("pink") .. "Short Kings|r")
-	tt:AddLine("Small in stature. Big in loot.", Theme.RGB("flame"))
+	tt:AddLine(Theme.Code("accent") .. "Short Kings|r")
+	tt:AddLine("Small in stature. Big in loot.", Theme.RGB("textDim"))
 	tt:AddLine("Left-click: open / close", 1, 1, 1)
 	tt:AddLine("Right-click: settings", 1, 1, 1)
 end

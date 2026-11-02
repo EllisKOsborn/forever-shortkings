@@ -237,13 +237,6 @@ function W.Segments(parent, items, get, set)
 	return g
 end
 
--- Legacy name for a single selectable button (now a ghost segment).
-function W.Tab(parent, text, onClick)
-	local t = W.Button(parent, text, 90, 24, onClick, { style = "ghost" })
-	W.FitWidth(t, 0)
-	return t
-end
-
 ---------------------------------------------------------------------------
 -- Check box with label: 14 px box; on = accent edge + 8 px accent square.
 ---------------------------------------------------------------------------
