@@ -154,6 +154,12 @@ the `/sk debug` text when something looks wrong.
 55. [ ] If you ever see a Lua error, `/sk debug` lists it under
         "Recent errors". Send me that part too.
 
+56. [ ] Settings → **What guildmates see from you**: untick "Share my gear and
+        talents" and the list changes to "private" for gear and talents.
+        Tick it again.
+57. [ ] A guildmate whose data is more than a week old shows an orange age in
+        the Roster's Data column and "may be out of date" on their Character tab.
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).

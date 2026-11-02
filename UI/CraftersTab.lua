@@ -130,6 +130,11 @@ function Crafters:Build(page)
 			GameTooltip:AddLine(Theme.ClassText(c.name, c.class))
 			if c.altOf then GameTooltip:AddLine("alt of " .. c.altOf, 0.72, 0.6, 0.67) end
 			if c.via then GameTooltip:AddLine("Online on " .. (c.viaName or "an alt"), 0.49, 0.84, 0.49) end
+			if c.scanned then
+				local stale = Theme.IsStale(c.scanned)
+				GameTooltip:AddLine("Recipes recorded " .. Theme.Ago(c.scanned) .. " ago" ..
+					(stale and " (may be out of date)" or ""), stale and 1 or 0.72, stale and 0.48 or 0.6, stale and 0.1 or 0.67)
+			end
 			GameTooltip:AddLine("Click to view character", 1, 0.76, 0.29)
 			GameTooltip:Show()
 		end,

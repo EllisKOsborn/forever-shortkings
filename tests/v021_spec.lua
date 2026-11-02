@@ -177,3 +177,80 @@ describe("v0.2.1 sync hardening", function()
 		assert.equal(62, handled)
 	end)
 end)
+
+describe("v0.2.1 sharing preview and data freshness", function()
+	local SK, W
+	before_each(function()
+		SK, W = H.load()
+		H.loadUI(SK)
+		W.member("Pip", W.player.guid)
+		SK.Identity:ReadRoster()
+		W.gear[1] = "|cffa335ee|Hitem:16914::::|h[Netherwind Crown]|h|r"
+		SK.Profile:BuildSelf()
+	end)
+
+	local function shared(list)
+		local out = {}
+		for _, c in ipairs(list) do out[c.label] = c.shared end
+		return out
+	end
+
+	it("matches the public copy for every combination of the privacy switches", function()
+		local own = SK.Profile:Own()
+		own.recipes = { [197] = { [1] = 2 } }
+		for _, gear in ipairs({ true, false }) do
+			for _, recipes in ipairs({ true, false }) do
+				local share = { gear = gear, recipes = recipes }
+				local pub = SK.Profile.Public(own, share)
+				local s = shared(SK.Profile.SharingSummary(own, share))
+				assert.equal(pub.gear ~= nil, s["Gear and item level"])
+				assert.equal(pub.talents ~= nil, s["Talents"])
+				assert.equal(pub.recipes ~= nil, s["Recipes"])
+				assert.equal(pub.cds ~= nil, s["Profession cooldowns"])
+				assert.equal(gear, s["Gear and item level"])
+				assert.equal(recipes, s["Recipes"])
+				assert.is_true(s["Profession skill levels"])
+				assert.is_true(s["Name, class, race, level and addon version"])
+				assert.is_nil(pub.note)
+				assert.is_nil(pub.officerNote)
+			end
+		end
+	end)
+
+	it("Settings shows the preview and what is never shared", function()
+		SK.DB.settings.share.gear = false
+		SK.MainFrame:Show("settings")
+		local text = SK.SettingsTab.status.fs:GetText()
+		assert.truthy(text:find("What guildmates see from you", 1, true))
+		assert.truthy(text:find("private|r  Gear and item level", 1, true))
+		assert.truthy(text:find("shared|r   Recipes", 1, true))
+		assert.truthy(text:find("Never shared: Notes and officer notes", 1, true))
+	end)
+
+	it("labels data older than a week", function()
+		assert.is_false(SK.Theme.IsStale(W.now - 3600, W.now))
+		assert.is_true(SK.Theme.IsStale(W.now - 8 * 86400, W.now))
+		assert.is_false(SK.Theme.IsStale(nil, W.now))
+		W.member("Bob", "Player-1-B")
+		SK.Identity:ReadRoster()
+		local p = { v = 1, guid = "Player-1-B", name = "Bob", updated = W.now - 9 * 86400, gear = {}, source = "relay" }
+		p.hash = SK.Profile.HashOf(p)
+		SK.DBM:Guild().profiles["Player-1-B"] = p
+		SK.CharacterTab:ShowCharacter("Player-1-B")
+		local meta = SK.CharacterTab.meta:GetText()
+		assert.truthy(meta:find("relayed by a guildmate", 1, true))
+		assert.truthy(meta:find("may be out of date", 1, true))
+	end)
+
+	it("the craft index knows when each crafter's recipes were recorded", function()
+		W.tradeskill = { skillLine = 197, name = "Tailoring", rank = 300, max = 300,
+			recipes = { [18560] = { learned = true, itemID = 14342 } } }
+		W.professions = { { name = "Tailoring", rank = 300, max = 300, skillLine = 197 } }
+		SK.Profile:BuildSelf()
+		SK.Professions:Scan()
+		W.advance(1)
+		local list = SK.CraftIndex.Crafters(SK.CraftIndex:Rebuild(), 18560, SK.DBM:Guild(), W.now)
+		assert.equal(1, #list)
+		assert.is_not_nil(list[1].scanned)
+	end)
+end)

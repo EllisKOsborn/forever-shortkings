@@ -372,7 +372,8 @@ function Char:Refresh()
 	local source = p.source == "self" and "this account" or (p.source == "owner" and "from them" or "relayed by a guildmate")
 	local ago = Theme.Ago(p.updated, now)
 	ago = ago == "now" and "just now" or (ago .. " ago")
-	self.meta:SetText(string.format("Updated %s (%s)  ·  Short Kings %s", ago, source, p.addon or "?") .. askText)
+	local stale = (not mine and Theme.IsStale(p.updated, now)) and ("  ·  " .. Theme.Code("ember") .. "may be out of date|r") or ""
+	self.meta:SetText(string.format("Updated %s (%s)  ·  Short Kings %s", ago, source, p.addon or "?") .. stale .. askText)
 
 	local hidden = p.hidden or {}
 	local missing = {}

@@ -115,6 +115,24 @@ function Settings:Refresh()
 			lines[#lines + 1] = "  " .. C("flame") .. "Open these profession windows once: " .. table.concat(missing, ", ") .. "|r"
 		end
 	end
+	-- Sharing preview (read-only): exactly what the public copy contains.
+	lines[#lines + 1] = ""
+	lines[#lines + 1] = C("pink") .. "What guildmates see from you|r"
+	if own then
+		for _, c in ipairs(SK.Profile.SharingSummary(own, SK.DB.settings.share)) do
+			lines[#lines + 1] = "  " .. (c.shared and (C("good") .. "shared|r   ") or (C("muted") .. "private|r  ")) .. c.label
+		end
+		local pub = SK.DBM:Guild() and SK.DBM:Guild().profiles[own.guid]
+		if pub then lines[#lines + 1] = "  Last shared copy updated " .. SK.Theme.Ago(pub.updated) .. " ago" end
+	else
+		lines[#lines + 1] = "  (nothing yet: your profile is built once the guild roster loads)"
+	end
+	lines[#lines + 1] = "  " .. C("muted") .. "Never shared: " .. SK.Profile.NEVER_SHARED .. "|r"
+	if not SK.DB.settings.sync then
+		lines[#lines + 1] = "  " .. C("ember") .. "Sync is off, so nothing is being sent right now.|r"
+	end
+	lines[#lines + 1] = "  " .. C("muted") .. "Turning sharing off stops future updates. Copies guildmates already have"
+		.. " stay until they're replaced.|r"
 	self.status:SetText(table.concat(lines, "\n"))
 end
 

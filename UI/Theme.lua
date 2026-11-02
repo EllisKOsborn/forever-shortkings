@@ -112,6 +112,12 @@ function Theme.ClassText(name, classFile)
 	return string.format("|cff%02x%02x%02x%s|r", r * 255, g * 255, b * 255, name or "?")
 end
 
+Theme.STALE_AFTER = 7 * 86400 -- data older than this is labelled "may be out of date"
+
+function Theme.IsStale(ts, now)
+	return ts ~= nil and (now or SK.Compat.Now()) - ts > Theme.STALE_AFTER
+end
+
 -- "now", "5m", "3h", "2d"
 function Theme.Ago(ts, now)
 	if not ts then return "never" end

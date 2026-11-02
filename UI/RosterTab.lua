@@ -276,7 +276,9 @@ local function setCell(fs, r, col)
 	elseif k == "att" then
 		fs:SetText(ATT_TEXT[r.att or "unknown"] .. (r.attNote and " |cffFF7A1A!|r" or ""))
 	elseif k == "data" then
-		if r.hasData then fs:SetText(Theme.Ago(r.updated, now))
+		if r.hasData and not r.isSelf and Theme.IsStale(r.updated, now) then
+			fs:SetText(C("ember") .. Theme.Ago(r.updated, now) .. "|r")
+		elseif r.hasData then fs:SetText(Theme.Ago(r.updated, now))
 		else fs:SetText(C("muted") .. "no addon|r") end
 	end
 end
@@ -320,6 +322,9 @@ local function tooltip(row, r)
 	if not r.hasData then
 		GameTooltip:AddLine("No data yet. They may not have the addon, or be on a trial account (trials can't sync).", 0.7, 0.6, 0.65, true)
 	elseif r.addon then
+		if not r.isSelf and Theme.IsStale(r.updated, now) then
+			GameTooltip:AddLine("Data is " .. Theme.Ago(r.updated, now) .. " old and may be out of date", 1, 0.48, 0.1)
+		end
 		GameTooltip:AddLine("Short Kings " .. r.addon .. (r.outdated and "  (update available)" or ""),
 			r.outdated and 1 or 0.7, r.outdated and 0.48 or 0.6, r.outdated and 0.1 or 0.65)
 	end

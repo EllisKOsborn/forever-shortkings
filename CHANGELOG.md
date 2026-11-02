@@ -20,6 +20,12 @@ Launch readiness, after reviewing the GPT, Manus and Perplexity plans
 - **Sync safety:** messages over 32 KB are refused before unpacking (a large
   crafter profile is about 11 KB), oversized messages are never sent, and
   each guildmate is limited to 60 messages a minute.
+- **Sharing preview** in Settings: "What guildmates see from you", built from
+  the same public copy that is sent, plus what is never shared and a reminder
+  that copies already sent stay until replaced.
+- **Old data is labelled:** data more than a week old shows in orange in the
+  Roster's Data column, with "may be out of date" in the tooltip and on the
+  Character tab. Crafters tooltips say when a crafter's recipes were recorded.
 
 ## v0.2.0 (unreleased, not yet tested in game)
 

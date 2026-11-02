@@ -53,6 +53,29 @@ function Profile.Public(p, share)
 	return pub
 end
 
+-- What guildmates receive, for the Settings "sharing preview". Built from
+-- the actual public copy (Profile.Public), so it can't drift from what is
+-- sent. Returns { { label, shared = bool }, ... }. Pure; tested.
+local SHARING = {
+	{ "Name, class, race, level and addon version", function(p) return p.name ~= nil or p.class ~= nil end },
+	{ "Gear and item level", function(p) return p.gear ~= nil end },
+	{ "Talents", function(p) return p.talents ~= nil end },
+	{ "Profession skill levels", function(p) return p.profs ~= nil end },
+	{ "Recipes", function(p) return p.recipes ~= nil end },
+	{ "Profession cooldowns", function(p) return p.cds ~= nil end },
+	{ "Reputations", function(p) return p.reps ~= nil end },
+	{ "Raid attunements (and whether the Drakefire Amulet is in your bags)", function(p) return p.att ~= nil end },
+	{ "Which characters are yours, and your main", function(p) return p.family ~= nil end },
+}
+Profile.NEVER_SHARED = "Notes and officer notes, gold, bag and bank contents (except the amulet yes/no), chat, location"
+
+function Profile.SharingSummary(full, share)
+	local pub = Profile.Public(full or {}, share)
+	local out = {}
+	for _, c in ipairs(SHARING) do out[#out + 1] = { label = c[1], shared = c[2](pub) and true or false } end
+	return out
+end
+
 -- Other characters of this account that are in the same guild.
 local function familyOf(guild, guid)
 	local fam = {}

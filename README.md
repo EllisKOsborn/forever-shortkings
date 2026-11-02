@@ -55,7 +55,7 @@
   - **Item level**.
   - **Online**: a coloured dot, then *Online*, *on alt* or how long ago they were last seen.
   - **Ver**: their Short Kings version, in orange when out of date.
-  - **Data**: how fresh their profile is.
+  - **Data**: how fresh their profile is (orange when more than a week old: it may be out of date).
 - **Status dots:** 🟩 online with Short Kings · 🟨 online without it · ⬜ offline.
 - **Group alts** (on by default) folds each player's characters into one row, under the character they chose as their main.
 - **Sort** by clicking any column. Online members come first.
@@ -121,7 +121,7 @@
   - their skill level;
   - *on Gillybean* when they're offline but an alt is online (Whisper goes to the alt), or *alt of X*;
   - a **Whisper** button (greyed out when nobody on that player's characters is online);
-  - click a crafter to open their character.
+  - hover a crafter to see when their recipes were recorded; click to open their character.
 - **Post to guild chat** types "[Item] can be made by: A, B, C" into your chat box. You press Enter to send it.
 - Recipes come from what each crafter recorded when they last opened their profession window. If nobody has yet, the tab says so. People who hide their recipes aren't listed.
 - Item names load from the game a little at a time, so the first search can take a few seconds to fill in.
@@ -138,6 +138,7 @@
 - **Show minimap button**, and **debug logging** in chat.
 - **Window size**: 70% to 130%.
 - **Buttons:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
+- **What guildmates see from you**: a read-only list of what you share and what stays private, taken from the exact copy that is sent, plus what is never shared.
 - **Live status:**
   - version and guild;
   - whether sync is running or paused, and why (combat, instance, …);

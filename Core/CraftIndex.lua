@@ -28,7 +28,7 @@ CI.dirty = true
 ---------------------------------------------------------------------------
 -- getProfile(guid) -> profile or nil; isMember(guid) -> bool.
 function CI.Build(guild, getProfile, isMember)
-	local index = { recipes = {}, byItem = {}, skill = {}, profNames = {}, crafterCount = 0, recipeCount = 0 }
+	local index = { recipes = {}, byItem = {}, skill = {}, scanned = {}, profNames = {}, crafterCount = 0, recipeCount = 0 }
 	if not guild then return index end
 	for guid, m in pairs(guild.members) do
 		local p = not m.leftAt and isMember(guid) and getProfile(guid)
@@ -39,6 +39,8 @@ function CI.Build(guild, getProfile, isMember)
 					local prof = p.profs and p.profs[skillLine]
 					index.skill[guid] = index.skill[guid] or {}
 					index.skill[guid][skillLine] = prof and prof.rank or 0
+					index.scanned[guid] = index.scanned[guid] or {}
+					index.scanned[guid][skillLine] = prof and prof.scanned
 					if prof and type(prof.name) == "string" then index.profNames[skillLine] = prof.name end
 					for recipeID, itemID in pairs(list) do
 						if type(recipeID) == "number" then
@@ -236,6 +238,7 @@ local function crafterInfo(index, guild, guid, skillLine, now)
 	local status = SK.Identity.Status(m, SK.DB.account[guid] and m.online, now)
 	local info = { guid = guid, name = m.name or (p and p.name) or "?", class = m.class or (p and p.class),
 		status = status, skill = index.skill[guid] and index.skill[guid][skillLine] or 0,
+		scanned = index.scanned and index.scanned[guid] and index.scanned[guid][skillLine],
 		whisper = status ~= "offline" and guid or nil }
 	local g = index.groupOf and index.groupOf[guid]
 	if g and #g.members > 1 then
