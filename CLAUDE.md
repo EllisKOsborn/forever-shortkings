@@ -158,6 +158,12 @@ Alts link only when **both** profiles list each other in `family`.
   - "Post to guild chat" uses `ChatFrameUtil.OpenChat("/g …")`; never
     `SendChatMessage`.
 
+## Pending review: Perplexity Plan
+`docs/PERPLEXITY-PLAN.md` holds proposals from an outside review (2 Nov 2026):
+attunement data fixes, in-game proof pass, levelling-phase and raid-season ideas.
+Review it first, record Accept / Modify / Reject per item in its section 7, and
+tell the owner your decisions before building anything.
+
 ## Waiting on the user (remind them when relevant)
 1. Confirm the Mac AddOns folder (Battle.net → Forever → ⚙ → Show in Finder).
    Expected: `/Applications/World of Warcraft/_forever_/Interface/AddOns`.
