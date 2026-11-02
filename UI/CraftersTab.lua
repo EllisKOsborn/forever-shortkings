@@ -29,7 +29,7 @@ function Crafters.CountText(total, online)
 end
 
 local RESULT_COLUMNS = {
-	{ key = "name", title = "Item or recipe", width = 236 },
+	{ key = "name", title = "Item or recipe", width = 232 },
 	{ key = "prof", title = "Profession", width = 96 },
 	{ key = "count", title = "Crafters", width = 126 },
 }
@@ -37,7 +37,7 @@ local RESULT_COLUMNS = {
 local CRAFTER_COLUMNS = {
 	{ key = "name", title = "Crafter", width = 146 },
 	{ key = "skill", title = "Skill", width = 40, align = "RIGHT" },
-	{ key = "info", title = "", width = 100 },
+	{ key = "info", title = "", width = 84 },
 	{ key = "btn", title = "", width = 58 },
 }
 

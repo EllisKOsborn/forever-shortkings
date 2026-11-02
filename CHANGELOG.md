@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.0 (unreleased, not yet tested in game)
+
+- New **Crafters** tab: search an item or recipe name (3+ letters), see one
+  row per recipe with icon, quality-coloured name, profession and
+  "N crafters (N online)". Click a result for the crafters, online first,
+  with skill level, "alt of X" or "on <alt>", and a **Whisper** button.
+  **Post to guild chat** pre-fills the chat box; you press Enter.
+- **"Crafted by" on item tooltips**: "Short Kings: Bramble (online), Dabble
+  +2 more". Setting: *Show guild crafters in item tooltips* (on by default).
+- `/sk debug` reports the crafter index, the tooltip hook and name loading,
+  and probes every new API.
+
 ## v0.1.2 (unreleased, not yet tested in game)
 
 - Roster: a **Raid** picker (*All raids*, Onyxia's Lair, Molten Core,

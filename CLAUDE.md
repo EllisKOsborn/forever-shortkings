@@ -34,6 +34,16 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   removals (e.g. `C_SkillInfo.GetSkillLineInfo` still exists). Trust the
   source, not the wiki.
 - Verified facts:
+  - Item/spell names: `C_Item.GetItemNameByID`, `C_Item.RequestLoadItemDataByID`
+    (event `ITEM_DATA_LOAD_RESULT` itemID, success), `C_Spell.GetSpellName`,
+    `C_Spell.RequestLoadSpellData` (`SPELL_DATA_LOAD_RESULT`). Quality:
+    `C_Item.GetItemQualityByID` + `C_Item.GetItemQualityColor`.
+  - Item tooltips: `TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, fn)`
+    (`Item` = 0); `data.id` is the item ID.
+  - Chat box: `ChatFrameUtil.OpenChat(text)` (edit box parses a leading
+    `/g `); whisper `ChatFrameUtil.SendTell(name)` (both in
+    `Blizzard_ChatFrameBase/Shared/ChatFrameUtil.lua`). `ChatFrame_OpenChat`
+    is only a fallback.
   - Professions use `C_TradeSkillUI`; the Classic `GetTradeSkillInfo` and
     `GetCraftInfo` are gone.
   - Talents are `C_Traits` trees.
@@ -76,14 +86,16 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
 ```
 ShortKings.toc  embeds.xml  Commands.lua (/sk, /sk debug report)
 Core/     Init (events, timers, modules), Log, Compat, DB (SavedVariables,
-          pruning), Identity (roster, sender→GUID), Alts (mutual-link groups)
+          pruning), Identity (roster, sender→GUID, Status dots), Alts
+          (mutual-link groups), CraftIndex (recipe/item → crafters, async names)
 Data/     Professions, Attunements (quest IDs), Factions, Enchants
 Collect/  Character, Talents, Professions (recipe scan), Reputation,
           Attunements, Profile (full/public copies, cooldowns, main)
 Sync/     Codec (LibSerialize stable → LibDeflate), Merge (rules), Sync (protocol)
-UI/       Theme (colours/gradients only), Widgets (Button, Tab, Check,
-          SearchBox, List, TextPanel), MainFrame, RosterTab, CharacterTab,
-          SettingsTab, DebugWindow, Minimap
+UI/       Theme (colours/gradients only), Widgets (Button, Tab, Check, Menu,
+          SearchBox, List, TextPanel), MainFrame, RosterTab (+ raid filter),
+          CharacterTab (+ Ask for latest), CraftersTab, SettingsTab,
+          DebugWindow, Minimap, Tooltip ("Crafted by" line)
 Libs/     vendored Ace3 bits, LibSerialize, LibDeflate; LDB + LibDBIcon via .pkgmeta
 tests/    busted specs; tests/helpers/wow.lua is the stubbed WoW API
 docs/     FEATURE-REVIEW.md, mockups/, images/, prompts/
@@ -92,8 +104,8 @@ docs/     FEATURE-REVIEW.md, mockups/, images/, prompts/
 ## Sync protocol (prefix `ShortKings`, protocol 1)
 | Msg | Channel | Purpose |
 |---|---|---|
-| `HI` | GUILD | Own account's characters `{g, u, h}`. Sent at login, every 10 min, and after changes (debounced) |
-| `RQ` | WHISPER | Request profiles |
+| `HI` | GUILD | Own account's characters `{g, u, h}`. Sent at login, every 10 min, and 30 s after changes (debounced) |
+| `RQ` | WHISPER | Request profiles. Also "Ask for latest" (max 1 per target per 30 s); an RQ for the logged-in character rebuilds it first (not in combat, max every 10 s) |
 | `PR` | WHISPER | One profile per message |
 | `SQ` | GUILD | Once per session: what I hold |
 | `SO` | GUILD | Backfill offer, random 2–8 s delay, suppressed if someone else offers first |
@@ -120,12 +132,25 @@ Alts link only when **both** profiles list each other in `family`.
   Marcellus from fonts.gstatic.com (don't commit the font).
 
 ## Status (2 Nov 2026)
-- v0.1 and v0.1.1 are code complete, **not tested in game**. See CHANGELOG.md.
+- v0.1, v0.1.1, v0.1.2 and v0.2.0 are code complete, **not tested in game**.
+  See CHANGELOG.md. (`docs/prompts/next-v0.1.2-v0.2.md` is done.)
 - Roadmap and future plans: `PLAN.md` section 7. Background and reasoning:
   `docs/FEATURE-REVIEW.md`.
-- **Next task:** `docs/prompts/next-v0.1.2-v0.2.md` (guild requests: raid
-  attunement filter, "Ask for latest", faster updates, Crafters item search
-  with "Crafted by" tooltips).
+- **Next:** in-game testing (TESTING.md), then the Professions tab and
+  B2–B6 (PLAN.md v0.2.x). No prompt written yet; plan first.
+- Decisions in v0.1.2/v0.2.0:
+  - Roster raid mode uses a **second List** with its own columns (Attuned
+    replaces Professions and Ver) instead of rebuilding the List widget.
+  - Attunement shows "unknown" when the player hides gear/talents.
+  - Attuned marks use the ready-check atlases (`UI-LFG-ReadyMark` etc.):
+    the game font has no ✓/✗ glyphs.
+  - CraftIndex lives in `Core/` (no UI); `Identity.Status` moved there from
+    RosterTab so Sync and CraftIndex can use it.
+  - Names: `C_Item.GetItemNameByID` / `C_Spell.GetSpellName`, with
+    `RequestLoad*` + `ITEM_DATA_LOAD_RESULT` / `SPELL_DATA_LOAD_RESULT`
+    (event approach, not the Item mixin), at most 200 requests per search.
+  - "Post to guild chat" uses `ChatFrameUtil.OpenChat("/g …")`; never
+    `SendChatMessage`.
 
 ## Waiting on the user (remind them when relevant)
 1. Confirm the Mac AddOns folder (Battle.net → Forever → ⚙ → Show in Finder).
@@ -137,8 +162,9 @@ Alts link only when **both** profiles list each other in `family`.
 ## Answers already given to the guild (stay consistent)
 - **Alts:** linked automatically once each alt has logged in with the addon
   (same guild). "Make this my main" is optional.
-- **Recipes:** the full recipe list per profession is already recorded and
-  synced. The UI shows only counts until the Crafters tab ships.
+- **Recipes:** the full recipe list per profession is recorded and synced
+  (refreshed when the profession window is opened). Since v0.2.0 the
+  Crafters tab searches it by item name and item tooltips list crafters.
 - **Update speed:** comes from players' own games, not Blizzard's armory.
   Since v0.1.2, changes reach guildmates in about 30–60 seconds while
   they're online ("Ask for latest" on the Character tab gets it sooner).

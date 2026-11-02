@@ -1,6 +1,6 @@
 # Short Kings — addon plan (awaiting approval)
 
-> Status: **v0.1 and v0.1.1 code complete (not yet tested in game).**
+> Status: **v0.1 to v0.2.0 code complete (not yet tested in game).**
 > Researched against Blizzard's own UI source for the Forever client,
 > build **1.60.1.70532** (Gethe/wow-ui-source, `forever` branch), plus
 > warcraft.wiki.gg's *Patch 1.60.1/API changes* page.
@@ -57,7 +57,7 @@ forever-shortkings/            (zipped as ShortKings/ by the packager)
 │  ├─ Theme.lua                colours, gradients, ember effect
 │  ├─ Widgets.lua              tabs, buttons, scroll lists
 │  ├─ MainFrame.lua
-│  ├─ RosterTab.lua  CharacterTab.lua  CraftersTab.lua
+│  ├─ RosterTab.lua  CharacterTab.lua  CraftersTab.lua  Tooltip.lua
 │  ├─ ProfessionsTab.lua  SettingsTab.lua
 │  └─ Minimap.lua              LibDBIcon
 ├─ Commands.lua                /sk, /sk debug, /sk scan, /sk reset
@@ -249,19 +249,23 @@ which explains where each idea came from.
   - A5 missing-enchant markers
   - A6 cooldowns refreshed from the spell API
   - A7 privacy toggles (share gear/talents, share recipes)
+- **v0.1.2** (guild requests):
+  - raid attunement filter on the Roster (Attuned column, filters, counter, max level only)
+  - "Ask for latest" on the Character tab (RQ by whisper; the owner rebuilds first)
+  - faster updates (`HI` 30 s after a change instead of 60 s)
+- **v0.2.0**:
+  - Crafters tab: search a recipe or item, see who can make it, Whisper, post to guild chat (B7)
+  - B1 "Crafted by" lines on every item tooltip (`TooltipDataProcessor`)
 
-### v0.2: Crafters and Professions
-- Crafters tab: search a recipe or item, see who can make it, Whisper button
+### v0.2.x: Professions (Crafters and B1/B7 shipped in v0.2.0)
 - Professions tab: guild coverage, recipes nobody has (from scanned lists)
 - Scan reminders in the UI
-- B1 "Crafted by" lines on every item tooltip (`TooltipDataProcessor`)
 - B2 reagents per recipe (recorded during the owner's scan)
 - B3 specialisations (transmute/elixir/potion master, gnomish/goblin,
   dragonscale/elemental/tribal, armor/weaponsmith); spell IDs to be verified
 - B4 guild cooldown board (who can transmute or make cloth right now)
 - B5 coverage gaps: professions and specialisations nobody has
 - B6 favourite recipes and crafters (local only)
-- B7 button to post a crafter list to guild chat
 
 ### v0.3: Raids (on Blizzard's guild calendar, see section 6)
 - C1 sign-up status (signed / tentative / late / bench / can't), main and second role

@@ -102,8 +102,41 @@ the `/sk debug` text when something looks wrong.
 38. [ ] **Faster updates:** change a piece of gear. A guildmate sees it in
         about 30–60 seconds.
 
+## v0.2.0 additions (Crafters)
+
+39. [ ] A **Crafters** tab sits between Character and Settings. With nobody
+        scanned yet it says "Recipes appear after crafters open their
+        profession window once."
+40. [ ] Open one of your profession windows, then type 3+ letters of
+        something you can make (e.g. "bolt", "potion"). Results show the
+        icon, the name in the item's colour, the profession and
+        "N crafters". With 1–2 letters it asks for at least 3.
+41. [ ] The first search may say "loading N names…" for a few seconds,
+        then fill in. Tell me if names never appear.
+42. [ ] Enchanting recipes show by recipe name ("Enchant Boots - …").
+        Search "enchant boots".
+43. [ ] Click a result: the right side lists crafters, online first, with
+        skill levels. **Whisper** opens a whisper to them in the chat box.
+        It's greyed out for offline crafters, and your own characters have
+        no Whisper button.
+44. [ ] A crafter whose alt is online shows "on <alt name>", and Whisper goes
+        to the alt.
+45. [ ] **Post to guild chat**: the chat box opens on the **Guild** channel
+        with "[Item] can be made by: …" already typed, and the item link
+        is clickable. Nothing is sent until you press Enter. (Tell me if it
+        opens on Say instead of Guild, or shows a Lua error.)
+46. [ ] **Tooltips**: hover an item someone in the guild can make (in your
+        bags, a chat link or the auction house). A line "Short Kings: …"
+        lists up to 3 crafters, online first, then "+N more".
+47. [ ] Settings → untick **Show guild crafters in item tooltips**: the line
+        disappears. Tick it again and it's back.
+48. [ ] A guildmate turns off "Share my recipes": after their next update
+        they're no longer listed in Crafters or on tooltips.
+49. [ ] `/sk debug`, "== Crafters ==": the recipe and crafter counts look
+        right, and "Item tooltip line: hooked=yes".
+
 ## Known gaps in v0.1
 
-- No Crafters, Professions or Raids tabs yet (v0.2 and v0.3).
+- No Professions or Raids tabs yet (rest of v0.2, and v0.3).
 - Attunement IDs are Classic IDs, and the new Forever raids are TODO.
 - The title bar's ember animation comes in v0.4.

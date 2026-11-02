@@ -2,7 +2,7 @@
 <!--
   Short Kings UI mockup. This is NOT a game screenshot: it redraws the addon's
   window in HTML using the same colours (UI/Theme.lua), sizes and layout
-  (UI/MainFrame.lua, RosterTab.lua, CharacterTab.lua, SettingsTab.lua).
+  (UI/MainFrame.lua, RosterTab.lua, CharacterTab.lua, CraftersTab.lua, SettingsTab.lua).
   Item icons are placeholders (the game shows the real item icons).
   Regenerate the images with: node docs/mockups/render.js [marcellus.woff2]
 -->
@@ -98,6 +98,26 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
 .box.on::after { content:""; position:absolute; inset:3px; background:linear-gradient(to top, var(--ember), var(--flame)); }
 .rowbtns { position:absolute; left:4px; display:flex; gap:8px; align-items:center; }
 .panel { position:absolute; left:4px; right:14px; font-size:12px; line-height:15px; white-space:pre; }
+/* menu, icons, side panel */
+.menu { position:absolute; height:22px; padding:0 8px; font-size:12px; line-height:20px; color:var(--text);
+  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
+.menu::after { content:"v"; position:absolute; right:6px; top:0; font-size:10px; color:var(--muted); }
+.menu.hover { border-color:var(--ember); color:var(--flame); }
+.pop { position:absolute; background:linear-gradient(to top, var(--plumDark), var(--plum)); border:1px solid var(--leather);
+  padding:2px; font-size:12px; z-index:3; }
+.pop div { height:20px; line-height:20px; padding:0 8px; }
+.pop .on { color:var(--flame); }
+.pop .hl { background:linear-gradient(to right, rgba(255,122,26,.3), rgba(255,194,74,.05)); }
+.ico { display:inline-block; width:14px; height:14px; vertical-align:-2px; margin-right:5px; border:1px solid rgba(0,0,0,.6); }
+.mark { display:inline-block; width:11px; height:11px; border-radius:50%; vertical-align:-1px; margin-right:4px;
+  font:bold 9px/11px Arial,sans-serif; text-align:center; color:#fff; text-shadow:none; }
+.mark.y { background:#2f9e3a; } .mark.n { background:#c0392b; } .mark.u { background:#d9a62e; color:#3a2a00; }
+.side { position:absolute; left:482px; right:0; top:30px; bottom:0;
+  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
+.sel { background:linear-gradient(to right, rgba(217,79,160,.45), rgba(61,26,46,.05)) !important; }
+.row .wbtn { position:absolute; right:2px; top:2px; height:18px; width:54px; font-size:11px; line-height:16px; text-align:center;
+  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
+.row .wbtn.off { color:var(--muted); }
 /* banner */
 .bannerbox { width:1020px; height:250px; position:relative; overflow:hidden;
   background:linear-gradient(to top, var(--plumDark), var(--plum)); border:3px solid var(--leather); }
@@ -153,11 +173,12 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   <div class="win">
     <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Settings</div></div>
+    <div class="tabs"><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
     <div class="content">
       <div class="search" style="width:240px">Search name, profession, spec, note...</div>
-      <div class="check" style="left:254px;top:2px"><div class="box on"></div>Group alts</div>
-      <div class="count" style="left:380px">15 characters · 12 with data · <span class="e">1 need an update</span></div>
+      <div class="menu" style="left:250px;top:0;width:150px">All raids</div>
+      <div class="check" style="left:414px;top:2px"><div class="box on"></div>Group alts</div>
+      <div class="count" style="left:540px">15 characters · 12 with data · <span class="e">1 need an update</span></div>
       <div class="list">
         <div class="header" id="rhead"></div>
         <div class="rows" id="rrows"></div>
@@ -186,7 +207,7 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   <div class="win">
     <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Roster</div><div class="btn active">Character</div><div class="btn">Settings</div></div>
+    <div class="tabs"><div class="btn">Roster</div><div class="btn active">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
     <div class="content">
       <div style="position:absolute;left:0;top:0;display:flex;gap:6px">
         <div class="btn small">&lt; Roster</div><div class="btn small">Me</div><div class="btn small hover">Whisper</div></div>
@@ -219,7 +240,7 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   <div class="win">
     <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Roster</div><div class="btn">Character</div><div class="btn active">Settings</div></div>
+    <div class="tabs"><div class="btn">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn active">Settings</div></div>
     <div class="content">
       <div class="h">Settings</div>
       <div class="check" style="top:30px"><div class="box on"></div>Share and receive guild data (sync)</div>
@@ -245,6 +266,71 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   Your data updated 4m ago
   <span class="f">Open these profession windows once: Enchanting</span></div>
     </div>
+  </div>
+</div>
+
+
+<!-- ============ ROSTER: RAID ATTUNEMENT ============ -->
+<div class="scene" id="attunement">
+  <div class="win">
+    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
+    <div class="tabs"><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
+    <div class="content">
+      <div class="search" style="width:240px">Search name, profession, spec, note...</div>
+      <div class="menu hover" style="left:250px;top:0;width:150px">Onyxia's Lair</div>
+      <div class="count" style="left:414px">14 characters</div>
+      <div style="position:absolute;left:0;top:28px;display:flex;gap:4px">
+        <div class="btn small active" style="min-width:90px">All</div><div class="btn small" style="min-width:90px">Attuned</div>
+        <div class="btn small" style="min-width:90px">Not attuned</div><div class="btn small" style="min-width:90px">Unknown</div></div>
+      <div class="check" style="left:390px;top:30px"><div class="box on"></div>Max level only (60)</div>
+      <div class="count" style="left:552px;top:32px">8 attuned · 3 not · 3 unknown</div>
+      <div class="list" style="top:58px">
+        <div class="header" id="ahead"></div>
+        <div class="rows" id="arows"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tooltip" style="left:740px;top:340px">
+    <div style="color:#F48CBA">Brambelle</div>
+    <div style="color:#b39aa6">alt of Bramble Cogwhistle</div>
+    <div class="dl"><span style="color:#FFC24A">Onyxia's Lair attunement</span><span><span class="mark y">✓</span><span class="g">yes</span></span></div>
+    <div style="color:#d9ccd1"><span style="display:inline-block;width:8px;height:8px;background:#6E5A64;margin-right:5px"></span>Offline</div>
+    <div style="color:#FFC24A;margin-top:6px">Click to view character</div>
+  </div>
+</div>
+
+<!-- ============ CRAFTERS ============ -->
+<div class="scene" id="crafters">
+  <div class="win">
+    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
+    <div class="tabs"><div class="btn">Roster</div><div class="btn">Character</div><div class="btn active">Crafters</div><div class="btn">Settings</div></div>
+    <div class="content">
+      <div class="search" style="width:240px;color:var(--text)">arcanite</div>
+      <div class="count" style="left:254px">6 results</div>
+      <div class="list" style="right:auto;width:470px">
+        <div class="header" id="chead"></div>
+        <div class="rows" id="crows"></div>
+        <div class="scroll"></div>
+      </div>
+      <div class="side">
+        <div style="position:absolute;left:10px;top:10px;font-size:14px;color:#1eff00"><span class="ico" style="background:radial-gradient(circle at 35% 30%,#d6c9ff,#5d4f99)"></span>Arcanite Bar</div>
+        <div style="position:absolute;left:10px;top:30px;font-size:11px;color:var(--muted)">Alchemy &nbsp;·&nbsp; 4 crafters (2 online)</div>
+        <div class="list" style="left:6px;right:6px;top:52px;bottom:40px">
+          <div class="header" id="khead"></div>
+          <div class="rows" id="krows"></div>
+        </div>
+        <div class="btn small hover" style="position:absolute;left:8px;bottom:8px;width:150px;height:24px">Post to guild chat</div>
+      </div>
+    </div>
+  </div>
+  <div class="tooltip" style="left:170px;top:400px;width:280px;white-space:normal">
+    <div style="color:#1eff00">Arcanite Bar</div>
+    <div style="color:#ffd100">Item Level 55</div>
+    <div>Max Stack: 20</div>
+    <div style="color:#F5E6EE;margin-top:4px"><span style="color:#D94FA0">Short Kings:</span> Fizzle Brightbeard (online), Gilly Pumpkinspark (alt online), Nim Copperkettle +1 more</div>
+    <div style="color:#FFC24A">Click to see who can make it</div>
   </div>
 </div>
 
@@ -339,6 +425,65 @@ document.getElementById("details").innerHTML =
   Hydraxian Waterlords  <span class="f">Honored</span>
   Thorium Brotherhood  <span class="f">Friendly</span>
   Stormwind  <span class="m">Exalted</span>`;
+
+// Roster with a raid picked: every character on its own row.
+const acols = [["Name",170],["Lvl",36,"r"],["Rank",90],["Spec",120],["Attuned",100],["iLvl",40,"r"],["Online",82],["Data",70]];
+document.getElementById("ahead").innerHTML = acols.map(c => `<div class="${c[2]||""}" style="width:${c[1]}px">${c[0]}</div>`).join("");
+const MARK = { y:'<span class="mark y">✓</span><span class="g">yes</span>', n:'<span class="mark n">✗</span><span class="bd">no</span>',
+  u:'<span class="mark u">?</span><span class="m">unknown</span>' };
+const arows = [
+  ["Bramble Cogwhistle","WARRIOR","Guild Master","Protection","5/5/41","y",63,"addon","2m"],
+  ["Pip Sparkfuse","MAGE","Officer","Fire","0/31/20","y",61,"addon","now"],
+  ["Fizzle Brightbeard","PRIEST","Raider","Holy","21/30/0","y",59,"addon","5m"],
+  ["Widget Boltbrace","HUNTER","Member","Marksman","5/31/15","n",58,"addon","1m"],
+  ["Zib Ratchetwhirl","WARRIOR","Raider","Fury","31/20/0","y",62,"addon","3m"],
+  ["Brambelle","PALADIN","Alt","Holy","31/20/0","y",54,"off:1d","1d"],
+  ["Dabble Fizzwick","PALADIN","Officer","Holy","31/20/0","y",60,"off:3h","3h"],
+  ["Nim Copperkettle","WARLOCK","Raider","Affliction","30/0/21","n",60,"off:1d","1d"],
+  ["Gilly Pumpkinspark","DRUID","Raider","Restoration","11/0/40","y",58,"off:2d","2d"],
+  ["Mossy Twinklegear","MAGE","Member","Frost","10/0/41","y",57,"off:4d","4d"],
+  ["Fen Ironpocket","ROGUE","Member","Combat","15/31/5","n",56,"off:5h","5h"],
+  ["Hob Nobbin","PRIEST","Alt","","","u",null,"online",null],
+  ["Sprocket Lint","WARRIOR","Member","","","u",null,"off:6d",null],
+  ["Tess Quickfuse","MAGE","Raider","Arcane","31/0/20","u",55,"off:9d","9d"],
+];
+const dotc = c => `<span style="display:inline-block;width:8px;height:8px;background:${c};margin-right:5px;vertical-align:1px"></span>`;
+const onl = st => st === "addon" ? dotc("#7CD67C") + '<span class="g">Online</span>'
+  : st === "online" ? dotc("#FFC24A") + '<span class="g">Online</span>' : dotc("#6E5A64") + `<span class="m">${st.slice(4)}</span>`;
+document.getElementById("arows").innerHTML = arows.map((r,i) => {
+  const cells = [`<span style="color:${CLS[r[1]]}">${r[0]}</span>${i===1 ? ' <span class="m">(you)</span>' : ""}`, 60,
+    `<span class="m">${r[2]}</span>`, r[3] ? `${r[3]} <span class="m">${r[4]}</span>` : "", MARK[r[5]], r[6] ?? "", onl(r[7]),
+    r[8] ? r[8] : '<span class="m">no addon</span>'];
+  return `<div class="row${i===5?" hover":""}">` + cells.map((c,j) => `<div class="${acols[j][2]||""}" style="width:${acols[j][1]}px">${c}</div>`).join("") + "</div>";
+}).join("");
+
+// Crafters: results and the crafter list for the selected recipe.
+const ccols = [["Item or recipe",232],["Profession",96],["Crafters",126]];
+document.getElementById("chead").innerHTML = ccols.map(c => `<div style="width:${c[1]}px">${c[0]}</div>`).join("");
+const ico = (a,b) => `<span class="ico" style="background:radial-gradient(circle at 35% 30%, ${a}, ${b})"></span>`;
+const cres = [
+  ["Arcanite Bar","#1eff00","Alchemy","4 crafters (2 online)",["#d6c9ff","#5d4f99"]],
+  ["Arcanite Champion","#a335ee","Blacksmithing","1 crafter",["#ffd27a","#7a4a12"]],
+  ["Arcanite Dragonling","#0070dd","Engineering","2 crafters (1 online)",["#9fd8ff","#24527a"]],
+  ["Arcanite Reaper","#a335ee","Blacksmithing","2 crafters (1 online)",["#ffb07a","#7a2a12"]],
+  ["Arcanite Rod","#1eff00","Blacksmithing","3 crafters (1 online)",["#e0d9ff","#4a3f7a"]],
+  ["Arcanite Skeleton Key","#1eff00","Blacksmithing","2 crafters",["#d8d8d8","#4a4a4a"]],
+];
+document.getElementById("crows").innerHTML = cres.map((r,i) =>
+  `<div class="row${i===0?" sel":""}${i===3?" hover":""}"><div style="width:232px">${ico(r[4][0],r[4][1])}<span style="color:${r[1]}">${r[0]}</span></div>` +
+  `<div style="width:96px" class="m">${r[2]}</div><div style="width:126px">${r[3]}</div></div>`).join("");
+const kcols = [["Crafter",146],["Skill",40,"r"],["",84],["",58]];
+document.getElementById("khead").innerHTML = kcols.map(c => `<div class="${c[2]||""}" style="width:${c[1]}px">${c[0]}</div>`).join("");
+const kres = [
+  ["Fizzle Brightbeard","PRIEST","#7CD67C",300,"",false],
+  ["Gilly Pumpkinspark","DRUID","#7CD67C",300,'<span class="g">on Gillybean</span>',false],
+  ["Nim Copperkettle","WARLOCK","#6E5A64",300,"",true],
+  ["Peb Sparklecog","PRIEST","#6E5A64",285,'<span class="m">alt of Pip</span>',true],
+];
+document.getElementById("krows").innerHTML = kres.map((r,i) =>
+  `<div class="row" style="height:22px;line-height:22px">${'<div style="width:146px">' + dotc(r[2]) + `<span style="color:${CLS[r[1]]}">${r[0]}</span></div>`}` +
+  `<div class="r" style="width:40px">${r[3]}</div><div style="width:84px">${r[4]}</div><div style="width:58px"></div>` +
+  `<div class="wbtn${r[5]?" off":""}">Whisper</div></div>`).join("");
 </script>
 </body>
 </html>

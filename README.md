@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg"></a>
   <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-D94FA0?labelColor=2A1220">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1.1%20alpha-FF7A1A?labelColor=2A1220">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.2.0%20alpha-FF7A1A?labelColor=2A1220">
   <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FFC24A?labelColor=2A1220">
 </p>
 
@@ -24,7 +24,7 @@
 </p>
 
 > [!NOTE]
-> **v0.1.1 is an alpha that hasn't been run in game yet.** It's built against
+> **v0.2.0 is an alpha that hasn't been run in game yet.** It's built against
 > Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
 > client. The pictures below are **mockups** drawn from the addon's real
 > colours and layout. Item icons are placeholders; in game you see the real ones.
@@ -39,8 +39,9 @@
 |---|---|
 | 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains |
 | 🛡️ **Character** | Anyone's gear, talents, professions, cooldowns, attunements and reputations |
+| ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first |
 | ⚙️ **Settings** | Sync and privacy switches, window size, and a live status read-out |
-| 🧨 **Everywhere** | `/sk`, a minimap button, reminders, and a copyable debug report |
+| 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, reminders, and a copyable debug report |
 
 ### 👥 Roster
 <p align="center"><img src="docs/images/roster.webp" alt="Roster tab mockup" width="100%"></p>
@@ -69,6 +70,11 @@
   - a note for raids whose attunement quests aren't known yet.
 
   Your raid and filter choices are remembered.
+
+  <details>
+  <summary>Show the Roster with a raid picked</summary>
+  <p align="center"><img src="docs/images/attunement.webp" alt="Roster with Onyxia's Lair picked: Attuned column and filters" width="100%"></p>
+  </details>
 - **Hover a row** to see:
   - their online status;
   - all their professions, including Cooking, First Aid and Fishing;
@@ -99,6 +105,26 @@
   - **Reputations**: raid and crafting factions first, then every faction at Friendly or above.
 - **Privacy:** if someone hides their gear or recipes, it says *hidden by this player* instead.
 
+### ⚒️ Crafters
+<p align="center"><img src="docs/images/crafters.webp" alt="Crafters tab mockup" width="100%"></p>
+
+- **Search** part of an item or recipe name: "arcanite", "mooncloth", "enchant boots". Type at least 3 letters. Upper or lower case doesn't matter.
+- **Results**, one row per recipe (up to 200):
+  - the item's icon;
+  - its name in item-quality colour (enchants show the recipe name);
+  - the profession;
+  - how many guildmates can make it and how many are online, e.g. "3 crafters (1 online)".
+- **Hover a result** for the real item tooltip. **Click it** to open the side panel.
+- **Side panel**: every crafter, online first, then by skill:
+  - a status dot and their name in class colour;
+  - their skill level;
+  - *on Gillybean* when they're offline but an alt is online (Whisper goes to the alt), or *alt of X*;
+  - a **Whisper** button (greyed out when nobody on that player's characters is online);
+  - click a crafter to open their character.
+- **Post to guild chat** types "[Item] can be made by: A, B, C" into your chat box. You press Enter to send it.
+- Recipes come from what each crafter recorded when they last opened their profession window. If nobody has yet, the tab says so. People who hide their recipes aren't listed.
+- Item names load from the game a little at a time, so the first search can take a few seconds to fill in.
+
 ### ⚙️ Settings
 <details>
 <summary>Show the Settings tab</summary>
@@ -107,6 +133,7 @@
 
 - **Share and receive guild data**: turns sync on or off entirely.
 - **Share my gear and talents** / **Share my recipes and cooldowns**: privacy switches.
+- **Show guild crafters in item tooltips** (on by default).
 - **Show minimap button**, and **debug logging** in chat.
 - **Window size**: 70% to 130%.
 - **Buttons:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
@@ -131,6 +158,7 @@
   - your other characters.
 
   It refreshes whenever something changes.
+- **"Crafted by" on every item tooltip**: hover any item (bags, chat links, the auction house, loot) to see a line such as "Short Kings: Bramble (online), Dabble +2 more". Online crafters come first, at most three names. Turn it off in Settings.
 - **Chat reminders:** which profession windows you still need to open, when a guildmate has a newer Short Kings, and a notice if a trial account can't share data.
 - **`/sk debug`** opens a copyable report of what the addon can see. Send it when something looks wrong. `/sk log` adds the recent activity log.
 
@@ -239,7 +267,19 @@ guild roster already shows them. Notes and officer notes are never sent.
 <summary><b>My recipes aren't showing.</b></summary>
 
 Open that profession's window once. Recipes are read from the profession
-window, so the Character tab says "not scanned yet" until you do.
+window, so the Character tab says "not scanned yet" until you do. After
+that, your full recipe list is shared, you appear in the **Crafters** tab,
+and your name shows on the tooltips of the items you can make. Open the
+window again after learning new recipes.
+</details>
+
+<details>
+<summary><b>Can I see who can craft something?</b></summary>
+
+Yes: the **Crafters** tab. Type part of the item's name and click a result.
+Item tooltips also list guild crafters. Offline crafters are included, from
+the last time they opened their profession window, so you can whisper them
+later or catch them on an alt.
 </details>
 
 <details>
@@ -295,7 +335,8 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.1**: data collection, guild sync, Roster, Character and Settings tabs, `/sk debug`
 - [x] **v0.1.1**: online/addon status dots, alts under mains, notes, version column, missing-enchant markers, accurate cooldowns, privacy toggles
 - [x] **v0.1.2**: raid attunement filter on the Roster, "Ask for latest", faster updates (30–60 s)
-- [ ] **v0.2**: **Crafters** (search an item, see who can make it, Whisper) and **Professions** (coverage, cooldown board, recipes nobody has), plus "Crafted by" on item tooltips
+- [x] **v0.2.0**: **Crafters** tab (search an item, see who can make it, Whisper, post to guild chat) and "Crafted by" on item tooltips
+- [ ] **v0.2.x**: **Professions** tab (coverage, cooldown board, specialisations, reagents, recipes nobody has)
 - [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar: sign-up status, roles, line-up with attunement check, reminders, invite-all
 - [ ] **v0.4**: theme polish (ember sparks on the title bar), attunement and faction tables confirmed for Forever
 - [ ] **Later**: craft requests, export to text, raid attendance, shopping lists, guild bank viewer, and more in the [plan](PLAN.md#later-in-rough-priority-order)
@@ -316,10 +357,10 @@ node docs/mockups/render.js [font.woff2]   # regenerate the README pictures
 
 | Folder | What lives there |
 |---|---|
-| `Core/` | start-up, events, saved data, guild roster; `Compat.lua` is the **only** file that touches client-specific APIs |
+| `Core/` | start-up, events, saved data, guild roster, alts, the crafter index; `Compat.lua` is the **only** file that touches client-specific APIs |
 | `Collect/` | reads gear, talents, professions, recipes, reputation and attunements |
 | `Sync/` | encoding (LibSerialize + LibDeflate), merge rules, the HI/RQ/PR/SQ/SO protocol |
-| `UI/` | theme, widgets and tabs (colours and gradients only, no image files) |
+| `UI/` | theme, widgets, tabs and the item-tooltip line (colours and gradients only, no image files) |
 | `Data/` | profession, attunement and faction tables (IDs are verified or marked TODO, never guessed) |
 
 **Releasing:** push a tag like `v0.1.0`. The *Release* workflow runs the
