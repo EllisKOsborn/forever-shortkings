@@ -229,6 +229,26 @@ sign-up calls are protected; and reading the sign-up list needs
 `C_Calendar.OpenEvent`, so we only read it while Blizzard's calendar window
 is closed, to avoid interfering with it.
 
+**Refined 2 Nov (checked against the 1.60.1 calendar docs)** — the build
+prompt is `docs/prompts/next-v0.3-raids.md`:
+- Each sign-up (`CalendarEventInviteInfo`) includes the player's **GUID**,
+  name, class, level and status, so line-ups key cleanly by GUID.
+- Blizzard's statuses are Invited, Available, Declined, Confirmed, Out,
+  Standby, Signed up, Not signed up and Tentative. There is **no "late"**
+  status and **no role** field. "Bench" = Standby (set by the event's moderators).
+- Roles: a **main and second role in the profile** instead of a per-event
+  `RL` message. It needs no new protocol and works when people are offline.
+  Per-event overrides can come later.
+- Only `AddEvent` is flagged `HasRestrictions`. The sign-up calls
+  (`EventSignUp`, `EventTentative`, `EventDecline`, `EventAvailable`) are
+  not, but are still only called from button presses.
+- `GetDayEvent` and `EventGetInvite` return secret values during chat
+  lockdown, so read them only when sync isn't paused.
+- Raid templates (C5) become a raid table (name, size, title keywords)
+  used to match events to raids, since the addon can't create events.
+- Two releases: **v0.3.0** read-only (events, line-up, roles, counts,
+  attunement) and **v0.3.1** actions (sign-up buttons, reminders, invite all).
+
 *Alternative, not recommended:* addon-only events. Anyone could create
 them with no roles, but members without the addon can't see them,
 someone has to be online to share them, and they're easy to spam.
@@ -267,7 +287,7 @@ which explains where each idea came from.
 - B5 coverage gaps: professions and specialisations nobody has
 - B6 favourite recipes and crafters (local only)
 
-### v0.3: Raids (on Blizzard's guild calendar, see section 6)
+### v0.3: Raids (on Blizzard's guild calendar, see section 6; next up, before 9 Dec)
 - C1 sign-up status (signed / tentative / late / bench / can't), main and second role
 - C2 line-up view: counts by role and class, attunement check for that raid
 - C3 raid reminders (chat or pop-up before start)

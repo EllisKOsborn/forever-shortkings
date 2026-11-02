@@ -138,8 +138,12 @@ Alts link only when **both** profiles list each other in `family`.
   See CHANGELOG.md. (`docs/prompts/next-v0.1.2-v0.2.md` is done.)
 - Roadmap and future plans: `PLAN.md` section 7. Background and reasoning:
   `docs/FEATURE-REVIEW.md`.
-- **Next:** in-game testing (TESTING.md), then the Professions tab and
-  B2–B6 (PLAN.md v0.2.x). No prompt written yet; plan first.
+- **Next:** in-game testing (TESTING.md), then **v0.3 Raids** before raids
+  open on 9 Dec: prompt `docs/prompts/next-v0.3-raids.md` (v0.3.0 read-only,
+  v0.3.1 actions). After that, the Professions tab and B2–B6 (PLAN.md v0.2.x).
+- Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
+  `AddEvent` is `HasRestrictions`; `GetDayEvent`/`EventGetInvite` are secret
+  during chat lockdown; `C_PartyInfo.InviteUnit` and `ConvertToRaid` exist.
 - Decisions in v0.1.2/v0.2.0:
   - Roster raid mode uses a **second List** with its own columns (Attuned
     replaces Professions and Ver) instead of rebuilding the List widget.
