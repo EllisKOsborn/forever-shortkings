@@ -33,6 +33,21 @@ describe("UI smoke test", function()
 		assert.equal("character", SK.MainFrame.current)
 	end)
 
+	it("builds the window shell: rail, status line, sync text", function()
+		SK.Commands.Run("")
+		local f = SK.MainFrame.frame
+		assert.equal(#SK.MainFrame.tabs, #f.railButtons)
+		assert.equal(936, SK.MainFrame.WIDTH)
+		SK.MainFrame:Select("roster")
+		SK.MainFrame:SetStatus("roster", "3 characters")
+		assert.equal("3 characters", f.statusLeft:GetText())
+		SK.MainFrame:SetStatus("overview", "elsewhere")
+		assert.equal("3 characters", f.statusLeft:GetText())
+		assert.truthy(SK.MainFrame.SyncText():find("sync", 1, true))
+		SK.DB.settings.reduceMotion = true
+		SK.MainFrame:UpdateMotion()
+	end)
+
 	it("builds the debug report", function()
 		SK.Commands.Run("debug")
 		local text = table.concat(SK.DB.lastReport, "\n")

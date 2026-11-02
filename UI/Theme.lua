@@ -196,7 +196,7 @@ end
 -- Legacy opts (from/to/thickness/gold) are accepted and ignored.
 function Theme.Panel(frame, opts)
 	opts = opts or {}
-	local bg = frame:CreateTexture(nil, "BACKGROUND", nil, -8)
+	local bg = frame:CreateTexture(nil, "BACKGROUND", nil, -7) -- above Theme.Shadow (-8)
 	bg:SetAllPoints()
 	Theme.Solid(bg, opts.tone or "bg")
 	frame.bg = bg
