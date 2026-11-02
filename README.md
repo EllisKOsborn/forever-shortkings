@@ -28,6 +28,8 @@
 > Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
 > client. The pictures below are **mockups** drawn from the addon's real
 > colours and layout. Item icons are placeholders; in game you see the real ones.
+> The new plum-and-pink look (side rail, header band, [design system](docs/DESIGN.md))
+> hasn't been seen in game yet either.
 
 ---
 
@@ -41,8 +43,8 @@
 | 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains |
 | 🛡️ **Character** | Anyone's gear, talents, professions, cooldowns, attunements and reputations |
 | ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first |
-| ⚙️ **Settings** | Sync and privacy switches, window size, and a live status read-out |
-| 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, reminders, and a copyable debug report |
+| ⚙️ **Settings** | Sync and privacy switches, window size, Reduce motion, and a live status read-out |
+| 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, reminders, a copyable debug report, and one consistent plum-and-pink look |
 
 ### 🏰 Overview
 <p align="center"><img src="docs/images/overview.webp" alt="Overview tab mockup" width="100%"></p>
@@ -51,13 +53,15 @@ Your one-stop dashboard, and the first tab. Six cards, each with a button
 that takes you to where you can act on it:
 
 - **Guild**: members (and roughly how many players, with alts counted once), who's online and who's online with Short Kings, how many have shared their data, and how many characters are level 60, 50–59, 40–49 and 1–39. Button: *Roster*.
-- **Raids**: days until raids open (9 Dec). Barrow Deeps and Hyjal Summit need no attunement, so the card shows how many level 60s you have. For Onyxia's Lair it counts attuned / not / unknown, plus how many have the quest done but the Drakefire Amulet out of their bags. Button: *Onyxia list* (the Roster with Onyxia picked).
+- **Raids**: days until raids open (9 Dec), and how many characters are level 60. Barrow Deeps and Hyjal Summit need no attunement, so the card shows how many level 60s you have. For Onyxia's Lair it counts attuned / not / unknown, plus how many have the quest done but the Drakefire Amulet out of their bags. Button: *Onyxia list* (the Roster with Onyxia picked).
 - **Data health**: members without Short Kings data, profiles older than a week, characters who haven't opened a profession window, and people on an old Short Kings (including you). Says "All good" when there's nothing to fix. Button: *Oldest first* (the Roster with missing and oldest data at the top).
-- **Professions**: how many characters have each crafting profession and how many are at 300 (or the best skill so far); professions **nobody** has are shown in red; one line for gathering. Button: *Crafters*.
+- **Professions**: how many characters have each crafting profession and how many are at 300 (or the best skill so far); professions **nobody** has are shown in red; hover the card for the gathering professions. Button: *Crafters*.
 - **Recipes**: how many recipes the guild knows, from how many crafters, and how many **only one character** knows (with a few examples), so you know where you have no backup. Button: *Search recipes*.
 - **Recent milestones**: level-ups (every 10 levels), profession skill 75/150/225/300, Onyxia attunement and newly learned recipes, newest first. Hover for when, click to open the character, and press **Grats** to type "Grats Bramble on level 60!" into guild chat (you press Enter).
 
-The header line shows your guild, members, how many are online and the days until raids open.
+Each card leads with one big number where that answers its question. The
+line beside the page title shows your guild, members, how many are online and
+the days until raids open.
 
 Milestones are worked out by **your own addon** when it sees a newer copy of a
 character, and kept on your computer only (the last 50). Nothing new is sent
@@ -75,20 +79,20 @@ Settings ("Record guild milestones").
   - **Spec**: main talent tree and points, e.g. *Holy 21/30/0*.
   - **Professions** with skill levels.
   - **Item level**.
-  - **Online**: a coloured dot, then *Online*, *on alt* or how long ago they were last seen.
-  - **Ver**: their Short Kings version, in orange when out of date.
-  - **Data**: how fresh their profile is (orange when more than a week old: it may be out of date).
-- **Status dots:** 🟩 online with Short Kings · 🟨 online without it · ⬜ offline.
+  - **Online**: a status mark, then *Online*, *on alt* or how long ago they were last seen.
+  - **Ver**: their Short Kings version, in yellow when out of date.
+  - **Data**: how fresh their profile is (yellow when more than a week old: it may be out of date).
+- **Status marks** use shape as well as colour: a filled green square = online with Short Kings, a hollow yellow square = online without it, a grey dash = offline.
 - **Group alts** (on by default) folds each player's characters into one row, under the character they chose as their main.
 - **Sort** by clicking any column. Online members come first.
 - **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name.
-- **Counter** at the top: characters, how many have data, how many need an addon update, and whether a newer Short Kings is out.
-- **Copy** (top right) gives the list exactly as shown, as plain text to paste into Discord. Notes are never included.
+- **Counter** in the status line at the bottom of the window: characters, how many have data, how many need an addon update, and whether a newer Short Kings is out.
+- **Copy** (top right, in the toolbar) gives the list exactly as shown, as plain text to paste into Discord. Notes are never included.
 - **Raid picker** (*All raids*, Barrow Deeps (10), Hyjal Summit (20), Onyxia's Lair (40), the raids in Forever's first wave). Pick a raid to see who's attuned:
   - Barrow Deeps and Hyjal Summit need no attunement, so they just say so;
-  - for Onyxia, an **Attuned** column: green tick *yes* (quest done, or the Drakefire Amulet in their bags), red cross *no*, grey *unknown* (no Short Kings data or gear hidden); an orange **!** means the quest is done but the amulet isn't in their bags (you need it in your bags to enter);
-  - filter buttons **All / Attuned / Not attuned / Unknown**;
-  - a counter such as "23 attuned · 9 not · 6 unknown";
+  - for Onyxia, an **Attuned** column: green tick *yes* (quest done, or the Drakefire Amulet in their bags), red cross *no*, grey *unknown* (no Short Kings data or gear hidden); a yellow *no amulet* means the quest is done but the amulet isn't in their bags (you need it in your bags to enter);
+  - filter segments **All / Attuned / Not attuned / Unknown**;
+  - a counter with ticks and crosses, such as "23 attuned · 9 not · 6 unknown";
   - **Max level only** (on by default), where max level is the highest level in the guild;
   - every character on its own row, even alts, with "alt of X" in the tooltip;
   - a note for raids whose attunement quests aren't known yet.
@@ -111,16 +115,16 @@ Settings ("Record guild milestones").
 ### 🛡️ Character
 <p align="center"><img src="docs/images/character.webp" alt="Character tab mockup" width="100%"></p>
 
-- **Buttons:** *< Roster*, *Me* (your own character), *Whisper* (opens a whisper to them), *Ask for latest*, and *Make this my main* on your own alts.
+- **Buttons** (in the toolbar): *Roster* (back), *Me* (your own character), *Whisper* (opens a whisper to them), *Ask for latest*, and *Make this my main* on your own alts.
 - **Ask for latest** asks them (or their alt, if that's who is online) for their newest data. Their addon re-reads their character first. It works only while they're online with Short Kings, at most once every 30 seconds; otherwise it's greyed out with "Offline: showing their last known data". The header says "Asked for the latest data…" until the answer arrives.
 - **Header:** name, level, race, class and guild rank. It also shows how old the data is and where it came from: *this account*, *from them*, or *relayed by a guildmate*.
-- **Paperdoll** with all 19 slots, borders coloured by item quality.
+- **Paperdoll** with all 19 slots, edges coloured by item quality.
   - Hover a slot for the **real item tooltip**.
   - **Shift-click** to link the item in chat.
   - **Ctrl-click** to preview it in the dressing room.
 - **Average item level** and main talent tree in the middle of the paperdoll.
-- **Missing enchants:** an orange **!** on the slot, a note in the tooltip, and a count such as "2 missing enchants".
-- **Details** beside the paperdoll:
+- **Missing enchants:** a yellow square on the slot's corner, a note in the tooltip, and a count such as "2 missing enchants".
+- **Details** in two columns beside the paperdoll:
   - **Alts** (same player) and **notes**.
   - **Talents**: points in each tree.
   - **Professions**: skill level, number of known recipes, or *not scanned yet*.
@@ -128,6 +132,7 @@ Settings ("Record guild milestones").
   - **Attunements** for the first raid wave: Onyxia's Lair (*done* / *not done*, plus a warning if the Drakefire Amulet isn't in their bags); Barrow Deeps and Hyjal Summit say *no attunement needed*.
   - **Reputations**: raid and crafting factions first, then every faction at Friendly or above.
 - **Privacy:** if someone hides their gear or recipes, it says *hidden by this player* instead.
+- **No data yet?** The tab says so calmly and explains why (no addon, or a trial account).
 
 ### ⚒️ Crafters
 <p align="center"><img src="docs/images/crafters.webp" alt="Crafters tab mockup" width="100%"></p>
@@ -145,7 +150,8 @@ Settings ("Record guild milestones").
   - *on Gillybean* when they're offline but an alt is online (Whisper goes to the alt), or *alt of X*;
   - a **Whisper** button (greyed out when nobody on that player's characters is online);
   - hover a crafter to see when their recipes were recorded; click to open their character.
-- **Post to guild chat** types "[Item] can be made by: A, B, C" into your chat box. You press Enter to send it.
+- **Empty states** explain what to do: type at least 3 letters, open a profession window, or click a result.
+- **Post to guild chat** (the pink button) types "[Item] can be made by: A, B, C" into your chat box. You press Enter to send it.
 - **Copy** gives the crafter list as plain text for Discord.
 - Recipes come from what each crafter recorded when they last opened their profession window. If nobody has yet, the tab says so. People who hide their recipes aren't listed.
 - Item names load from the game a little at a time, so the first search can take a few seconds to fill in.
@@ -161,6 +167,7 @@ Settings ("Record guild milestones").
 - **Show guild crafters in item tooltips** (on by default).
 - **Record guild milestones (Overview)** (on by default; kept on your computer only).
 - **Show minimap button**, and **debug logging** in chat.
+- **Reduce motion**: stops the little sparks on the fuse and the fades when you switch tabs.
 - **Window size**: 70% to 130%.
 - **Buttons:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
 - **What guildmates see from you**: a read-only list of what you share and what stays private, taken from the exact copy that is sent, plus what is never shared.
@@ -177,7 +184,8 @@ Settings ("Record guild milestones").
   - Left-click opens the window.
   - Right-click opens Settings.
   - Drag the button to move it around the minimap.
-- **The window** opens on the Overview the first time, then on whichever tab you used last. It can be dragged by its title bar and remembers its place and size. **Esc** closes it, and the title bar shows your guild and whether sync is on.
+- **The window** (936 × 600, fits a 1366 × 768 laptop) opens on the Overview the first time, then on whichever tab you used last. A **rail on the left** switches tabs. Drag it by the plum header band; it remembers its place and size. **Esc** closes it, and the status line at the bottom shows your guild and whether sync is on.
+- **The look**: plum grounds that get lighter step by step, thin hairline edges, one pink accent for what you can click and where you are, and a lit fuse with sparks in the header. All of it follows [docs/DESIGN.md](docs/DESIGN.md), with text contrast checked by a script.
 - **Automatic collection.** Every character you log in on is recorded:
   - gear and item level, talents and reputations;
   - professions, recipes (when you open the profession window) and cooldowns;
@@ -387,20 +395,23 @@ is in [PLAN.md section 10](PLAN.md#10-once-forever-is-live-from-4-nov-2026).
 luacheck .    # lint
 busted        # unit tests: Lua 5.1, stubbed WoW API in tests/helpers/
 node docs/mockups/render.js [font.woff2]   # regenerate the README pictures
-node docs/mockups/render.js font.woff2 --page design-v2.html --out images/v2   # design proposal
 node docs/design/contrast.js               # contrast floors of the design tokens (CI runs it)
+node docs/design/icons.js                  # regenerate the glyph textures in Media/Icons
 ```
 
-**Design refresh (proposal):** [docs/DESIGN.md](docs/DESIGN.md) is the new
-design system, with mockups in `docs/mockups/design-v2.html` and pictures in
-`docs/images/v2/`. Not built yet; the pictures above show the current look.
+**Design system:** [docs/DESIGN.md](docs/DESIGN.md) (tokens, spacing, type,
+every widget and state). Colours live in `docs/design/tokens.json` and
+`UI/Theme.lua` (a test keeps them equal). The mockup page
+`docs/mockups/ui-mockup.html` also has the component sheet and the two shell
+options that were compared.
 
 | Folder | What lives there |
 |---|---|
 | `Core/` | start-up, events, saved data, guild roster, alts, the crafter index, Overview numbers and the milestones feed, text export; `Compat.lua` is the **only** file that touches client-specific APIs |
 | `Collect/` | reads gear, talents, professions, recipes, reputation and attunements |
 | `Sync/` | encoding (LibSerialize + LibDeflate), merge rules, the HI/RQ/PR/SQ/SO protocol |
-| `UI/` | theme, widgets, tabs and the item-tooltip line (colours and gradients only, no image files) |
+| `UI/` | theme (design tokens), widgets, the window shell, tabs and the item-tooltip line |
+| `Media/Icons/` | 17 white 32 × 32 glyph textures, generated by `docs/design/icons.js` and tinted in game |
 | `Data/` | profession, attunement and faction tables (IDs are verified or marked TODO, never guessed) |
 
 **Releasing:** push a tag like `v0.1.0`. The *Release* workflow runs the
@@ -409,11 +420,11 @@ GitHub Release. For CurseForge, add a `CF_API_KEY` repository secret and an
 `## X-Curse-Project-ID:` line to `ShortKings.toc`. Every push also produces
 an unpublished **test build** (Actions → Tests → `ShortKings-test-build`).
 
-**Theme palette** (from `UI/Theme.lua`):
+**Palette** (from `UI/Theme.lua`, see [DESIGN.md](docs/DESIGN.md#2-tokens)):
 
-| Plum dark | Plum | Magenta | Hot pink | Ember | Flame | Leather | Gold |
+| Rail | Window | Panel | Card | Sky | Accent | Brand | Ember |
 |---|---|---|---|---|---|---|---|
-| `#2A1220` | `#3D1A2E` | `#D94FA0` | `#F07ACB` | `#FF7A1A` | `#FFC24A` | `#6B3E1E` | `#D4AF37` |
+| `#140A11` | `#1C0E18` | `#24121F` | `#2E1828` | `#4A1E3C` | `#F27BC4` | `#D94FA0` | `#FF7A1A` |
 </details>
 
 ## 🙏 Credits

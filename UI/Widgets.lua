@@ -734,22 +734,3 @@ function W.EmptyState(parent, icon, width)
 	end
 	return f
 end
-
----------------------------------------------------------------------------
--- Chip: a small outlined word in one status colour (18 px).
----------------------------------------------------------------------------
-function W.Chip(parent, text, color)
-	local f = CreateFrame("Frame", nil, parent)
-	f:SetHeight(18)
-	Theme.Hairline(f, color or "textMuted")
-	f.text = Theme.Text(f, "small", color or "textMuted")
-	f.text:SetPoint("CENTER")
-	function f:Set(t, c)
-		self.text:SetText(t)
-		self.text:SetTextColor(Theme.RGB(c or "textMuted"))
-		Theme.SetBorderColor(self, c or "textMuted")
-		self:SetWidth(math.ceil(self.text:GetStringWidth()) + 12)
-	end
-	f:Set(text, color)
-	return f
-end

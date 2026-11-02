@@ -73,7 +73,7 @@ const subjLine = subj.map(([k, v]) => `${k} ${ratio(rgb(v), rgb(C.panel)).toFixe
 console.log((md ? "\nSubject colours on panel (info only): " : "subject on panel (info): ") + subjLine);
 
 // The design mockup must use the same colours as tokens.json.
-const html = fs.readFileSync(path.join(__dirname, "..", "mockups", "design-v2.html"), "utf8");
+const html = fs.readFileSync(path.join(__dirname, "..", "mockups", "ui-mockup.html"), "utf8");
 for (const [k, v] of Object.entries(C)) {
   const m = html.match(new RegExp("--" + k + ":#([0-9A-Fa-f]{6})"));
   if (!m || m[1].toUpperCase() !== v.toUpperCase()) { console.error(`mockup --${k} does not match tokens.json (${v})`); failed++; }

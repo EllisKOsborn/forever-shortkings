@@ -1,585 +1,595 @@
 <!doctype html>
 <!--
-  Short Kings UI mockup. This is NOT a game screenshot: it redraws the addon's
-  window in HTML using the same colours (UI/Theme.lua), sizes and layout
-  (UI/MainFrame.lua, OverviewTab.lua, RosterTab.lua, CharacterTab.lua, CraftersTab.lua, SettingsTab.lua).
-  Item icons are placeholders (the game shows the real item icons).
-  Regenerate the images with: node docs/mockups/render.js [marcellus.woff2]
+  Short Kings UI mockup (docs/DESIGN.md). NOT a game screenshot. Every screen is redrawn in HTML with the tokens from
+  docs/design/tokens.json and the measurements in docs/DESIGN.md, so each
+  rectangle maps to a WoW Texture/FontString/Frame. Item and class icons are
+  placeholders; the glyph paths match docs/design/icons.js.
+  Render: node docs/mockups/render.js <marcellus.woff2>
 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <title>Short Kings UI mockup</title>
 <style>
-@font-face { font-family: "SKFriz"; src: url("marcellus.woff2") format("woff2");
+/* Marcellus (OFL) stands in for the game font (Friz Quadrata); digits use a
+   lining serif so numbers look like the game's. */
+@font-face { font-family: "SKFriz"; src: url("marcellus.woff2");
   unicode-range: U+0020-002F, U+003A-00FF, U+2013-2026; }
-@font-face { font-family: "SKFriz"; src: local("Bitstream Charter"), local("Charter"), local("Georgia"); unicode-range: U+0030-0039; }
+@font-face { font-family: "SKFriz"; src: local("Bitstream Charter"), local("Charter"), local("Georgia"), local("DejaVu Serif"); unicode-range: U+0030-0039; }
+
+/* Layout: 936x600 window = 64px rail + header band (64) + toolbar band (48)
+   + content (24px side insets) + status line (28). Tokens mirror tokens.json. */
 :root {
-  --plumDark:#2A1220; --plum:#3D1A2E; --plumLift:#4E2440; --magenta:#D94FA0; --pink:#F07ACB;
-  --ember:#FF7A1A; --flame:#FFC24A; --leather:#6B3E1E; --gold:#D4AF37; --text:#F5E6EE;
-  --muted:#B89AAA; --good:#7CD67C; --bad:#E06060;
+  --accent:#F27BC4; --onAccent:#1A0913; --sidebar:#140A11; --bg:#1C0E18; --panel:#24121F;
+  --panelAlt:#2E1828; --sky:#4A1E3C; --text:#FBF2F7; --textDim:#D8C2CF; --textMuted:#AE93A3;
+  --success:#6BD999; --warning:#FABF4D; --danger:#F57373; --brand:#D94FA0; --ember:#FF7A1A;
+  --hair:rgba(255,255,255,.10); --hover:rgba(255,255,255,.06); --selected:rgba(255,255,255,.09);
+  --pressed:rgba(255,255,255,.12);
+  --hero:26px; --display:18px; --title:15px; --body:13px; --label:12px; --small:11px;
+  color-scheme: dark;
 }
-* { box-sizing: border-box; }
-body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Quadrata TT",Georgia,serif;
-  color:var(--text); text-shadow:1px -1px 0 rgba(0,0,0,.8); }
-.scene { position:relative; width:940px; padding:40px; margin-bottom:40px;
-  background: radial-gradient(ellipse at 30% 20%, #3b4a3a 0%, #22301f 45%, #141a12 100%); }
-.scene.banner { padding:0; width:auto; display:inline-block; background:none; }
-.win { position:relative; width:860px; height:560px;
-  background:linear-gradient(to top, var(--plumDark), var(--plum));
-  border:3px solid var(--leather); box-shadow:0 12px 40px rgba(0,0,0,.6); }
-.win::before { content:""; position:absolute; inset:0; border:1px solid var(--gold); pointer-events:none; }
-.titlebar { position:absolute; left:0; right:0; top:0; height:54px;
-  background:linear-gradient(to right, rgba(217,79,160,.55), rgba(61,26,46,.05)); }
-.titlebar::after { content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
-  background:linear-gradient(to right, rgba(255,122,26,1), rgba(255,194,74,.2)); }
-.title { position:absolute; left:16px; top:7px; font-size:22px; color:var(--pink); }
-.tagline { position:absolute; left:18px; top:34px; font-size:11px; color:var(--flame); }
-.status { position:absolute; right:40px; top:20px; font-size:11px; color:var(--muted); }
-.close { position:absolute; right:6px; top:6px; width:24px; height:24px; border-radius:50%;
-  background:radial-gradient(circle at 40% 35%, #c33, #611); border:2px solid #b8a06a;
-  color:#fff; font:bold 14px/20px Arial,sans-serif; text-align:center; text-shadow:none; }
-.tabs { position:absolute; left:9px; top:59px; display:flex; gap:4px; }
-.btn { position:relative; height:26px; padding:0 14px; min-width:90px; display:flex; align-items:center;
-  justify-content:center; font-size:12px; color:var(--text);
-  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
-.btn.small { height:22px; min-width:0; padding:0 10px; }
-.btn.active { color:var(--flame); border-color:var(--ember); }
-.btn.active::after { content:""; position:absolute; left:2px; right:2px; bottom:2px; height:2px;
-  background:linear-gradient(to right, var(--ember), var(--flame)); }
-.btn.hover { color:var(--flame); border-color:var(--ember); }
-.content { position:absolute; left:9px; right:9px; top:93px; bottom:9px; }
-.search { position:absolute; left:0; top:0; width:260px; height:22px; background:var(--plumDark);
-  border:1px solid var(--leather); font-size:12px; color:var(--muted); padding:3px 8px; }
-.count { position:absolute; left:272px; top:4px; font-size:12px; color:var(--muted); }
-.list { position:absolute; left:0; right:0; top:30px; bottom:0; }
-.header { position:absolute; left:0; right:12px; top:0; height:22px;
-  background:linear-gradient(to top, rgba(42,18,32,1), rgba(217,79,160,.35)); display:flex; padding-left:4px; }
-.header div, .row div { flex:none; padding:0 4px; white-space:nowrap; overflow:hidden; }
-.header div { color:var(--pink); font-size:12px; line-height:22px; }
-.rows { position:absolute; left:0; right:12px; top:22px; }
-.row { height:20px; display:flex; padding-left:4px; font-size:12px; line-height:20px; position:relative; }
-.row:nth-child(odd) { background:rgba(78,36,64,.15); }
-.row:nth-child(even) { background:rgba(78,36,64,.35); }
-.row.hover::before { content:""; position:absolute; inset:0;
-  background:linear-gradient(to right, rgba(255,122,26,.25), rgba(255,194,74,.05)); }
-.row div { position:relative; }
+* { box-sizing:border-box; }
+body { margin:0; padding:40px; background:#0d0f12; color:var(--text);
+  font-family:"SKFriz","Friz Quadrata TT",Georgia,serif; font-size:var(--body);
+  text-shadow:1px -1px 0 rgba(0,0,0,.8); font-variant-numeric:tabular-nums lining-nums; }
+.scene { position:relative; width:1016px; padding:40px; margin-bottom:40px;
+  background:radial-gradient(ellipse at 30% 20%, #3b4a3a 0%, #22301f 45%, #141a12 100%); }
+.cap { position:absolute; left:40px; top:10px; font:12px/16px system-ui,sans-serif; color:#cfd6c9; text-shadow:none; }
+
+/* ---------- window shell ---------- */
+.win { position:relative; width:936px; height:600px; background:var(--bg);
+  outline:1px solid var(--hair); box-shadow:0 4px 24px 8px rgba(5,0,3,.6); overflow:hidden; }
+.abs { position:absolute; }
+.rail { position:absolute; left:0; top:0; width:64px; bottom:0; background:var(--sidebar);
+  box-shadow:inset -1px 0 0 var(--hair); }
+.emblem { position:absolute; left:14px; top:14px; width:36px; height:36px; }
+.ri { position:absolute; left:4px; width:56px; height:56px; color:var(--textDim); text-align:center; }
+.ri svg { position:absolute; left:18px; top:9px; width:20px; height:20px; }
+.ri span { position:absolute; left:0; right:0; top:34px; font-size:var(--small); line-height:14px; }
+.ri.on { background:var(--selected); color:var(--accent); }
+.ri.on::before { content:""; position:absolute; left:-4px; top:0; bottom:0; width:2px; background:var(--accent); }
+.ri.hov { background:var(--hover); color:var(--text); }
+.ri.later { color:var(--textMuted); opacity:.55; outline:1px dashed var(--hair); outline-offset:-1px; }
+.band { position:absolute; left:64px; right:0; top:0; height:64px;
+  background:linear-gradient(to right, rgba(217,79,160,.22), rgba(217,79,160,0) 60%),
+             linear-gradient(to bottom, var(--sky), var(--bg)); }
+.band.full { left:0; }
+.wordmark { position:absolute; left:24px; top:13px; font-size:var(--display); line-height:22px; color:var(--text); }
+.tagline { position:absolute; left:25px; top:37px; font-size:var(--small); line-height:14px; color:var(--textDim); }
+.fuse { position:absolute; left:0; bottom:0; width:46%; height:1px;
+  background:linear-gradient(to right, rgba(255,122,26,.0), rgba(255,122,26,.75) 75%, rgba(250,191,77,1)); }
+.spark { position:absolute; width:3px; height:3px; background:var(--warning);
+  box-shadow:0 0 5px 2px rgba(255,122,26,.75); }
+.close { position:absolute; right:12px; top:12px; width:24px; height:24px; color:var(--textDim); }
+.close svg { position:absolute; left:6px; top:6px; width:12px; height:12px; }
+.toolbar { position:absolute; left:64px; right:0; top:64px; height:48px; background:var(--panel);
+  box-shadow:inset 0 -1px 0 var(--hair); }
+.ptitle { position:absolute; left:24px; top:15px; font-size:var(--title); line-height:18px; }
+.content { position:absolute; left:88px; right:24px; top:128px; bottom:44px; }
+.statusline { position:absolute; left:64px; right:0; bottom:0; height:28px; background:var(--sidebar);
+  box-shadow:inset 0 1px 0 var(--hair); font-size:var(--small); line-height:28px; color:var(--textDim); }
+.statusline .l { position:absolute; left:24px; } .statusline .r { position:absolute; right:24px; }
+
+/* shell B: top tabs */
+.tabsB { position:absolute; left:0; right:0; top:64px; height:40px; background:var(--sidebar);
+  box-shadow:inset 0 -1px 0 var(--hair); display:flex; padding-left:16px; }
+.tabB { position:relative; padding:0 16px; line-height:40px; font-size:var(--body); color:var(--textDim); }
+.tabB.on { color:var(--accent); background:var(--selected); }
+.tabB.on::after { content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--accent); }
+
+/* ---------- controls ---------- */
+.btn { position:absolute; height:28px; min-width:72px; padding:0 16px; display:flex; align-items:center;
+  justify-content:center; gap:6px; font-size:var(--label); color:var(--text); background:var(--panelAlt);
+  box-shadow:inset 0 0 0 1px var(--hair); white-space:nowrap; }
+.btn.static { position:relative; }
+.btn.ghost { background:transparent; }
+.btn.primary { background:var(--accent); color:var(--onAccent); box-shadow:none; text-shadow:none; }
+.btn.hov { background-image:linear-gradient(var(--hover),var(--hover)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.2); }
+.btn.primary.hov { background:#F591CF; }
+.btn.dis { opacity:.5; }
+.btn.focus { box-shadow:inset 0 0 0 1px rgba(242,123,196,.8); }
+.btn.sm { height:22px; min-width:0; padding:0 10px; font-size:var(--small); }
+.btn svg { width:13px; height:13px; }
+.search { position:absolute; height:28px; background:var(--sidebar); box-shadow:inset 0 0 0 1px var(--hair);
+  font-size:var(--label); line-height:28px; color:var(--textMuted); padding-left:30px; white-space:nowrap; overflow:hidden; }
+.search.filled { color:var(--text); }
+.search.focus { box-shadow:inset 0 0 0 1px rgba(242,123,196,.8); }
+.search svg { position:absolute; left:9px; top:8px; width:12px; height:12px; color:var(--textMuted); }
+.menu { position:absolute; height:28px; background:var(--panelAlt); box-shadow:inset 0 0 0 1px var(--hair);
+  font-size:var(--label); line-height:28px; padding-left:12px; color:var(--text); white-space:nowrap; }
+.menu svg { position:absolute; right:10px; top:10px; width:9px; height:9px; color:var(--textDim); }
+.menu.hov { background-image:linear-gradient(var(--hover),var(--hover)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.2); }
+.pop { position:absolute; width:176px; background:var(--panel); box-shadow:inset 0 0 0 1px var(--hair), 0 4px 16px rgba(0,0,0,.5);
+  padding:4px 0; z-index:5; }
+.pop div { position:relative; height:26px; line-height:26px; padding-left:28px; font-size:var(--label); color:var(--text); }
+.pop .hl { background:var(--hover); }
+.pop .on::before { content:""; position:absolute; left:12px; top:10px; width:6px; height:6px; background:var(--accent); }
+.pop .sep { height:9px; } .pop .sep::after { content:""; position:absolute; left:8px; right:8px; top:4px; height:1px; background:var(--hair); }
+.check { position:absolute; display:flex; align-items:center; gap:8px; font-size:var(--label); white-space:nowrap; }
+.box { width:14px; height:14px; background:var(--sidebar); box-shadow:inset 0 0 0 1px rgba(255,255,255,.22); position:relative; flex:none; }
+.box.on { box-shadow:inset 0 0 0 1px var(--accent); }
+.box.on::after { content:""; position:absolute; inset:3px; background:var(--accent); }
+.seg { position:absolute; display:flex; height:24px; box-shadow:inset 0 0 0 1px var(--hair); }
+.seg div { position:relative; padding:0 12px; line-height:24px; font-size:var(--label); color:var(--textDim); }
+.seg div + div { box-shadow:inset 1px 0 0 var(--hair); }
+.seg .on { background:var(--selected); color:var(--text); }
+.seg .on::after { content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--accent); }
+.chip { display:inline-block; height:18px; line-height:18px; padding:0 6px; font-size:var(--small); vertical-align:1px;
+  box-shadow:inset 0 0 0 1px currentColor; }
+.chip.w { color:var(--warning); } .chip.d { color:var(--danger); } .chip.m { color:var(--textMuted); } .chip.s { color:var(--success); }
+
+/* ---------- lists ---------- */
+.list { position:absolute; background:var(--panel); box-shadow:inset 0 0 0 1px var(--hair); overflow:hidden; }
+.lh { position:absolute; left:1px; right:1px; top:1px; height:24px; display:flex; box-shadow:inset 0 -1px 0 var(--hair);
+  font-size:var(--label); line-height:24px; color:var(--textDim); padding-left:8px; }
+.lh .sorted { color:var(--text); }
+.lrows { position:absolute; left:1px; right:9px; top:25px; }
+.row { position:relative; height:22px; display:flex; padding-left:8px; line-height:22px; font-size:var(--body); }
+.row:nth-child(even) { background:rgba(255,255,255,.02); }
+.row.hov { background:var(--hover); }
+.row.sel { background:var(--selected); }
+.row.sel::before { content:""; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--accent); }
+.lh > div, .row > div { flex:none; padding-right:8px; white-space:nowrap; overflow:hidden; }
 .r { text-align:right; }
-.m { color:var(--muted); } .g { color:var(--good); } .f { color:var(--flame); } .e { color:var(--ember); }
-.p { color:var(--pink); } .bd { color:var(--bad); }
-.scroll { position:absolute; right:0; top:22px; bottom:0; width:10px; background:rgba(42,18,32,.9); }
-.scroll .thumb { position:absolute; left:0; right:0; top:0; height:30px; background:var(--magenta); }
-.tooltip { position:absolute; background:rgba(4,8,20,.92); border:1px solid #9aa4b8; border-radius:4px;
-  padding:7px 10px; font-family:"SKFriz",Georgia,serif; font-size:12px; line-height:17px; color:#fff;
-  box-shadow:0 4px 14px rgba(0,0,0,.6); white-space:nowrap; }
-.tooltip .dl { display:flex; justify-content:space-between; gap:24px; }
-/* character */
-.name { position:absolute; left:0; top:32px; font-size:18px; }
-.info { position:absolute; left:0; top:56px; font-size:12px; }
-.meta { position:absolute; left:0; top:73px; font-size:11px; color:var(--muted); }
-.doll { position:absolute; left:0; top:92px; width:250px; height:370px;
-  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:2px solid var(--leather); }
-.doll::before { content:""; position:absolute; inset:0; border:1px solid var(--gold); }
-.slot.hover { box-shadow:0 0 0 2px var(--flame); }
-.slot { position:absolute; width:38px; height:38px; border:2px solid var(--leather); background:var(--plumDark); }
-.slot i { position:absolute; inset:2px; display:block; }
-.slot .warn { position:absolute; right:-1px; top:-1px; width:12px; height:12px; background:linear-gradient(to top, var(--ember), var(--flame)); color:#2A1220; font:bold 10px/12px Arial,sans-serif; text-align:center; text-shadow:none; }
-.slot b { position:absolute; left:0; right:0; bottom:1px; text-align:center; font:9px/9px Arial,sans-serif;
-  color:rgba(255,255,255,.75); text-shadow:0 0 2px #000; font-weight:normal; }
-.ilvl { position:absolute; left:0; right:0; top:120px; text-align:center; font-size:20px; color:var(--flame); }
-.ilvlLabel { position:absolute; left:0; right:0; top:146px; text-align:center; font-size:11px; color:var(--muted); }
-.spec { position:absolute; left:0; right:0; top:176px; text-align:center; font-size:12px; color:var(--pink); line-height:16px; }
-.details { position:absolute; left:268px; top:92px; right:14px; bottom:0; font-size:12px; line-height:14.5px;
-  white-space:pre; overflow:hidden; }
-/* settings */
-.h { position:absolute; left:0; top:0; font-size:16px; color:var(--pink); }
-.check { position:absolute; left:4px; display:flex; align-items:center; gap:8px; font-size:12px; }
-.box { width:18px; height:18px; background:var(--plumDark); border:1px solid var(--leather); position:relative; }
-.box.on::after { content:""; position:absolute; inset:3px; background:linear-gradient(to top, var(--ember), var(--flame)); }
-.rowbtns { position:absolute; left:4px; display:flex; gap:8px; align-items:center; }
-.panel { position:absolute; left:4px; right:14px; font-size:12px; line-height:15px; white-space:pre; }
-/* menu, icons, side panel */
-.menu { position:absolute; height:22px; padding:0 8px; font-size:12px; line-height:20px; color:var(--text);
-  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
-.menu::after { content:"v"; position:absolute; right:6px; top:0; font-size:10px; color:var(--muted); }
-.menu.hover { border-color:var(--ember); color:var(--flame); }
-.pop { position:absolute; background:linear-gradient(to top, var(--plumDark), var(--plum)); border:1px solid var(--leather);
-  padding:2px; font-size:12px; z-index:3; }
-.pop div { height:20px; line-height:20px; padding:0 8px; }
-.pop .on { color:var(--flame); }
-.pop .hl { background:linear-gradient(to right, rgba(255,122,26,.3), rgba(255,194,74,.05)); }
-.ico { display:inline-block; width:14px; height:14px; vertical-align:-2px; margin-right:5px; border:1px solid rgba(0,0,0,.6); }
-.mark { display:inline-block; width:11px; height:11px; border-radius:50%; vertical-align:-1px; margin-right:4px;
-  font:bold 9px/11px Arial,sans-serif; text-align:center; color:#fff; text-shadow:none; }
-.mark.y { background:#2f9e3a; } .mark.n { background:#c0392b; } .mark.u { background:#d9a62e; color:#3a2a00; }
-.side { position:absolute; left:482px; right:0; top:30px; bottom:0;
-  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
-.sel { background:linear-gradient(to right, rgba(217,79,160,.45), rgba(61,26,46,.05)) !important; }
-.row .wbtn { position:absolute; right:2px; top:2px; height:18px; width:54px; font-size:11px; line-height:16px; text-align:center;
-  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
-.row .wbtn.off { color:var(--muted); }
-/* overview cards */
-.card { position:absolute; width:270px; height:209px; background:linear-gradient(to top, var(--plumDark), var(--plumLift));
-  border:1px solid var(--leather); }
-.card .ct { position:absolute; left:10px; top:7px; font-size:14px; color:var(--pink); }
-.card .cb { position:absolute; left:10px; top:30px; right:14px; font-size:12px; line-height:15px; white-space:pre; overflow:hidden; bottom:36px; }
-.card .cf { position:absolute; left:8px; bottom:8px; width:120px; height:22px; }
-.frow { height:20px; line-height:20px; font-size:12px; display:flex; padding-left:4px; position:relative; }
-.frow:nth-child(odd) { background:rgba(78,36,64,.15); } .frow:nth-child(even) { background:rgba(78,36,64,.35); }
-.frow .gr { position:absolute; right:4px; top:2px; width:46px; height:16px; font-size:10px; line-height:14px; text-align:center;
-  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
-/* banner */
-.bannerbox { width:1020px; height:250px; position:relative; overflow:hidden;
-  background:linear-gradient(to top, var(--plumDark), var(--plum)); border:3px solid var(--leather); }
-.bannerbox::before { content:""; position:absolute; inset:0; border:1px solid var(--gold); z-index:2; }
-.bannerbox .glow { position:absolute; inset:0; background:
-  radial-gradient(ellipse at 18% 120%, rgba(255,122,26,.45), transparent 55%),
-  radial-gradient(ellipse at 85% -20%, rgba(217,79,160,.55), transparent 60%),
-  linear-gradient(to right, rgba(217,79,160,.35), rgba(61,26,46,0) 70%); }
-.bannerbox .big { position:absolute; left:60px; top:52px; font-size:76px; color:var(--pink);
-  text-shadow:3px 3px 0 #000, 0 0 30px rgba(240,122,203,.35); letter-spacing:1px; }
-.bannerbox .sub { position:absolute; left:66px; top:150px; font-size:24px; color:var(--flame); }
-.bannerbox .line { position:absolute; left:66px; top:194px; width:420px; height:3px;
-  background:linear-gradient(to right, var(--ember), rgba(255,194,74,0)); }
-.bannerbox .meta2 { position:absolute; left:66px; top:208px; font-size:13px; color:var(--muted); }
-.spark { position:absolute; width:4px; height:4px; border-radius:50%; background:var(--flame);
-  box-shadow:0 0 6px 2px rgba(255,122,26,.8); }
-.fuse { position:absolute; right:110px; top:50px; width:170px; height:170px; }
+.sb { position:absolute; right:2px; top:28px; width:2px; height:60px; background:rgba(255,255,255,.28); }
+.dim { color:var(--textDim); } .mut { color:var(--textMuted); } .ok { color:var(--success); }
+.wa { color:var(--warning); } .da { color:var(--danger); } .ac { color:var(--accent); }
+
+/* status shapes: never colour alone */
+.st { display:inline-block; width:8px; height:8px; margin-right:6px; vertical-align:0; }
+.st.addon { background:var(--success); }
+.st.plain { box-shadow:inset 0 0 0 1.5px var(--warning); }
+.st.off { height:2px; vertical-align:3px; background:var(--textMuted); }
+.mk { display:inline-block; width:12px; height:12px; vertical-align:-1px; margin-right:4px; }
+
+/* ---------- cards ---------- */
+.card { position:absolute; width:264px; height:206px; background:var(--panelAlt); box-shadow:inset 0 0 0 1px var(--hair); }
+.card .ct { position:absolute; left:16px; top:14px; font-size:var(--title); line-height:18px; }
+.card .big { position:absolute; left:16px; top:40px; font-size:var(--hero); line-height:30px; }
+.card .bigl { position:absolute; left:16px; top:72px; font-size:var(--small); line-height:14px; color:var(--textDim); }
+.card .cb { position:absolute; left:16px; right:16px; top:94px; font-size:var(--label); line-height:20px; color:var(--textDim); }
+.card .cb.top { top:42px; }
+.card .cb b { font-weight:normal; color:var(--text); }
+.card .btn { left:16px; bottom:16px; }
+.kv { display:flex; justify-content:space-between; }
+
+/* ---------- character ---------- */
+.doll { position:absolute; left:0; top:64px; width:264px; height:364px; background:var(--panel); box-shadow:inset 0 0 0 1px var(--hair); }
+.slot { position:absolute; width:36px; height:36px; background:var(--sidebar); }
+.slot i { position:absolute; inset:1px; display:block; }
+.slot b { position:absolute; left:0; right:0; bottom:1px; text-align:center; font:9px/9px system-ui,sans-serif; color:rgba(255,255,255,.8); text-shadow:0 0 2px #000; font-weight:normal; }
+.slot .warn { position:absolute; right:-3px; top:-3px; width:12px; height:12px; background:var(--warning); }
+.slot.hov { outline:1px solid var(--text); }
+.sec { font-size:var(--label); line-height:16px; color:var(--textDim); margin:0 0 6px; }
+.sec + .sec { margin-top:0; }
+.col { position:absolute; top:64px; width:264px; font-size:var(--body); line-height:20px; }
+.col h4 { margin:0 0 4px; font-weight:normal; font-size:var(--label); line-height:16px; color:var(--textDim);
+  text-transform:uppercase; }
+.col section { margin-bottom:16px; }
+
+/* ---------- tooltips (the game's own GameTooltip frame) ---------- */
+.tt { position:absolute; background:rgba(4,8,20,.92); border:1px solid #9aa4b8; border-radius:4px; padding:7px 10px;
+  font-size:12px; line-height:17px; color:#fff; box-shadow:0 4px 14px rgba(0,0,0,.6); white-space:nowrap; z-index:6; }
+.tt .dl { display:flex; justify-content:space-between; gap:24px; }
+
+/* ---------- empty state ---------- */
+.empty { position:absolute; text-align:center; color:var(--textDim); font-size:var(--body); line-height:20px; }
+.empty svg { width:32px; height:32px; color:var(--textMuted); display:block; margin:0 auto 12px; }
+.empty .et { color:var(--text); font-size:var(--title); line-height:20px; margin-bottom:4px; }
+
+/* ---------- sheets ---------- */
+.sheet { position:relative; width:936px; background:var(--bg); outline:1px solid var(--hair); padding:24px; }
+.sheet h3 { margin:0 0 12px; font-weight:normal; font-size:var(--label); letter-spacing:.06em; text-transform:uppercase; color:var(--textDim); }
+.sheet .grp { position:relative; margin-bottom:24px; }
+.swatches { display:grid; grid-template-columns:repeat(8, 1fr); gap:8px; }
+.sw { height:64px; position:relative; box-shadow:inset 0 0 0 1px var(--hair); font-size:var(--small); }
+.sw span { position:absolute; left:6px; bottom:5px; line-height:13px; }
+.rowflex { display:flex; gap:12px; align-items:center; flex-wrap:wrap; position:relative; }
+.typeline { display:flex; align-items:baseline; gap:16px; line-height:1.3; }
+.typeline small { font-size:var(--small); color:var(--textMuted); width:110px; flex:none; }
 </style>
 </head>
 <body>
-
-<!-- ============ BANNER ============ -->
-<div class="scene banner" id="banner">
-  <div class="bannerbox">
-    <div class="glow"></div>
-    <div class="big">Short Kings</div>
-    <div class="sub">Small in stature. Big in loot.</div>
-    <div class="line"></div>
-    <div class="meta2">A guild addon for World of Warcraft: Forever &nbsp;·&nbsp; gear · professions · recipes · raids</div>
-    <!-- a stick of dynamite, drawn with CSS -->
-    <svg class="fuse" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="stick" x1="0" x2="1"><stop offset="0" stop-color="#8f1d3b"/><stop offset=".5" stop-color="#D94FA0"/><stop offset="1" stop-color="#7a1734"/></linearGradient>
-        <radialGradient id="flare"><stop offset="0" stop-color="#fff6c8"/><stop offset=".35" stop-color="#FFC24A"/><stop offset=".7" stop-color="#FF7A1A" stop-opacity=".7"/><stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/></radialGradient>
-      </defs>
-      <g transform="rotate(-28 75 90)">
-        <rect x="52" y="52" width="46" height="88" rx="8" fill="url(#stick)" stroke="#2A1220" stroke-width="3"/>
-        <rect x="52" y="74" width="46" height="9" fill="#6B3E1E"/><rect x="52" y="112" width="46" height="9" fill="#6B3E1E"/>
-        <rect x="52" y="74" width="46" height="1.5" fill="#D4AF37"/><rect x="52" y="112" width="46" height="1.5" fill="#D4AF37"/>
-        <path d="M75 52 C 75 36, 88 32, 84 18" stroke="#c9b28a" stroke-width="3" fill="none"/>
-      </g>
-      <circle cx="49" cy="22" r="20" fill="url(#flare)"/>
-    </svg>
-    <div class="spark" style="left:792px;top:44px"></div>
-    <div class="spark" style="left:770px;top:28px;width:3px;height:3px"></div>
-    <div class="spark" style="left:820px;top:36px;width:2px;height:2px"></div>
-    <div class="spark" style="left:800px;top:16px;width:2px;height:2px"></div>
-  </div>
-</div>
-
-<!-- ============ OVERVIEW ============ -->
-<div class="scene" id="overview">
-  <div class="win">
-    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
-      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn active">Overview</div><div class="btn">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
-    <div class="content">
-      <div class="count" style="left:2px;top:3px">Short Kings &nbsp;·&nbsp; 47 members &nbsp;·&nbsp; 12 online &nbsp;·&nbsp; raids open in about 37 days</div>
-
-      <div class="card" style="left:0;top:24px"><div class="ct">Guild</div><div class="cb">47 members  <span class="m">(about 31 players)</span>
-12 online  ·  <span class="g">9 with Short Kings</span>
-38 have shared their data
-
-<span class="p">Levels</span>
-  60     <span class="f">22</span>
-  50-59  <span class="f">8</span>
-  40-49  <span class="f">9</span>
-  1-39   <span class="f">8</span></div><div class="btn small cf">Roster</div></div>
-
-      <div class="card" style="left:283px;top:24px"><div class="ct">Raids</div><div class="cb"><span class="f">Open 9 Dec: in about 37 days</span>
-
-<span class="p">Barrow Deeps</span> (10)
-  no attunement needed  ·  22 at level 60
-<span class="p">Hyjal Summit</span> (20)
-  no attunement needed  ·  22 at level 60
-<span class="p">Onyxia's Lair</span> (40)
-  <span class="g">8 attuned</span> · <span class="bd">6 not</span> · <span class="m">8 unknown</span>
-  <span class="e">2 without the amulet in their bags</span></div><div class="btn small cf hover">Onyxia list</div></div>
-
-      <div class="card" style="left:566px;top:24px"><div class="ct">Data health</div><div class="cb"><span class="m">9</span> members without Short Kings data
-<span class="e">4</span> profiles older than a week
-<span class="e">3</span> characters haven't opened a
-   profession window
-<span class="e">2</span> running an old Short Kings
-
-<span class="m">No data usually means no addon, or a
-trial account (trials can't share).</span></div><div class="btn small cf">Oldest first</div></div>
-
-      <div class="card" style="left:0;top:243px"><div class="ct">Professions</div><div class="cb">Alchemy  <span class="f">5</span><span class="m">  (2 at 300)</span>
-Blacksmithing  <span class="f">4</span><span class="m">  (2 at 300)</span>
-Enchanting  <span class="f">6</span><span class="m">  (3 at 300)</span>
-Engineering  <span class="bd">nobody</span>
-Leatherworking  <span class="f">3</span><span class="m">  (best 265)</span>
-Tailoring  <span class="f">7</span><span class="m">  (4 at 300)</span>
-Cooking  <span class="f">11</span><span class="m">  (1 at 300)</span>
-First Aid  <span class="f">14</span><span class="m">  (6 at 300)</span></div><div class="btn small cf">Crafters</div></div>
-
-      <div class="card" style="left:283px;top:243px"><div class="ct">Recipes</div><div class="cb"><span class="f">1,284</span> recipes known in the guild
-from 18 crafters
-
-<span class="e">37</span> only one character knows
-  <span class="m">Arcanite Reaper</span>
-  <span class="m">Flask of the Titans</span>
-  <span class="m">Mooncloth Robe</span></div><div class="btn small cf">Search recipes</div></div>
-
-      <div class="card" style="left:566px;top:243px"><div class="ct">Recent milestones</div>
-        <div style="position:absolute;left:4px;right:16px;top:48px" id="feedrows"></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ============ ROSTER ============ -->
-<div class="scene" id="roster">
-  <div class="win">
-    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
-      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Overview</div><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
-    <div class="content">
-      <div class="search" style="width:210px">Search name, profession, note...</div>
-      <div class="menu" style="left:220px;top:0;width:150px">All raids</div>
-      <div class="check" style="left:384px;top:2px"><div class="box on"></div>Group alts</div>
-      <div class="count" style="left:510px">15 characters · 12 with data · <span class="e">1 need an update</span></div>
-      <div class="btn small" style="position:absolute;right:0;top:0;width:56px">Copy</div>
-      <div class="list">
-        <div class="header" id="rhead"></div>
-        <div class="rows" id="rrows"></div>
-        <div class="scroll"><div class="thumb"></div></div>
-      </div>
-    </div>
-  </div>
-  <div class="tooltip" style="left:320px;top:190px">
-    <div style="color:#FFFFFF">Bramble Cogwhistle</div>
-    <div style="color:#d9ccd1"><span style="display:inline-block;width:8px;height:8px;background:#7CD67C;margin-right:5px"></span>Online with Short Kings</div>
-    <div>Protection 5/5/41</div>
-    <div class="dl"><span>Blacksmithing</span><span>300</span></div>
-    <div class="dl"><span>Mining</span><span>300</span></div>
-    <div style="color:#FF7A1A">2 item(s) missing an enchant</div>
-    <div style="color:#F07ACB">Note: Main tank. Ask me for Arcanite.</div>
-    <div style="color:#F07ACB;margin-top:6px">Alts</div>
-    <div class="dl"><span><span style="display:inline-block;width:8px;height:8px;background:#6E5A64;margin-right:5px"></span><span style="color:#F48CBA">Brambelle</span> 52</span><span style="color:#b39aa6">1d</span></div>
-    <div class="dl"><span><span style="display:inline-block;width:8px;height:8px;background:#6E5A64;margin-right:5px"></span><span style="color:#FF7C0A">Bramblebark</span> 35</span><span style="color:#b39aa6">6d</span></div>
-    <div style="color:#b39aa6;margin-top:6px">Short Kings 0.1.1</div>
-    <div style="color:#FFC24A">Click to view character</div>
-  </div>
-</div>
-
-<!-- ============ CHARACTER ============ -->
-<div class="scene" id="character">
-  <div class="win">
-    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
-      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Overview</div><div class="btn">Roster</div><div class="btn active">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
-    <div class="content">
-      <div style="position:absolute;left:0;top:0;display:flex;gap:6px">
-        <div class="btn small">&lt; Roster</div><div class="btn small">Me</div><div class="btn small hover">Whisper</div></div>
-      <div class="name" style="color:#C69B6D">Bramble Cogwhistle</div>
-      <div class="info">Level 60 Gnome Warrior &nbsp;·&nbsp; Guild Master</div>
-      <div class="meta">Updated 2m ago (from them) &nbsp;·&nbsp; Short Kings 0.1.1</div>
-      <div class="doll" id="doll">
-        <div class="ilvl">63.4</div><div class="ilvlLabel">average item level</div>
-        <div class="spec">Protection<br>5/5/41</div>
-        <div class="spec" style="top:224px;color:#FF7A1A;font-size:11px">2 missing enchants</div>
-      </div>
-      <div class="details" id="details"></div>
-      <div class="scroll" style="top:92px;right:2px"><div class="thumb" style="height:120px"></div></div>
-    </div>
-  </div>
-  <div class="tooltip" style="left:640px;top:236px;width:250px;white-space:normal">
-    <div style="color:#a335ee">Cogwork Crown of Wrath</div>
-    <div style="color:#ffd100">Item Level 66</div>
-    <div>Binds when picked up</div>
-    <div class="dl"><span>Head</span><span>Plate</span></div>
-    <div>742 Armor</div>
-    <div>+24 Strength</div>
-    <div>+21 Stamina</div>
-    <div style="color:#1eff00">Equip: Increases your chance to block attacks with a shield by 2%.</div>
-  </div>
-</div>
-
-<!-- ============ SETTINGS ============ -->
-<div class="scene" id="settings">
-  <div class="win">
-    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
-      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Overview</div><div class="btn">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn active">Settings</div></div>
-    <div class="content">
-      <div class="h">Settings</div>
-      <div class="check" style="top:30px"><div class="box on"></div>Share and receive guild data (sync)</div>
-      <div class="check" style="top:58px"><div class="box on"></div>Share my gear and talents</div>
-      <div class="check" style="top:86px"><div class="box on"></div>Share my recipes and cooldowns</div>
-      <div class="check" style="top:114px"><div class="box on"></div>Show guild crafters in item tooltips</div>
-      <div class="check" style="top:142px"><div class="box on"></div>Show minimap button</div>
-      <div class="check" style="top:170px"><div class="box"></div>Debug logging in chat</div>
-      <div class="rowbtns" style="top:198px"><span style="font-size:12px;margin-right:4px">Window size</span>
-        <div class="btn" style="width:54px;min-width:54px;padding:0">70%</div><div class="btn" style="width:54px;min-width:54px;padding:0">80%</div>
-        <div class="btn" style="width:54px;min-width:54px;padding:0">90%</div><div class="btn active" style="width:54px;min-width:54px;padding:0">100%</div>
-        <div class="btn" style="width:54px;min-width:54px;padding:0">110%</div><div class="btn" style="width:54px;min-width:54px;padding:0">120%</div>
-        <div class="btn" style="width:54px;min-width:54px;padding:0">130%</div></div>
-      <div class="rowbtns" style="top:238px">
-        <div class="btn small" style="width:170px;height:24px">Rescan my character</div>
-        <div class="btn small hover" style="width:170px;height:24px">Sync now</div>
-        <div class="btn small" style="width:170px;height:24px">Reset window position</div>
-        <div class="btn small" style="width:170px;height:24px">Debug report</div></div>
-      <div class="panel" style="top:282px;bottom:0;overflow:hidden"><span class="p">Status</span>
-  Version 0.2.1   ·   Guild: Short Kings
-  Sync: <span class="g">running</span>   ·   Sending: allowed
-  Messages: 48 sent, 131 received, 11 accepted, 0 rejected, 0 queued
-  Your data updated 4m ago
-
-<span class="p">What guildmates see from you</span>
-  <span class="g">shared</span>   Name, class, race, level and addon version
-  <span class="m">private</span>  Gear and item level
-  <span class="m">private</span>  Talents
-  <span class="g">shared</span>   Profession skill levels
-  <span class="g">shared</span>   Recipes
-  <span class="g">shared</span>   Profession cooldowns</div>
-      <div class="scroll" style="top:282px;right:2px"><div class="thumb" style="height:70px"></div></div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ============ ROSTER: RAID ATTUNEMENT ============ -->
-<div class="scene" id="attunement">
-  <div class="win">
-    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
-      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Overview</div><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
-    <div class="content">
-      <div class="search" style="width:210px">Search name, profession, note...</div>
-      <div class="menu hover" style="left:220px;top:0;width:150px">Onyxia's Lair (40)</div>
-      <div class="count" style="left:384px">14 characters</div>
-      <div class="btn small" style="position:absolute;right:0;top:0;width:56px">Copy</div>
-      <div style="position:absolute;left:0;top:28px;display:flex;gap:4px">
-        <div class="btn small active" style="min-width:90px">All</div><div class="btn small" style="min-width:90px">Attuned</div>
-        <div class="btn small" style="min-width:90px">Not attuned</div><div class="btn small" style="min-width:90px">Unknown</div></div>
-      <div class="check" style="left:390px;top:30px"><div class="box on"></div>Max level only (60)</div>
-      <div class="count" style="left:552px;top:32px">8 attuned · 3 not · 3 unknown</div>
-      <div class="list" style="top:58px">
-        <div class="header" id="ahead"></div>
-        <div class="rows" id="arows"></div>
-      </div>
-    </div>
-  </div>
-  <div class="tooltip" style="left:740px;top:340px">
-    <div style="color:#F48CBA">Brambelle</div>
-    <div style="color:#b39aa6">alt of Bramble Cogwhistle</div>
-    <div class="dl"><span style="color:#FFC24A">Onyxia's Lair attunement</span><span><span class="mark y">✓</span><span class="g">yes</span></span></div>
-    <div style="color:#d9ccd1"><span style="display:inline-block;width:8px;height:8px;background:#6E5A64;margin-right:5px"></span>Offline</div>
-    <div style="color:#FFC24A;margin-top:6px">Click to view character</div>
-  </div>
-</div>
-
-<!-- ============ CRAFTERS ============ -->
-<div class="scene" id="crafters">
-  <div class="win">
-    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
-      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Overview</div><div class="btn">Roster</div><div class="btn">Character</div><div class="btn active">Crafters</div><div class="btn">Settings</div></div>
-    <div class="content">
-      <div class="search" style="width:240px;color:var(--text)">arcanite</div>
-      <div class="count" style="left:254px">6 results</div>
-      <div class="list" style="right:auto;width:470px">
-        <div class="header" id="chead"></div>
-        <div class="rows" id="crows"></div>
-        <div class="scroll"></div>
-      </div>
-      <div class="side">
-        <div style="position:absolute;left:10px;top:10px;font-size:14px;color:#1eff00"><span class="ico" style="background:radial-gradient(circle at 35% 30%,#d6c9ff,#5d4f99)"></span>Arcanite Bar</div>
-        <div style="position:absolute;left:10px;top:30px;font-size:11px;color:var(--muted)">Alchemy &nbsp;·&nbsp; 4 crafters (2 online)</div>
-        <div class="list" style="left:6px;right:6px;top:52px;bottom:40px">
-          <div class="header" id="khead"></div>
-          <div class="rows" id="krows"></div>
-        </div>
-        <div class="btn small hover" style="position:absolute;left:8px;bottom:8px;width:150px;height:24px">Post to guild chat</div>
-        <div class="btn small" style="position:absolute;left:166px;bottom:8px;width:56px;height:24px">Copy</div>
-      </div>
-    </div>
-  </div>
-  <div class="tooltip" style="left:170px;top:400px;width:280px;white-space:normal">
-    <div style="color:#1eff00">Arcanite Bar</div>
-    <div style="color:#ffd100">Item Level 55</div>
-    <div>Max Stack: 20</div>
-    <div style="color:#F5E6EE;margin-top:4px"><span style="color:#D94FA0">Short Kings:</span> Fizzle Brightbeard (online), Gilly Pumpkinspark (alt online), Nim Copperkettle +1 more</div>
-    <div style="color:#FFC24A">Click to see who can make it</div>
-  </div>
-</div>
-
+<div id="root"></div>
 <script>
-// Class colours as used in game (RAID_CLASS_COLORS).
+// ---------------------------------------------------------------- helpers
 const CLS = { WARRIOR:"#C69B6D", MAGE:"#3FC7EB", PRIEST:"#FFFFFF", ROGUE:"#FFF468", WARLOCK:"#8788EE",
   HUNTER:"#AAD372", DRUID:"#FF7C0A", PALADIN:"#F48CBA" };
-const cols = [["Name",170],["Lvl",36,"r"],["Rank",90],["Spec",120],["Professions",150],["iLvl",40,"r"],["Online",82],["Ver",50],["Data",70]];
-document.getElementById("rhead").innerHTML = cols.map(c => `<div class="${c[2]||""}" style="width:${c[1]}px">${c[0]}</div>`).join("");
-const rows = [
-  // name, class, lvl, rank, tree, spec, profs, ilvl, status("addon"|"online"|"off:<ago>"|"alt"), data, you, alts, ver
-  ["Pip Sparkfuse","MAGE",60,"Officer","Fire","0/31/20","Tail 300, Ench 285",61,"addon","now",true,1,"0.1.1"],
-  ["Bramble Cogwhistle","WARRIOR",60,"Guild Master","Protection","5/5/41","BS 300, Mine 300",63,"addon","2m",false,2,"0.1.1"],
-  ["Fizzle Brightbeard","PRIEST",60,"Raider","Holy","21/30/0","Alch 300, Herb 300",59,"addon","5m",false,0,"0.1.1"],
-  ["Widget Boltbrace","HUNTER",60,"Member","Marksman","5/31/15","LW 300, Skin 300",58,"addon","1m",false,0,"0.1.1"],
-  ["Dabble Fizzwick","PALADIN",60,"Officer","Holy","31/20/0","BS 300, Mine 300",60,"addon","12m",false,0,"0.1.0"],
-  ["Zib Ratchetwhirl","WARRIOR",60,"Raider","Fury","31/20/0","Eng 300, Mine 300",62,"alt","3m",false,1,"0.1.1"],
-  ["Peb Sparklecog","PRIEST",57,"Member","Shadow","5/15/31","Tail 270, Ench 250",50,"online","3h",false,0,"0.1.1"],
-  ["Tink Gearloose","ROGUE",58,"Member","Combat","15/31/5","Eng 290, Mine 275",52,"off:5h","5h",false,0,"0.1.1"],
-  ["Nim Copperkettle","WARLOCK",60,"Raider","Affliction","30/0/21","Tail 300, Ench 300",60,"off:1d","1d",false,0,"0.1.1"],
-  ["Gilly Pumpkinspark","DRUID",60,"Raider","Restoration","11/0/40","Herb 300, Alch 300",58,"off:2d","2d",false,0,"0.1.1"],
-  ["Mossy Twinklegear","MAGE",60,"Member","Frost","10/0/41","Tail 300, Ench 300",57,"off:4d","4d",false,0,"0.1.1"],
-  ["Quill Tinderbox","MAGE",42,"Initiate","","","",null,"online",null,false,0,""],
-  ["Rivet Gobbleton","ROGUE",31,"Initiate","","","",null,"off:9d",null,false,0,""],
-];
-document.getElementById("rrows").innerHTML = rows.map((r,i) => {
-  const dot = c => `<span style="display:inline-block;width:8px;height:8px;background:${c};margin-right:5px;vertical-align:1px"></span>`;
-  const st = r[8];
-  const online = st === "addon" ? dot("#7CD67C") + '<span class="g">Online</span>'
-    : st === "alt" ? dot("#7CD67C") + '<span class="g">on alt</span>'
-    : st === "online" ? dot("#FFC24A") + '<span class="g">Online</span>'
-    : dot("#6E5A64") + `<span class="m">${st.slice(4)}</span>`;
-  const cells = [
-    `<span style="color:${CLS[r[1]]}">${r[0]}</span>${r[10] ? ' <span class="m">(you)</span>' : ""}${r[11] ? ` <span class="f">+${r[11]}</span>` : ""}`,
-    r[2], `<span class="m">${r[3]}</span>`,
-    r[4] ? `${r[4]} <span class="m">${r[5]}</span>` : "", r[6], r[7] ?? "", online,
-    r[12] === "0.1.0" ? `<span class="e">${r[12]}</span>` : `<span class="m">${r[12]}</span>`,
-    r[9] ? r[9] : '<span class="m">no addon</span>'];
-  return `<div class="row${i===1?" hover":""}">` + cells.map((c,j) =>
-    `<div class="${cols[j][2]||""}" style="width:${cols[j][1]}px">${c}</div>`).join("") + "</div>";
-}).join("");
-
-// Paperdoll: same positions as UI/CharacterTab.lua. Icons are placeholders.
 const Q = { e:"#a335ee", r:"#0070dd", u:"#1eff00", c:"#ffffff" };
-const tint = { e:["#5b2a7a","#2b1340"], r:["#1f4f8a","#0f2240"], u:["#2f6b2a","#14300f"], c:["#6b6b6b","#2e2e2e"] };
+
+// Glyph family: 24-unit grid, 2-unit stroke, square caps, tinted at runtime.
+const G = {
+  overview:'<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',
+  roster:'<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 5h2v2H4zM4 11h2v2H4zM4 17h2v2H4z"/>',
+  character:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-1c0-3.3 3.6-6 8-6s8 2.7 8 6v1"/>',
+  crafters:'<path d="M13 3l8 8-3 3-8-8z"/><path d="M11.5 9.5L3 18l3 3 8.5-8.5"/>',
+  settings:'<path d="M4 6h16M4 12h16M4 18h16"/><path d="M8 4v4M15 10v4M10 16v4"/>',
+  raids:'<path d="M12 3l8 3v6c0 4.6-3.4 7.8-8 9-4.6-1.2-8-4.4-8-9V6z"/>',
+  professions:'<path d="M9 3h6M10 3v6l-5.5 10.5c-.4.8.2 1.5 1 1.5h13c.8 0 1.4-.7 1-1.5L14 9V3"/><path d="M7 15h10"/>',
+  close:'<path d="M3 3l18 18M21 3L3 21"/>',
+  search:'<circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/>',
+  chevron:'<path d="M4 8l8 8 8-8"/>',
+  chevronLeft:'<path d="M16 4l-8 8 8 8"/>',
+  copy:'<rect x="8" y="8" width="12" height="12"/><path d="M4 16V4h12"/>',
+  inbox:'<path d="M3 13l3-8h12l3 8v6H3z"/><path d="M3 13h5l1 3h6l1-3h5"/>',
+  whisper:'<path d="M4 5h16v11H9l-5 4z"/>',
+  refresh:'<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>',
+};
+const ico = (k, w = 2.25) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${k === "close" ? 3 : w}" stroke-linecap="square">${G[k]}</svg>`;
+// Ready-check style marks (the game's atlases UI-LFG-ReadyMark / DeclineMark / PendingMark).
+const MK = {
+  y:'<svg class="mk" viewBox="0 0 12 12"><circle cx="6" cy="6" r="6" fill="#2f9e3a"/><path d="M3 6.2l2 2 4-4.4" stroke="#fff" stroke-width="1.6" fill="none"/></svg>',
+  n:'<svg class="mk" viewBox="0 0 12 12"><circle cx="6" cy="6" r="6" fill="#c0392b"/><path d="M3.8 3.8l4.4 4.4M8.2 3.8l-4.4 4.4" stroke="#fff" stroke-width="1.6"/></svg>',
+  u:'<svg class="mk" viewBox="0 0 12 12"><circle cx="6" cy="6" r="6" fill="#d9a62e"/><text x="6" y="9.2" font-size="9" text-anchor="middle" fill="#3a2a00" font-family="Arial" font-weight="bold">?</text></svg>',
+};
+const st = (k) => `<span class="st ${k}"></span>`;
+const ONLINE = { addon: st("addon") + "Online", alt: st("addon") + '<span class="dim">on alt</span>', plain: st("plain") + "Online" };
+const online = (s) => ONLINE[s] || st("off") + `<span class="mut">${s}</span>`;
+const cname = (n, c) => `<span style="color:${CLS[c]}">${n}</span>`;
+const itemIcon = (a, b, size = 18) => `<span style="display:inline-block;width:${size}px;height:${size}px;vertical-align:-4px;margin-right:8px;background:radial-gradient(circle at 35% 30%, ${a}, ${b});box-shadow:inset 0 0 0 1px rgba(0,0,0,.6)"></span>`;
+
+// The dynamite emblem stand-in (the addon uses the game's INV_Misc_Bomb_04 icon).
+const EMBLEM = `<svg class="emblem" viewBox="0 0 36 36"><rect width="36" height="36" fill="#2a1a14"/>
+  <g transform="rotate(-30 18 21)"><rect x="12" y="12" width="12" height="20" fill="#b8325f"/><rect x="12" y="17" width="12" height="2" fill="#6b3e1e"/>
+  <rect x="12" y="26" width="12" height="2" fill="#6b3e1e"/><path d="M18 12c0-4 3-4 2-7" stroke="#c9b28a" stroke-width="1.5" fill="none"/></g>
+  <circle cx="13" cy="5" r="3.5" fill="#FABF4D" opacity=".9"/><rect width="36" height="36" fill="none" stroke="rgba(0,0,0,.7)"/></svg>`;
+
+const RAIL = [["overview","Overview"],["roster","Roster"],["character","Character"],["crafters","Crafters"],["settings","Settings"]];
+function rail(active, opts = {}) {
+  let h = `<div class="rail">${EMBLEM}`;
+  const items = opts.later ? RAIL.slice(0, 4).concat([["raids","Raids"],["professions","Professions"]], [RAIL[4]]) : RAIL;
+  items.forEach(([k, label], i) => {
+    const later = opts.later && (k === "raids" || k === "professions");
+    const cls = k === active ? " on" : (k === opts.hover ? " hov" : "") + (later ? " later" : "");
+    h += `<div class="ri${cls}" style="top:${76 + i * 60}px">${ico(k)}<span>${label === "Professions" ? "Profs" : label}</span></div>`;
+  });
+  return h + "</div>";
+}
+function band(full) {
+  return `<div class="band${full ? " full" : ""}"><div class="wordmark">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+    <div class="fuse"></div><span class="spark" style="left:calc(46% - 2px);top:62px"></span>
+    <span class="spark" style="left:calc(46% + 5px);top:55px;width:2px;height:2px"></span>
+    <span class="spark" style="left:calc(46% - 7px);top:52px;width:2px;height:2px;opacity:.7"></span>
+    <div class="close">${ico("close")}</div></div>`;
+}
+function shell(o) {
+  return `<div class="win">${rail(o.tab, o)}${band()}
+    <div class="toolbar"><div class="ptitle">${o.title}</div>${o.toolbar || ""}</div>
+    <div class="content">${o.content}</div>
+    <div class="statusline"><span class="l">${o.status || ""}</span><span class="r">${st("addon")}Short Kings &nbsp;·&nbsp; sync on</span></div></div>`;
+}
+function list(o) {
+  const head = o.cols.map((c, i) => `<div class="${c[2] || ""}${i === (o.sorted ?? 0) ? " sorted" : ""}" style="width:${c[1]}px">${c[0]}${i === (o.sorted ?? 0) ? " ▾" : ""}</div>`).join("");
+  const rows = o.rows.map((cells, i) => `<div class="row${o.sel === i ? " sel" : ""}${o.hov === i ? " hov" : ""}"${o.rowStyle ? ` style="${o.rowStyle}"` : ""}>` +
+    cells.map((c, j) => `<div class="${o.cols[j][2] || ""}" style="width:${o.cols[j][1]}px">${c}</div>`).join("") + "</div>").join("");
+  return `<div class="list" style="${o.style}"><div class="lh">${head}</div><div class="lrows">${rows}</div>${o.scroll === false ? "" : '<div class="sb"></div>'}${o.extra || ""}</div>`;
+}
+const scene = (id, cap, inner) => `<div class="scene" id="${id}"><div class="cap">${cap}</div>${inner}</div>`;
+
+// Toolbar control positions: content starts at x=24 inside the band; title then 24px gap.
+const tb = (x, html) => html.replace(/^<div class="(\w+)/, `<div style="left:${x}px;top:10px" class="$1`);
+
+// ---------------------------------------------------------------- data
+const ROWS = [
+  ["Pip Sparkfuse","MAGE",60,"Officer","Fire","0/31/20","Tail 300, Ench 285",61,"addon","now",true,1,"0.2.2"],
+  ["Bramble Cogwhistle","WARRIOR",60,"Guild Master","Protection","5/5/41","BS 300, Mine 300",63,"addon","2m",false,2,"0.2.2"],
+  ["Fizzle Brightbeard","PRIEST",60,"Raider","Holy","21/30/0","Alch 300, Herb 300",59,"addon","5m",false,0,"0.2.2"],
+  ["Widget Boltbrace","HUNTER",60,"Member","Marksman","5/31/15","LW 300, Skin 300",58,"addon","1m",false,0,"0.2.2"],
+  ["Dabble Fizzwick","PALADIN",60,"Officer","Holy","31/20/0","BS 300, Mine 300",60,"addon","12m",false,0,"0.2.1"],
+  ["Zib Ratchetwhirl","WARRIOR",60,"Raider","Fury","31/20/0","Eng 300, Mine 300",62,"alt","3m",false,1,"0.2.2"],
+  ["Peb Sparklecog","PRIEST",57,"Member","Shadow","5/15/31","Tail 270, Ench 250",50,"plain","3h",false,0,"0.2.2"],
+  ["Tink Gearloose","ROGUE",58,"Member","Combat","15/31/5","Eng 290, Mine 275",52,"5h","5h",false,0,"0.2.2"],
+  ["Nim Copperkettle","WARLOCK",60,"Raider","Affliction","30/0/21","Tail 300, Ench 300",60,"1d","1d",false,0,"0.2.2"],
+  ["Gilly Pumpkinspark","DRUID",60,"Raider","Restoration","11/0/40","Herb 300, Alch 300",58,"2d","2d",false,0,"0.2.2"],
+  ["Mossy Twinklegear","MAGE",60,"Member","Frost","10/0/41","Tail 300, Ench 300",57,"4d","9d",false,0,"0.2.2"],
+  ["Fen Ironpocket","ROGUE",56,"Member","Combat","15/31/5","LW 245, Skin 260",49,"5h","5h",false,0,"0.2.2"],
+  ["Tess Quickfuse","MAGE",55,"Raider","Arcane","31/0/20","Tail 260",48,"6h","6h",false,0,"0.2.2"],
+  ["Hob Nobbin","PRIEST",48,"Alt","","","",null,"plain",null,false,0,""],
+  ["Quill Tinderbox","MAGE",42,"Initiate","","","",null,"plain",null,false,0,""],
+  ["Sprocket Lint","WARRIOR",38,"Member","","","",null,"6d",null,false,0,""],
+  ["Rivet Gobbleton","ROGUE",31,"Initiate","","","",null,"9d",null,false,0,""],
+  ["Dot Wobbleworth","HUNTER",24,"Initiate","","","",null,"12d",null,false,0,""],
+];
+
+// ---------------------------------------------------------------- scenes
+let out = "";
+
+// BANNER (README header art; same band recipe at a larger size)
+out += `<div class="scene" id="banner" style="padding:0;width:auto;display:inline-block;background:none">
+  <div style="position:relative;width:1020px;height:250px;overflow:hidden;background:var(--bg);outline:1px solid var(--hair)">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right, rgba(217,79,160,.30), rgba(217,79,160,0) 65%), linear-gradient(to bottom, var(--sky), var(--bg))"></div>
+    <div style="position:absolute;left:64px;top:56px;font-size:72px;line-height:80px;color:var(--text);text-shadow:2px 2px 0 #000">Short Kings</div>
+    <div style="position:absolute;left:68px;top:144px;font-size:24px;color:var(--accent)">Small in stature. Big in loot.</div>
+    <div style="position:absolute;left:0;top:196px;width:560px;height:1px;background:linear-gradient(to right, rgba(255,122,26,0), rgba(255,122,26,.8) 80%, #FABF4D)"></div>
+    <span class="spark" style="left:557px;top:194px;width:4px;height:4px"></span><span class="spark" style="left:566px;top:184px;width:2px;height:2px"></span>
+    <span class="spark" style="left:548px;top:182px;width:2px;height:2px;opacity:.7"></span><span class="spark" style="left:575px;top:192px;width:2px;height:2px;opacity:.6"></span>
+    <div style="position:absolute;left:68px;top:210px;font-size:13px;color:var(--textDim)">A guild addon for World of Warcraft: Forever &nbsp;·&nbsp; gear · professions · recipes · raids</div>
+    <svg style="position:absolute;right:120px;top:52px;width:150px;height:150px" viewBox="0 0 150 150">
+      <g transform="rotate(-28 75 90)"><rect x="52" y="52" width="46" height="88" fill="#b8325f"/><rect x="52" y="52" width="10" height="88" fill="#D94FA0" opacity=".6"/>
+      <rect x="52" y="74" width="46" height="8" fill="#140A11"/><rect x="52" y="112" width="46" height="8" fill="#140A11"/>
+      <path d="M75 52 C 75 36, 88 32, 84 18" stroke="#c9b28a" stroke-width="3" fill="none"/></g>
+      <circle cx="49" cy="22" r="7" fill="#FABF4D"/><circle cx="49" cy="22" r="16" fill="#FF7A1A" opacity=".25"/></svg>
+  </div></div>`;
+
+// SHELLS: option A (rail) vs option B (top tabs), same Overview, half size
+const ovA = overviewContent();
+const shellA = shell({ tab:"overview", title:"Overview", toolbar:'<div class="abs dim" style="left:120px;top:16px;font-size:12px">47 members · 12 online · raids open in about 37 days</div>', content:ovA, later:true, status:"Updated 1m ago" });
+const shellB = `<div class="win">${band(true)}
+  <div class="tabsB"><div class="tabB on">Overview</div><div class="tabB">Roster</div><div class="tabB">Character</div><div class="tabB">Crafters</div><div class="tabB" style="color:var(--textMuted)">Raids</div><div class="tabB" style="color:var(--textMuted)">Professions</div><div class="tabB">Settings</div></div>
+  <div class="toolbar" style="left:0;top:104px;height:40px"><div class="ptitle" style="top:11px">Overview</div><div class="abs dim" style="left:120px;top:13px;font-size:12px">47 members · 12 online · raids open in about 37 days</div></div>
+  <div class="content" style="left:24px;top:160px;transform:scale(.9);transform-origin:top left;width:885px">${ovA}</div>
+  <div class="statusline" style="left:0"><span class="l">Updated 1m ago</span><span class="r">${st("addon")}Short Kings · sync on</span></div></div>`;
+out += `<div class="scene" id="shells" style="width:1016px;height:400px">
+  <div class="cap">Window shell options (2 Nov): A, left rail, was chosen and built; B, top tabs, for the record. Dashed rail slots = room for Raids (v0.3) and Professions (v0.4).</div>
+  <div style="position:absolute;left:40px;top:44px;transform:scale(.49);transform-origin:top left">${shellA}
+    <div style="position:absolute;left:0;top:616px;font-size:30px;color:#e8eee4">A · Left rail (built)</div></div>
+  <div style="position:absolute;left:530px;top:44px;transform:scale(.49);transform-origin:top left">${shellB}
+    <div style="position:absolute;left:0;top:616px;font-size:30px;color:#e8eee4">B · Top tabs (cards shrink 10%, 40px less height)</div></div>
+</div>`;
+
+// OVERVIEW
+function overviewContent() {
+  const feed = [["2m","Widget","HUNTER","reached level 60",1],["14m","Fizzle","PRIEST","attuned to Onyxia's Lair",1],
+    ["1h","Pip","MAGE","learned 3 Tailoring recipes",0],["3h","Peb","PRIEST","reached Enchanting 300",1],
+    ["5h","Quill","MAGE","reached level 50",1],["1d","Nim","WARLOCK","reached Tailoring 300",1]];
+  const feedRows = feed.map((f) => `<div style="position:relative;height:22px;line-height:22px;font-size:12px;white-space:nowrap">
+    <span class="mut" style="display:inline-block;width:30px">${f[0]}</span>${cname(f[1], f[2])} <span class="dim">${f[3]}</span>
+    ${f[4] ? '<div class="btn sm ghost" style="left:auto;bottom:auto;right:0;top:1px;height:20px;padding:0 8px">Grats</div>' : ""}</div>`).join("");
+  return `
+  <div class="card" style="left:0;top:0"><div class="ct">Guild</div><div class="big">47</div><div class="bigl">members, about 31 players</div>
+    <div class="cb"><div class="kv"><span>${st("addon")}<b>12</b> online</span><span><b>9</b> with Short Kings</span></div>
+    <div class="kv"><span>Have shared their data</span><b>38</b></div>
+    <div>Level 60 <b>22</b> &nbsp; 50s <b>8</b> &nbsp; 40s <b>9</b> &nbsp; &lt;40 <b>8</b></div></div>
+    <div class="btn ghost">Roster</div></div>
+  <div class="card" style="left:280px;top:0"><div class="ct">Raids</div><div class="big">37 days</div><div class="bigl">until raids open on 9 Dec &nbsp;·&nbsp; 22 at level 60</div>
+    <div class="cb"><div class="kv"><span>Barrow Deeps (10)</span><span>no attunement</span></div><div class="kv"><span>Hyjal Summit (20)</span><span>no attunement</span></div>
+    <div class="kv"><span>Onyxia's Lair (40)</span><span>${MK.y}<b>8</b> &nbsp;${MK.n}<b>6</b> &nbsp;${MK.u}<b>8</b></span></div></div>
+    <div class="btn ghost hov">Onyxia list</div><div class="abs wa" style="right:16px;bottom:24px;font-size:11px">2 without the amulet</div></div>
+  <div class="card" style="left:560px;top:0"><div class="ct">Data health</div><div class="big">9</div><div class="bigl">members without Short Kings data</div>
+    <div class="cb"><div class="kv"><span>Profiles older than a week</span><b class="wa">4</b></div>
+    <div class="kv"><span>Profession window never opened</span><b class="wa">3</b></div><div class="kv"><span>Running an old Short Kings</span><b class="wa">2</b></div></div>
+    <div class="btn ghost">Oldest first</div></div>
+  <div class="card" style="left:0;top:222px"><div class="ct">Professions</div>
+    <div class="cb top" style="line-height:15px">${[["Alchemy",5,"2 at 300"],["Blacksmithing",4,"2 at 300"],["Enchanting",6,"3 at 300"],["Engineering",0,""],["Leatherworking",3,"best 265"],["Tailoring",7,"4 at 300"],["Cooking",11,"1 at 300"],["First Aid",14,"6 at 300"]]
+      .map((p) => `<div class="kv"><span>${p[0]}</span><span>${p[1] ? `<b>${p[1]}</b> <span class="mut">· ${p[2]}</span>` : '<span class="da">nobody</span>'}</span></div>`).join("")}</div>
+    <div class="btn ghost">Crafters</div></div>
+  <div class="card" style="left:280px;top:222px"><div class="ct">Recipes</div><div class="big">1,284</div><div class="bigl">recipes known, from 18 crafters</div>
+    <div class="cb"><div class="kv"><span>Only one character knows</span><b class="wa">37</b></div><div class="mut">Arcanite Reaper · Flask of the Titans</div></div>
+    <div class="btn ghost">Search recipes</div></div>
+  <div class="card" style="left:560px;top:222px"><div class="ct">Recent milestones</div>
+    <div class="abs" style="left:16px;right:16px;top:42px">${feedRows}</div></div>`;
+}
+out += scene("overview", "Overview · six cards on a 3×2 grid, 264×206, 16 px gaps. Number first, then detail, then one ghost link.",
+  shell({ tab:"overview", title:"Overview", toolbar:'<div class="abs dim" style="left:120px;top:16px;font-size:12px">Short Kings · 47 members · 12 online · raids open in about 37 days</div>', content:overviewContent(), status:"Milestones are what your addon has seen; they are never shared" }));
+
+// ROSTER
+const rcols = [["Name",188],["Lvl",36,"r"],["Rank",92],["Spec",132],["Professions",142],["iLvl",40,"r"],["Online",80],["Ver",48],["Data",50]];
+const rrows = ROWS.map((r) => [
+  cname(r[0], r[1]) + (r[10] ? ' <span class="mut">(you)</span>' : "") + (r[11] ? ` <span class="dim">+${r[11]}</span>` : ""),
+  r[2], `<span class="dim">${r[3]}</span>`, r[4] ? `${r[4]} <span class="mut">${r[5]}</span>` : "", `<span class="dim">${r[6]}</span>`,
+  r[7] ?? "", online(r[8]), r[12] === "0.2.1" ? '<span class="wa">0.2.1</span>' : `<span class="mut">${r[12]}</span>`,
+  r[9] ? (r[9] === "9d" ? '<span class="wa">9d</span>' : `<span class="dim">${r[9]}</span>`) : '<span class="mut">none</span>']);
+out += scene("roster", "Roster · 22 px rows, zebra at 2% white, hover 6%, one sorted column. Online status = shape + word: ■ with addon, □ without, — offline.",
+  shell({ tab:"roster", title:"Roster",
+    toolbar: tb(104, `<div class="search">${ico("search")}Search name, profession, note…</div>`).replace('style="', 'style="width:232px;') +
+      tb(348, `<div class="menu">All raids${ico("chevron", 3)}</div>`).replace('style="', 'style="width:168px;') +
+      `<div class="check" style="left:532px;top:17px"><div class="box on"></div>Group alts</div>` +
+      tb(764, `<div class="btn">${ico("copy")}Copy</div>`).replace('style="', 'style="width:84px;'),
+    content: list({ style:"left:0;top:0;right:0;bottom:0", cols:rcols, rows:rrows, hov:1 }) +
+      `<div class="tt" style="left:250px;top:62px">
+        <div>Bramble Cogwhistle</div><div style="color:#d9ccd1">${st("addon")}Online with Short Kings</div><div>Protection 5/5/41</div>
+        <div class="dl"><span>Blacksmithing</span><span>300</span></div><div class="dl"><span>Mining</span><span>300</span></div>
+        <div style="color:#FABF4D">2 items missing an enchant</div><div style="color:#F27BC4">Note: Main tank. Ask me for Arcanite.</div>
+        <div style="color:#F27BC4;margin-top:6px">Alts</div>
+        <div class="dl"><span>${st("off")}<span style="color:#F48CBA">Brambelle</span> 52</span><span style="color:#AE93A3">1d</span></div>
+        <div class="dl"><span>${st("off")}<span style="color:#FF7C0A">Bramblebark</span> 35</span><span style="color:#AE93A3">6d</span></div>
+        <div style="color:#AE93A3;margin-top:6px">Short Kings 0.2.2</div><div style="color:#F27BC4">Click to view character</div></div>`,
+    status:'18 characters · 13 with data · <span class="wa">1 needs an update</span>' }));
+
+// ROSTER: RAID VIEW
+const acols = [["Name",188],["Lvl",36,"r"],["Rank",92],["Spec",132],["Attuned",120],["iLvl",40,"r"],["Online",80],["Data",60]];
+const ATT = { y: MK.y + "yes", n: MK.n + '<span class="dim">no</span>', u: MK.u + '<span class="mut">unknown</span>',
+  ya: MK.y + 'yes &nbsp;<span class="wa">no amulet</span>' };
+const arows = [["Bramble Cogwhistle","WARRIOR","Guild Master","Protection","5/5/41","y",63,"addon","2m"],["Pip Sparkfuse","MAGE","Officer","Fire","0/31/20","y",61,"addon","now"],
+  ["Fizzle Brightbeard","PRIEST","Raider","Holy","21/30/0","y",59,"addon","5m"],["Widget Boltbrace","HUNTER","Member","Marksman","5/31/15","n",58,"addon","1m"],
+  ["Zib Ratchetwhirl","WARRIOR","Raider","Fury","31/20/0","y",62,"addon","3m"],["Brambelle","PALADIN","Alt","Holy","31/20/0","y",54,"1d","1d"],
+  ["Dabble Fizzwick","PALADIN","Officer","Holy","31/20/0","ya",60,"3h","3h"],["Nim Copperkettle","WARLOCK","Raider","Affliction","30/0/21","n",60,"1d","1d"],
+  ["Gilly Pumpkinspark","DRUID","Raider","Restoration","11/0/40","y",58,"2d","2d"],["Mossy Twinklegear","MAGE","Member","Frost","10/0/41","y",57,"4d","4d"],
+  ["Fen Ironpocket","ROGUE","Member","Combat","15/31/5","n",56,"5h","5h"],["Hob Nobbin","PRIEST","Alt","","","u",null,"plain",null],
+  ["Sprocket Lint","WARRIOR","Member","","","u",null,"6d",null],["Tess Quickfuse","MAGE","Raider","Arcane","31/0/20","u",55,"9d","9d"]]
+  .map((r, i) => [cname(r[0], r[1]) + (i === 1 ? ' <span class="mut">(you)</span>' : ""), 60, `<span class="dim">${r[2]}</span>`,
+    r[3] ? `${r[3]} <span class="mut">${r[4]}</span>` : "", ATT[r[5]], r[6] ?? "", online(r[7]), r[8] ? `<span class="dim">${r[8]}</span>` : '<span class="mut">none</span>']);
+out += scene("attunement", "Roster, raid picked · filter segments (24 px) + Max level only on one line above the list; ticks keep the game's ready-check marks.",
+  shell({ tab:"roster", title:"Roster",
+    toolbar: tb(104, `<div class="search">${ico("search")}Search name, profession, note…</div>`).replace('style="', 'style="width:232px;') +
+      tb(348, `<div class="menu hov">Onyxia's Lair (40)${ico("chevron", 3)}</div>`).replace('style="', 'style="width:168px;') +
+      tb(764, `<div class="btn">${ico("copy")}Copy</div>`).replace('style="', 'style="width:84px;'),
+    content: `<div class="seg" style="left:0;top:0"><div class="on">All</div><div>Attuned</div><div>Not attuned</div><div>Unknown</div></div>
+      <div class="check" style="left:340px;top:5px"><div class="box on"></div>Max level only (60)</div>
+      <div class="abs dim" style="right:0;top:4px;font-size:12px">${MK.y}8 attuned &nbsp; ${MK.n}3 not &nbsp; ${MK.u}3 unknown</div>` +
+      list({ style:"left:0;top:40px;right:0;bottom:0", cols:acols, rows:arows, hov:5 }) ,
+    status:"14 characters  ·  Onyxia needs the quest and the Drakefire Amulet in your bags" }));
+
+// CHARACTER
 const L = [["Head","e"],["Neck","r"],["Shoulder","e"],["Back","r","!"],["Chest","e"],["Shirt","c"],["Tabard","c"],["Wrist","r"]];
 const R = [["Hands","e"],["Waist","r"],["Legs","e"],["Feet","r","!"],["Finger","e"],["Finger","u"],["Trinket","r"],["Trinket","e"]];
-const B = [["Main Hand","e"],["Off Hand","e"],["Ranged","r"]];
-const doll = document.getElementById("doll");
-function slot(x, y, s) {
-  const [a,b] = tint[s[1]];
-  return `<div class="slot" style="left:${x}px;top:${y}px;border-color:${Q[s[1]]}">` +
-    `<i style="background:radial-gradient(circle at 35% 30%, ${a}, ${b})"></i><b>${s[0].split(" ")[0]}</b>${s[2] ? '<span class="warn">!</span>' : ""}</div>`;
-}
-let html = "";
-L.forEach((s,i) => html += slot(8, 8 + i*42, s).replace('class="slot"', i===0 ? 'class="slot hover"' : 'class="slot"'));
-R.forEach((s,i) => html += slot(250-4-8-38, 8 + i*42, s));
-B.forEach((s,i) => html += slot(125-2-19 + (i-1)*46, 370-4-8-38, s));
-doll.insertAdjacentHTML("beforeend", html);
+const B = [["Main","e"],["Off","e"],["Ranged","r"]];
+const tint = { e:["#5b2a7a","#2b1340"], r:["#1f4f8a","#0f2240"], u:["#2f6b2a","#14300f"], c:["#6b6b6b","#2e2e2e"] };
+const slot = (x, y, s, hov) => `<div class="slot${hov ? " hov" : ""}" style="left:${x}px;top:${y}px;box-shadow:inset 0 0 0 1px ${Q[s[1]]}">
+  <i style="background:radial-gradient(circle at 35% 30%, ${tint[s[1]][0]}, ${tint[s[1]][1]})"></i><b>${s[0]}</b>${s[2] ? '<span class="warn"></span>' : ""}</div>`;
+let doll = "";
+L.forEach((s, i) => doll += slot(12, 12 + i * 40, s));
+R.forEach((s, i) => doll += slot(216, 12 + i * 40, s, i === 0));
+B.forEach((s, i) => doll += slot(64 + i * 48 + 0, 316, s));
+const charContent = `
+  <div class="abs" style="left:0;top:0;font-size:18px;line-height:22px;color:#C69B6D">Bramble Cogwhistle</div>
+  <div class="abs dim" style="left:0;top:24px">Level 60 Gnome Warrior &nbsp;·&nbsp; Guild Master</div>
+  <div class="abs mut" style="left:0;top:42px;font-size:11px">Updated 2m ago, from them &nbsp;·&nbsp; Short Kings 0.2.2</div>
+  <div class="doll">${doll}
+    <div class="abs" style="left:52px;right:52px;top:96px;text-align:center;font-size:26px;line-height:30px">63.4</div>
+    <div class="abs dim" style="left:52px;right:52px;top:128px;text-align:center;font-size:11px">average item level</div>
+    <div class="abs" style="left:52px;right:52px;top:160px;text-align:center;font-size:13px;line-height:18px">Protection<br><span class="dim">5/5/41</span></div>
+    <div class="abs wa" style="left:52px;right:52px;top:212px;text-align:center;font-size:11px"><span style="display:inline-block;width:8px;height:8px;background:var(--warning);margin-right:4px"></span>2 missing enchants</div></div>
+  <div class="col" style="left:280px">
+    <section><h4>Alts</h4>${cname("Brambelle","PALADIN")} <span class="mut">52</span><br>${cname("Bramblebark","DRUID")} <span class="mut">35</span></section>
+    <section><h4>Notes</h4><span class="dim">Main tank. Ask me for Arcanite.</span></section>
+    <section><h4>Talents</h4><div class="kv"><span class="dim">Arms</span>5</div><div class="kv"><span class="dim">Fury</span>5</div><div class="kv"><span class="dim">Protection</span>41</div></section>
+    <section><h4>Cooldowns</h4><div class="kv"><span class="dim">Smelt Arcanite</span><span class="ok">${MK.y}ready</span></div></section></div>
+  <div class="col" style="left:560px">
+    <section><h4>Professions</h4><div class="kv"><span>Blacksmithing</span><span>300/300 <span class="mut">142 recipes</span></span></div>
+      <div class="kv"><span>Mining</span>300/300</div><div class="kv"><span>Cooking</span><span>150/300 <span class="wa">not scanned yet</span></span></div></section>
+    <section><h4>Attunements</h4><div class="kv"><span>Onyxia's Lair</span><span>${MK.y}done</span></div>
+      <div class="kv"><span>Barrow Deeps</span><span class="mut">none needed</span></div><div class="kv"><span>Hyjal Summit</span><span class="mut">none needed</span></div></section>
+    <section><h4>Reputation</h4><div class="kv"><span>Argent Dawn</span><span class="dim">Revered</span></div><div class="kv"><span>Hydraxian Waterlords</span><span class="dim">Honored</span></div>
+      <div class="kv"><span>Thorium Brotherhood</span><span class="dim">Friendly</span></div><div class="kv"><span>Stormwind</span><span class="dim">Exalted</span></div></section></div>`;
+out += scene("character", "Character · paper doll on a raised panel (36 px slots, quality-coloured hairline), details in two 264 px columns so most profiles fit without scrolling.",
+  shell({ tab:"character", title:"Character",
+    toolbar: `<div class="btn ghost" style="left:124px;top:10px">${ico("chevronLeft", 3)}Roster</div><div class="btn ghost" style="left:224px;top:10px;min-width:56px">Me</div>
+      <div class="btn hov" style="left:284px;top:10px">${ico("whisper")}Whisper</div><div class="btn" style="left:398px;top:10px">${ico("refresh")}Ask for latest</div>
+      <div class="btn" style="left:542px;top:10px">Make this my main</div>`,
+    content: charContent, status:"Gear and talents shared · recipes shared" }) +
+  `<div class="tt" style="left:420px;top:470px;width:250px;white-space:normal">
+    <div style="color:#a335ee">Cogwork Gauntlets of Wrath</div><div style="color:#ffd100">Item Level 66</div><div>Binds when picked up</div>
+    <div class="dl"><span>Hands</span><span>Plate</span></div><div>548 Armor</div><div>+18 Strength</div><div>+17 Stamina</div>
+    <div style="color:#1eff00">Equip: Increases your chance to block attacks with a shield by 2%.</div></div>`);
 
-document.getElementById("details").innerHTML =
-`<span class="p">Alts</span>
-  <span style="color:#F48CBA">Brambelle</span>
-  <span style="color:#FF7C0A">Bramblebark</span>
+// CRAFTERS
+const cres = [["Arcanite Bar","#1eff00","Alchemy","4 (2 online)",["#d6c9ff","#5d4f99"]],["Arcanite Champion","#a335ee","Blacksmithing","1",["#ffd27a","#7a4a12"]],
+  ["Arcanite Dragonling","#0070dd","Engineering","2 (1 online)",["#9fd8ff","#24527a"]],["Arcanite Reaper","#a335ee","Blacksmithing","2 (1 online)",["#ffb07a","#7a2a12"]],
+  ["Arcanite Rod","#1eff00","Blacksmithing","3 (1 online)",["#e0d9ff","#4a3f7a"]],["Arcanite Skeleton Key","#1eff00","Blacksmithing","2",["#d8d8d8","#4a4a4a"]]];
+const crows = cres.map((r) => [itemIcon(r[4][0], r[4][1]) + `<span style="color:${r[1]}">${r[0]}</span>`, `<span class="dim">${r[2]}</span>`, `<span class="dim">${r[3]}</span>`]);
+const kres = [["Fizzle Brightbeard","PRIEST","addon",300,""],["Gilly Pumpkinspark","DRUID","alt",300,"on Gillybean"],["Nim Copperkettle","WARLOCK","1d",300,""],["Peb Sparklecog","PRIEST","3h",285,"alt of Pip"]];
+const krows = kres.map((r) => `<div class="row" style="height:32px;line-height:32px">
+  <div style="width:180px">${r[2] === "addon" || r[2] === "alt" ? st("addon") : st("off")}${cname(r[0], r[1])}</div><div class="r" style="width:36px">${r[3]}</div>
+  <div style="width:96px" class="${r[2] === "alt" ? "dim" : "mut"}">${r[4]}</div>
+  <div class="btn sm${r[2] === "addon" || r[2] === "alt" ? "" : " dis"}" style="right:8px;top:5px">Whisper</div></div>`).join("");
+out += scene("crafters", "Crafters · results on the left, the selected recipe on a raised panel. One primary button per screen: Post to guild chat.",
+  shell({ tab:"crafters", title:"Crafters",
+    toolbar: tb(116, `<div class="search filled focus">${ico("search")}arcanite<span style="display:inline-block;width:1px;height:14px;background:var(--text);vertical-align:-2px;margin-left:1px"></span></div>`).replace('style="', 'style="width:280px;') +
+      '<div class="abs dim" style="left:412px;top:16px;font-size:12px">6 results</div>',
+    content: list({ style:"left:0;top:0;width:400px;bottom:0", cols:[["Item or recipe",208],["Profession",100],["Crafters",80]], rows:crows, sel:0, hov:3 }) +
+      `<div class="abs" style="left:416px;top:0;right:0;bottom:0;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)">
+        <div class="abs" style="left:16px;top:14px;font-size:15px;line-height:20px;color:#1eff00">${itemIcon("#d6c9ff","#5d4f99",20)}Arcanite Bar</div>
+        <div class="abs dim" style="left:44px;top:36px;font-size:11px">Alchemy &nbsp;·&nbsp; 4 crafters, 2 online</div>
+        <div class="abs" style="left:1px;right:1px;top:60px;box-shadow:inset 0 1px 0 var(--hair)">${krows}</div>
+        <div class="btn primary hov" style="left:16px;bottom:16px">Post to guild chat</div>
+        <div class="btn ghost" style="left:176px;bottom:16px">${ico("copy")}Copy</div></div>`,
+    status:"Recipes refresh when a crafter opens their profession window" }) +
+  `<div class="tt" style="left:150px;top:420px;width:300px;white-space:normal">
+    <div style="color:#1eff00">Arcanite Bar</div><div style="color:#ffd100">Item Level 55</div><div>Max Stack: 20</div>
+    <div style="margin-top:4px"><span style="color:#F27BC4">Short Kings:</span> Fizzle Brightbeard (online), Gilly Pumpkinspark (alt online), Nim Copperkettle +1 more</div>
+    <div style="color:#F27BC4">Click to see who can make it</div></div>`);
 
-<span class="p">Notes</span>
-  Main tank. Ask me for Arcanite.
+// SETTINGS
+const setRow = (y, on, label, hint) => `<div class="abs" style="left:0;right:0;top:${y}px;height:40px;box-shadow:inset 0 -1px 0 var(--hair)">
+  <div class="check" style="left:16px;top:${hint ? 6 : 13}px"><div class="box${on ? " on" : ""}"></div><span style="font-size:13px">${label}</span></div>
+  ${hint ? `<div class="abs mut" style="left:38px;top:22px;font-size:11px">${hint}</div>` : ""}</div>`;
+const settingsContent = `
+  <div class="abs" style="left:0;top:0;width:400px;height:428px">
+    <div class="sec" style="position:absolute;top:0;letter-spacing:.06em;text-transform:uppercase">Sharing</div>
+    <div class="abs" style="left:0;right:0;top:20px;height:122px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)">
+      ${setRow(0, 1, "Share and receive guild data (sync)")}${setRow(40, 1, "Share my gear and talents")}${setRow(80, 1, "Share my recipes and cooldowns")}</div>
+    <div class="sec" style="position:absolute;top:154px;letter-spacing:.06em;text-transform:uppercase">Display</div>
+    <div class="abs" style="left:0;right:0;top:172px;height:202px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)">
+      ${setRow(0, 1, "Show guild crafters in item tooltips")}${setRow(40, 1, "Record guild milestones (Overview)")}${setRow(80, 1, "Show minimap button")}
+      ${setRow(120, 0, "Reduce motion", "Stops the header sparks and the fades")}${setRow(160, 0, "Debug logging in chat")}</div>
+    <div class="sec" style="position:absolute;top:386px;letter-spacing:.06em;text-transform:uppercase">Window size</div>
+    <div class="seg" style="left:0;top:404px">${[70,80,90,100,110,120,130].map((v) => `<div class="${v === 100 ? "on" : ""}" style="padding:0 10px">${v}%</div>`).join("")}</div>
+  </div>
+  <div class="abs" style="left:424px;top:0;right:0;height:428px">
+    <div class="sec" style="position:absolute;top:0;letter-spacing:.06em;text-transform:uppercase">Status</div>
+    <div class="abs" style="left:0;right:0;top:20px;height:120px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);padding:12px 16px;font-size:12px;line-height:18px">
+      <div>Version 0.2.2 &nbsp;·&nbsp; Guild: Short Kings</div><div>Sync: ${st("addon")}running &nbsp;·&nbsp; sending allowed</div>
+      <div>Messages: 48 sent, 131 received</div><div>11 accepted, 0 rejected, 0 queued</div><div>Your data updated 4m ago</div></div>
+    <div class="sec" style="position:absolute;top:152px;letter-spacing:.06em;text-transform:uppercase">What guildmates see from you</div>
+    <div class="abs" style="left:0;right:0;top:172px;height:156px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair);padding:12px 16px;font-size:12px;line-height:21px">
+      ${[["s","Name, class, race, level, addon version"],["m","Gear and item level"],["m","Talents"],["s","Profession skill levels"],["s","Recipes"],["s","Profession cooldowns"]]
+        .map((p) => `<div><span class="${p[0] === "s" ? "ok" : "mut"}" style="display:inline-block;width:58px">${p[0] === "s" ? "shared" : "private"}</span>${p[1]}</div>`).join("")}
+        <div class="mut">Never shared: notes, officer notes, gold, bags…</div></div>
+    <div class="btn" style="left:0;top:344px;width:196px">Rescan my character</div><div class="btn" style="left:212px;top:344px;width:196px">Sync now</div>
+    <div class="btn ghost" style="left:0;top:384px;width:196px">Reset window position</div><div class="btn ghost" style="left:212px;top:384px;width:196px">Debug report</div>
+  </div>`;
+out += scene("settings", "Settings · 40 px setting rows grouped on panels; status and the sharing preview on the right; shared / private said in words.",
+  shell({ tab:"settings", title:"Settings", content:settingsContent, status:"Changes apply straight away" }));
 
-<span class="p">Talents</span>
-  Arms  <span class="f">5</span>
-  Fury  <span class="f">5</span>
-  Protection  <span class="f">41</span>
+// DEBUG WINDOW + MINIMAP + ITEM TOOLTIP
+const report = `Short Kings 0.2.2 debug report
+Client 1.60.1 (70532) · Interface 16001 · forever
+Guild: Short Kings · 47 members · 12 online
 
-<span class="p">Professions</span>
-  Blacksmithing  300/300  <span class="m">142 recipes</span>
-  Cooking  150/300  <span class="e">not scanned yet</span>
-  Mining  300/300
+Live-client checks
+  C_Club ............... ok
+  C_TradeSkillUI ....... ok
+  C_Calendar ........... ok (AddEvent restricted)
+  TooltipDataProcessor . ok
+  ChatFrameUtil.OpenChat ok
 
-<span class="p">Cooldowns</span>
-  Smelt Arcanite  <span class="g">ready</span>
+GUID stability: same as last login
+Recent errors: none`;
+out += `<div class="scene" id="extras" style="height:560px">
+  <div class="cap">Debug / copy window (640×460, same band and hairlines) · minimap button and its tooltip · an item tooltip with the Short Kings line. Tooltips stay the game's own frame.</div>
+  <div class="win" style="position:absolute;left:40px;top:50px;width:640px;height:460px">
+    <div class="band full" style="height:56px"><div class="wordmark" style="top:10px;font-size:15px">Short Kings debug report</div>
+      <div class="tagline" style="top:32px">Click the text, press Ctrl+A (Cmd+A on Mac) then Ctrl+C to copy it.</div>
+      <div class="fuse" style="width:40%"></div><div class="close">${ico("close")}</div></div>
+    <div class="abs" style="left:24px;right:24px;top:72px;bottom:60px;background:var(--sidebar);box-shadow:inset 0 0 0 1px rgba(242,123,196,.8);padding:12px;white-space:pre;font-size:12px;line-height:18px;color:var(--textDim)">${report}</div>
+    <div class="btn" style="left:24px;bottom:16px">${ico("refresh")}Refresh</div><div class="btn ghost" style="left:138px;bottom:16px">Show log</div>
+    <div class="abs mut" style="right:24px;bottom:22px;font-size:11px">Also saved to your SavedVariables file</div></div>
+  <div class="abs" style="left:720px;top:60px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 40%, #5f7a4a, #2b3b22);box-shadow:0 0 0 4px #333, 0 0 0 6px #776a4a"></div>
+  <div class="abs" style="left:838px;top:150px;width:32px;height:32px;border-radius:50%;background:#1a1a1a;box-shadow:0 0 0 2px #b8a06a">
+    <div style="position:absolute;left:6px;top:6px;width:20px;height:20px;overflow:hidden;border-radius:50%">${EMBLEM.replace('class="emblem"', 'style="width:20px;height:20px"')}</div></div>
+  <div class="tt" style="left:740px;top:196px"><div style="color:#F27BC4">Short Kings</div><div style="color:#D8C2CF">Small in stature. Big in loot.</div>
+    <div>Left-click: open / close</div><div>Right-click: settings</div></div>
+  <div class="tt" style="left:720px;top:310px;width:270px;white-space:normal">
+    <div style="color:#a335ee">Flask of the Titans</div><div style="color:#ffd100">Item Level 60</div><div>Max Stack: 5</div>
+    <div style="color:#1eff00">Use: Increases the player's maximum health by 400 for 2 hrs.</div>
+    <div style="margin-top:4px"><span style="color:#F27BC4">Short Kings:</span> Fizzle Brightbeard (online) · only crafter</div></div>
+</div>`;
 
-<span class="p">Attunements</span>
-  Onyxia's Lair  <span class="g">done</span>
-  Molten Core  <span class="g">done</span>
-  Blackwing Lair  <span class="bd">not done</span>
-  Barrow Deeps  <span class="m">unknown (TODO)</span>
-  Hyjal Summit  <span class="m">unknown (TODO)</span>
-  Naxxramas  <span class="m">unknown (TODO)</span>
+// COMPONENT SHEET
+const swatch = (n, hex, ink) => `<div class="sw" style="background:#${hex};color:${ink || "var(--text)"}"><span>${n}<br>#${hex}</span></div>`;
+out += `<div class="scene" id="components"><div class="cap">Design system sheet: tokens, type scale, controls and their states, rows, status, empty states.</div>
+<div class="sheet">
+  <div class="grp"><h3>Grounds, darkest to lightest (depth by tone, not shadow)</h3><div class="swatches">
+    ${swatch("sidebar","140A11")}${swatch("bg","1C0E18")}${swatch("panel","24121F")}${swatch("panelAlt","2E1828")}${swatch("sky","4A1E3C")}
+    ${swatch("accent","F27BC4","var(--onAccent)")}${swatch("brand","D94FA0")}${swatch("ember","FF7A1A","var(--onAccent)")}</div></div>
+  <div class="grp"><h3>Ink</h3><div class="rowflex" style="gap:24px;font-size:13px">
+    <span>text 16.2:1</span><span class="dim">textDim 10.6:1</span><span class="mut">textMuted 6.4:1</span><span class="ac">accent 7.1:1</span>
+    <span class="ok">success 10.2:1</span><span class="wa">warning 10.7:1</span><span class="da">danger 6.4:1</span><span class="mut" style="font-size:11px">(on panel)</span></div></div>
+  <div class="grp"><h3>Type scale (game font; nothing below 11)</h3>
+    <div class="typeline"><small>hero 26</small><span style="font-size:26px">1,284</span></div>
+    <div class="typeline"><small>display 18</small><span style="font-size:18px">Bramble Cogwhistle</span></div>
+    <div class="typeline"><small>title 15</small><span style="font-size:15px">Recent milestones</span></div>
+    <div class="typeline"><small>body 13</small><span style="font-size:13px">Level 60 Gnome Warrior · Guild Master</span></div>
+    <div class="typeline"><small>label 12</small><span style="font-size:12px" class="dim">Search name, profession, note…</span></div>
+    <div class="typeline"><small>small 11</small><span style="font-size:11px" class="mut">Updated 2m ago, from them</span></div></div>
+  <div class="grp"><h3>Buttons: default · hover · primary · ghost · focus · disabled · small</h3><div class="rowflex">
+    <div class="btn static">Sync now</div><div class="btn static hov">Sync now</div><div class="btn static primary">Post to guild chat</div>
+    <div class="btn static ghost">Roster</div><div class="btn static focus">Whisper</div><div class="btn static dis">Whisper</div><div class="btn static sm">Grats</div></div></div>
+  <div class="grp"><h3>Inputs, menu, check, segments</h3><div class="rowflex" style="height:28px">
+    <div class="search" style="position:relative;width:200px">${ico("search")}Search an item or recipe…</div>
+    <div class="search filled focus" style="position:relative;width:160px">${ico("search")}mooncloth</div>
+    <div class="menu" style="position:relative;width:150px">All raids${ico("chevron", 3)}</div>
+    <div class="check" style="position:relative"><div class="box on"></div>On</div><div class="check" style="position:relative"><div class="box"></div>Off</div>
+    <div class="seg" style="position:relative"><div class="on">All</div><div>Attuned</div><div>Unknown</div></div></div>
+    <div style="position:relative;height:150px;margin-top:16px"><div class="menu hov" style="left:0;top:0;width:176px">Onyxia's Lair (40)${ico("chevron", 3)}</div>
+      <div class="pop" style="left:0;top:30px"><div>All raids</div><div class="sep"></div><div>Barrow Deeps (10)</div><div>Hyjal Summit (20)</div><div class="on hl">Onyxia's Lair (40)</div></div>
+      <div class="abs mut" style="left:196px;top:6px;font-size:11px">Menu open: 176 px wide, 26 px rows, a 6 px accent square marks the current choice, hover wash 6%.</div></div></div>
+  <div class="grp"><h3>Rows: normal · zebra · hover · selected (2 px accent bar)</h3>
+    <div style="position:relative;width:480px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)">
+      <div class="row">Arcanite Bar</div><div class="row">Arcanite Rod</div><div class="row hov">Arcanite Reaper</div><div class="row sel">Arcanite Champion</div></div></div>
+  <div class="grp"><h3>Status (shape + word) · marks · status words</h3><div class="rowflex" style="gap:24px">
+    <span>${st("addon")}Online with Short Kings</span><span>${st("plain")}Online, no addon</span><span>${st("off")}<span class="mut">Offline 5h</span></span>
+    <span>${MK.y}yes</span><span>${MK.n}no</span><span>${MK.u}unknown</span>
+    <span class="wa">may be out of date</span><span class="wa">not scanned yet</span><span class="mut">relayed by a guildmate</span><span class="da">nobody</span><span class="ok">shared</span></div></div>
+  <div class="grp" style="height:150px;margin-bottom:0"><h3>Empty state (Crafters, before a search)</h3>
+    <div style="position:absolute;left:0;top:24px;width:400px;height:124px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)">
+      <div class="empty" style="left:24px;right:24px;top:16px">${ico("search")}<div class="et">Find a crafter</div>Type at least 3 letters, e.g. “arcanite” or “enchant boots”.</div></div>
+    <div style="position:absolute;left:424px;top:24px;width:440px;height:124px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--hair)">
+      <div class="empty" style="left:24px;right:24px;top:16px">${ico("inbox")}<div class="et">No milestones yet</div>Level-ups, profession milestones and attunements show here as your addon sees them.</div></div></div>
+</div></div>`;
 
-<span class="p">Reputation</span>
-  Argent Dawn  <span class="f">Revered</span>
-  Hydraxian Waterlords  <span class="f">Honored</span>
-  Thorium Brotherhood  <span class="f">Friendly</span>
-  Stormwind  <span class="m">Exalted</span>`;
-
-// Roster with a raid picked: every character on its own row.
-const acols = [["Name",170],["Lvl",36,"r"],["Rank",90],["Spec",120],["Attuned",100],["iLvl",40,"r"],["Online",82],["Data",70]];
-document.getElementById("ahead").innerHTML = acols.map(c => `<div class="${c[2]||""}" style="width:${c[1]}px">${c[0]}</div>`).join("");
-const MARK = { "y!":'<span class="mark y">✓</span><span class="g">yes</span> <span class="e">!</span>', y:'<span class="mark y">✓</span><span class="g">yes</span>', n:'<span class="mark n">✗</span><span class="bd">no</span>',
-  u:'<span class="mark u">?</span><span class="m">unknown</span>' };
-const arows = [
-  ["Bramble Cogwhistle","WARRIOR","Guild Master","Protection","5/5/41","y",63,"addon","2m"],
-  ["Pip Sparkfuse","MAGE","Officer","Fire","0/31/20","y",61,"addon","now"],
-  ["Fizzle Brightbeard","PRIEST","Raider","Holy","21/30/0","y",59,"addon","5m"],
-  ["Widget Boltbrace","HUNTER","Member","Marksman","5/31/15","n",58,"addon","1m"],
-  ["Zib Ratchetwhirl","WARRIOR","Raider","Fury","31/20/0","y",62,"addon","3m"],
-  ["Brambelle","PALADIN","Alt","Holy","31/20/0","y",54,"off:1d","1d"],
-  ["Dabble Fizzwick","PALADIN","Officer","Holy","31/20/0","y!",60,"off:3h","3h"],
-  ["Nim Copperkettle","WARLOCK","Raider","Affliction","30/0/21","n",60,"off:1d","1d"],
-  ["Gilly Pumpkinspark","DRUID","Raider","Restoration","11/0/40","y",58,"off:2d","2d"],
-  ["Mossy Twinklegear","MAGE","Member","Frost","10/0/41","y",57,"off:4d","4d"],
-  ["Fen Ironpocket","ROGUE","Member","Combat","15/31/5","n",56,"off:5h","5h"],
-  ["Hob Nobbin","PRIEST","Alt","","","u",null,"online",null],
-  ["Sprocket Lint","WARRIOR","Member","","","u",null,"off:6d",null],
-  ["Tess Quickfuse","MAGE","Raider","Arcane","31/0/20","u",55,"off:9d","9d"],
-];
-const dotc = c => `<span style="display:inline-block;width:8px;height:8px;background:${c};margin-right:5px;vertical-align:1px"></span>`;
-const onl = st => st === "addon" ? dotc("#7CD67C") + '<span class="g">Online</span>'
-  : st === "online" ? dotc("#FFC24A") + '<span class="g">Online</span>' : dotc("#6E5A64") + `<span class="m">${st.slice(4)}</span>`;
-document.getElementById("arows").innerHTML = arows.map((r,i) => {
-  const cells = [`<span style="color:${CLS[r[1]]}">${r[0]}</span>${i===1 ? ' <span class="m">(you)</span>' : ""}`, 60,
-    `<span class="m">${r[2]}</span>`, r[3] ? `${r[3]} <span class="m">${r[4]}</span>` : "", MARK[r[5]], r[6] ?? "", onl(r[7]),
-    r[8] ? r[8] : '<span class="m">no addon</span>'];
-  return `<div class="row${i===5?" hover":""}">` + cells.map((c,j) => `<div class="${acols[j][2]||""}" style="width:${acols[j][1]}px">${c}</div>`).join("") + "</div>";
-}).join("");
-
-// Crafters: results and the crafter list for the selected recipe.
-const ccols = [["Item or recipe",232],["Profession",96],["Crafters",126]];
-document.getElementById("chead").innerHTML = ccols.map(c => `<div style="width:${c[1]}px">${c[0]}</div>`).join("");
-const ico = (a,b) => `<span class="ico" style="background:radial-gradient(circle at 35% 30%, ${a}, ${b})"></span>`;
-const cres = [
-  ["Arcanite Bar","#1eff00","Alchemy","4 crafters (2 online)",["#d6c9ff","#5d4f99"]],
-  ["Arcanite Champion","#a335ee","Blacksmithing","1 crafter",["#ffd27a","#7a4a12"]],
-  ["Arcanite Dragonling","#0070dd","Engineering","2 crafters (1 online)",["#9fd8ff","#24527a"]],
-  ["Arcanite Reaper","#a335ee","Blacksmithing","2 crafters (1 online)",["#ffb07a","#7a2a12"]],
-  ["Arcanite Rod","#1eff00","Blacksmithing","3 crafters (1 online)",["#e0d9ff","#4a3f7a"]],
-  ["Arcanite Skeleton Key","#1eff00","Blacksmithing","2 crafters",["#d8d8d8","#4a4a4a"]],
-];
-document.getElementById("crows").innerHTML = cres.map((r,i) =>
-  `<div class="row${i===0?" sel":""}${i===3?" hover":""}"><div style="width:232px">${ico(r[4][0],r[4][1])}<span style="color:${r[1]}">${r[0]}</span></div>` +
-  `<div style="width:96px" class="m">${r[2]}</div><div style="width:126px">${r[3]}</div></div>`).join("");
-const kcols = [["Crafter",146],["Skill",40,"r"],["",84],["",58]];
-document.getElementById("khead").innerHTML = kcols.map(c => `<div class="${c[2]||""}" style="width:${c[1]}px">${c[0]}</div>`).join("");
-const kres = [
-  ["Fizzle Brightbeard","PRIEST","#7CD67C",300,"",false],
-  ["Gilly Pumpkinspark","DRUID","#7CD67C",300,'<span class="g">on Gillybean</span>',false],
-  ["Nim Copperkettle","WARLOCK","#6E5A64",300,"",true],
-  ["Peb Sparklecog","PRIEST","#6E5A64",285,'<span class="m">alt of Pip</span>',true],
-];
-document.getElementById("krows").innerHTML = kres.map((r,i) =>
-  `<div class="row" style="height:22px;line-height:22px">${'<div style="width:146px">' + dotc(r[2]) + `<span style="color:${CLS[r[1]]}">${r[0]}</span></div>`}` +
-  `<div class="r" style="width:40px">${r[3]}</div><div style="width:84px">${r[4]}</div><div style="width:58px"></div>` +
-  `<div class="wbtn${r[5]?" off":""}">Whisper</div></div>`).join("");
-
-// Overview: recent milestones.
-const feed = [
-  ["2m","Widget","HUNTER","reached level 60",true],
-  ["14m","Fizzle","PRIEST","is attuned to Onyxia's Lair",true],
-  ["1h","Pip","MAGE","learned 3 new Tailoring recipes",false],
-  ["3h","Peb","PRIEST","reached Enchanting 300",true],
-  ["5h","Quill","MAGE","reached level 50",true],
-  ["1d","Nim","WARLOCK","reached Tailoring 300",true],
-  ["2d","Rivet","ROGUE","reached level 40",true],
-];
-document.getElementById("feedrows").innerHTML = feed.map(f =>
-  `<div class="frow"><div style="width:32px" class="m">${f[0]}</div><div style="width:158px;white-space:nowrap;overflow:hidden">` +
-  `<span style="color:${CLS[f[2]]}">${f[1]}</span> ${f[3]}</div>${f[4] ? '<div class="gr">Grats</div>' : ""}</div>`).join("");
+document.getElementById("root").innerHTML = out;
 </script>
 </body>
 </html>

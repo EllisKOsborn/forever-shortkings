@@ -184,8 +184,59 @@ the `/sk debug` text when something looks wrong.
         chat without sending it.
 66. [ ] Settings → untick **Record guild milestones**: no new lines appear.
 
+## Design refresh (new look) — compare with the pictures in the README
+
+Open each tab next to its picture in the README (they're drawn from
+`docs/mockups/ui-mockup.html`). Small differences in font and item icons
+are expected; layout, colours and states should match.
+
+67. [ ] The window is **936 × 600** and fits on screen at 100% window size.
+        It still drags by the plum **header band**, and Esc closes it.
+68. [ ] **Rail** on the left: Overview, Roster, Character, Crafters,
+        Settings, each with a white glyph that turns **pink** with a pink
+        bar on its left when selected. If a glyph shows as a green square
+        or is missing, the icon files didn't load: tell me.
+69. [ ] **Header band**: "Short Kings" and the tagline on a plum-to-magenta
+        band, a thin orange **fuse** along the bottom with three tiny
+        flickering **sparks** at its tip. Our own **×** close button top
+        right.
+70. [ ] **Lines**: borders are thin (1 pixel) and sharp at your UI scale,
+        not blurry or 2 pixels thick. Try window size 90% and 120% too.
+71. [ ] **Toolbar band** under the header: the page title, then that tab's
+        controls (search, raid menu, Copy, Character buttons…).
+72. [ ] **Status line** at the bottom: the tab's summary on the left
+        (Roster counter, Crafters note), "■ Short Kings · sync on" on the
+        right (a dash and "sync paused: …" in combat or an instance).
+73. [ ] **Overview**: six equal cards; big numbers on Guild, Raids, Data
+        health and Recipes; one outlined button bottom-left of each card.
+        Hover the Professions card: the gathering counts appear.
+74. [ ] **Roster**: online marks are a **filled square** (with addon),
+        **hollow square** (without) or **dash** (offline). Hover a row: a
+        faint highlight. Pick Onyxia: the All / Attuned / Not attuned /
+        Unknown segments, Max level only and the ticks counter sit on one
+        line above the list.
+75. [ ] **Character**: paper doll slots have a thin edge in the item's
+        quality colour; a yellow square on a slot's corner = missing
+        enchant. The details sit in two columns. Open someone without data:
+        a calm "No Short Kings data yet" message instead of an empty doll.
+76. [ ] **Crafters**: before typing, "Find a crafter" with a magnifier.
+        After picking a result, **Post to guild chat** is the one pink
+        button. The search box edge turns pink while you type in it.
+77. [ ] **Settings**: Sharing and Display groups on the left, Status and
+        "What guildmates see from you" on the right, window size as a row
+        of segments.
+78. [ ] **Reduce motion** (Settings): the sparks stop and tab switches no
+        longer fade. Untick it: they come back.
+79. [ ] Raid menu (Roster): the pop-up has a line under "All raids" and a
+        small pink square beside the current choice.
+80. [ ] Debug report and Copy windows use the same band, fuse and close
+        button; the text box edge turns pink when you click in it.
+81. [ ] Text is readable everywhere, including grey hints and the status
+        line. Note anything you have to squint at (and blue/purple item
+        names, which keep the game's own colours).
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).
 - Onyxia's quest ID is the Classic one (6502, Alliance). Horde characters count only via the amulet in their bags.
-- The title bar's ember animation comes in v0.4.
+- The header's ember sparks arrived with the design refresh (turn them off with Reduce motion).

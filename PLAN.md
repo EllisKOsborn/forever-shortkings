@@ -303,7 +303,10 @@ section is the single source of truth for order and status.
   reagents (B2), favourites (B6); camp planner (P6) once its data is verified.
 - **v0.5 Coordination** (Jan): craft requests (D1), status line (P8),
   lockout board (P15).
-- **v0.6 Polish:** ember animation, long spec names, two-column Character tab.
+- **Design refresh** — ✅ built 2 Nov (owner request; `docs/DESIGN.md`):
+  left rail, header band with the ember fuse and sparks, design tokens,
+  two-column Character tab, Reduce motion. Check in game with TESTING.md 67–81.
+- **v0.6 Polish:** long spec names.
 
 ### Later (in rough priority order)
 (D1 craft requests moved to v0.5; D8 export moved to v0.2.1.)

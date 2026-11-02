@@ -276,6 +276,7 @@ end
 function Main:SetScale(scale)
 	SK.DB.settings.window.scale = scale
 	if self.frame then self.frame:SetScale(scale) end
+	Theme.RefreshPixels()
 end
 
 function Main:ResetPosition()

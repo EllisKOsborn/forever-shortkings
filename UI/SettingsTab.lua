@@ -138,10 +138,10 @@ function Settings:Refresh()
 	local lines = {
 		"Version " .. SK.VERSION .. "   ·   Guild: " .. (SK.guildName or "none"),
 		"Sync: " .. (paused and (Theme.StatusMark("offline") .. " " .. C("warning") .. "paused (" .. why .. ")|r")
-			or (Theme.StatusMark("addon") .. " running")),
-		"Sending: " .. (canSend and "allowed" or (C("danger") .. "not allowed (" .. tostring(sendWhy) .. ")|r")),
-		string.format("Messages: %d sent, %d received, %d accepted, %d rejected, %d queued",
-			st.sent, st.received, st.accepted, st.rejected, #SK.Sync.queue),
+			or (Theme.StatusMark("addon") .. " running")) .. "  ·  sending "
+			.. (canSend and "allowed" or (C("danger") .. "not allowed (" .. tostring(sendWhy) .. ")|r")),
+		string.format("Messages: %d sent, %d received", st.sent, st.received),
+		string.format("%d accepted, %d rejected, %d queued", st.accepted, st.rejected, #SK.Sync.queue),
 	}
 	if own then
 		local missing = SK.Professions.Unscanned(own)

@@ -83,6 +83,13 @@ describe("design system", function()
 		assert.has_error(function() Theme.Icon("nope") end)
 	end)
 
+	it("re-snaps every hairline when the scale changes", function()
+		local frame = W.stub()
+		Theme.Hairline(frame)
+		Theme.Edge(frame, "TOP")
+		assert.is_true(Theme.RefreshPixels() >= 5)
+	end)
+
 	it("marks status by shape as well as colour", function()
 		assert.truthy(Theme.StatusMark("addon"):find("WHITE8X8:8:8", 1, true))
 		assert.truthy(Theme.StatusMark("online"):find("statusHollow", 1, true))

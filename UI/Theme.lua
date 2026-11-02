@@ -143,6 +143,20 @@ local function line(frame, layer, sub)
 	return t
 end
 
+-- Every hairline, so it can be re-snapped to 1 physical pixel when the UI
+-- scale or the window scale changes. Weak keys: textures can go away.
+Theme.lines = setmetatable({}, { __mode = "k" })
+local function snap(t, axis)
+	Theme.lines[t] = axis
+	if axis == "h" then SK.Compat.PixelHeight(t, 1) else SK.Compat.PixelWidth(t, 1) end
+end
+
+function Theme.RefreshPixels()
+	local n = 0
+	for t, axis in pairs(Theme.lines) do snap(t, axis); n = n + 1 end
+	return n
+end
+
 local function paintLines(lines, color, alpha)
 	for _, t in ipairs(lines) do
 		if color then Theme.Solid(t, color, alpha) else Theme.Wash(t, alpha or "hairline") end
@@ -152,10 +166,10 @@ end
 -- Outline the whole frame. frame.border = { top, bottom, left, right }.
 function Theme.Hairline(frame, color, alpha)
 	local t = { line(frame), line(frame), line(frame), line(frame) }
-	t[1]:SetPoint("TOPLEFT"); t[1]:SetPoint("TOPRIGHT"); SK.Compat.PixelHeight(t[1], 1)
-	t[2]:SetPoint("BOTTOMLEFT"); t[2]:SetPoint("BOTTOMRIGHT"); SK.Compat.PixelHeight(t[2], 1)
-	t[3]:SetPoint("TOPLEFT"); t[3]:SetPoint("BOTTOMLEFT"); SK.Compat.PixelWidth(t[3], 1)
-	t[4]:SetPoint("TOPRIGHT"); t[4]:SetPoint("BOTTOMRIGHT"); SK.Compat.PixelWidth(t[4], 1)
+	t[1]:SetPoint("TOPLEFT"); t[1]:SetPoint("TOPRIGHT"); snap(t[1], "h")
+	t[2]:SetPoint("BOTTOMLEFT"); t[2]:SetPoint("BOTTOMRIGHT"); snap(t[2], "h")
+	t[3]:SetPoint("TOPLEFT"); t[3]:SetPoint("BOTTOMLEFT"); snap(t[3], "w")
+	t[4]:SetPoint("TOPRIGHT"); t[4]:SetPoint("BOTTOMRIGHT"); snap(t[4], "w")
 	frame.border = t
 	paintLines(t, color, alpha)
 	return t
@@ -165,9 +179,9 @@ end
 function Theme.Edge(frame, side, color, alpha)
 	local t = line(frame, "ARTWORK", 7)
 	if side == "TOP" or side == "BOTTOM" then
-		t:SetPoint(side .. "LEFT"); t:SetPoint(side .. "RIGHT"); SK.Compat.PixelHeight(t, 1)
+		t:SetPoint(side .. "LEFT"); t:SetPoint(side .. "RIGHT"); snap(t, "h")
 	else
-		t:SetPoint("TOP" .. side); t:SetPoint("BOTTOM" .. side); SK.Compat.PixelWidth(t, 1)
+		t:SetPoint("TOP" .. side); t:SetPoint("BOTTOM" .. side); snap(t, "w")
 	end
 	paintLines({ t }, color, alpha)
 	return t
@@ -305,3 +319,7 @@ function Theme.FadeIn(frame, seconds)
 	ag:Play()
 	return true
 end
+
+-- The game's UI scale or the screen size changed: re-snap every hairline.
+SK:RegisterEvent("UI_SCALE_CHANGED", function() Theme.RefreshPixels() end)
+SK:RegisterEvent("DISPLAY_SIZE_CHANGED", function() Theme.RefreshPixels() end)
