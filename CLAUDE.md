@@ -90,10 +90,11 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
 ## Layout
 ```
 ShortKings.toc  embeds.xml  Commands.lua (/sk, /sk debug report)
-Core/     Init (events, timers, modules), Log, Compat, DB (SavedVariables,
-          pruning), Identity (roster, sender→GUID, Status dots), Alts
-          (mutual-link groups), CraftIndex (recipe/item → crafters, async names), Export
-          (plain text for Copy), Log (+ error capture: SK:Safe/RecordError)
+Core/     Init (events, timers, modules), Log (+ error capture: SK:Safe,
+          SK:RecordError), Compat, DB (SavedVariables, pruning), Identity
+          (roster, sender→GUID, Status dots, GUID-stability check), Alts
+          (mutual-link groups), CraftIndex (recipe/item → crafters, async
+          names), Export (plain text for Copy)
 Data/     Professions, Attunements (quest IDs), Factions, Enchants
 Collect/  Character, Talents, Professions (recipe scan), Reputation,
           Attunements, Profile (full/public copies, cooldowns, main)

@@ -46,8 +46,10 @@ ship first. Commit as you go.
   `eventType`, `inviteStatus`).
 - Each row: day and time (local), title, the matched raid and its size,
   my status, and "18 signed · 3 tentative".
-- **Match an event to a raid** by keywords in its title (`Data/Raids.lua`:
-  key, name, size, keywords such as "ony", "onyxia", "barrow", "hyjal").
+- **Match an event to a raid** by keywords in its title. Add `keywords`
+  (e.g. "ony", "onyxia", "barrow", "hyjal") to the entries in
+  `Data/Attunements.lua`, which already hold each raid's name, size and
+  attunement (only the first-wave raids are shown).
   Let anyone override the match from a small menu (saved locally per `eventID`).
 - Refresh on `CALENDAR_UPDATE_GUILD_EVENTS`, `CALENDAR_UPDATE_EVENT_LIST`
   and when the tab opens. Call `C_Calendar.OpenCalendar()` once first if the
@@ -64,9 +66,13 @@ ship first. Commit as you go.
   - **role** (see 3);
   - spec, e.g. "Holy 31/20/0";
   - item level;
-  - **attunement** for the matched raid (reuse `RosterTab.AttunementOf`).
+  - **attunement** for the matched raid (reuse `RosterTab.AttunementOf`:
+    Barrow Deeps and Hyjal need none; Onyxia shows the amulet warning).
 - Top line: "Tanks 2 · Healers 6 · DPS 18 · 26 / 40". Flag a missing role
   ("No healers yet") and show "Not attuned: 3" for the matched raid.
+- **Readiness card** (Perplexity P11, merged here): item level range,
+  missing-enchant count, data older than a week, and the same player signed up
+  on two characters. Add a **Copy** button using `SK.Export` (v0.2.1).
 - Members without Short Kings show what the calendar gives (name, class,
   level, status), with role, spec, ilvl and attunement greyed as unknown.
 - Cache the last read list per `eventID` for the session, and show "read
