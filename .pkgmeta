@@ -12,6 +12,7 @@ ignore:
   - tests
   - PLAN.md
   - TESTING.md
+  - CLAUDE.md
   - .busted
   - .luacheckrc
   - .github
