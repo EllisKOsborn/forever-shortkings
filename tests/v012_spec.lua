@@ -102,7 +102,8 @@ describe("v0.1.2 raid attunement rows", function()
 		SK.DB.settings.roster.attFilter = "no"
 		SK.RosterTab:Refresh()
 		assert.equal(2, #SK.RosterTab.attList.items)
-		assert.truthy(SK.RosterTab.attCount:GetText():find("2 attuned · 2 not · 2 unknown", 1, true))
+		local counts = SK.RosterTab.attCount:GetText()
+		assert.truthy(counts:find("2 attuned", 1, true) and counts:find("2 not", 1, true) and counts:find("2 unknown", 1, true))
 		SK.DB.settings.roster.raid = "hyjal"
 		SK.RosterTab:Refresh()
 		assert.truthy(SK.RosterTab.attCount:GetText():find("No attunement needed", 1, true))
