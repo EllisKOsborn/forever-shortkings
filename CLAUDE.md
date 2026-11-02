@@ -162,8 +162,13 @@ oversized outgoing messages are recorded as errors, not sent.
   roadmap). Don't build from the proposal files directly.
 - **Next:** PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
-  v0.2.3 fixes only, a first tagged release, and **v0.3 Raids** before 9 Dec
+  v0.2.3 fixes only, the **design refresh** (`docs/prompts/next-design-refresh.md`:
+  Polestar-inspired design system in pink; mockups need owner approval
+  before any Lua), and **v0.3 Raids** before 9 Dec
   (`docs/prompts/next-v0.3-raids.md`). Professions tab is v0.4.
+- Polestar (Forever guide addon) is **GPL-3.0**: learn from its
+  `docs/DESIGN.md` ideas only; never copy its code, art or text into this
+  MIT project.
 - Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
   `AddEvent` is `HasRestrictions`; `GetDayEvent`/`EventGetInvite` are secret
   during chat lockdown; `C_PartyInfo.InviteUnit` and `ConvertToRaid` exist.

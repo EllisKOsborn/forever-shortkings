@@ -296,6 +296,14 @@ section is the single source of truth for order and status.
   (single-crafter) and Recent milestones (P7, local only, never synced).
 - **Test gate** (4–7 Nov): owner runs TESTING.md; **v0.2.3** = fixes only,
   plus an API contract check in CI (P17).
+- **Design refresh** (prompt: `docs/prompts/next-design-refresh.md`): a
+  design system in `docs/DESIGN.md` inspired by Polestar (one accent, tonal
+  depth, hairlines, type and spacing scale, contrast floors, left rail) in
+  Short Kings pink. **Phase A** (design doc + mockups, no addon code) can
+  run any time and needs the owner's approval; **Phase B** (Theme, widgets,
+  shell, then each tab) goes after v0.2.3. Recommended: do Phase B before
+  Raids so the Raids tab is built once, in the new look; if 9 Dec gets close,
+  build Raids first and restyle it after.
 - **v0.3 Raids** (before 9 Dec): `docs/prompts/next-v0.3-raids.md`, plus a
   readiness card (P11) and a duplicate-alt sign-up check. Addon-native events
   (P13) only if the calendar turns out to be unusable.
@@ -396,15 +404,17 @@ Crafters and tooltips, Copy, the Overview's numbers and milestones.
 2. **Release v0.2.3** with the fixes (v0.2.2, released 2 Nov, is the launch
    build). When you have CurseForge or Wago accounts, releases can go there
    too (P5); I prepare it, you do the upload.
-3. **v0.3.0 Raids, read-only** (target: before raids open on 9 Dec): raid
+3. **Design refresh** (`docs/prompts/next-design-refresh.md`): mockups for
+   your approval first, then the new look, slice by slice.
+4. **v0.3.0 Raids, read-only** (target: before raids open on 9 Dec): raid
    events from the calendar, who signed up with role, spec, item level and
    attunement, role counts, readiness card, Copy. Prompt:
    `docs/prompts/next-v0.3-raids.md`.
-4. **v0.3.1 Raids actions:** Sign up / Tentative / Decline buttons, a
+5. **v0.3.1 Raids actions:** Sign up / Tentative / Decline buttons, a
    reminder before raids, and "invite everyone signed up" for the raid leader.
-5. **v0.4 Professions** (December): cooldown board, specialisations,
+6. **v0.4 Professions** (December): cooldown board, specialisations,
    reagents, favourites; camp planner if step 5 confirms the data.
-6. **v0.5 Coordination** (January): craft requests, a short status line,
+7. **v0.5 Coordination** (January): craft requests, a short status line,
    lockout board.
 
 ### Step 5: things the guild can find out in game (they unblock later ideas)
