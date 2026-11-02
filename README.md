@@ -204,7 +204,7 @@ Settings ("Record guild milestones").
 
 ## 📦 Install
 
-1. Download the latest **`ShortKings-x.y.z.zip`** from
+1. Download the latest **`ShortKings-vX.Y.Z-forever.zip`** from
    [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases)
    (under *Assets*). The first release is **v0.2.2**, for launch day.
 2. Unzip it. You'll get a folder called **`ShortKings`**.

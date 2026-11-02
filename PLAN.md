@@ -366,7 +366,7 @@ client. This is the order of work once the game is live. Nothing new gets
 built until steps 1 to 3 are done.
 
 ### Step 1: first evening on your own (about 30 minutes)
-1. Download **ShortKings-v0.2.2.zip** from the GitHub **Releases** page
+1. Download **ShortKings-v0.2.2-forever.zip** from the GitHub **Releases** page
    (under *Assets*). Unzip it so you have `AddOns/ShortKings/ShortKings.toc`
    (path in the README's Install section). Share the same link with the guild.
 2. Character screen → **AddOns**: Short Kings is listed and not "out of date"
