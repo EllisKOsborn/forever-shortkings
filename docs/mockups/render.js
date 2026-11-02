@@ -7,7 +7,7 @@ const fs = require("fs");
 const os = require("os");
 const { chromium } = require("playwright");
 
-const SHOTS = ["banner", "roster", "attunement", "character", "crafters", "settings"];
+const SHOTS = ["banner", "overview", "roster", "attunement", "character", "crafters", "settings"];
 
 (async () => {
   const here = __dirname;

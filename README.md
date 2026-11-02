@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-D94FA0?labelColor=2A1220">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.2.1%20alpha-FF7A1A?labelColor=2A1220">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.2.2%20alpha-FF7A1A?labelColor=2A1220">
   <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FFC24A?labelColor=2A1220">
 </p>
 
@@ -24,7 +24,7 @@
 </p>
 
 > [!NOTE]
-> **v0.2.1 is an alpha that hasn't been run in game yet.** It's built against
+> **v0.2.2 is an alpha that hasn't been run in game yet.** It's built against
 > Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
 > client. The pictures below are **mockups** drawn from the addon's real
 > colours and layout. Item icons are placeholders; in game you see the real ones.
@@ -37,11 +37,33 @@
 
 | | What you get |
 |---|---|
+| 🏰 **Overview** | The guild at a glance: who's around, raid readiness, data health, professions, recipes and recent milestones |
 | 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains |
 | 🛡️ **Character** | Anyone's gear, talents, professions, cooldowns, attunements and reputations |
 | ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first |
 | ⚙️ **Settings** | Sync and privacy switches, window size, and a live status read-out |
 | 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, reminders, and a copyable debug report |
+
+### 🏰 Overview
+<p align="center"><img src="docs/images/overview.webp" alt="Overview tab mockup" width="100%"></p>
+
+Your one-stop dashboard, and the first tab. Six cards, each with a button
+that takes you to where you can act on it:
+
+- **Guild**: members (and roughly how many players, with alts counted once), who's online and who's online with Short Kings, how many have shared their data, and how many characters are level 60, 50–59, 40–49 and 1–39. Button: *Roster*.
+- **Raids**: days until raids open (9 Dec). Barrow Deeps and Hyjal Summit need no attunement, so the card shows how many level 60s you have. For Onyxia's Lair it counts attuned / not / unknown, plus how many have the quest done but the Drakefire Amulet out of their bags. Button: *Onyxia list* (the Roster with Onyxia picked).
+- **Data health**: members without Short Kings data, profiles older than a week, characters who haven't opened a profession window, and people on an old Short Kings (including you). Says "All good" when there's nothing to fix. Button: *Oldest first* (the Roster with missing and oldest data at the top).
+- **Professions**: how many characters have each crafting profession and how many are at 300 (or the best skill so far); professions **nobody** has are shown in red; one line for gathering. Button: *Crafters*.
+- **Recipes**: how many recipes the guild knows, from how many crafters, and how many **only one character** knows (with a few examples), so you know where you have no backup. Button: *Search recipes*.
+- **Recent milestones**: level-ups (every 10 levels), profession skill 75/150/225/300, Onyxia attunement and newly learned recipes, newest first. Hover for when, click to open the character, and press **Grats** to type "Grats Bramble on level 60!" into guild chat (you press Enter).
+
+The header line shows your guild, members, how many are online and the days until raids open.
+
+Milestones are worked out by **your own addon** when it sees a newer copy of a
+character, and kept on your computer only (the last 50). Nothing new is sent
+over the network. The first time your addon sees someone, it doesn't
+announce anything, so a fresh install doesn't fill the list. Turn it off in
+Settings ("Record guild milestones").
 
 ### 👥 Roster
 <p align="center"><img src="docs/images/roster.webp" alt="Roster tab mockup" width="100%"></p>
@@ -137,6 +159,7 @@
 - **Share and receive guild data**: turns sync on or off entirely.
 - **Share my gear and talents** / **Share my recipes and cooldowns**: privacy switches.
 - **Show guild crafters in item tooltips** (on by default).
+- **Record guild milestones (Overview)** (on by default; kept on your computer only).
 - **Show minimap button**, and **debug logging** in chat.
 - **Window size**: 70% to 130%.
 - **Buttons:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
@@ -154,7 +177,7 @@
   - Left-click opens the window.
   - Right-click opens Settings.
   - Drag the button to move it around the minimap.
-- **The window** can be dragged by its title bar and remembers its place and size. **Esc** closes it, and the title bar shows your guild and whether sync is on.
+- **The window** opens on the Overview the first time, then on whichever tab you used last. It can be dragged by its title bar and remembers its place and size. **Esc** closes it, and the title bar shows your guild and whether sync is on.
 - **Automatic collection.** Every character you log in on is recorded:
   - gear and item level, talents and reputations;
   - professions, recipes (when you open the profession window) and cooldowns;
@@ -342,12 +365,12 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.1.2**: raid attunement filter on the Roster, "Ask for latest", faster updates (30–60 s)
 - [x] **v0.2.0**: **Crafters** tab (search an item, see who can make it, Whisper, post to guild chat) and "Crafted by" on item tooltips
 - [x] **v0.2.1**: launch readiness: Forever's real raid attunements (Onyxia amulet check), `/sk debug` live-client checks and error capture, sync safety limits, sharing preview, "may be out of date" labels, Copy as text
-- [ ] **In-game test round** after launch (4 Nov), then fixes (v0.2.2)
-- [ ] **v0.2.3**: **Overview** tab: guild population, data health, profession coverage, attunement summary, levelling feed
+- [x] **v0.2.2**: **Overview** dashboard: guild at a glance, raid readiness, data health, profession coverage, single-crafter recipes, recent milestones with Grats
+- [ ] **In-game test round** after launch (4 Nov), then fixes (v0.2.3)
 - [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar: sign-up status, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
 - [ ] **v0.4**: **Professions** tab (cooldown board, specialisations, reagents, favourites)
 - [ ] **v0.5**: craft requests, a short status line, lockout board
-- [ ] **Later**: craft requests, export to text, raid attendance, shopping lists, guild bank viewer, and more in the [plan](PLAN.md#later-in-rough-priority-order)
+- [ ] **Later**: raid attendance, shopping lists, guild bank viewer, and more in the [plan](PLAN.md#later-in-rough-priority-order)
 - [ ] CurseForge release
 
 Testing it in game? Work through the checklist in [TESTING.md](TESTING.md).
@@ -365,7 +388,7 @@ node docs/mockups/render.js [font.woff2]   # regenerate the README pictures
 
 | Folder | What lives there |
 |---|---|
-| `Core/` | start-up, events, saved data, guild roster, alts, the crafter index; `Compat.lua` is the **only** file that touches client-specific APIs |
+| `Core/` | start-up, events, saved data, guild roster, alts, the crafter index, Overview numbers and the milestones feed, text export; `Compat.lua` is the **only** file that touches client-specific APIs |
 | `Collect/` | reads gear, talents, professions, recipes, reputation and attunements |
 | `Sync/` | encoding (LibSerialize + LibDeflate), merge rules, the HI/RQ/PR/SQ/SO protocol |
 | `UI/` | theme, widgets, tabs and the item-tooltip line (colours and gradients only, no image files) |

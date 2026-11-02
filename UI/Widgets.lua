@@ -13,6 +13,7 @@ local Theme = SK.Theme
 ---------------------------------------------------------------------------
 function W.Button(parent, text, width, height, onClick)
 	local b = CreateFrame("Button", nil, parent)
+	b.disabled, b.active = false, false
 	b:SetSize(width or 100, height or 22)
 	local bg = b:CreateTexture(nil, "BACKGROUND")
 	bg:SetAllPoints()

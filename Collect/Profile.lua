@@ -96,6 +96,7 @@ function Profile:Commit(guild, p, now)
 	local changed = not oldFull or oldFull.hash ~= p.hash
 	p.updated = changed and now or oldFull.updated
 	SK.DB.own[p.guid] = p
+	if changed and oldFull then SK.Feed:Note(p.guid, oldFull, p, now) end
 
 	local pub = Profile.Public(p, SK.DB.settings.share)
 	pub.hash = Profile.HashOf(pub)

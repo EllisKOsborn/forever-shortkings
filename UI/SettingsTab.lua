@@ -38,6 +38,9 @@ function Settings:Build(page)
 	check("Show guild crafters in item tooltips", function() return s.craftTooltips end, function(v)
 		s.craftTooltips = v
 	end)
+	check("Record guild milestones (Overview)", function() return s.feed end, function(v)
+		s.feed = v
+	end)
 	check("Show minimap button", function() return not s.minimap.hide end, function(v)
 		SK.Minimap:SetShown(v)
 	end)

@@ -17,11 +17,13 @@ local DEFAULTS = {
 		main = nil,                               -- guid of the player's main
 		roster = { raid = nil, attFilter = "all", maxLevelOnly = true }, -- Raid filter (v0.1.2)
 		craftTooltips = true,                     -- "Crafted by" lines on item tooltips (v0.2)
+		feed = true,                              -- record guild milestones for the Overview (v0.2.2)
 	},
 	own = {},             -- [guid] = full profile of our own characters (never sent)
 	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns
 	account = {},  -- [guid] = true for characters seen on this account
 	seenGuids = {}, -- [name] = { guid, first, logins, changedFrom } (GUID stability check for /sk debug)
+	feed = {},      -- recent milestones, newest first, max 50 (local only, never sent)
 	guilds = {},
 }
 

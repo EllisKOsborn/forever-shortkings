@@ -290,6 +290,7 @@ handlers.PR = function(self, msg, from)
 		prof.source = isOwner and "owner" or "relay"
 		prof.received = Compat.Now()
 		guild.profiles[prof.guid] = prof
+		SK.Feed:Note(prof.guid, stored, prof, Compat.Now())
 		self.stats.accepted = self.stats.accepted + 1
 		SK:Fire("PROFILE_UPDATED", prof.guid)
 	else

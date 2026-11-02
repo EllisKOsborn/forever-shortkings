@@ -129,28 +129,8 @@ function Roster.Raid(key)
 	end
 end
 
--- State for one profile and raid, plus an optional note. Pure; tested.
---   "none"    the raid needs no attunement
---   "yes"     quest done, or the required item is in their bags
---   "no"      quest not done and the item isn't in their bags
---   "unknown" no Short Kings data, gear/talents hidden, quests not known yet,
---             or a profile from a version that didn't record it
--- The note says "amulet not in bags" when the quest is done but the item
--- (e.g. the Drakefire Amulet) isn't in their bags.
-function Roster.AttunementOf(p, raid)
-	if raid and raid.status == "none" then return "none" end
-	if not raid or raid.status == "todo" or not raid.quests or #raid.quests == 0 then return "unknown" end
-	if not p or (p.hidden and p.hidden.gear) then return "unknown" end
-	local quest = p.att and p.att[raid.key]
-	local item = raid.item and p.att and p.att[raid.key .. "_item"]
-	if quest == true then
-		if item == false then return "yes", (raid.itemName or "item") .. " not in bags" end
-		return "yes"
-	end
-	if item == true then return "yes" end
-	if quest == false then return "no" end
-	return "unknown"
-end
+-- Attunement state for one profile and raid (logic in Collect/Attunements).
+Roster.AttunementOf = SK.Attunements.StateOf
 
 -- Highest level of any current member (the guild's "max level").
 function Roster.MaxLevel(guild)
@@ -422,6 +402,17 @@ function Roster:Build(page)
 	self.attList = makeList(ATT_COLUMNS, 7)    -- online first
 	self.attList:SetPoint("TOPLEFT", 0, -58)
 	self.attList:Hide()
+end
+
+-- From the Overview's Data health card: normal Roster, missing and oldest
+-- data first (Data column ascending).
+function Roster:ShowOldestFirst()
+	SK.DB.settings.roster.raid = nil
+	SK.MainFrame:Select("roster")
+	for i, col in ipairs(COLUMNS) do
+		if col.key == "data" then self.list.sortCol, self.list.sortDesc = i, false end
+	end
+	self.list:Sort()
 end
 
 -- The list as shown (current filters and sort) as plain text.

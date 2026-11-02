@@ -34,6 +34,10 @@ SK.Data.ATTUNEMENTS = {
 	  note = "Not announced for Forever. Verify the attunement quest IDs before adding." },
 }
 
+-- When the first raid wave opens: 9 Dec 2026 (Blizzard's raid overview).
+-- 00:00 UTC; the exact unlock hour differs by region, so the UI says "about".
+SK.Data.RAIDS_OPEN_AT = 1796774400
+
 -- Entries shown in the UI (the first raid wave), in display order.
 function SK.Data.ShownAttunements()
 	local out = {}

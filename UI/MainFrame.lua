@@ -118,7 +118,14 @@ end
 
 function Main:Refresh()
 	if not self.frame or not self.frame:IsShown() then return end
-	if not self.current then return self:Select(SK.DB.settings.window.tab or "roster") end
+	if not self.current then
+		-- v0.2.2: open on the new Overview once, then remember the last tab again.
+		if not SK.DB.settings.overviewShown then
+			SK.DB.settings.overviewShown = true
+			return self:Select("overview")
+		end
+		return self:Select(SK.DB.settings.window.tab or "overview")
+	end
 	for _, tab in ipairs(self.tabs) do
 		if tab.key == self.current and tab.built and tab.module.Refresh then tab.module:Refresh() end
 	end

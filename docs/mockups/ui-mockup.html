@@ -2,7 +2,7 @@
 <!--
   Short Kings UI mockup. This is NOT a game screenshot: it redraws the addon's
   window in HTML using the same colours (UI/Theme.lua), sizes and layout
-  (UI/MainFrame.lua, RosterTab.lua, CharacterTab.lua, CraftersTab.lua, SettingsTab.lua).
+  (UI/MainFrame.lua, OverviewTab.lua, RosterTab.lua, CharacterTab.lua, CraftersTab.lua, SettingsTab.lua).
   Item icons are placeholders (the game shows the real item icons).
   Regenerate the images with: node docs/mockups/render.js [marcellus.woff2]
 -->
@@ -118,6 +118,16 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
 .row .wbtn { position:absolute; right:2px; top:2px; height:18px; width:54px; font-size:11px; line-height:16px; text-align:center;
   background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
 .row .wbtn.off { color:var(--muted); }
+/* overview cards */
+.card { position:absolute; width:270px; height:209px; background:linear-gradient(to top, var(--plumDark), var(--plumLift));
+  border:1px solid var(--leather); }
+.card .ct { position:absolute; left:10px; top:7px; font-size:14px; color:var(--pink); }
+.card .cb { position:absolute; left:10px; top:30px; right:14px; font-size:12px; line-height:15px; white-space:pre; overflow:hidden; bottom:36px; }
+.card .cf { position:absolute; left:8px; bottom:8px; width:120px; height:22px; }
+.frow { height:20px; line-height:20px; font-size:12px; display:flex; padding-left:4px; position:relative; }
+.frow:nth-child(odd) { background:rgba(78,36,64,.15); } .frow:nth-child(even) { background:rgba(78,36,64,.35); }
+.frow .gr { position:absolute; right:4px; top:2px; width:46px; height:16px; font-size:10px; line-height:14px; text-align:center;
+  background:linear-gradient(to top, var(--plumDark), var(--plumLift)); border:1px solid var(--leather); }
 /* banner */
 .bannerbox { width:1020px; height:250px; position:relative; overflow:hidden;
   background:linear-gradient(to top, var(--plumDark), var(--plum)); border:3px solid var(--leather); }
@@ -168,12 +178,73 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   </div>
 </div>
 
+<!-- ============ OVERVIEW ============ -->
+<div class="scene" id="overview">
+  <div class="win">
+    <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+      <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
+    <div class="tabs"><div class="btn active">Overview</div><div class="btn">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
+    <div class="content">
+      <div class="count" style="left:2px;top:3px">Short Kings &nbsp;·&nbsp; 47 members &nbsp;·&nbsp; 12 online &nbsp;·&nbsp; raids open in about 37 days</div>
+
+      <div class="card" style="left:0;top:24px"><div class="ct">Guild</div><div class="cb">47 members  <span class="m">(about 31 players)</span>
+12 online  ·  <span class="g">9 with Short Kings</span>
+38 have shared their data
+
+<span class="p">Levels</span>
+  60     <span class="f">22</span>
+  50-59  <span class="f">8</span>
+  40-49  <span class="f">9</span>
+  1-39   <span class="f">8</span></div><div class="btn small cf">Roster</div></div>
+
+      <div class="card" style="left:283px;top:24px"><div class="ct">Raids</div><div class="cb"><span class="f">Open 9 Dec: in about 37 days</span>
+
+<span class="p">Barrow Deeps</span> (10)
+  no attunement needed  ·  22 at level 60
+<span class="p">Hyjal Summit</span> (20)
+  no attunement needed  ·  22 at level 60
+<span class="p">Onyxia's Lair</span> (40)
+  <span class="g">8 attuned</span> · <span class="bd">6 not</span> · <span class="m">8 unknown</span>
+  <span class="e">2 without the amulet in their bags</span></div><div class="btn small cf hover">Onyxia list</div></div>
+
+      <div class="card" style="left:566px;top:24px"><div class="ct">Data health</div><div class="cb"><span class="m">9</span> members without Short Kings data
+<span class="e">4</span> profiles older than a week
+<span class="e">3</span> characters haven't opened a
+   profession window
+<span class="e">2</span> running an old Short Kings
+
+<span class="m">No data usually means no addon, or a
+trial account (trials can't share).</span></div><div class="btn small cf">Oldest first</div></div>
+
+      <div class="card" style="left:0;top:243px"><div class="ct">Professions</div><div class="cb">Alchemy  <span class="f">5</span><span class="m">  (2 at 300)</span>
+Blacksmithing  <span class="f">4</span><span class="m">  (2 at 300)</span>
+Enchanting  <span class="f">6</span><span class="m">  (3 at 300)</span>
+Engineering  <span class="bd">nobody</span>
+Leatherworking  <span class="f">3</span><span class="m">  (best 265)</span>
+Tailoring  <span class="f">7</span><span class="m">  (4 at 300)</span>
+Cooking  <span class="f">11</span><span class="m">  (1 at 300)</span>
+First Aid  <span class="f">14</span><span class="m">  (6 at 300)</span></div><div class="btn small cf">Crafters</div></div>
+
+      <div class="card" style="left:283px;top:243px"><div class="ct">Recipes</div><div class="cb"><span class="f">1,284</span> recipes known in the guild
+from 18 crafters
+
+<span class="e">37</span> only one character knows
+  <span class="m">Arcanite Reaper</span>
+  <span class="m">Flask of the Titans</span>
+  <span class="m">Mooncloth Robe</span></div><div class="btn small cf">Search recipes</div></div>
+
+      <div class="card" style="left:566px;top:243px"><div class="ct">Recent milestones</div>
+        <div style="position:absolute;left:4px;right:16px;top:48px" id="feedrows"></div></div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ ROSTER ============ -->
 <div class="scene" id="roster">
   <div class="win">
     <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
+    <div class="tabs"><div class="btn">Overview</div><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
     <div class="content">
       <div class="search" style="width:210px">Search name, profession, note...</div>
       <div class="menu" style="left:220px;top:0;width:150px">All raids</div>
@@ -208,7 +279,7 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   <div class="win">
     <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Roster</div><div class="btn active">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
+    <div class="tabs"><div class="btn">Overview</div><div class="btn">Roster</div><div class="btn active">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
     <div class="content">
       <div style="position:absolute;left:0;top:0;display:flex;gap:6px">
         <div class="btn small">&lt; Roster</div><div class="btn small">Me</div><div class="btn small hover">Whisper</div></div>
@@ -241,7 +312,7 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   <div class="win">
     <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn active">Settings</div></div>
+    <div class="tabs"><div class="btn">Overview</div><div class="btn">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn active">Settings</div></div>
     <div class="content">
       <div class="h">Settings</div>
       <div class="check" style="top:30px"><div class="box on"></div>Share and receive guild data (sync)</div>
@@ -284,7 +355,7 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   <div class="win">
     <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
+    <div class="tabs"><div class="btn">Overview</div><div class="btn active">Roster</div><div class="btn">Character</div><div class="btn">Crafters</div><div class="btn">Settings</div></div>
     <div class="content">
       <div class="search" style="width:210px">Search name, profession, note...</div>
       <div class="menu hover" style="left:220px;top:0;width:150px">Onyxia's Lair (40)</div>
@@ -315,7 +386,7 @@ body { margin:0; padding:40px; background:#14161b; font-family:"SKFriz","Friz Qu
   <div class="win">
     <div class="titlebar"><div class="title">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
       <div class="status">Short Kings &nbsp;·&nbsp; sync on</div><div class="close">✕</div></div>
-    <div class="tabs"><div class="btn">Roster</div><div class="btn">Character</div><div class="btn active">Crafters</div><div class="btn">Settings</div></div>
+    <div class="tabs"><div class="btn">Overview</div><div class="btn">Roster</div><div class="btn">Character</div><div class="btn active">Crafters</div><div class="btn">Settings</div></div>
     <div class="content">
       <div class="search" style="width:240px;color:var(--text)">arcanite</div>
       <div class="count" style="left:254px">6 results</div>
@@ -495,6 +566,20 @@ document.getElementById("krows").innerHTML = kres.map((r,i) =>
   `<div class="row" style="height:22px;line-height:22px">${'<div style="width:146px">' + dotc(r[2]) + `<span style="color:${CLS[r[1]]}">${r[0]}</span></div>`}` +
   `<div class="r" style="width:40px">${r[3]}</div><div style="width:84px">${r[4]}</div><div style="width:58px"></div>` +
   `<div class="wbtn${r[5]?" off":""}">Whisper</div></div>`).join("");
+
+// Overview: recent milestones.
+const feed = [
+  ["2m","Widget","HUNTER","reached level 60",true],
+  ["14m","Fizzle","PRIEST","is attuned to Onyxia's Lair",true],
+  ["1h","Pip","MAGE","learned 3 new Tailoring recipes",false],
+  ["3h","Peb","PRIEST","reached Enchanting 300",true],
+  ["5h","Quill","MAGE","reached level 50",true],
+  ["1d","Nim","WARLOCK","reached Tailoring 300",true],
+  ["2d","Rivet","ROGUE","reached level 40",true],
+];
+document.getElementById("feedrows").innerHTML = feed.map(f =>
+  `<div class="frow"><div style="width:32px" class="m">${f[0]}</div><div style="width:158px;white-space:nowrap;overflow:hidden">` +
+  `<span style="color:${CLS[f[2]]}">${f[1]}</span> ${f[3]}</div>${f[4] ? '<div class="gr">Grats</div>' : ""}</div>`).join("");
 </script>
 </body>
 </html>
