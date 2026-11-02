@@ -21,6 +21,7 @@ local DEFAULTS = {
 	own = {},             -- [guid] = full profile of our own characters (never sent)
 	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns
 	account = {},  -- [guid] = true for characters seen on this account
+	seenGuids = {}, -- [name] = { guid, first, logins, changedFrom } (GUID stability check for /sk debug)
 	guilds = {},
 }
 

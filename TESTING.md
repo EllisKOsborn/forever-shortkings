@@ -145,6 +145,15 @@ the `/sk debug` text when something looks wrong.
 52. [ ] `/sk debug`, "== Attunement quests ==": the line "Onyxia's Lair item
         16309" shows name="Drakefire Amulet" and resolves=yes.
 
+53. [ ] `/sk debug` starts with **"Live-client checks"**. Copy the whole block
+        to me. Log out and back in on the same character, run it again, and
+        check it says "GUID stable between logins: yes so far (2 logins …)".
+54. [ ] Open your profession window, then `/sk debug`: the "unlearned recipes"
+        line now has an answer. Open the Calendar once, then `/sk debug`: the
+        "Calendar" line shows how many guild events are listed.
+55. [ ] If you ever see a Lua error, `/sk debug` lists it under
+        "Recent errors". Send me that part too.
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).

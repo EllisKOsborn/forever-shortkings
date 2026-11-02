@@ -46,6 +46,43 @@ function SK:GetLog()
 	return out
 end
 
+---------------------------------------------------------------------------
+-- Error capture: the last few Lua errors caught in our own code, so they
+-- show in /sk debug even for players without an error-display addon.
+-- Memory only (lost on /reload); nothing is sent anywhere.
+---------------------------------------------------------------------------
+SK.MAX_ERRORS = 10
+SK.errors = {}
+
+function SK:RecordError(where, err)
+	local list = SK.errors
+	local msg = tostring(err)
+	for _, e in ipairs(list) do
+		if e.where == where and e.msg == msg then
+			e.count, e.at = e.count + 1, stamp()
+			return e
+		end
+	end
+	local e = { where = tostring(where), msg = msg, at = stamp(), count = 1, version = SK.VERSION }
+	table.insert(list, 1, e)
+	while #list > SK.MAX_ERRORS do table.remove(list) end
+	SK:Debug("error in %s: %s", e.where, msg)
+	return e
+end
+
+-- Run fn(...) safely: record and report an error instead of breaking the
+-- caller. Also passes it to the game's error handler (BugSack, or Blizzard's
+-- "Lua error" window when script errors are on).
+function SK:Safe(where, fn, ...)
+	local ok, err = pcall(fn, ...)
+	if not ok then
+		SK:RecordError(where, err)
+		local handler = geterrorhandler and geterrorhandler()
+		if handler then handler(err) end
+	end
+	return ok, err
+end
+
 function SK:ClearLog()
 	wipe(lines)
 	head = 0

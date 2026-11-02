@@ -81,7 +81,7 @@ function Talents.Read()
 		return nil
 	end
 	if not ok then
-		SK:Debug("talent read failed: %s", tostring(result))
+		SK:RecordError("talent read", result)
 		return nil
 	end
 	if not result and why then SK:Debug("talents: %s", why) end

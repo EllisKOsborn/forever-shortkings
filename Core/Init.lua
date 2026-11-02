@@ -25,7 +25,8 @@ eventFrame:SetScript("OnEvent", function(_, event, ...)
 	local list = eventHandlers[event]
 	if not list then return end
 	for i = 1, #list do
-		list[i](event, ...)
+		-- One failing handler must not stop the others (errors are recorded).
+		SK:Safe(event, list[i], event, ...)
 	end
 end)
 
@@ -60,7 +61,7 @@ function SK:Fire(message, ...)
 	local list = messageHandlers[message]
 	if not list then return end
 	for i = 1, #list do
-		list[i](...)
+		SK:Safe(message, list[i], ...)
 	end
 end
 
@@ -109,12 +110,7 @@ local function callAll(hook)
 	for i = 1, #moduleOrder do
 		local m = moduleOrder[i]
 		if m[hook] then
-			local ok, err = pcall(m[hook], m)
-			if not ok then
-				if SK.Debug then SK:Debug("%s:%s failed: %s", m.name, hook, tostring(err)) end
-				local handler = geterrorhandler and geterrorhandler()
-				if handler then handler(err) end
-			end
+			SK:Safe(m.name .. ":" .. hook, m[hook], m)
 		end
 	end
 end

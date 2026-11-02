@@ -31,7 +31,7 @@ read_globals = {
 	-- C_ namespaces
 	"C_Timer", "C_AddOns", "C_ChatInfo", "C_GuildInfo", "C_Club", "C_CreatureInfo", "C_Traits",
 	"C_SpecializationInfo", "C_ClassTalents", "C_TradeSkillUI", "C_SkillInfo", "C_Reputation",
-	"C_QuestLog", "C_Item", "C_Spell", "C_ClassColor", "C_Calendar", "Enum",
+	"C_QuestLog", "C_Item", "C_Spell", "C_ClassColor", "C_Calendar", "C_PartyInfo", "Enum",
 	-- Global API
 	"GetAddOnMetadata", "GetServerTime", "GetTime", "GetBuildInfo", "IsTrialAccount",
 	"IsVeteranTrialAccount", "IsRestrictedAccount", "GameLimitedMode_IsActive", "InCombatLockdown",

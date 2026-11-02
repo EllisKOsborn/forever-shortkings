@@ -161,7 +161,7 @@
   It refreshes whenever something changes.
 - **"Crafted by" on every item tooltip**: hover any item (bags, chat links, the auction house, loot) to see a line such as "Short Kings: Bramble (online), Dabble +2 more". Online crafters come first, at most three names. Turn it off in Settings.
 - **Chat reminders:** which profession windows you still need to open, when a guildmate has a newer Short Kings, and a notice if a trial account can't share data.
-- **`/sk debug`** opens a copyable report of what the addon can see. Send it when something looks wrong. `/sk log` adds the recent activity log.
+- **`/sk debug`** opens a copyable report of what the addon can see. Send it when something looks wrong. `/sk log` adds the recent activity log. It starts with the **live-client checks** that decide what we build next, and ends with the **last 10 Lua errors** Short Kings caught (kept in memory only).
 
 ### 🔒 Under the hood
 - **Your own data always wins.** A copy passed on by someone else can never overwrite a newer copy from the character themselves.

@@ -190,7 +190,7 @@ function Profile:OnLogin()
 		if Compat.InCombat() then dirty = true; return end
 		dirty = false
 		local ok, err = pcall(Profile.BuildSelf, Profile)
-		if not ok then SK:Debug("profile build failed: %s", tostring(err)) end
+		if not ok then SK:RecordError("profile build", err) end
 	end
 	local function queue() SK:Debounce("buildself", 5, rebuild) end
 	for _, ev in ipairs({ "PLAYER_EQUIPMENT_CHANGED", "PLAYER_LEVEL_UP", "TRAIT_CONFIG_UPDATED",

@@ -245,7 +245,7 @@ function Sync:RefreshOwnFor(wanted)
 	if self.lastRebuild and now - self.lastRebuild < self.REBUILD_INTERVAL then return false end
 	self.lastRebuild = now
 	local ok, err = pcall(SK.Profile.BuildSelf, SK.Profile)
-	if not ok then SK:Debug("rebuild for RQ failed: %s", tostring(err)) end
+	if not ok then SK:RecordError("rebuild for RQ", err) end
 	return ok
 end
 
@@ -399,7 +399,7 @@ function Sync:OnCommReceived(prefix, text, dist, sender)
 		return
 	end
 	local ok, err = pcall(self.Handle, self, text, dist, sender)
-	if not ok then SK:Debug("message error: %s", tostring(err)) end
+	if not ok then SK:RecordError("sync message", err) end
 end
 
 function Sync:DrainBuffer()
@@ -408,7 +408,7 @@ function Sync:DrainBuffer()
 	self.buffer = {}
 	for _, m in ipairs(batch) do
 		local ok, err = pcall(self.Handle, self, m[1], m[2], m[3])
-		if not ok then SK:Debug("message error: %s", tostring(err)) end
+		if not ok then SK:RecordError("sync message", err) end
 	end
 end
 

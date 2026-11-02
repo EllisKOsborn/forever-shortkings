@@ -68,3 +68,70 @@ describe("v0.2.1 attunements (first raid wave)", function()
 		assert.truthy(SK.RosterTab.attCount:GetText():find("No attunement needed", 1, true))
 	end)
 end)
+
+describe("v0.2.1 live-client checks and error capture", function()
+	local SK, W
+	before_each(function()
+		SK, W = H.load()
+		H.loadUI(SK)
+		W.member("Pip", W.player.guid)
+		SK.Identity:ReadRoster()
+	end)
+
+	local function report() return table.concat(SK.Commands.BuildReport(), "\n") end
+
+	it("tracks whether a character's GUID stays the same between logins", function()
+		local seen = {}
+		local e = SK.Identity.NoteLogin(seen, "Pip", "G1", 1)
+		assert.equal(1, e.logins)
+		SK.Identity.NoteLogin(seen, "Pip", "G1", 2)
+		assert.equal(2, seen.Pip.logins)
+		assert.is_nil(seen.Pip.changedFrom)
+		SK.Identity.NoteLogin(seen, "Pip", "G2", 3)
+		assert.equal("G1", seen.Pip.changedFrom)
+		assert.equal("G2", seen.Pip.guid)
+		assert.is_nil(SK.Identity.NoteLogin(seen, nil, "G3", 4))
+	end)
+
+	it("reports GUID stability, calendar and unlearned recipes", function()
+		assert.truthy(report():find("first login seen", 1, true))
+		SK.Identity:OnLogin()
+		SK.Identity:OnLogin()
+		local text = report()
+		assert.truthy(text:find("GUID stable between logins: yes so far (2 logins as Pip)", 1, true))
+		assert.truthy(text:find("Calendar: C_Calendar present=no", 1, true))
+		assert.truthy(text:find("open a profession window", 1, true))
+		_G.C_Calendar = { GetNumGuildEvents = function() return 3 end, AddEvent = function() end }
+		assert.truthy(report():find("present=yes, guild events listed=3, AddEvent present=yes", 1, true))
+		_G.C_Calendar = nil
+		W.player.guid = "Player-1-CHANGED"
+		SK.Identity:OnLogin()
+		assert.truthy(report():find("GUID stable between logins: NO", 1, true))
+	end)
+
+	it("records errors from event handlers and messages without stopping the others", function()
+		local ran = false
+		local seenErrors = {}
+		_G.geterrorhandler = function() return function(e) seenErrors[#seenErrors + 1] = e end end
+		SK:On("TEST_MSG", function() error("boom") end)
+		SK:On("TEST_MSG", function() ran = true end)
+		SK:Fire("TEST_MSG")
+		SK:Fire("TEST_MSG")
+		assert.is_true(ran)
+		assert.equal(1, #SK.errors)          -- same error twice is counted, not duplicated
+		assert.equal(2, SK.errors[1].count)
+		assert.equal(2, #seenErrors)          -- still passed to the game's error handler
+		SK:RegisterEvent("TEST_EVENT", function() error("event boom") end)
+		W.fire("TEST_EVENT")
+		assert.equal("TEST_EVENT", SK.errors[1].where)
+		local text = report()
+		assert.truthy(text:find("Recent Lua errors caught: 2", 1, true))
+		assert.truthy(text:find("event boom", 1, true))
+	end)
+
+	it("keeps only the last 10 errors", function()
+		for i = 1, 15 do SK:RecordError("where" .. i, "e" .. i) end
+		assert.equal(10, #SK.errors)
+		assert.equal("where15", SK.errors[1].where)
+	end)
+end)

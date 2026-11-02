@@ -33,6 +33,33 @@ function Commands.BuildReport()
 	add("Time: server %s, local %s", tostring(Compat.Now()), date and date("%Y-%m-%d %H:%M") or "?")
 
 	add("")
+	add("== Live-client checks (please send this part) ==")
+	add("Interface number: %s (ShortKings.toc says 16001)", tostring(b.interface))
+	local seenName = SK.Identity.LoginKey()
+	local seen = seenName and SK.DB.seenGuids[seenName]
+	if not seen then
+		add("GUID stable between logins: not known yet (first login seen)")
+	elseif seen.changedFrom then
+		add("GUID stable between logins: NO, %s changed from %s to %s", seenName, seen.changedFrom, seen.guid)
+	else
+		add("GUID stable between logins: yes so far (%d logins as %s)", seen.logins, seenName)
+	end
+	add("Addon message sender format: %q   Roster name sample: %q", tostring(SK.Sync.lastSender),
+		tostring(SK.Identity.rosterSample))
+	local lastScan = SK.Professions.lastScan
+	if lastScan then
+		add("Profession window lists unlearned recipes: %s (%s: %d learned, %d listed)",
+			lastScan.total > lastScan.learned and "yes" or "no (or all learned)", tostring(lastScan.name),
+			lastScan.learned, lastScan.total)
+	else
+		add("Profession window lists unlearned recipes: open a profession window, then run /sk debug again")
+	end
+	local calPresent, calEvents = Compat.CalendarStatus()
+	add("Calendar: C_Calendar present=%s, guild events listed=%s, AddEvent present=%s (open the calendar once; 0 is normal before that)",
+		yesno(calPresent), tostring(calEvents), yesno(Compat.has("C_Calendar", "AddEvent")))
+	add("Recent Lua errors caught: %d (details at the end)", #SK.errors)
+
+	add("")
 	add("== Player ==")
 	local name, realm = Compat.PlayerFullName()
 	add("GUID: %s", tostring(Compat.PlayerGUID()))
@@ -146,6 +173,13 @@ function Commands.BuildReport()
 	add("%d checked, %d missing", #Compat.PROBES, #missing)
 	for _, m in ipairs(missing) do add("  missing: %s", m) end
 	add("Minimap button: %s", tostring(SK.Minimap.mode))
+
+	add("")
+	add("== Recent errors (newest first) ==")
+	if #SK.errors == 0 then add("none") end
+	for _, e in ipairs(SK.errors) do
+		add("[%s] %s (x%d, %s): %s", e.at, e.where, e.count, tostring(e.version), e.msg)
+	end
 
 	SK.DB.lastReport = L
 	return L

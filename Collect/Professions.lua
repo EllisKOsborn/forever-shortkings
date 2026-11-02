@@ -106,7 +106,7 @@ function Prof:Scan()
 	end
 	if ok == false then
 		scanning = false
-		SK:Debug("recipe scan error: %s", tostring(status))
+		SK:RecordError("recipe scan", status)
 		return
 	end
 	if status == "retry" and retries < 5 then

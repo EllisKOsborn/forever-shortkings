@@ -177,7 +177,29 @@ function Identity:ReadRoster()
 	SK:Debug("roster: %d members (%s, complete=%s)", #entries, source, tostring(complete))
 end
 
+-- Live-client check: is a character's GUID the same every login? Pure; tested.
+function Identity.NoteLogin(seen, name, guid, now)
+	if not name or not guid then return nil end
+	local e = seen[name]
+	if not e then
+		e = { guid = guid, first = now, logins = 0 }
+		seen[name] = e
+	elseif e.guid ~= guid then
+		e.changedFrom, e.guid, e.logins = e.guid, guid, 0
+	end
+	e.logins = e.logins + 1
+	return e
+end
+
+-- The logged-in character's name as used for that check.
+function Identity.LoginKey()
+	local name, realm = Compat.PlayerFullName()
+	if not name then return nil end
+	return (realm and realm ~= "") and (name .. "-" .. realm) or name
+end
+
 function Identity:OnLogin()
+	Identity.NoteLogin(SK.DB.seenGuids, Identity.LoginKey(), Compat.PlayerGUID(), Compat.Now())
 	SK:RegisterEvent("GUILD_ROSTER_UPDATE", function()
 		SK:Debounce("roster", 2, function() Identity:ReadRoster() end)
 	end)

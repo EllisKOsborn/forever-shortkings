@@ -11,6 +11,12 @@ Launch readiness, after reviewing the GPT, Manus and Perplexity plans
   quest done but the amulet banked get an orange "!" and "Drakefire Amulet not
   in bags". Molten Core, Blackwing Lair and Naxxramas are hidden until they're
   announced. The raid picker shows raid sizes.
+- **`/sk debug` for launch day:** a "Live-client checks" block at the top
+  (interface number, whether your character's GUID stays the same between
+  logins, the addon-message sender format, whether the profession window
+  lists unlearned recipes, whether the calendar works, error count), and the
+  **last 10 Lua errors** caught in Short Kings code, so problems show up even
+  without an error addon. One failing part no longer stops the rest.
 
 ## v0.2.0 (unreleased, not yet tested in game)
 

@@ -7,7 +7,7 @@ local Reputation = SK:NewModule("Reputation")
 function Reputation.Read()
 	local ok, reps = pcall(SK.Compat.ReadReputations, SK.Data.FactionIDs())
 	if not ok then
-		SK:Debug("reputation read failed: %s", tostring(reps))
+		SK:RecordError("reputation read", reps)
 		return {}
 	end
 	return reps

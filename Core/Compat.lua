@@ -606,7 +606,7 @@ function Compat.HookItemTooltips(fn)
 		local id = data and clean(data.id)
 		if type(id) == "number" and tooltip and tooltip.AddLine then
 			local ok, err = pcall(fn, tooltip, id)
-			if not ok and SK.Debug then SK:Debug("tooltip error: %s", tostring(err)) end
+			if not ok and SK.RecordError then SK:RecordError("item tooltip", err) end
 		end
 	end)
 	return true
@@ -618,6 +618,20 @@ function Compat.ClassColor(classFile)
 	if not c and RAID_CLASS_COLORS and classFile then c = RAID_CLASS_COLORS[classFile] end
 	if c then return c.r, c.g, c.b end
 	return 0.8, 0.8, 0.8
+end
+
+---------------------------------------------------------------------------
+-- Calendar (read-only probe for /sk debug; the Raids tab comes in v0.3).
+-- Returns present, numGuildEvents (nil if the call isn't there or fails).
+---------------------------------------------------------------------------
+function Compat.CalendarStatus()
+	if type(C_Calendar) ~= "table" then return false, nil end
+	local n
+	if has("C_Calendar", "GetNumGuildEvents") then
+		local ok, v = pcall(C_Calendar.GetNumGuildEvents)
+		if ok then n = clean(v) end
+	end
+	return true, n
 end
 
 ---------------------------------------------------------------------------
@@ -642,6 +656,8 @@ Compat.PROBES = {
 	"C_Reputation.GetFactionDataByIndex", "C_Reputation.GetFactionDataByID", "GetFactionInfo",
 	"C_QuestLog.IsQuestFlaggedCompleted", "C_QuestLog.GetTitleForQuestID", "C_Item.GetItemCount",
 	"C_Calendar.GetNumDayEvents", "C_Calendar.EventSignUp", "C_Calendar.OpenEvent",
+	"C_Calendar.GetNumGuildEvents", "C_Calendar.GetGuildEventInfo", "C_Calendar.EventGetInvite",
+	"C_Calendar.AddEvent", "C_PartyInfo.InviteUnit", "C_PartyInfo.ConvertToRaid",
 	"C_Item.GetItemIconByID", "C_Item.GetItemInfoInstant", "C_Spell.GetSpellName", "C_Spell.GetSpellCooldown",
 	"C_GuildInfo.CanViewOfficerNote",
 	-- v0.2 Crafters and tooltips
