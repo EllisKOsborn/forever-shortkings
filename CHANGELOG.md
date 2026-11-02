@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.2.1 (unreleased, not yet tested in game)
+
+Launch readiness, after reviewing the GPT, Manus and Perplexity plans
+(`docs/PLAN-REVIEW.md`).
+
+- **Attunements match Forever's first raid wave** (Blizzard's raid overview):
+  Barrow Deeps and Hyjal Summit need **no attunement**; Onyxia's Lair needs
+  the Drakefire Amulet quest **and** the amulet in your bags. Members with the
+  quest done but the amulet banked get an orange "!" and "Drakefire Amulet not
+  in bags". Molten Core, Blackwing Lair and Naxxramas are hidden until they're
+  announced. The raid picker shows raid sizes.
+
 ## v0.2.0 (unreleased, not yet tested in game)
 
 - New **Crafters** tab: search an item or recipe name (3+ letters), see one

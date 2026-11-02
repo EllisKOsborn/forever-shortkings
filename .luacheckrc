@@ -43,5 +43,5 @@ read_globals = {
 	"GetNumTradeSkills", "GetTradeSkillInfo", "GetTradeSkillLine", "GetTradeSkillRecipeLink",
 	"GetTradeSkillItemLink", "GetNumFactions", "GetFactionInfo", "IsQuestFlaggedCompleted",
 	"GetItemIcon", "GetSpellInfo", "GetItemInfo", "GetItemQualityColor", "GetInventorySlotInfo",
-	"CanViewOfficerNote", "GetItemInfoInstant", "GetSpellCooldown",
+	"CanViewOfficerNote", "GetItemInfoInstant", "GetSpellCooldown", "GetItemCount",
 }

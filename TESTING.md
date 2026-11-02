@@ -135,8 +135,18 @@ the `/sk debug` text when something looks wrong.
 49. [ ] `/sk debug`, "== Crafters ==": the recipe and crafter counts look
         right, and "Item tooltip line: hooked=yes".
 
+## v0.2.1 additions (launch readiness)
+
+50. [ ] Raid picker lists Barrow Deeps (10), Hyjal Summit (20) and Onyxia's
+        Lair (40) only. Barrow and Hyjal say "No attunement needed for this raid."
+51. [ ] Onyxia: a character with the Drakefire Amulet in their bags shows
+        *yes*. Put it in the bank, `/sk scan`: still *yes* but with an orange
+        "!" and "Drakefire Amulet not in bags" in the tooltip.
+52. [ ] `/sk debug`, "== Attunement quests ==": the line "Onyxia's Lair item
+        16309" shows name="Drakefire Amulet" and resolves=yes.
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).
-- Attunement IDs are Classic IDs, and the new Forever raids are TODO.
+- Onyxia's quest ID is the Classic one (6502, Alliance). Horde characters count only via the amulet in their bags.
 - The title bar's ember animation comes in v0.4.

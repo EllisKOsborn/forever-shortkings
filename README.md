@@ -61,8 +61,9 @@
 - **Sort** by clicking any column. Online members come first.
 - **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name.
 - **Counter** at the top: characters, how many have data, and how many need an addon update.
-- **Raid picker** (*All raids*, Onyxia's Lair, Molten Core, Blackwing Lair, Barrow Deeps, Hyjal Summit, Naxxramas). Pick a raid to see who's attuned:
-  - an **Attuned** column: green tick *yes*, red cross *no*, grey *unknown* (no Short Kings data, gear hidden, or the raid's quests aren't known yet);
+- **Raid picker** (*All raids*, Barrow Deeps (10), Hyjal Summit (20), Onyxia's Lair (40), the raids in Forever's first wave). Pick a raid to see who's attuned:
+  - Barrow Deeps and Hyjal Summit need no attunement, so they just say so;
+  - for Onyxia, an **Attuned** column: green tick *yes* (quest done, or the Drakefire Amulet in their bags), red cross *no*, grey *unknown* (no Short Kings data or gear hidden); an orange **!** means the quest is done but the amulet isn't in their bags (you need it in your bags to enter);
   - filter buttons **All / Attuned / Not attuned / Unknown**;
   - a counter such as "23 attuned · 9 not · 6 unknown";
   - **Max level only** (on by default), where max level is the highest level in the guild;
@@ -101,7 +102,7 @@
   - **Talents**: points in each tree.
   - **Professions**: skill level, number of known recipes, or *not scanned yet*.
   - **Cooldowns** (transmutes, Mooncloth and the like): time left, or *ready*.
-  - **Attunements**: Onyxia, Molten Core, Blackwing Lair (*done* / *not done*), plus the new Forever raids, shown as unknown until their quests are confirmed.
+  - **Attunements** for the first raid wave: Onyxia's Lair (*done* / *not done*, plus a warning if the Drakefire Amulet isn't in their bags); Barrow Deeps and Hyjal Summit say *no attunement needed*.
   - **Reputations**: raid and crafting factions first, then every faction at Friendly or above.
 - **Privacy:** if someone hides their gear or recipes, it says *hidden by this player* instead.
 

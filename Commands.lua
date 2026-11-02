@@ -127,7 +127,14 @@ function Commands.BuildReport()
 			add("%s quest %d: done=%s, known to this client=%s (%s)", a.name, q, yesno(Compat.IsQuestDone(q)),
 				yesno(title ~= nil and title ~= ""), tostring(title))
 		end
-		if #a.quests == 0 then add("%s: TODO (no quest IDs yet)", a.name) end
+		if #a.quests == 0 then
+			add("%s: %s", a.name, a.status == "none" and "no attunement needed" or "TODO (no quest IDs yet)")
+		end
+		if a.item then
+			local itemName = safe(Compat.ItemName, a.item)
+			add("%s item %d: name=%q (resolves=%s), in bags=%s", a.name, a.item, tostring(itemName),
+				yesno(itemName ~= nil), tostring(safe(Compat.ItemCountInBags, a.item)))
+		end
 	end
 
 	add("")

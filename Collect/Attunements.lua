@@ -1,6 +1,9 @@
--- Attunements: read from the quest ID table in Data/Attunements.lua.
--- Result: { [key] = true | false }. Entries without quest IDs are left out
--- (shown as "unknown").
+-- Attunements: read from the table in Data/Attunements.lua.
+-- Result: { [key] = true | false, [key .. "_item"] = true | false }.
+--   key           the attunement quest is done (any of `quests`)
+--   key_item      the required item (e.g. the Drakefire Amulet) is in our bags
+-- Entries without quest IDs are left out (shown as "unknown"); the item flag
+-- is left out when the client can't count items.
 local _, SK = ...
 
 local Att = SK:NewModule("Attunements")
@@ -16,6 +19,10 @@ function Att.Read()
 				if r then done = true end
 			end
 			if known then out[a.key] = done end
+		end
+		if a.item then
+			local n = SK.Compat.ItemCountInBags(a.item)
+			if n ~= nil then out[a.key .. "_item"] = n > 0 end
 		end
 	end
 	return out

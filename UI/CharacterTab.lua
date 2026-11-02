@@ -278,14 +278,16 @@ function Char.DetailText(p, now, extra)
 			lines[#lines + 1] = "  " .. name .. "  " .. when
 		end
 	end
-	-- Attunements
+	-- Attunements (first raid wave only; see Data/Attunements.lua)
 	section(lines, "Attunements")
-	for _, a in ipairs(SK.Data.ATTUNEMENTS) do
-		local v = p.att and p.att[a.key]
+	for _, a in ipairs(SK.Data.ShownAttunements()) do
+		local state, note = SK.RosterTab.AttunementOf(p, a)
 		local mark
-		if v == true then mark = C("good") .. "done|r"
-		elseif v == false then mark = C("bad") .. "not done|r"
+		if state == "none" then mark = C("muted") .. "no attunement needed|r"
+		elseif state == "yes" then mark = C("good") .. "done|r"
+		elseif state == "no" then mark = C("bad") .. "not done|r"
 		else mark = C("muted") .. (a.status == "todo" and "unknown (TODO)" or "unknown") .. "|r" end
+		if note then mark = mark .. "  " .. C("ember") .. note .. "|r" end
 		lines[#lines + 1] = "  " .. a.name .. "  " .. mark
 	end
 	-- Reputation: highlight list first, then everything else they have.

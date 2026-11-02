@@ -42,7 +42,8 @@ describe("Collection", function()
 		assert.is_nil(p.reps[1118])
 		assert.is_true(p.att.mc)
 		assert.is_false(p.att.ony)
-		assert.is_nil(p.att.barrow) -- TODO entries are not guessed
+		assert.is_nil(p.att.barrow) -- no attunement needed: nothing recorded
+		assert.is_false(p.att.ony_item) -- no Drakefire Amulet in bags
 		assert.is_true(SK.DB.account[W.player.guid])
 		assert.equal("self", p.source)
 	end)

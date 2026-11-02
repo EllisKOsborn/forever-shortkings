@@ -144,6 +144,8 @@ function W.reset()
 	-- RequestLoadItemDataByID caches it and fires ITEM_DATA_LOAD_RESULT 0.2 s later.
 	W.itemNames, W.itemCached, W.itemQuality = {}, {}, {}
 	W.requestedItems = {}
+	W.bags = {}              -- [itemID] = count in bags
+	_G.C_Item.GetItemCount = function(id, includeBank) return (not includeBank and W.bags[id]) or 0 end
 	_G.C_Item.GetItemNameByID = function(id) return W.itemCached[id] and W.itemNames[id] or nil end
 	_G.C_Item.GetItemQualityByID = function(id) return W.itemCached[id] and (W.itemQuality[id] or 3) or nil end
 	_G.C_Item.GetItemQualityColor = function() return 0, 0.44, 0.87, "ff0070dd" end

@@ -425,6 +425,18 @@ function Compat.IsQuestDone(questID)
 	return nil
 end
 
+-- How many of an item are in our bags (bank excluded), or nil if the client
+-- can't tell. C_Item.GetItemCount(itemInfo, includeBank = false, ...) is in
+-- Forever's ItemDocumentation.
+function Compat.ItemCountInBags(itemID)
+	if has("C_Item", "GetItemCount") then
+		local ok, n = pcall(C_Item.GetItemCount, itemID, false)
+		if ok then return clean(n) end
+		return nil
+	end
+	if GetItemCount then return clean(GetItemCount(itemID)) end
+end
+
 -- Does this quest ID exist in this client's data? (nil = unknown yet)
 function Compat.QuestTitle(questID)
 	if has("C_QuestLog", "GetTitleForQuestID") then
@@ -628,7 +640,7 @@ Compat.PROBES = {
 	"C_TradeSkillUI.IsTradeSkillLinked", "C_TradeSkillUI.IsGuildTradeSkillsEnabled",
 	"GetNumTradeSkills", "GetTradeSkillInfo", "GetCraftInfo",
 	"C_Reputation.GetFactionDataByIndex", "C_Reputation.GetFactionDataByID", "GetFactionInfo",
-	"C_QuestLog.IsQuestFlaggedCompleted", "C_QuestLog.GetTitleForQuestID",
+	"C_QuestLog.IsQuestFlaggedCompleted", "C_QuestLog.GetTitleForQuestID", "C_Item.GetItemCount",
 	"C_Calendar.GetNumDayEvents", "C_Calendar.EventSignUp", "C_Calendar.OpenEvent",
 	"C_Item.GetItemIconByID", "C_Item.GetItemInfoInstant", "C_Spell.GetSpellName", "C_Spell.GetSpellCooldown",
 	"C_GuildInfo.CanViewOfficerNote",

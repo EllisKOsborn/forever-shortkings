@@ -129,14 +129,26 @@ function Roster.Raid(key)
 	end
 end
 
--- "yes", "no" or "unknown" for one profile and raid. Unknown covers: no
--- Short Kings data, gear/talents hidden, or the raid's quest IDs not known.
+-- State for one profile and raid, plus an optional note. Pure; tested.
+--   "none"    the raid needs no attunement
+--   "yes"     quest done, or the required item is in their bags
+--   "no"      quest not done and the item isn't in their bags
+--   "unknown" no Short Kings data, gear/talents hidden, quests not known yet,
+--             or a profile from a version that didn't record it
+-- The note says "amulet not in bags" when the quest is done but the item
+-- (e.g. the Drakefire Amulet) isn't in their bags.
 function Roster.AttunementOf(p, raid)
+	if raid and raid.status == "none" then return "none" end
 	if not raid or raid.status == "todo" or not raid.quests or #raid.quests == 0 then return "unknown" end
 	if not p or (p.hidden and p.hidden.gear) then return "unknown" end
-	local v = p.att and p.att[raid.key]
-	if v == true then return "yes" end
-	if v == false then return "no" end
+	local quest = p.att and p.att[raid.key]
+	local item = raid.item and p.att and p.att[raid.key .. "_item"]
+	if quest == true then
+		if item == false then return "yes", (raid.itemName or "item") .. " not in bags" end
+		return "yes"
+	end
+	if item == true then return "yes" end
+	if quest == false then return "no" end
 	return "unknown"
 end
 
@@ -155,7 +167,7 @@ end
 -- Returns rows, counts { yes, no, unknown } (before `filter`, after search
 -- and the max-level rule), maxLevel.
 function Roster.AttunementRows(guild, raidKey, filter, maxLevelOnly, search, now)
-	local counts = { yes = 0, no = 0, unknown = 0 }
+	local counts = { yes = 0, no = 0, unknown = 0, none = 0 }
 	local out = {}
 	local raid = Roster.Raid(raidKey)
 	if not guild or not raid then return out, counts, 0 end
@@ -172,7 +184,7 @@ function Roster.AttunementRows(guild, raidKey, filter, maxLevelOnly, search, now
 
 	for _, row in ipairs(Roster.Rows(guild, now, search, false)) do
 		if not maxLevelOnly or row.level >= maxLevel then
-			row.att = Roster.AttunementOf(SK.Profile:Get(row.guid, guild), raid)
+			row.att, row.attNote = Roster.AttunementOf(SK.Profile:Get(row.guid, guild), raid)
 			local g = groupOf[row.guid]
 			if g and #g.members > 1 and g.main ~= row.guid then
 				local mm = guild.members[g.main]
@@ -207,7 +219,7 @@ local COLUMNS = {
 	{ key = "data", title = "Data", width = 70, sort = byNum("updated") },
 }
 
-local ATT_RANK = { yes = 3, no = 2, unknown = 1 }
+local ATT_RANK = { yes = 3, no = 2, unknown = 1, none = 0 }
 
 -- While a raid is selected: Professions and Ver make room for Attuned.
 local ATT_COLUMNS = {
@@ -225,6 +237,7 @@ local ATT_TEXT = {
 	yes = "|A:UI-LFG-ReadyMark:12:12|a |cff7CD67Cyes|r",
 	no = "|A:UI-LFG-DeclineMark:12:12|a |cffE06060no|r",
 	unknown = "|A:UI-LFG-PendingMark:12:12|a |cffB89AAAunknown|r",
+	none = "|cffB89AAAnot needed|r",
 }
 Roster.ATT_TEXT = ATT_TEXT
 
@@ -261,7 +274,7 @@ local function setCell(fs, r, col)
 		elseif r.outdated then fs:SetText(C("ember") .. r.addon .. "|r")
 		else fs:SetText(C("muted") .. r.addon .. "|r") end
 	elseif k == "att" then
-		fs:SetText(ATT_TEXT[r.att or "unknown"])
+		fs:SetText(ATT_TEXT[r.att or "unknown"] .. (r.attNote and " |cffFF7A1A!|r" or ""))
 	elseif k == "data" then
 		if r.hasData then fs:SetText(Theme.Ago(r.updated, now))
 		else fs:SetText(C("muted") .. "no addon|r") end
@@ -282,6 +295,7 @@ local function tooltip(row, r)
 	if r.att then
 		local raid = Roster.Raid(SK.DB.settings.roster.raid)
 		GameTooltip:AddDoubleLine((raid and raid.name or "Raid") .. " attunement", ATT_TEXT[r.att], 1, 0.76, 0.29)
+		if r.attNote then GameTooltip:AddLine(r.attNote, 1, 0.48, 0.1) end
 	end
 	GameTooltip:AddLine(DOT[r.status] .. " " .. STATUS_TEXT[r.status], 0.85, 0.8, 0.82)
 	if r.spec then GameTooltip:AddLine((r.mainTree or "Talents") .. " " .. r.spec, 1, 1, 1) end
@@ -319,7 +333,9 @@ local FILTERS = {
 
 local function raidItems()
 	local items = { { value = "none", text = "All raids" } }
-	for _, a in ipairs(SK.Data.ATTUNEMENTS) do items[#items + 1] = { value = a.key, text = a.name } end
+	for _, a in ipairs(SK.Data.ShownAttunements()) do
+		items[#items + 1] = { value = a.key, text = a.name .. (a.size and (" (" .. a.size .. ")") or "") }
+	end
 	return items
 end
 
@@ -400,6 +416,7 @@ function Roster:Refresh()
 	local guild = SK.DBM:Guild()
 	local rs = SK.DB.settings.roster
 	local raid = rs.raid and Roster.Raid(rs.raid)
+	if raid and raid.hidden then raid = nil end -- not in the first raid wave
 	if rs.raid and not raid then rs.raid = nil end
 	self.raidMenu:Refresh()
 	self.groupCheck:SetShown(raid == nil)
@@ -408,17 +425,23 @@ function Roster:Refresh()
 	self.attList:SetShown(raid ~= nil)
 
 	if raid then
-		local rows, counts, maxLevel = Roster.AttunementRows(guild, raid.key, rs.attFilter, rs.maxLevelOnly,
-			self.filter, SK.Compat.Now())
-		for _, t in ipairs(self.filterTabs) do t:SetActive(t.value == (rs.attFilter or "all")) end
+		local noneNeeded = raid.status == "none"
+		local rows, counts, maxLevel = Roster.AttunementRows(guild, raid.key, noneNeeded and "all" or rs.attFilter,
+			rs.maxLevelOnly, self.filter, SK.Compat.Now())
+		for _, t in ipairs(self.filterTabs) do
+			t:SetActive(t.value == (rs.attFilter or "all"))
+			t:SetShown(not noneNeeded)
+		end
 		self.maxCheck:Refresh()
 		self.maxCheck.label:SetText(maxLevel > 0 and ("Max level only (" .. maxLevel .. ")") or "Max level only")
-		if raid.status == "todo" then
+		if noneNeeded then
+			self.attCount:SetText(Theme.Code("good") .. "No attunement needed for this raid.|r")
+		elseif raid.status == "todo" then
 			self.attCount:SetText(Theme.Code("flame") .. "Attunement quests for this raid aren't known yet.|r")
 		else
 			self.attCount:SetText(string.format("%d attuned · %d not · %d unknown", counts.yes, counts.no, counts.unknown))
 		end
-		self.count:SetText(string.format("%d characters", counts.yes + counts.no + counts.unknown))
+		self.count:SetText(string.format("%d characters", counts.yes + counts.no + counts.unknown + counts.none))
 		self.attList:SetItems(rows)
 		return
 	end
