@@ -135,7 +135,7 @@ describe("v0.2.2 Overview numbers", function()
 		assert.equal(1, o.profs[171].maxed)
 		assert.equal(1, o.profs[197].count)
 		assert.equal(0, o.profs[202].count)
-		assert.truthy(SK.OverviewTab.ProfessionText(o):find("Engineering  |cffE06060nobody", 1, true))
+		assert.truthy(SK.OverviewTab.ProfessionText(o):find("Engineering  |cffF57373nobody", 1, true))
 		assert.equal(2, o.recipes.total)
 		assert.equal(1, o.recipes.single) -- recipe 101: only Ann
 	end)

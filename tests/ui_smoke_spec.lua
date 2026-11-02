@@ -52,7 +52,7 @@ describe("UI smoke test", function()
 
 	it("character details list the first-wave raids", function()
 		local text = SK.CharacterTab.DetailText(SK.Profile:Own(), W.now)
-		assert.truthy(text:find("Barrow Deeps  |cffB89AAAno attunement needed", 1, true))
+		assert.truthy(text:find("Barrow Deeps  |cffAE93A3no attunement needed", 1, true))
 		assert.truthy(text:find("Onyxia's Lair", 1, true))
 		assert.is_nil(text:find("Molten Core", 1, true)) -- not in the first wave
 		assert.truthy(text:find("Argent Dawn", 1, true))

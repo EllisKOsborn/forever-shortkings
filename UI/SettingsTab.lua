@@ -44,6 +44,10 @@ function Settings:Build(page)
 	check("Show minimap button", function() return not s.minimap.hide end, function(v)
 		SK.Minimap:SetShown(v)
 	end)
+	check("Reduce motion (no header sparks or fades)", function() return s.reduceMotion end, function(v)
+		s.reduceMotion = v
+		SK:Fire("MOTION_CHANGED")
+	end)
 	check("Debug logging in chat", function() return s.debug end, function(v) s.debug = v end)
 
 	-- Window scale: a row of small buttons (works at every UI scale)

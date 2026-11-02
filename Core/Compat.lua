@@ -612,6 +612,25 @@ function Compat.HookItemTooltips(fn)
 	return true
 end
 
+---------------------------------------------------------------------------
+-- Pixel-exact lines (Blizzard_SharedXML/PixelUtil.lua and
+-- Texture:SetSnapToPixelGrid / SetTexelSnappingBias in the Forever UI
+-- source; NineSlice.lua uses the same pair). A 1 px hairline stays one
+-- physical pixel at any UI scale. Plain SetHeight/SetWidth otherwise.
+---------------------------------------------------------------------------
+function Compat.PixelHeight(region, h)
+	if PixelUtil and PixelUtil.SetHeight then PixelUtil.SetHeight(region, h, h) else region:SetHeight(h) end
+end
+
+function Compat.PixelWidth(region, w)
+	if PixelUtil and PixelUtil.SetWidth then PixelUtil.SetWidth(region, w, w) else region:SetWidth(w) end
+end
+
+function Compat.NoSnap(tex)
+	if tex.SetSnapToPixelGrid then tex:SetSnapToPixelGrid(false) end
+	if tex.SetTexelSnappingBias then tex:SetTexelSnappingBias(0) end
+end
+
 function Compat.ClassColor(classFile)
 	local c
 	if has("C_ClassColor", "GetClassColor") and classFile then c = C_ClassColor.GetClassColor(classFile) end

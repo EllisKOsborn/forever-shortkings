@@ -18,6 +18,7 @@ local DEFAULTS = {
 		roster = { raid = nil, attFilter = "all", maxLevelOnly = true }, -- Raid filter (v0.1.2)
 		craftTooltips = true,                     -- "Crafted by" lines on item tooltips (v0.2)
 		feed = true,                              -- record guild milestones for the Overview (v0.2.2)
+		reduceMotion = false,                     -- no header sparks or fades (v0.3 design refresh)
 	},
 	own = {},             -- [guid] = full profile of our own characters (never sent)
 	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns
