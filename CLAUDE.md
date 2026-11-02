@@ -138,6 +138,9 @@ Alts link only when **both** profiles list each other in `family`.
   See CHANGELOG.md. (`docs/prompts/next-v0.1.2-v0.2.md` is done.)
 - Roadmap and future plans: `PLAN.md` section 7. Background and reasoning:
   `docs/FEATURE-REVIEW.md`.
+- Proposed follow-up priorities from the Manus review: `docs/MANUS-PLAN.md`.
+  This is for review; it does not replace the existing roadmap or authorize
+  implementation without the user's direction.
 - **Next:** in-game testing (TESTING.md), then **v0.3 Raids** before raids
   open on 9 Dec: prompt `docs/prompts/next-v0.3-raids.md` (v0.3.0 read-only,
   v0.3.1 actions). After that, the Professions tab and B2–B6 (PLAN.md v0.2.x).
