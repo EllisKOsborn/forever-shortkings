@@ -387,7 +387,13 @@ is in [PLAN.md section 10](PLAN.md#10-once-forever-is-live-from-4-nov-2026).
 luacheck .    # lint
 busted        # unit tests: Lua 5.1, stubbed WoW API in tests/helpers/
 node docs/mockups/render.js [font.woff2]   # regenerate the README pictures
+node docs/mockups/render.js font.woff2 --page design-v2.html --out images/v2   # design proposal
+node docs/design/contrast.js               # contrast floors of the design tokens (CI runs it)
 ```
+
+**Design refresh (proposal):** [docs/DESIGN.md](docs/DESIGN.md) is the new
+design system, with mockups in `docs/mockups/design-v2.html` and pictures in
+`docs/images/v2/`. Not built yet; the pictures above show the current look.
 
 | Folder | What lives there |
 |---|---|
@@ -424,6 +430,10 @@ Libraries: Ace3 (AceComm, CallbackHandler, LibStub, ChatThrottleLib),
 [LibSerialize](https://github.com/rossnichols/LibSerialize) by Ross Nichols,
 [LibDeflate](https://github.com/SafeteeWoW/LibDeflate) by Haoqian He,
 LibDataBroker and LibDBIcon. Licences are listed in [Libs/README.md](Libs/README.md).
+The design refresh ([docs/DESIGN.md](docs/DESIGN.md)) takes its *ideas*
+(one accent colour, depth by tone, hairlines, contrast floors) from the design
+notes of [Polestar Guides](https://github.com/fitzforge/polestar), another
+Forever addon. Polestar is GPL-3.0; none of its code, art or text is used here.
 The README mockups use [Marcellus](https://fonts.google.com/specimen/Marcellus)
 (SIL OFL) as a stand-in for the game's font.
 

@@ -112,7 +112,9 @@ UI/       Theme (colours/gradients only), Widgets (Button, Tab, Check, Menu,
           DebugWindow, Minimap, Tooltip ("Crafted by" line)
 Libs/     vendored Ace3 bits, LibSerialize, LibDeflate; LDB + LibDBIcon via .pkgmeta
 tests/    busted specs; tests/helpers/wow.lua is the stubbed WoW API
-docs/     FEATURE-REVIEW.md, mockups/, images/, prompts/
+docs/     FEATURE-REVIEW.md, DESIGN.md (design system, proposal), design/
+          (tokens.json + contrast.js, run in CI), mockups/ (ui-mockup = current
+          UI, design-v2 = proposal), images/ (v2/ = proposal), prompts/
 ```
 
 ## Sync protocol (prefix `ShortKings`, protocol 1)
@@ -160,6 +162,11 @@ oversized outgoing messages are recorded as errors, not sent.
   `docs/PERPLEXITY-PLAN.md`) were reviewed on 2 Nov: verdicts in
   `docs/PLAN-REVIEW.md`, agreed order in **PLAN.md section 7** (the single
   roadmap). Don't build from the proposal files directly.
+- **Design refresh** (owner's prompt, 2 Nov): Phase A done 2 Nov
+  (`docs/DESIGN.md`, `docs/mockups/design-v2.html`, `docs/images/v2/`).
+  **Waiting for the owner:** shell A (rail) or B (top tabs), and yes/no to
+  generated glyph TGAs (would change the "no image files" rule). No Lua
+  changes until approved; the README still shows the current look.
 - **Next:** PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
   v0.2.3 fixes only, a first tagged release, and **v0.3 Raids** before 9 Dec
@@ -198,6 +205,8 @@ Full post-launch checklist: PLAN.md section 10.
 3. Install a test build, send the `/sk debug` text, and work through `TESTING.md`.
 4. Onyxia attunement: whether any Horde members exist (Horde chain differs), and
    in-game check that the Drakefire Amulet check works.
+5. Design refresh: pick shell A (rail) or B (top tabs) from
+   `docs/images/v2/shells.webp`, and allow or refuse generated glyph TGAs.
 
 ## Answers already given to the guild (stay consistent)
 - **Alts:** linked automatically once each alt has logged in with the addon

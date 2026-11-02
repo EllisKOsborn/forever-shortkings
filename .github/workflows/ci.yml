@@ -21,6 +21,8 @@ jobs:
         run: luacheck .
       - name: Unit tests (stubbed WoW API)
         run: busted
+      - name: Design contrast check (docs/DESIGN.md)
+        run: node docs/design/contrast.js
 
   # A test build you can download from the Actions tab (not published anywhere).
   test-build:

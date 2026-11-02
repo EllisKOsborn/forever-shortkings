@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased: design refresh, proposal only
+
+Nothing in the addon has changed yet. This is the design for a new look,
+waiting for the owner's approval:
+- `docs/DESIGN.md`: the Short Kings design system (plum and pink, one
+  accent, depth by tone, hairlines, spacing and type scales, contrast
+  floors, states, motion, icons), inspired by Polestar's design notes.
+- New mockups of every screen (`docs/mockups/design-v2.html`, pictures in
+  `docs/images/v2/`), with two window shells to choose from: a left rail or
+  top tabs.
+- `docs/design/tokens.json` and `docs/design/contrast.js`: the colour
+  tokens and a contrast check that CI now runs.
+- `docs/mockups/render.js` can render any mockup page into any folder.
+
 ## v0.2.2 (2 Nov 2026): first release, for launch day
 
 The first downloadable release, and the version the guild starts with when
