@@ -1,48 +1,55 @@
-// Renders docs/mockups/ui-mockup.html to WebP images in docs/images/.
-// Usage: node docs/mockups/render.js [path/to/marcellus.woff2]
-// The font is optional (falls back to Georgia). Marcellus (OFL) is a free
-// stand-in for the game's Friz Quadrata.
+// Renders the README pictures (docs/images/*.png) from the browser preview,
+// preview/index.html, which draws the windows from UI/Theme.lua's values.
+// Usage: node docs/mockups/render.js
+// Uses Playwright when installed (cloud sessions), otherwise Google Chrome's
+// headless mode. Pictures are 2x PNG. Run
+// `node tools/preview-tokens.js` first if Theme.lua changed.
 const path = require("path");
 const fs = require("fs");
-const os = require("os");
-const { chromium } = require("playwright");
+const { execFileSync } = require("child_process");
 
-const SHOTS = ["banner", "overview", "roster", "attunement", "character", "crafters", "settings"];
+const ROOT = path.join(__dirname, "..", "..");
+const OUT = path.join(ROOT, "docs", "images");
+const PAGE = "file://" + path.join(ROOT, "preview", "index.html");
+const W = 880, H = 580;
 
-(async () => {
-  const here = __dirname;
-  const out = path.join(here, "..", "images");
-  fs.mkdirSync(out, { recursive: true });
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "sk-mock-"));
-  fs.copyFileSync(path.join(here, "ui-mockup.html"), path.join(tmp, "ui-mockup.html"));
-  if (process.argv[2]) fs.copyFileSync(process.argv[2], path.join(tmp, "marcellus.woff2"));
+// name -> [query, width, height]
+const SHOTS = {
+  banner: ["shot=banner", 1200, 300],
+  overview: ["shot=1&screen=overview&data=full", W, H],
+  roster: ["shot=1&screen=roster&data=full", W, H],
+  attunement: ["shot=1&screen=roster&data=full&raid=ony", W, H],
+  character: ["shot=1&screen=character&data=full", W, H],
+  crafters: ["shot=1&screen=crafters&data=full", W, H],
+  settings: ["shot=1&screen=settings&data=full", W, H],
+};
 
+const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+
+async function withPlaywright(chromium) {
   const browser = await chromium.launch();
-
-  // 1. Screenshot each scene as PNG (2x for sharp text).
-  const page = await browser.newPage({ viewport: { width: 1200, height: 900 }, deviceScaleFactor: 2 });
-  await page.goto("file://" + path.join(tmp, "ui-mockup.html"));
-  await page.evaluate(() => document.fonts.ready);
-  for (const id of SHOTS) {
-    await (await page.$("#" + id)).screenshot({ path: path.join(tmp, id + ".png") });
-  }
-
-  // 2. Re-encode as WebP (about 5x smaller, colours stay exact enough).
-  // (PNG passed as a data: URL; file:// images would taint the canvas.)
-  const conv = await browser.newPage();
-  for (const id of SHOTS) {
-    const data = await conv.evaluate(async (src) => {
-      const img = new Image();
-      img.src = src;
-      await img.decode();
-      const c = document.createElement("canvas");
-      c.width = img.width;
-      c.height = img.height;
-      c.getContext("2d").drawImage(img, 0, 0);
-      return c.toDataURL("image/webp", 0.9).split(",")[1];
-    }, "data:image/png;base64," + fs.readFileSync(path.join(tmp, id + ".png")).toString("base64"));
-    fs.writeFileSync(path.join(out, id + ".webp"), Buffer.from(data, "base64"));
-    console.log("wrote", path.join(out, id + ".webp"));
+  for (const [name, [q, w, h]] of Object.entries(SHOTS)) {
+    const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
+    await page.goto(PAGE + "?" + q);
+    await page.evaluate(() => document.fonts.ready);
+    await page.screenshot({ path: path.join(OUT, name + ".png") });
+    console.log("wrote", name + ".png");
   }
   await browser.close();
-})();
+}
+
+function withChrome() {
+  for (const [name, [q, w, h]] of Object.entries(SHOTS)) {
+    const png = path.join(OUT, name + ".png");
+    execFileSync(CHROME, ["--headless=new", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=2",
+      `--window-size=${w},${h}`, "--virtual-time-budget=1500", `--screenshot=${png}`, PAGE + "?" + q], { stdio: "ignore" });
+    console.log("wrote", name + ".png");
+  }
+}
+
+fs.mkdirSync(OUT, { recursive: true });
+let chromium = null;
+try { ({ chromium } = require("playwright")); } catch (e) { /* not installed */ }
+if (chromium) withPlaywright(chromium);
+else if (fs.existsSync(CHROME)) withChrome();
+else { console.error("Needs Playwright or Google Chrome."); process.exit(1); }

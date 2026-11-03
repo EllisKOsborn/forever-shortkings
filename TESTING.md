@@ -184,6 +184,51 @@ the `/sk debug` text when something looks wrong.
         chat without sending it.
 66. [ ] Settings → untick **Record guild milestones**: no new lines appear.
 
+## Design refresh (branch `design/refresh`)
+
+Compare with `preview/index.html` (open it in a browser). Take a screenshot
+in game if anything looks different and send it.
+
+67. [ ] **Title font:** "SHORT KINGS", the tab names and the section headings
+        use the square-cut Chakra Petch font. If they look like the normal
+        game font instead, run `/sk debug`: the line "Display font (Chakra
+        Petch) loaded" says NO when the game refused the file.
+68. [ ] **Body font:** names and numbers use a narrow, plain font (Arial
+        Narrow). Names with accents (and Cyrillic/Korean/Chinese, if anyone
+        has them) show letters, not boxes or blanks.
+69. [ ] **Crest:** a gold crown over a pink beard at the top left, crisp,
+        with no black or white box around it.
+70. [ ] **Colours:** gold only on the active tab underline, the gold buttons
+        (*Ask for latest*, *Post to guild chat*) and big numbers; pink on
+        ticked boxes, picked filters and the selected crafter row; orange
+        only on warnings (old data, missing enchants, "need an update") and
+        the sync dot.
+71. [ ] **Open/close:** clicking the minimap button fades the window in (it
+        grows very slightly). The × button fades it out. `/sk` and Esc open
+        and close it at once, with no animation.
+72. [ ] **Tabs:** the gold underline glides to the tab you click; the page
+        brightens in quickly. Nothing waits for the animation.
+73. [ ] **Rows:** hovering a Roster row highlights it; clicking opens the
+        character. The Online/Level/etc. header shows a small arrow on the
+        sorted column, and clicking flips it.
+74. [ ] **Sync dot:** while sync is on, the orange dot next to "Sync on"
+        sends out a ring when a guildmate's data arrives (at most every 2 s).
+        In combat or an instance the dot turns grey and the text says why.
+75. [ ] **Reduce motion:** Settings → tick **Reduce motion**: open/close,
+        tabs, hover and the sync ring all happen instantly.
+76. [ ] **Combat:** open the window, change tabs and close it in combat: no
+        error, no "Interface action blocked" message.
+77. [ ] **UI scale:** set the game's UI scale to the smallest and largest,
+        and the addon's Window size to 70% and 130%: the window always fits
+        on screen and nothing overlaps.
+78. [ ] **Empty states:** a member with no data shows "No data synced yet"
+        with an explanation (not an empty panel); searching the Roster for
+        nonsense says "Nobody matches …"; Crafters with nothing picked
+        explains what the panel is for.
+79. [ ] **Other addons:** with ElvUI/Bagnon/DBM (or whatever you use) on,
+        the window sits above the default UI, menus open on top, and item
+        tooltips still show the "Short Kings:" crafter line.
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).

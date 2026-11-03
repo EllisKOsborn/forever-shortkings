@@ -63,10 +63,12 @@ function Settings:Build(page)
 	end, "Turns off the window, tab and sync animations.")
 	check("Debug logging in chat", function() return s.debug end, function(v) s.debug = v end)
 
-	-- Window size: a row of chips (works at every UI scale)
+	-- Window size: a label, then a row of chips under it (seven chips are
+	-- too wide to share a line with the label in this column).
 	local scaleLabel = Theme.Text(page, "body", "text")
 	scaleLabel:SetPoint("TOPLEFT", 0, -y - SP.xs)
 	scaleLabel:SetText("Window size")
+	y = y + S.specRow + SP.xs
 	self.scaleButtons = {}
 	local prev
 	for _, v in ipairs(SCALES) do
@@ -74,12 +76,12 @@ function Settings:Build(page)
 			SK.MainFrame:SetScale(v)
 			Settings:Refresh()
 		end)
-		if prev then b:SetPoint("LEFT", prev, "RIGHT", SP.xs, 0) else b:SetPoint("LEFT", scaleLabel, "RIGHT", SP.m, 0) end
+		if prev then b:SetPoint("LEFT", prev, "RIGHT", SP.xs, 0) else b:SetPoint("TOPLEFT", 0, -y) end
 		b.value = v
 		self.scaleButtons[#self.scaleButtons + 1] = b
 		prev = b
 	end
-	y = y + S.control + SP.l
+	y = y + S.control + SP.m
 
 	-- Actions, two per row
 	heading("Tools")

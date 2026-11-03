@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Short Kings Preview</title>
+<!-- A browser mock-up of the in-game windows. Colours, sizes, fonts and
+     motion timings come from theme.css / theme.js, generated from
+     UI/Theme.lua by tools/preview-tokens.js. All guild data is made up. -->
+<link rel="stylesheet" href="theme.css">
+<script src="theme.js"></script>
+<style>
+  /* ---------- preview chrome (not part of the addon) ---------- */
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #2c2f33; color: #e8e8e8; font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .chrome { position: sticky; top: 0; z-index: 50; background: #1d1f22; border-bottom: 1px solid #3a3d42; padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; }
+  .chrome h1 { font-size: 14px; margin: 0 8px 0 0; font-weight: 600; }
+  .group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .group > span { color: #9aa0a6; font-size: 12px; }
+  .seg { display: inline-flex; background: #2c2f33; border-radius: 6px; padding: 2px; }
+  .seg button { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 4px; color: #c8ccd0; font-size: 12px; }
+  .seg button[aria-pressed="true"] { background: #e8e8e8; color: #111; }
+  .seg button:focus-visible, .pbtn:focus-visible { outline: 2px solid #8ab4f8; outline-offset: 1px; }
+  .pbtn { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 6px; background: #2c2f33; color: #c8ccd0; font-size: 12px; }
+  .pbtn:hover { background: #3a3d42; }
+  label.pchk { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: #c8ccd0; cursor: pointer; }
+  .stage { padding: 24px 16px 48px; display: flex; justify-content: center; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+  .note { max-width: 1100px; margin: 0 auto; padding: 0 16px 32px; color: #9aa0a6; font-size: 12px; }
+  .note code { color: #c8ccd0; }
+  .scaler { transform-origin: top center; }
+  .pane { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .pane > .cap { color: #9aa0a6; font-size: 12px; }
+  body.shot { background: #000; } body.shot .chrome, body.shot .note { display: none; } body.shot .stage { padding: 0; display: block; }
+  body.shot .win { border: 0; }
+  .bannerArt { display: none; }
+  body.banner .stage { display: none; } body.banner .bannerArt { display: flex; }
+  .bannerArt { width: 1200px; height: 300px; background: #000; align-items: center; justify-content: center; gap: 40px; }
+  .bannerArt i { width: 160px; height: 160px; background: var(--tex-crest) center/contain no-repeat; }
+  .bannerArt b { display: block; font: 600 88px/1 "Chakra Petch SK", sans-serif; color: #fff; text-transform: uppercase; }
+  .bannerArt span { display: block; margin-top: 14px; font: 28px "Arial Narrow", Arial, sans-serif; color: var(--dim); }
+  .bannerArt em { display: block; width: 120px; height: 3px; background: var(--gold); margin-top: 22px; }
+  .before img { width: 880px; max-width: calc(100vw - 32px); display: block; border: 1px solid #3a3d42; }
+
+  /* ---------- the addon window (mirrors the Lua layout) ---------- */
+  .win { --x: 0; position: relative; width: var(--sz-windowW); height: var(--sz-windowH); background: var(--void);
+    border: 1px solid var(--line); color: var(--text); font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+    font-stretch: condensed; font-size: var(--fs-body); text-shadow: 1px 1px 0 var(--shadow); user-select: none; overflow: hidden;
+    transform-origin: center; }
+  .win.anim-in { animation: winIn var(--mo-open) cubic-bezier(.5, 1, .89, 1) both; }
+  .win.anim-out { animation: winOut var(--mo-close) cubic-bezier(.5, 1, .89, 1) both; }
+  @keyframes winIn { from { opacity: 0; transform: scale(var(--mo-openScale)); } to { opacity: 1; transform: none; } }
+  @keyframes winOut { from { opacity: 1; } to { opacity: 0; } }
+  .reduce .win, .reduce .win * { animation: none !important; transition: none !important; }
+  .display { font-family: "Chakra Petch SK", sans-serif; font-weight: 600; font-stretch: normal; text-transform: uppercase; letter-spacing: 0; }
+  .dim { color: var(--dim); } .faint { color: var(--faint); } .gold { color: var(--gold); } .beard { color: var(--beard); }
+  .spark { color: var(--spark); } .good { color: var(--good); } .bad { color: var(--bad); }
+  .ell { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .titlebar { position: absolute; left: 0; right: 0; top: 0; height: var(--sz-titleBar); }
+  .crest { position: absolute; left: 15px; top: 11px; width: var(--sz-crest); height: var(--sz-crest); background: var(--tex-crest) center/contain no-repeat; image-rendering: auto; }
+  .brand { position: absolute; left: 57px; top: 9px; font-size: 20px; line-height: 20px; }
+  .tagline { position: absolute; left: 57px; top: 31px; font-size: var(--fs-small); color: var(--dim); }
+  .status { position: absolute; right: 48px; top: 14px; height: 24px; width: 260px; display: flex; justify-content: flex-end; align-items: center; gap: var(--sp-s); font-size: var(--fs-small); color: var(--dim); }
+  .status .text { max-width: 240px; }
+  .sdot { position: relative; width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--spark); }
+  .sdot.paused { background: var(--faint); }
+  .sdot .ring { position: absolute; left: -4px; top: -4px; width: 16px; height: 16px; border: 2px solid var(--spark); border-radius: 50%; opacity: 0; }
+  .sdot .ring.go { animation: pulse var(--mo-pulse) cubic-bezier(.5, 1, .89, 1); }
+  @keyframes pulse { from { opacity: .9; transform: scale(.6); } to { opacity: 0; transform: scale(1.6); } }
+  .close { position: absolute; right: 12px; top: 14px; width: 24px; height: 24px; display: grid; place-items: center; cursor: pointer; }
+  .close i { width: 12px; height: 12px; background: var(--dim); -webkit-mask: var(--tex-close) center/contain no-repeat; mask: var(--tex-close) center/contain no-repeat; }
+  .close:hover { background: var(--raised); } .close:hover i { background: var(--text); } .close:active { background: var(--pressed); }
+
+  .tabbar { position: absolute; left: 0; right: 0; top: var(--sz-titleBar); height: var(--sz-tabBar); border-bottom: 1px solid var(--line); display: flex; }
+  .tab { padding: 0 var(--sp-l); height: 100%; display: flex; align-items: center; font-size: 13px; color: var(--dim); cursor: pointer; }
+  .tab:hover { color: var(--text); } .tab.on { color: var(--text); }
+  .underline { position: absolute; bottom: -1px; height: var(--sz-underline); background: var(--gold); left: 0; width: 0; }
+
+  .content { position: absolute; left: var(--sp-l); right: var(--sp-l); top: calc(var(--sz-titleBar) + var(--sz-tabBar) + var(--sp-l)); bottom: var(--sp-l); }
+  .page.reveal { animation: reveal var(--mo-page) cubic-bezier(.5, 1, .89, 1); }
+  @keyframes reveal { from { opacity: .4; } to { opacity: 1; } }
+  .abs { position: absolute; }
+
+  /* controls */
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: var(--sz-control); padding: 0 var(--sp-l); border: 1px solid var(--lineStrong);
+    color: var(--text); cursor: pointer; white-space: nowrap; }
+  .btn:hover { background: var(--raised); border-color: var(--dim); } .btn:active { background: var(--pressed); padding-top: 2px; }
+  .btn.primary { background: var(--gold); color: var(--onGold); border-color: transparent; text-shadow: none; }
+  .btn.primary:hover { background: var(--goldLit); } .btn.primary:active { background: var(--goldDeep); }
+  .btn.quiet { border-color: transparent; color: var(--dim); font-size: var(--fs-small); padding: 0 var(--sp-s); }
+  .btn.quiet:hover { background: none; color: var(--gold); }
+  .btn.small { height: var(--sz-controlSmall); padding: 0 var(--sp-s); }
+  .btn.disabled { color: var(--faint); border-color: var(--line); cursor: default; background: none; }
+  .chip { display: inline-flex; align-items: center; height: 22px; padding: 0 var(--sp-m); border: 1px solid var(--line); color: var(--dim); font-size: var(--fs-small); cursor: pointer; }
+  .chip:hover { background: var(--raised); border-color: var(--lineStrong); color: var(--text); }
+  .chip.on { background: var(--beard-selected); border-color: var(--beard); color: var(--text); }
+  .check { display: inline-flex; align-items: center; gap: var(--sp-s); cursor: pointer; white-space: nowrap; }
+  .check b { width: 16px; height: 16px; border: 1px solid var(--lineStrong); background: var(--surface); position: relative; flex: none; }
+  .check:hover b { border-color: var(--dim); }
+  .check.on b::after { content: ""; position: absolute; inset: 2px; background: var(--beard); }
+  .search { position: relative; height: var(--sz-control); border: 1px solid var(--lineStrong); background: var(--surface); }
+  .search:focus-within { border-color: var(--gold); }
+  .search input { all: unset; position: absolute; inset: 0; padding: 0 24px 0 var(--sp-s); color: var(--text); font: inherit; }
+  .search input::placeholder { color: var(--dim); }
+  .menu:not(.abs) { position: relative; }
+  .menu .btn { justify-content: space-between; padding: 0 var(--sp-s); width: 100%; }
+  .menu .arrow { width: 8px; height: 8px; background: var(--dim); transform: scaleY(-1); -webkit-mask: var(--tex-arrow) center/contain no-repeat; mask: var(--tex-arrow) center/contain no-repeat; }
+  .pop { position: absolute; left: 0; top: calc(100% + 2px); width: 100%; background: var(--surface); border: 1px solid var(--lineStrong); z-index: 20; transform-origin: top; animation: popIn var(--mo-page) cubic-bezier(.5, 1, .89, 1); }
+  @keyframes popIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+  .pop div { height: var(--sz-row); line-height: var(--sz-row); padding: 0 var(--sp-s); cursor: pointer; }
+  .pop div:hover { background: var(--raised); } .pop div.cur { color: var(--beard); }
+
+  /* list */
+  .list { position: absolute; }
+  .lhead { height: var(--sz-header); display: flex; border-bottom: 1px solid var(--line); margin-right: 12px; }
+  .lhead span { padding: 0 var(--sp-s); line-height: var(--sz-header); font-size: var(--fs-small); color: var(--dim); cursor: pointer; display: flex; gap: 4px; align-items: center; }
+  .lhead span.r { justify-content: flex-end; }
+  .lhead span:hover, .lhead span.sorted { color: var(--text); }
+  .lhead .sarrow { width: 8px; height: 8px; background: var(--text); -webkit-mask: var(--tex-arrow) center/contain no-repeat; mask: var(--tex-arrow) center/contain no-repeat; }
+  .lhead .sarrow.down { transform: scaleY(-1); }
+  .lbody { position: absolute; top: var(--sz-header); left: 0; right: 0; bottom: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--lineStrong) transparent; }
+  .lbody::-webkit-scrollbar { width: 12px; } .lbody::-webkit-scrollbar-thumb { background: var(--lineStrong); border: 4px solid var(--void); border-width: 0 4px; }
+  .row { height: var(--sz-row); display: flex; align-items: center; border-bottom: 1px solid var(--rule); position: relative; margin-right: 0; }
+  .row::before { content: ""; position: absolute; inset: 0; background: var(--raised); opacity: 0; transition: opacity 0s; z-index: 0; }
+  .row.click { cursor: pointer; } .row.click:hover::before { opacity: 1; transition: opacity var(--mo-hover) cubic-bezier(.5, 1, .89, 1); }
+  .row.sel { background: var(--beard-selected); }
+  .row > * { position: relative; z-index: 1; }
+  .cell { padding: 0 var(--sp-s); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: none; }
+  .cell.r { text-align: right; }
+  .msg { padding: var(--sp-m) var(--sp-s); color: var(--dim); max-width: 520px; }
+  .skel { height: var(--sz-row); border-bottom: 1px solid var(--rule); display: flex; align-items: center; padding-left: var(--sp-s); }
+  .skel i { height: 8px; background: var(--raised); display: block; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 0; }
+
+  /* blocks */
+  .block { position: absolute; }
+  .bhead { height: 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); margin-bottom: var(--sp-s); }
+  .bhead .h { font-size: 13px; }
+  .bhead .btn { height: 20px; }
+  .kv { height: var(--sz-specRow); display: flex; justify-content: space-between; gap: var(--sp-s); }
+  .kv .l { color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .kv .l.t { color: var(--text); }
+  .kv .v { white-space: nowrap; flex: none; text-align: right; }
+  .kv.in .l { padding-left: var(--sp-m); }
+  .sent { font-size: var(--fs-small); color: var(--dim); padding: 0 0 var(--sp-xs); line-height: 1.3; }
+  .sent.in { padding-left: var(--sp-m); }
+  .sub { font-size: var(--fs-small); color: var(--dim); padding-top: var(--sp-xs); height: 22px; }
+  .fig { display: flex; align-items: baseline; gap: var(--sp-s); height: 32px; }
+  .fig b { font-size: var(--fs-figure); line-height: 24px; color: var(--gold); }
+  .fig span { font-size: var(--fs-small); color: var(--dim); }
+  .sheet { position: absolute; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--lineStrong) transparent; padding-right: 12px; }
+  .sheet .block { position: static; margin-bottom: var(--sp-xl); }
+
+  /* character */
+  .doll { position: absolute; left: 0; top: 96px; bottom: 0; width: 250px; background: var(--surface); border: 1px solid var(--line); }
+  .slot { position: absolute; width: var(--sz-slot); height: var(--sz-slot); background: var(--pressed); border: 2px solid var(--line); cursor: pointer; }
+  .slot::after { content: ""; position: absolute; inset: 0; }
+  .slot:hover::after { background: rgba(245, 245, 245, .12); }
+  .slot .ico { position: absolute; inset: 0; display: grid; place-items: center; font-size: 11px; color: var(--dim); }
+  .slot.empty .ico { opacity: .35; }
+  .slot .warn { position: absolute; right: -5px; top: -5px; width: 14px; height: 14px; border-radius: 50%; background: var(--spark); color: var(--onGold); font-size: 11px; line-height: 14px; text-align: center; text-shadow: none; font-weight: 700; }
+
+  .side { position: absolute; background: var(--surface); border: 1px solid var(--line); }
+  .copywin { position: absolute; left: 50%; top: 50%; width: 640px; height: 460px; transform: translate(-50%, -50%); background: var(--void); border: 1px solid var(--line); z-index: 30; }
+  .copywin pre { position: absolute; left: 16px; right: 16px; top: 56px; bottom: 56px; margin: 0; padding: 8px; background: var(--surface); font: 12px/1.4 "Arial Narrow", Arial, sans-serif; color: var(--text); overflow: auto; white-space: pre; user-select: text; }
+  .tip { position: fixed; z-index: 100; pointer-events: none; background: rgba(8, 10, 22, .94); border: 1px solid #5d6a7a; border-radius: 4px; padding: 6px 9px; font: 13px/1.35 "Arial Narrow", Arial, sans-serif; color: #fff; max-width: 300px; display: none; }
+  .tip .dl { display: flex; justify-content: space-between; gap: 16px; }
+</style>
+</head>
+<body>
+<div class="chrome" role="toolbar" aria-label="Preview controls">
+  <h1>Short Kings · design preview</h1>
+  <div class="group"><span>View</span><div class="seg" id="segView"></div></div>
+  <div class="group"><span>Screen</span><div class="seg" id="segScreen"></div></div>
+  <div class="group"><span>Data</span><div class="seg" id="segData"></div></div>
+  <div class="group"><span>Window size</span><div class="seg" id="segScale"></div></div>
+  <div class="group">
+    <button class="pbtn" id="btnToggle">Close window</button>
+    <button class="pbtn" id="btnPulse">Sync heard something</button>
+    <label class="pchk"><input type="checkbox" id="chkReduce"> Reduce motion</label>
+  </div>
+</div>
+<div class="stage" id="stage"></div>
+<div class="bannerArt" aria-hidden="true"><i></i><div><b>Short Kings</b><span>Small in stature. Big in loot.</span><em></em></div></div>
+<p class="note">Everything in the window uses the addon's own values: colours, sizes, spacing and motion timings are generated from
+  <code>UI/Theme.lua</code> (<code>node tools/preview-tokens.js</code>), and the title font is the bundled Chakra Petch. Item icons are game files,
+  so gear slots show the slot name instead. Tooltips are the game's own (approximated here). All names and numbers are made up.
+  "Before" pictures are the old mock-ups from <code>docs/images/</code>.</p>
+<div class="tip" id="tip"></div>
+
+<script>
+"use strict";
+const T = window.SK_THEME;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const plural = (n, one, many) => n + " " + (n === 1 ? one : (many || one + "s"));
+
+// ---------------------------------------------------------------- data
+const CLASS = { WARRIOR: "#C69B6D", PALADIN: "#F48CBA", HUNTER: "#AAD372", ROGUE: "#FFF468", PRIEST: "#FFFFFF",
+  MAGE: "#3FC7EB", WARLOCK: "#8788EE", DRUID: "#FF7C0A" };
+const SPEC = { WARRIOR: ["Arms", "Fury", "Protection"], PALADIN: ["Holy", "Protection", "Retribution"], HUNTER: ["Beast Mastery", "Marksmanship", "Survival"],
+  ROGUE: ["Assassination", "Combat", "Subtlety"], PRIEST: ["Discipline", "Holy", "Shadow"], MAGE: ["Arcane", "Fire", "Frost"],
+  WARLOCK: ["Affliction", "Demonology", "Destruction"], DRUID: ["Balance", "Feral", "Restoration"] };
+const PROFS = [["Alchemy", "Alch"], ["Blacksmithing", "BS"], ["Enchanting", "Ench"], ["Engineering", "Eng"], ["Leatherworking", "LW"],
+  ["Tailoring", "Tail"], ["Cooking", "Cook"], ["First Aid", "FA"]];
+const GATHER = [["Herbalism", "Herb"], ["Mining", "Mine"], ["Skinning", "Skin"], ["Fishing", "Fish"]];
+const RANKS = ["Guild Master", "Officer", "Raider", "Member", "Initiate", "Alt"];
+const NAMES = ["Pip", "Fizzwick", "Brambletoe", "Gimbleflax", "Nixa", "Tinkerbolt", "Copperpot", "Wobblegear", "Dorna", "Thalgrim", "Elowen",
+  "Merrin", "Sprocket", "Quillon", "Bixie", "Grumbold", "Haldra", "Kettlewhit", "Lunabelle", "Mossbeard", "Nettie", "Oswin", "Pockets",
+  "Rivetta", "Stoutmug", "Tibbles", "Umberly", "Vexley", "Whirligig", "Yarrow", "Zappo", "Aldric", "Brisa", "Cogsworth", "Dimbly",
+  "Emberly", "Fennick", "Gizmo", "Hobnail", "Ingot", "Jinks", "Kazzle", "Lodestar", "Maebry", "Nubbins", "Ottoline", "Pinchwhistle",
+  "Rumbleton", "Sassafras", "Thimble", "Ulfric", "Wizzlesprock"];
+// The awkward ones (break-ui): longest realistic two-part names, other alphabets, one letter, wide glyphs.
+const WORST_NAMES = ["Wwwwmmmmwwww Stormhammerson", "Пётрвеликий Медвежий", "김철수전사", "暗夜精灵猎人", "Ælfgiföu Ðorvaldsdóttir", "X",
+  "Bartholomew Fizzlebang", "Mmmmwwwwmmmm", "Óðinsdóttir Hrafnkelsdóttir"];
+
+function rng(seed) { return () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296; }
+
+function makeGuild(kind) {
+  if (kind === "empty") return { name: null, members: [] };
+  const r = rng(kind === "worst" ? 99 : 7);
+  const count = kind === "worst" ? 150 : NAMES.length;
+  const classes = Object.keys(CLASS);
+  const members = [];
+  for (let i = 0; i < count; i++) {
+    const cls = classes[Math.floor(r() * classes.length)];
+    let name = NAMES[i % NAMES.length] + (i >= NAMES.length ? String.fromCharCode(97 + (i % 26)) : "");
+    if (kind === "worst" && i % 7 === 1) name = WORST_NAMES[(i / 7 | 0) % WORST_NAMES.length];
+    const level = r() < 0.62 ? 60 : 20 + Math.floor(r() * 40);
+    const hasData = i === 0 || r() < (kind === "worst" ? 0.5 : 0.78);
+    const online = i === 0 || r() < 0.24;
+    const p1 = PROFS[Math.floor(r() * 6)], p2 = r() < 0.5 ? GATHER[Math.floor(r() * 4)] : PROFS[Math.floor(r() * 8)];
+    const profs = hasData ? [[p1[0], p1[1], level === 60 ? (r() < .5 ? 300 : 260 + Math.floor(r() * 40)) : level * 4], [p2[0], p2[1], Math.min(300, level * 5)]] : [];
+    members.push({
+      i, name, cls, level, online, hasData, self: i === 0,
+      rank: kind === "worst" && i === 3 ? "Keeper of Lore" : RANKS[i === 0 ? 3 : Math.min(5, Math.floor(r() * 6))],
+      spec: hasData ? SPEC[cls][Math.floor(r() * 3)] : null, specPts: hasData ? [31, 20, 0].map((x) => x) : null,
+      ilvl: hasData && level === 60 ? 58 + Math.floor(r() * 18) : hasData ? level - 2 : null,
+      addon: hasData ? (r() < 0.1 ? "0.2.1" : "0.2.3") : null,
+      updatedDays: hasData ? (r() < 0.12 ? 8 + Math.floor(r() * 12) : 0) : null,
+      updatedHours: Math.floor(r() * 20),
+      seenHours: online ? 0 : 1 + Math.floor(r() * 140),
+      addonOnline: online && hasData && r() < 0.8,
+      profs, att: level === 60 && hasData ? (r() < 0.45 ? "yes" : r() < 0.7 ? "no" : "unknown") : (level === 60 ? "unknown" : "unknown"),
+      amulet: r() < 0.85, alts: r() < 0.12 ? 1 + Math.floor(r() * 2) : 0,
+      note: kind === "worst" && i === 5 ? "Ask before borrowing my mount!!" : "",
+    });
+    if (i === 0) Object.assign(members[0], { addon: "0.2.3", updatedDays: 0, updatedHours: 0, level: 60, ilvl: 71, cls: "MAGE" });
+  }
+  return { name: kind === "worst" ? "Short Kings of Ironforge" : "Short Kings", members };
+}
+
+const RAIDS = [{ name: "Barrow Deeps", size: 10, need: false }, { name: "Hyjal Summit", size: 20, need: false }, { name: "Onyxia's Lair", size: 40, need: true }];
+const RECIPES = [
+  { name: "Arcanite Bar", q: "#1eff00", prof: "Alchemy", crafters: [["Brambletoe", "MAGE", 300, true], ["Copperpot", "PRIEST", 300, false], ["Dorna", "WARRIOR", 285, false, "alt of Thalgrim"]] },
+  { name: "Arcanite Reaper", q: "#a335ee", prof: "Blacksmithing", crafters: [["Thalgrim", "WARRIOR", 300, true]] },
+  { name: "Arcanite Rod", q: "#1eff00", prof: "Blacksmithing", crafters: [["Thalgrim", "WARRIOR", 300, true], ["Grumbold", "PALADIN", 300, false]] },
+  { name: "Arcanite Skeleton Key", q: "#1eff00", prof: "Blacksmithing", crafters: [["Grumbold", "PALADIN", 300, false]] },
+  { name: "Transmute: Arcanite", q: "#ffffff", prof: "Alchemy", crafters: [["Brambletoe", "MAGE", 300, true], ["Copperpot", "PRIEST", 300, false]] },
+];
+const WORST_RECIPE = { name: "Thunderfury, Blessed Blade of the Windseeker (Heroic Replica of the Lost Ages)", q: "#ff8000", prof: "Blacksmithing",
+  crafters: Array.from({ length: 23 }, (_, i) => [i % 3 === 0 ? WORST_NAMES[i % WORST_NAMES.length] : NAMES[i + 3], Object.keys(CLASS)[i % 8], 300 - i, i % 4 === 0]) };
+const GEAR = { 1: ["Netherwind Crown", "#a335ee"], 2: ["Choker of Enlightenment", "#a335ee"], 3: ["Netherwind Mantle", "#a335ee"], 15: ["Cloak of the Shrouded Mists", "#a335ee"],
+  5: ["Robe of Volatile Power", "#a335ee"], 4: null, 19: ["Short Kings Tabard", "#ffffff"], 9: ["Mana Igniting Cord", "#a335ee"], 10: ["Felheart Gloves", "#a335ee"],
+  6: ["Netherwind Belt", "#a335ee"], 7: ["Netherwind Pants", "#a335ee"], 8: ["Boots of the Shadow Flame", "#a335ee", true], 11: ["Ring of Spell Power", "#a335ee"],
+  12: ["Band of Forced Concentration", "#a335ee"], 13: ["Talisman of Ephemeral Power", "#a335ee"], 14: ["Mind Quickening Gem", "#a335ee"],
+  16: ["Azuresong Mageblade", "#a335ee", true], 17: ["Fire Ruby", "#0070dd"], 18: ["Star of Mystaria", "#a335ee"] };
+const SLOT = { 1: "Head", 2: "Neck", 3: "Shoulder", 15: "Back", 5: "Chest", 4: "Shirt", 19: "Tabard", 9: "Wrist", 10: "Hands", 6: "Waist", 7: "Legs",
+  8: "Feet", 11: "Finger", 12: "Finger", 13: "Trinket", 14: "Trinket", 16: "Main Hand", 17: "Off Hand", 18: "Ranged" };
+
+// ---------------------------------------------------------------- state
+const S = { view: "after", screen: "overview", data: "full", scale: 1, open: true, reduce: false, sort: { key: "seen", desc: false },
+  search: "", raid: "none", attFilter: "all", groupAlts: true, crafterQuery: "arcanite", recipe: 0, charIdx: 1, menuOpen: false,
+  copy: false, checks: { sync: true, gear: true, recipes: true, tips: true, feed: true, minimap: true, reduce: false, debug: false } };
+let G = makeGuild("full");
+
+// ---------------------------------------------------------------- helpers
+const cls = (m) => `<span style="color:${CLASS[m.cls]}">${esc(m.name)}</span>`;
+const dot = (c) => `<i class="dot" style="background:var(--${c})"></i>`;
+const DASH = `<span class="faint">-</span>`;
+const ago = (h) => h < 1 ? "now" : h < 24 ? h + "h" : Math.floor(h / 24) + "d";
+const status = (m) => m.online ? (m.addonOnline || m.self ? "addon" : "online") : "offline";
+function kvRows(rows) {
+  return rows.map((r) => {
+    if (r.figure) return `<div class="fig"><b class="display">${r.figure}</b><span>${esc(r.caption)}</span></div>`;
+    if (r.sub) return `<div class="sub">${esc(r.sub)}</div>`;
+    if (r.text) return `<div class="sent ${r.indent ? "in" : ""} ${r.tone || ""}">${r.html ? r.text : esc(r.text)}</div>`;
+    return `<div class="kv ${r.indent ? "in" : ""}"><span class="l ${r.lt ? "t" : ""}">${r.lhtml ? r.label : esc(r.label)}</span><span class="v ${r.tone || ""}">${r.value === undefined ? DASH : r.value}</span></div>`;
+  }).join("");
+}
+function block(title, rows, action, style) {
+  return `<div class="block" style="${style || ""}"><div class="bhead"><span class="h display">${esc(title)}</span>${action ? `<span class="btn quiet" data-go="${action[1]}">${esc(action[0])}</span>` : ""}</div>${kvRows(rows)}</div>`;
+}
+function list(cols, items, cell, opts = {}) {
+  const head = opts.header === false ? "" : `<div class="lhead">${cols.map((c) => {
+    const sorted = opts.sort && opts.sort.key === c.key;
+    const arrow = sorted ? `<i class="sarrow ${opts.sort.desc ? "down" : ""}"></i>` : "";
+    return `<span class="${c.r ? "r" : ""} ${sorted ? "sorted" : ""}" data-sort="${c.key}" style="width:${c.w}px">${c.r ? arrow + esc(c.t) : esc(c.t) + arrow}</span>`;
+  }).join("")}</div>`;
+  let body;
+  if (opts.loading) body = Array.from({ length: 6 }, (_, i) => `<div class="skel"><i style="width:${120 + (i + 1) * 37 % 90}px"></i></div>`).join("");
+  else if (!items.length) body = `<div class="msg">${esc(opts.empty || "")}</div>`;
+  else body = items.map((it, idx) => `<div class="row ${opts.click ? "click" : ""} ${opts.sel && opts.sel(it) ? "sel" : ""}" data-idx="${idx}" ${opts.rowAttr ? opts.rowAttr(it) : ""}>${cols.map((c) =>
+    `<span class="cell ${c.r ? "r" : ""}" style="width:${c.w}px">${cell(it, c)}</span>`).join("")}</div>`).join("");
+  return `<div class="list" style="${opts.style}">${head}<div class="lbody" style="top:${opts.header === false ? 0 : "var(--sz-header)"}">${body}</div></div>`;
+}
+const btn = (t, kind, attr) => `<span class="btn ${kind || ""}" ${attr || ""}>${esc(t)}</span>`;
+const check = (key, label, style) => `<span class="check ${S.checks[key] ? "on" : ""}" data-check="${key}" style="${style || ""}"><b></b>${esc(label)}</span>`;
+
+// ---------------------------------------------------------------- overview
+function overview() {
+  const ms = G.members, d = S.data;
+  const live = ms.filter(() => true);
+  const online = live.filter((m) => m.online).length;
+  const withAddon = live.filter((m) => m.online && (m.addonOnline || m.self)).length;
+  const withData = live.filter((m) => m.hasData).length;
+  const players = live.length - live.reduce((a, m) => a + (m.alts ? 1 : 0), 0);
+  const bands = [[60, 60, "60"], [50, 59, "50-59"], [40, 49, "40-49"], [1, 39, "1-39"]].map((b) => [b[2], live.filter((m) => m.level >= b[0] && m.level <= b[1]).length]);
+  const header = G.name ? `<span>${esc(G.name)}</span> · ${plural(live.length, "member")} · ${online} online` : `<span>No guild</span> · 0 members · 0 online · join a guild to see guildmates here`;
+  const guildRows = [{ label: "Members", value: live.length }, { label: "Players (alts counted once)", value: players }, { label: "Online now", value: online },
+    { label: "Running Short Kings", value: withAddon }, { label: "Shared their data", value: withData }, { sub: "Levels" }, ...bands.map((b) => ({ label: b[0], value: b[1], indent: true }))];
+  const noData = live.length - withData, stale = live.filter((m) => m.hasData && m.updatedDays > 7).length, old = live.filter((m) => m.addon === "0.2.1").length;
+  const health = [];
+  if (noData) health.push({ label: noData === 1 ? "Member without Short Kings data" : "Members without Short Kings data", value: noData, tone: "dim" });
+  if (stale) health.push({ label: stale === 1 ? "Profile older than a week" : "Profiles older than a week", value: stale, tone: "spark" });
+  if (G.name) health.push({ label: "Profession windows never opened", value: 3, tone: "spark" });
+  if (old) health.push({ label: "Running an old Short Kings", value: old, tone: "spark" });
+  if (!health.length) health.push({ text: "All good: everyone's data is current.", tone: "good" });
+  else health.push({ text: "No data usually means no addon, or a trial account (trials can't share)." });
+  const max = live.filter((m) => m.level === 60);
+  const raidRows = [{ figure: 36, caption: "days until raids open, 9 Dec" }];
+  RAIDS.forEach((r) => {
+    if (!r.need) { raidRows.push({ label: `${r.name} (${r.size})`, lt: 1, value: "no attunement needed", tone: "dim" }, { label: "Level 60 and ready", value: max.length, indent: true }); return; }
+    const y = max.filter((m) => m.att === "yes").length, n = max.filter((m) => m.att === "no").length, u = max.length - y - n;
+    raidRows.push({ label: `${r.name} (${r.size})`, lt: 1, value: `${y} attuned`, tone: y ? "good" : "dim" }, { label: "Not attuned", value: n, indent: true, tone: n ? "bad" : "dim" },
+      { label: "Unknown", value: u, indent: true, tone: "dim" });
+    const noItem = max.filter((m) => m.att === "yes" && !m.amulet).length;
+    if (noItem) raidRows.push({ text: `${noItem} without the amulet in their bags`, tone: "spark", indent: true });
+  });
+  const profRows = PROFS.map((p) => {
+    const who = live.filter((m) => m.profs.some((x) => x[0] === p[0]));
+    const maxed = who.filter((m) => m.profs.some((x) => x[0] === p[0] && x[2] >= 300)).length;
+    if (!who.length) return { label: p[0], lt: 1, value: "nobody", tone: "bad" };
+    return { label: p[0], lt: 1, value: `<span class="dim">${maxed ? maxed + " at 300" : "best " + Math.max(...who.map((m) => m.profs.find((x) => x[0] === p[0])[2]))}&nbsp;&nbsp;&nbsp;</span>${who.length}` };
+  });
+  profRows.push({ text: "Gathering: " + GATHER.map((g) => g[1] + " " + live.filter((m) => m.profs.some((x) => x[0] === g[0])).length).join("  ·  ") });
+  const recipeRows = withData ? [{ label: "Recipes known in the guild", value: 412 }, { label: "Crafters who shared them", value: 19 },
+    { label: "Known by only one character", value: 37, tone: "spark" }, { text: "Arcanite Reaper", indent: true }, { text: "Flask of the Titans", indent: true }, { text: "Mooncloth Robe", indent: true }]
+    : [{ text: "Recipes appear after crafters open their profession window once." }];
+  const feed = G.name ? [["2h", G.members[3], "reached level 60", true], ["5h", G.members[2], "reached 300 Alchemy", true], ["1d", G.members[9], "learned Flask of the Titans", true],
+    ["2d", G.members[7], "completed Onyxia's Lair attunement", true], ["3d", G.members[0], "reached 300 Tailoring", false]] : [];
+  const W = Math.floor((T.sizes.windowW - 2 * T.space.l - 2 * T.space.xl) / 3), x = (i) => (i - 1) * (W + T.space.xl);
+  return `<div class="abs dim ell" style="left:0;right:0;top:-2px">${header.replace(/<span>/, '<span style="color:var(--text)">')}</div>
+    <div class="abs" style="left:${x(1)}px;top:28px;width:${W}px">${block("Guild", guildRows, ["Open roster", "roster"], "position:static")}
+      ${block("Data health", health, ["Oldest first", "roster"], "position:static;margin-top:20px")}</div>
+    <div class="abs" style="left:${x(2)}px;top:28px;width:${W}px">${block("Raids", raidRows, ["Onyxia list", "raid"], "position:static")}
+      ${block("Professions", profRows, ["Find a crafter", "crafters"], "position:static;margin-top:20px")}</div>
+    <div class="abs" style="left:${x(3)}px;top:28px;width:${W}px">
+      <div class="block" style="position:relative;height:196px"><div class="bhead"><span class="h display">Recent milestones</span></div>
+      ${list([{ key: "w", w: 36 }, { key: "t", w: W - 36 - 52 - 12 }, { key: "b", w: 52 }], feed, (e, c) => c.key === "w" ? `<span class="dim">${e[0]}</span>` : c.key === "t" ? cls(e[1]).replace(esc(e[1].name), esc(e[1].name.split(" ")[0])) + " " + esc(e[2]) : (e[3] ? btn("Grats", "small") : ""),
+        { header: false, click: true, empty: "Level-ups, profession milestones, attunements and new recipes show here as your addon sees them.", style: "left:0;right:0;top:32px;bottom:0" })}</div>
+      ${block("Recipes", recipeRows, ["Search recipes", "crafters"], "position:static;margin-top:20px")}</div>`;
+}
+
+// ---------------------------------------------------------------- roster
+const COLS = [{ key: "name", t: "Name", w: 196 }, { key: "level", t: "Level", w: 46, r: 1 }, { key: "rank", t: "Rank", w: 96 }, { key: "spec", t: "Spec", w: 128 },
+  { key: "profs", t: "Professions", w: 140 }, { key: "ilvl", t: "iLvl", w: 46, r: 1 }, { key: "seen", t: "Online", w: 82 }, { key: "addon", t: "Version", w: 52, r: 1 }, { key: "data", t: "Data", w: 50, r: 1 }];
+const ATT_COLS = [COLS[0], COLS[1], COLS[2], COLS[3], { key: "att", t: "Attuned", w: 140 }, COLS[5], COLS[6], { key: "data", t: "Data", w: 102, r: 1 }];
+function rosterCell(m, c) {
+  switch (c.key) {
+    case "name": return cls(m) + (m.self ? ` <span class="beard">(you)</span>` : "") + (m.alts && S.groupAlts ? ` <span class="dim">+${m.alts}</span>` : "");
+    case "level": return m.level;
+    case "rank": return `<span class="dim">${esc(m.rank)}</span>`;
+    case "spec": return m.spec ? `${m.spec} <span class="dim">31/20/0</span>` : DASH;
+    case "profs": return m.profs.length ? `<span class="dim">${m.profs.filter((p) => PROFS.some((x) => x[0] === p[0])).map((p) => p[1] + " " + p[2]).join(", ") || "-"}</span>` : DASH;
+    case "ilvl": return m.ilvl || DASH;
+    case "seen": { const s = status(m); return s === "offline" ? dot("faint") + `<span class="dim">${ago(m.seenHours)}</span>` : dot(s === "addon" ? "good" : "text") + "online"; }
+    case "addon": return m.addon ? `<span class="${m.addon === "0.2.1" ? "spark" : "dim"}">${m.addon}</span>` : DASH;
+    case "att": return m.att === "yes" ? `${dot("good")}<span class="good">yes</span>` : m.att === "no" ? `${dot("bad")}<span class="bad">no</span>` : `${dot("faint")}<span class="dim">unknown</span>`;
+    case "data": return !m.hasData ? `<span class="faint">none</span>` : m.updatedDays > 7 ? `<span class="spark">${m.updatedDays}d</span>` : `<span class="dim">${ago(m.updatedHours)}</span>`;
+  }
+}
+function rosterRows() {
+  let ms = G.members.slice();
+  const q = S.search.toLowerCase();
+  if (q) ms = ms.filter((m) => (m.name + " " + m.rank + " " + m.profs.map((p) => p[0]).join(" ") + " " + m.note).toLowerCase().includes(q));
+  const rank = { addon: 3, online: 2, offline: 1 };
+  const key = S.sort.key, by = {
+    name: (a, b) => a.name.localeCompare(b.name), level: (a, b) => a.level - b.level, rank: (a, b) => RANKS.indexOf(a.rank) - RANKS.indexOf(b.rank),
+    spec: (a, b) => (a.spec || "~").localeCompare(b.spec || "~"), profs: (a, b) => 0, ilvl: (a, b) => (a.ilvl || -1) - (b.ilvl || -1),
+    seen: (a, b) => rank[status(b)] - rank[status(a)] || a.seenHours - b.seenHours, addon: (a, b) => (b.addon || "").localeCompare(a.addon || ""),
+    data: (a, b) => (a.hasData ? 1 : 0) - (b.hasData ? 1 : 0) || b.updatedDays - a.updatedDays, att: (a, b) => a.att.localeCompare(b.att),
+  }[key] || (() => 0);
+  ms.sort((a, b) => (S.sort.desc ? -1 : 1) * by(a, b) || a.name.localeCompare(b.name));
+  return ms;
+}
+function roster() {
+  const raid = S.raid === "ony";
+  let rows = rosterRows();
+  if (raid) { rows = rows.filter((m) => m.level === 60); if (S.attFilter !== "all") rows = rows.filter((m) => m.att === S.attFilter); }
+  const withData = G.members.filter((m) => m.hasData).length, old = G.members.filter((m) => m.addon === "0.2.1").length;
+  const count = !G.name ? "" : raid ? plural(rows.length, "character") : `${plural(rows.length, "character")} · ${withData} with data${old ? ` · <span class="spark">${old} need an update</span>` : ""}`;
+  const empty = !G.name ? "You're not in a guild, so there's no roster to show." : S.data === "loading" ? "The guild roster hasn't loaded yet. It fills in a few seconds after login."
+    : `Nobody matches "${S.search}". Try a name, a profession or part of a note.`;
+  const max = G.members.filter((m) => m.level === 60), y = max.filter((m) => m.att === "yes").length, n = max.filter((m) => m.att === "no").length;
+  return `<div class="search abs" style="left:0;top:0;width:220px"><input id="rsearch" placeholder="Search name, profession, note" value="${esc(S.search)}"></div>
+    <div class="menu abs" style="left:228px;top:0;width:170px">${btn(raid ? "Onyxia's Lair (40)" : "All raids", "", 'id="raidMenu"').replace("</span>", '<i class="arrow"></i></span>')}
+      ${S.menuOpen ? `<div class="pop"><div data-raid="none" class="${raid ? "" : "cur"}">All raids</div><div>Barrow Deeps (10)</div><div>Hyjal Summit (20)</div><div data-raid="ony" class="${raid ? "cur" : ""}">Onyxia's Lair (40)</div></div>` : ""}</div>
+    ${raid ? "" : check("group", "Group alts", "position:absolute;left:414px;top:4px")}
+    <div class="abs dim ell" style="left:${raid ? 414 : 520}px;right:76px;top:4px;text-align:right;font-size:12px">${count}</div>
+    ${btn("Copy", "", 'id="copyBtn" style="position:absolute;right:0;top:0"')}
+    ${raid ? `<div class="abs" style="left:0;right:0;top:32px;display:flex;gap:4px;align-items:center">${[["all", "All"], ["yes", "Attuned"], ["no", "Not attuned"], ["unknown", "Unknown"]].map((f) =>
+      `<span class="chip ${S.attFilter === f[0] ? "on" : ""}" data-att="${f[0]}">${f[1]}</span>`).join("")}
+      <span class="check on" style="margin-left:12px"><b></b>Max level only (60)</span><span class="dim ell" style="margin-left:auto;font-size:12px">${y} attuned · ${n} not · ${max.length - y - n} unknown</span></div>` : ""}
+    ${list(raid ? ATT_COLS : COLS, S.data === "loading" ? [] : rows, rosterCell, { sort: S.sort, click: true, empty, style: `left:0;right:0;top:${raid ? 68 : 36}px;bottom:0`, rowAttr: (m) => `data-m="${m.i}"` })}`;
+}
+
+// ---------------------------------------------------------------- character
+function character() {
+  const m = G.members[S.charIdx] || null;
+  const head = `${btn("Back to roster", "quiet", 'data-go="roster" style="position:absolute;left:-8px;top:0"')}${btn("My character", "quiet", 'data-me="1" style="position:absolute;left:96px;top:0"')}
+    ${m && !m.self ? `${btn("Whisper", "", 'style="position:absolute;right:124px;top:0"')}${btn("Ask for latest", "primary" + (m.online ? "" : " disabled"), 'style="position:absolute;right:0;top:0"')}` : ""}`;
+  const slots = [[1, 2, 3, 15, 5, 4, 19, 9], [10, 6, 7, 8, 11, 12, 13, 14], [16, 17, 18]];
+  const slot = (s, style) => {
+    const g = m && m.hasData ? GEAR[s] : null;
+    return `<div class="slot ${g ? "" : "empty"}" style="${style};border-color:${g ? g[1] : "var(--line)"}" data-tip="${esc(g ? g[0] : SLOT[s] + "|Empty")}"><span class="ico">${esc(SLOT[s].slice(0, 4))}</span>${g && g[2] ? '<span class="warn">!</span>' : ""}</div>`;
+  };
+  let doll = "";
+  slots[0].forEach((s, i) => (doll += slot(s, `left:10px;top:${10 + i * 42}px`)));
+  slots[1].forEach((s, i) => (doll += slot(s, `right:10px;top:${10 + i * 42}px`)));
+  slots[2].forEach((s, i) => (doll += slot(s, `left:${125 - 19 + (i - 1) * 46}px;bottom:10px`)));
+  if (!m) {
+    return head + `<div class="abs" style="left:0;top:36px;font-size:20px">No character</div><div class="doll">${doll}<div class="abs display gold" style="left:0;right:0;top:110px;text-align:center;font-size:24px">-</div></div>
+      <div class="abs dim" style="left:270px;top:96px;right:0">Pick someone on the Roster to see their gear, talents and professions.</div>`;
+  }
+  const meta = !m.hasData ? "No data synced yet" + (S.data === "error" ? ' · <span class="spark">No answer yet: showing their last known data</span>' : "")
+    : `Updated ${m.updatedDays > 7 ? m.updatedDays + "d ago" : ago(m.updatedHours) + " ago"} (${m.self ? "this account" : "from them"}) · Short Kings ${m.addon}` + (m.updatedDays > 7 ? ' · <span class="spark">may be out of date</span>' : "")
+      + (S.data === "error" && !m.self ? ' · <span class="spark">No answer yet: showing their last known data</span>' : "");
+  const info = `Level ${m.level} Gnome ${m.cls[0] + m.cls.slice(1).toLowerCase()} · ${esc(m.rank)}`;
+  let center = `<div class="abs display gold" style="left:0;right:0;top:122px;text-align:center;font-size:24px">${m.hasData ? m.ilvl + ".4" : "-"}</div>
+    <div class="abs dim" style="left:0;right:0;top:150px;text-align:center;font-size:11px">average item level</div>`;
+  if (m.hasData) center += `<div class="abs" style="left:55px;width:140px;top:180px;text-align:center">${esc(m.spec)}<br><span>31/20/0</span></div><div class="abs spark" style="left:55px;width:140px;top:224px;text-align:center;font-size:12px">2 missing enchants</div>`;
+  const colW = Math.floor((T.sizes.windowW - 2 * T.space.l - 250 - T.space.xl - (T.space.xl + T.space.m) - T.space.m) / 2);
+  const details = !m.hasData ? `<div class="abs dim" style="left:270px;top:96px;right:0;line-height:1.35">No data synced yet. They may not have Short Kings, or they're on a trial account (trials can't sync). Their profile appears here the next time they log in with it.</div>`
+    : `<div class="sheet" style="left:270px;top:96px;bottom:0;width:${colW + 12}px">
+        ${m.alts ? block("Alts", [{ label: `<span style="color:${CLASS.PRIEST}">${esc(G.members[(m.i + 5) % G.members.length].name)}</span>`, lhtml: 1, value: "main", tone: "beard" }]) : ""}
+        ${m.note ? block("Notes", [{ text: m.note, tone: "" }]) : ""}
+        ${block("Talents", SPEC[m.cls].map((t, i) => ({ label: t, value: [31, 20, 0][i] })))}
+        ${block("Professions", m.profs.map((p, i) => ({ label: p[0], lt: 1, value: (i === 0 ? '<span class="dim">42 recipes&nbsp;&nbsp;&nbsp;</span>' : GATHER.some((g) => g[0] === p[0]) ? "" : '<span class="spark">not scanned yet&nbsp;&nbsp;&nbsp;</span>') + `${p[2]}/300` })))}
+        ${block("Cooldowns", [{ label: "Transmute: Arcanite", value: "ready", tone: "good" }, { label: "Mooncloth", value: "41h 12m" }])}</div>
+      <div class="sheet" style="left:${270 + colW + 32}px;top:96px;bottom:0;width:${colW + 12}px">
+        ${block("Attunements", [{ label: "Barrow Deeps", lt: 1, value: "no attunement needed", tone: "dim" }, { label: "Hyjal Summit", lt: 1, value: "no attunement needed", tone: "dim" },
+          m.att === "yes" ? { label: "Onyxia's Lair", lt: 1, value: "done", tone: "good" } : m.att === "no" ? { label: "Onyxia's Lair", lt: 1, value: "not done", tone: "bad" } : { label: "Onyxia's Lair", lt: 1, value: "unknown", tone: "dim" },
+          ...(m.att === "yes" && !m.amulet ? [{ text: "Drakefire Amulet isn't in their bags", tone: "spark", indent: true }] : [])])}
+        ${block("Reputation", [["Argent Dawn", "Revered"], ["Hydraxian Waterlords", "Honored"], ["Cenarion Circle", "Friendly"], ["Timbermaw Hold", "Neutral"], ["Thorium Brotherhood", "Friendly"],
+          ["Brood of Nozdormu", "Neutral"], ["Zandalar Tribe", "Honored"]].map((r, i) => ({ label: r[0], lt: i < 5 ? 1 : 0, value: r[1], tone: i < 5 ? "" : "dim" })).concat(
+          ["Gnomeregan Exiles", "Ironforge", "Stormwind", "Darnassus"].map((f) => ({ label: f, value: "Exalted", tone: "dim" }))))}</div>`;
+  return head + `<div class="abs ell" style="left:0;right:0;top:36px;font-size:20px;line-height:22px">${cls(m)}</div>
+    <div class="abs" style="left:0;top:62px">${info}</div><div class="abs dim ell" style="left:0;right:0;top:78px;font-size:12px">${meta}</div>
+    <div class="doll">${doll}${center}</div>${details}`;
+}
+
+// ---------------------------------------------------------------- crafters
+function crafters() {
+  const worst = S.data === "worst", none = !G.name || S.data === "empty";
+  const q = S.crafterQuery.toLowerCase();
+  const all = worst ? [WORST_RECIPE, ...RECIPES] : RECIPES;
+  const results = none || q.length < 3 ? [] : all.filter((r) => r.name.toLowerCase().includes(q) || worst);
+  const loading = S.data === "loading";
+  const empty = none ? "Recipes appear after crafters open their profession window once." : q.length < 3 ? 'Type at least 3 letters, e.g. "arcanite", "mooncloth" or "enchant boots".' : "Nobody in the guild has that recipe yet.";
+  const r = results[S.recipe] || null;
+  const st = none ? "" : q.length < 3 ? "412 recipes from 19 crafters" : loading ? `0 results · <span class="spark">loading 14 names...</span>` : plural(results.length, "result");
+  const cell = (x, c) => c.key === "n" ? `<span style="color:${x.q}">${esc(x.name)}</span>` : c.key === "p" ? `<span class="dim">${x.prof}</span>`
+    : `${x.crafters.length}${x.crafters.some((k) => k[3]) ? ` <span class="dim">&nbsp;(${x.crafters.filter((k) => k[3]).length} online)</span>` : ""}`;
+  const side = r ? `<div class="abs" style="left:12px;right:12px;top:12px;font-size:15px;line-height:17px;color:${r.q};display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(r.name)}</div>
+      <div class="abs dim" style="left:12px;top:${r.name.length > 44 ? 50 : 32}px;font-size:12px">${r.prof} · ${plural(r.crafters.length, "crafter")}${r.crafters.some((k) => k[3]) ? ` (${r.crafters.filter((k) => k[3]).length} online)` : ""}</div>
+      ${list([{ key: "n", t: "Crafter", w: 138 }, { key: "s", t: "Skill", w: 44, r: 1 }, { key: "i", t: "", w: 74 }, { key: "b", t: "", w: 64 }], r.crafters,
+        (k, c) => c.key === "n" ? dot(k[3] ? "good" : "faint") + `<span style="color:${CLASS[k[1]]}">${esc(k[0])}</span>` : c.key === "s" ? k[2] : c.key === "i" ? `<span class="dim">${k[4] || ""}</span>` : btn("Whisper", "small" + (k[3] ? "" : " disabled")),
+        { click: true, style: "left:12px;right:12px;top:72px;bottom:48px" })}
+      ${btn("Post to guild chat", "primary", 'style="position:absolute;left:12px;bottom:12px"')}${btn("Copy", "", 'style="position:absolute;left:156px;bottom:12px"')}`
+    : `<div class="abs dim" style="left:12px;right:12px;top:12px;line-height:1.35">Pick an item on the left to see who in the guild can make it, who's online, and to whisper them.</div>`;
+  return `<div class="search abs" style="left:0;top:0;width:260px"><input id="csearch" placeholder="Search an item or recipe" value="${esc(S.crafterQuery)}"></div>
+    <div class="abs dim ell" style="left:272px;width:204px;top:4px;font-size:12px">${st}</div>
+    ${list([{ key: "n", t: "Item or recipe", w: 250 }, { key: "p", t: "Profession", w: 100 }, { key: "c", t: "Crafters", w: 114, r: 1 }], loading ? [] : results, cell,
+      { click: true, loading, empty, sel: (x) => x === r, style: "left:0;top:36px;bottom:0;width:476px", rowAttr: (x) => `data-recipe="${results.indexOf(x)}"` })}
+    <div class="side" style="left:492px;right:0;top:36px;bottom:0">${side}</div>`;
+}
+
+// ---------------------------------------------------------------- settings
+function settings() {
+  const err = S.data === "error";
+  const L = 380;
+  let y = 0, h = "";
+  const head = (t) => { h += `<div class="block" style="left:0;top:${y}px;width:${L}px"><div class="bhead"><span class="h display">${t}</span></div></div>`; y += 32; };
+  const ck = (k, label) => { h += check(k, label, `position:absolute;left:0;top:${y + 4}px`); y += 28; };
+  head("Sharing"); ck("sync", "Share and receive guild data (sync)"); ck("gear", "Share my gear and talents"); ck("recipes", "Share my recipes and cooldowns");
+  y += 8; head("Display"); ck("tips", "Show guild crafters in item tooltips"); ck("feed", "Record guild milestones (Overview)"); ck("minimap", "Show minimap button");
+  ck("reduce", "Reduce motion"); ck("debug", "Debug logging in chat");
+  h += `<div class="abs" style="left:0;top:${y + 4}px">Window size</div>`; y += 22;
+  h += `<div class="abs" style="left:0;top:${y}px;display:flex;align-items:center;gap:4px">${[70, 80, 90, 100, 110, 120, 130].map((v) =>
+    `<span class="chip ${Math.round(S.scale * 100) === v ? "on" : ""}" data-scale="${v / 100}">${v}%</span>`).join("")}</div>`;
+  y += 36; head("Tools");
+  const bw = (L - 8) / 2;
+  ["Rescan my character", "Sync now", "Reset window position", "Debug report"].forEach((t, i) =>
+    (h += btn(t, "", `style="position:absolute;width:${bw}px;left:${(i % 2) * (bw + 8)}px;top:${y + Math.floor(i / 2) * 32}px" ${i === 3 ? 'id="dbgBtn"' : ""}`)));
+  const status = [{ label: "Version", value: "0.2.3" }, { label: "Guild", value: esc(G.name || "none") },
+    { label: "Sync", value: err ? "paused (combat)" : G.name ? "running" : "paused (roster not loaded)", tone: err || !G.name ? "dim" : "good" },
+    { label: "Sending", value: err ? "not allowed (trial account)" : "allowed", tone: err ? "bad" : "" },
+    { label: "Messages sent / received", value: G.name ? "18 / 64" : "0 / 0" }, { label: "Accepted / rejected / queued", value: G.name ? "51 / 2 / 0" : "0 / 0 / 0" },
+    ...(err ? [{ label: "Lua errors caught", value: 2, tone: "spark" }] : []), { label: "Your data updated", value: "now ago".replace("now ago", "2m ago") },
+    { text: "Open these profession windows once: Cooking", tone: "spark" }];
+  const share = [["Name, class, race, level and addon version", 1], ["Gear and item level", S.checks.gear], ["Talents", S.checks.gear], ["Profession skill levels", 1],
+    ["Recipes", S.checks.recipes], ["Profession cooldowns", S.checks.recipes]].map((x) => ({ label: x[0], lt: 1, value: x[1] ? "shared" : "private", tone: x[1] ? "good" : "dim" }));
+  share.push({ label: "Last shared copy", value: "2m ago" }, { text: "Never shared: Notes and officer notes" },
+    { text: "Turning sharing off stops future updates. Copies guildmates already have stay until they're replaced." });
+  h += `<div class="sheet" style="left:${L + 32}px;top:0;bottom:0;width:${T.sizes.windowW - 2 * T.space.l - L - 32}px">${block("Status", status)}${block("What guildmates see from you", share)}</div>`;
+  return h;
+}
+
+// ---------------------------------------------------------------- window
+const TABS = [["overview", "Overview"], ["roster", "Roster"], ["character", "Character"], ["crafters", "Crafters"], ["settings", "Settings"]];
+const RENDER = { overview, roster, character, crafters, settings };
+function windowHTML() {
+  const err = S.data === "error", paused = err || !G.name || S.data === "loading";
+  const why = err ? "combat" : "roster not loaded";
+  const st = `${esc(G.name || "No guild")}  ·  ${paused ? "Sync paused: " + why : "Sync on"}${err ? '  ·  <span class="spark">2 errors</span>' : ""}`;
+  return `<div class="titlebar"><div class="crest" role="img" aria-label="Short Kings crest"></div><div class="brand display">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+      <div class="status" title="${paused ? "Sync paused" : "Sync on. The dot flashes when new data arrives."}"><span class="sdot ${paused ? "paused" : ""}"><i class="ring"></i></span><span class="text ell">${st}</span></div>
+      <div class="close" id="closeBtn" title="Close (Esc)"><i></i></div></div>
+    <div class="tabbar">${TABS.map((t) => `<div class="tab display ${S.screen === t[0] ? "on" : ""}" data-tab="${t[0]}">${t[1]}</div>`).join("")}<i class="underline" id="ul"></i></div>
+    <div class="content"><div class="page" id="page" style="position:absolute;inset:0">${RENDER[S.screen]()}</div></div>
+    ${S.copy ? copyWin() : ""}`;
+}
+function copyWin() {
+  const lines = ["Short Kings roster", ...rosterRows().slice(0, 30).map((m) => `${m.name}  ${m.level}  ${m.rank}  ${m.spec || "-"}  ${m.ilvl || "-"}`)];
+  return `<div class="copywin"><div class="abs display" style="left:16px;top:16px;font-size:13px">Copy as text</div>
+    <div class="abs dim" style="left:16px;top:34px;font-size:12px">Click the text, press Ctrl+A (Cmd+A on Mac) then Ctrl+C (Cmd+C) to copy it.</div>
+    <div class="close" id="copyClose" style="right:8px;top:8px"><i></i></div><pre>${esc(lines.join("\n"))}</pre></div>`;
+}
+
+const BEFORE = { overview: "overview", roster: "roster", character: "character", crafters: "crafters", settings: "settings" };
+function render(opts = {}) {
+  document.body.classList.toggle("reduce", S.reduce);
+  const stage = $("#stage");
+  // Window size (as in game) times a fit-to-screen factor for narrow browser windows.
+  const cols = S.view === "before" && innerWidth > 1840 ? 2 : 1;
+  const fit = SHOT ? 1 : Math.min(1, (innerWidth - 32 - (cols - 1) * 24) / cols / (T.sizes.windowW * S.scale));
+  const k = S.scale * fit;
+  const scaleWrap = (inner) => `<div class="scaler" style="transform:scale(${k});height:${T.sizes.windowH * k}px;width:${T.sizes.windowW * k}px;transform-origin:top left">${inner}</div>`;
+  const win = S.open ? `<div class="win" id="win">${windowHTML()}</div>` : `<div style="width:${T.sizes.windowW}px;height:${T.sizes.windowH}px;display:grid;place-items:center;color:#9aa0a6">Window closed. Press "Open window" (or click the minimap button in game).</div>`;
+  if (S.view === "after") stage.innerHTML = `<div class="pane">${scaleWrap(win)}</div>`;
+  else stage.innerHTML = `<div class="pane before"><span class="cap">Before (v0.2.2)</span><img alt="The old ${S.screen} tab" src="../docs/images/before/${BEFORE[S.screen]}.webp"></div>
+    <div class="pane"><span class="cap">After (design refresh)</span>${scaleWrap(win)}</div>`;
+  $("#btnToggle").textContent = S.open ? "Close window" : "Open window";
+  placeUnderline(false);
+  if (opts.anim && S.open) { const w = $("#win"); w.classList.add(opts.anim); }
+  if (opts.reveal) $("#page").classList.add("reveal");
+  wire();
+}
+let lastUL = null;
+function placeUnderline(animate) {
+  const ul = $("#ul"), tab = document.querySelector(".tab.on");
+  if (!ul || !tab) return;
+  const left = tab.offsetLeft + T.space.l, width = tab.offsetWidth - 2 * T.space.l;
+  ul.style.left = left + "px"; ul.style.width = width + "px";
+  if (lastUL && !S.reduce && (lastUL[0] !== left)) {
+    ul.animate([{ left: lastUL[0] + "px", width: lastUL[1] + "px" }, { left: left + "px", width: width + "px" }],
+      { duration: T.motion.slide * 1000, easing: "cubic-bezier(.45, 0, .55, 1)" });
+  }
+  lastUL = [left, width];
+}
+
+// ---------------------------------------------------------------- interactions
+const tip = $("#tip");
+function showTip(e, html) { tip.innerHTML = html; tip.style.display = "block"; tip.style.left = e.clientX + 16 + "px"; tip.style.top = e.clientY + 12 + "px"; }
+function hideTip() { tip.style.display = "none"; }
+function wire() {
+  document.querySelectorAll("[data-tab]").forEach((el) => (el.onclick = () => { if (S.screen === el.dataset.tab) return; S.screen = el.dataset.tab; S.menuOpen = false; render({ reveal: true }); }));
+  document.querySelectorAll("[data-go]").forEach((el) => (el.onclick = () => {
+    const g = el.dataset.go; S.menuOpen = false;
+    if (g === "raid") { S.raid = "ony"; S.screen = "roster"; } else { if (g === "roster") S.raid = "none"; S.screen = g; }
+    render({ reveal: true });
+  }));
+  document.querySelectorAll("[data-sort]").forEach((el) => (el.onclick = () => {
+    const k = el.dataset.sort; if (!k || k === "w") return;
+    S.sort = { key: k, desc: S.sort.key === k ? !S.sort.desc : false }; render();
+  }));
+  document.querySelectorAll("[data-m]").forEach((el) => {
+    const m = G.members[+el.dataset.m];
+    el.onclick = () => { S.charIdx = m.i; S.screen = "character"; render({ reveal: true }); };
+    el.onmousemove = (e) => showTip(e, `<div style="color:${CLASS[m.cls]}">${esc(m.name)}</div><div style="color:#ccc">${status(m) === "addon" ? "Online with Short Kings" : status(m) === "online" ? "Online without Short Kings" : "Offline"}</div>`
+      + (m.spec ? `<div>${m.spec} 31/20/0</div>` : "") + m.profs.map((p) => `<div class="dl"><span>${p[0]}</span><span>${p[2]}</span></div>`).join("")
+      + (m.note ? `<div style="color:var(--beard)">Note: ${esc(m.note)}</div>` : "") + (m.hasData ? "" : `<div style="color:#aaa">No data yet. They may not have the addon, or be on a trial account (trials can't sync).</div>`)
+      + `<div style="color:var(--gold)">Click to view character</div>`);
+    el.onmouseleave = hideTip;
+  });
+  document.querySelectorAll("[data-tip]").forEach((el) => { const [a, b] = el.dataset.tip.split("|"); el.onmousemove = (e) => showTip(e, `<div>${esc(a)}</div>${b ? `<div style="color:#aaa">${b}</div>` : ""}`); el.onmouseleave = hideTip; });
+  document.querySelectorAll("[data-recipe]").forEach((el) => (el.onclick = () => { S.recipe = +el.dataset.recipe; render(); }));
+  document.querySelectorAll("[data-check]").forEach((el) => (el.onclick = () => {
+    const k = el.dataset.check;
+    if (k === "group") { S.groupAlts = !S.groupAlts; } else S.checks[k] = !S.checks[k];
+    if (k === "reduce") { S.reduce = S.checks.reduce; $("#chkReduce").checked = S.reduce; }
+    render();
+  }));
+  document.querySelectorAll("[data-att]").forEach((el) => (el.onclick = () => { S.attFilter = el.dataset.att; render(); }));
+  document.querySelectorAll("[data-scale]").forEach((el) => (el.onclick = () => { S.scale = +el.dataset.scale; render(); seg("segScale"); }));
+  document.querySelectorAll("[data-raid]").forEach((el) => (el.onclick = (e) => { e.stopPropagation(); S.raid = el.dataset.raid; S.menuOpen = false; render(); }));
+  document.querySelectorAll("[data-me]").forEach((el) => (el.onclick = () => { S.charIdx = 0; render(); }));
+  const rm = $("#raidMenu"); if (rm) rm.onclick = () => { S.menuOpen = !S.menuOpen; render(); };
+  const rs = $("#rsearch"); if (rs) rs.oninput = () => { S.search = rs.value; render(); const n = $("#rsearch"); n.focus(); n.setSelectionRange(n.value.length, n.value.length); };
+  const cs = $("#csearch"); if (cs) cs.oninput = () => { S.crafterQuery = cs.value; S.recipe = 0; render(); const n = $("#csearch"); n.focus(); n.setSelectionRange(n.value.length, n.value.length); };
+  const cb = $("#closeBtn"); if (cb) cb.onclick = closeWin;
+  const cp = $("#copyBtn"); if (cp) cp.onclick = () => { S.copy = true; render(); };
+  const db = $("#dbgBtn"); if (db) db.onclick = () => { S.copy = true; render(); };
+  const cc = $("#copyClose"); if (cc) cc.onclick = () => { S.copy = false; render(); };
+}
+function closeWin() {
+  const w = $("#win");
+  if (!w || S.reduce) { S.open = false; render(); return; }
+  w.classList.remove("anim-in"); w.classList.add("anim-out");
+  w.addEventListener("animationend", () => { S.open = false; render(); }, { once: true });
+}
+function pulse() {
+  const r = document.querySelector(".sdot:not(.paused) .ring");
+  if (!r || S.reduce) return;
+  r.classList.remove("go"); void r.offsetWidth; r.classList.add("go");
+}
+
+// ---------------------------------------------------------------- chrome
+function seg(id) {
+  const defs = {
+    segView: [["after", "Addon"], ["before", "Before vs after"]],
+    segScreen: [...TABS],
+    segData: [["full", "Full roster"], ["empty", "Empty"], ["loading", "Loading"], ["error", "Error"], ["worst", "Worst case"]],
+    segScale: [[0.7, "70%"], [1, "100%"], [1.3, "130%"]],
+  };
+  const key = { segView: "view", segScreen: "screen", segData: "data", segScale: "scale" }[id];
+  const el = $("#" + id);
+  el.innerHTML = defs[id].map((d) => `<button aria-pressed="${S[key] == d[0]}" data-v="${d[0]}">${d[1]}</button>`).join("");
+  el.querySelectorAll("button").forEach((b) => (b.onclick = () => {
+    let v = b.dataset.v; if (key === "scale") v = +v;
+    S[key] = v;
+    if (key === "data") { G = makeGuild(v === "loading" || v === "error" ? "full" : v); if (v === "loading") G.members = []; S.search = ""; S.recipe = 0; S.charIdx = v === "worst" ? 1 : 1; if (v === "loading") G.name = "Short Kings"; }
+    seg(id); render({ reveal: key === "screen" });
+    try { localStorage.setItem("skPreview", JSON.stringify({ view: S.view, screen: S.screen, data: S.data })); } catch (e) { /* private window */ }
+  }));
+}
+try { Object.assign(S, JSON.parse(localStorage.getItem("skPreview") || "{}")); } catch (e) { /* ignore */ }
+// ?screen=roster&data=worst&view=before&raid=ony  (and &shot=1 for the README pictures: window only, no chrome)
+const Q = new URLSearchParams(location.search);
+for (const k of ["screen", "data", "view", "raid"]) if (Q.get(k)) S[k] = Q.get(k);
+const SHOT = Q.get("shot");
+if (SHOT) { document.body.classList.add("shot"); S.view = "after"; S.reduce = true; if (SHOT === "banner") document.body.classList.add("banner"); }
+G = makeGuild(S.data === "loading" || S.data === "error" ? "full" : S.data); if (S.data === "loading") G.members = [];
+["segView", "segScreen", "segData", "segScale"].forEach(seg);
+$("#btnToggle").onclick = () => { if (S.open) closeWin(); else { S.open = true; render({ anim: "anim-in" }); } };
+$("#btnPulse").onclick = pulse;
+$("#chkReduce").onchange = (e) => { S.reduce = e.target.checked; S.checks.reduce = S.reduce; render(); };
+render({ anim: "anim-in" });
+addEventListener("resize", () => render());
+</script>
+</body>
+</html>

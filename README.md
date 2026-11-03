@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.webp" alt="Short Kings: Small in stature. Big in loot." width="100%">
+  <img src="docs/images/banner.png" alt="Short Kings: Small in stature. Big in loot." width="100%">
 </p>
 
 <p align="center">
@@ -27,7 +27,8 @@
 > **v0.2.2 is the first release, for launch day, and hasn't been run in game yet.** It's built against
 > Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
 > client. The pictures below are **mockups** drawn from the addon's real
-> colours and layout. Item icons are placeholders; in game you see the real ones.
+> colours and layout (the browser preview in `preview/`). Item icons are
+> placeholders; in game you see the real ones.
 
 ---
 
@@ -43,17 +44,18 @@
 | ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first |
 | ⚙️ **Settings** | Sync and privacy switches, window size, and a live status read-out |
 | 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, reminders, and a copyable debug report |
+| 👑 **The look** | Black and gold, with the gnome's pink beard for whatever you pick and dynamite orange only for alerts and sync. Quick, quiet animations (with a **Reduce motion** switch) |
 
 ### 🏰 Overview
-<p align="center"><img src="docs/images/overview.webp" alt="Overview tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/overview.png" alt="Overview tab mockup" width="100%"></p>
 
-Your one-stop dashboard, and the first tab. Six cards, each with a button
-that takes you to where you can act on it:
+Your one-stop dashboard, and the first tab. Six sections in three columns,
+set like a spec sheet, each with a link that takes you to where you can act on it:
 
-- **Guild**: members (and roughly how many players, with alts counted once), who's online and who's online with Short Kings, how many have shared their data, and how many characters are level 60, 50–59, 40–49 and 1–39. Button: *Roster*.
+- **Guild**: members (and roughly how many players, with alts counted once), who's online and who's online with Short Kings, how many have shared their data, and how many characters are level 60, 50–59, 40–49 and 1–39. Link: *Open roster*.
 - **Raids**: days until raids open (9 Dec). Barrow Deeps and Hyjal Summit need no attunement, so the card shows how many level 60s you have. For Onyxia's Lair it counts attuned / not / unknown, plus how many have the quest done but the Drakefire Amulet out of their bags. Button: *Onyxia list* (the Roster with Onyxia picked).
 - **Data health**: members without Short Kings data, profiles older than a week, characters who haven't opened a profession window, and people on an old Short Kings (including you). Says "All good" when there's nothing to fix. Button: *Oldest first* (the Roster with missing and oldest data at the top).
-- **Professions**: how many characters have each crafting profession and how many are at 300 (or the best skill so far); professions **nobody** has are shown in red; one line for gathering. Button: *Crafters*.
+- **Professions**: how many characters have each crafting profession and how many are at 300 (or the best skill so far); professions **nobody** has are shown in red; one line for gathering. Link: *Find a crafter*.
 - **Recipes**: how many recipes the guild knows, from how many crafters, and how many **only one character** knows (with a few examples), so you know where you have no backup. Button: *Search recipes*.
 - **Recent milestones**: level-ups (every 10 levels), profession skill 75/150/225/300, Onyxia attunement and newly learned recipes, newest first. Hover for when, click to open the character, and press **Grats** to type "Grats Bramble on level 60!" into guild chat (you press Enter).
 
@@ -66,7 +68,7 @@ announce anything, so a fresh install doesn't fill the list. Turn it off in
 Settings ("Record guild milestones").
 
 ### 👥 Roster
-<p align="center"><img src="docs/images/roster.webp" alt="Roster tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/roster.png" alt="Roster tab mockup" width="100%"></p>
 
 - **Every guild member**, including people without the addon.
 - **Columns:**
@@ -97,7 +99,7 @@ Settings ("Record guild milestones").
 
   <details>
   <summary>Show the Roster with a raid picked</summary>
-  <p align="center"><img src="docs/images/attunement.webp" alt="Roster with Onyxia's Lair picked: Attuned column and filters" width="100%"></p>
+  <p align="center"><img src="docs/images/attunement.png" alt="Roster with Onyxia's Lair picked: Attuned column and filters" width="100%"></p>
   </details>
 - **Hover a row** to see:
   - their online status;
@@ -109,7 +111,7 @@ Settings ("Record guild milestones").
 - **Click a row** to open that character.
 
 ### 🛡️ Character
-<p align="center"><img src="docs/images/character.webp" alt="Character tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/character.png" alt="Character tab mockup" width="100%"></p>
 
 - **Buttons:** *< Roster*, *Me* (your own character), *Whisper* (opens a whisper to them), *Ask for latest*, and *Make this my main* on your own alts.
 - **Ask for latest** asks them (or their alt, if that's who is online) for their newest data. Their addon re-reads their character first. It works only while they're online with Short Kings, at most once every 30 seconds; otherwise it's greyed out with "Offline: showing their last known data". The header says "Asked for the latest data…" until the answer arrives.
@@ -130,7 +132,7 @@ Settings ("Record guild milestones").
 - **Privacy:** if someone hides their gear or recipes, it says *hidden by this player* instead.
 
 ### ⚒️ Crafters
-<p align="center"><img src="docs/images/crafters.webp" alt="Crafters tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/crafters.png" alt="Crafters tab mockup" width="100%"></p>
 
 - **Search** part of an item or recipe name: "arcanite", "mooncloth", "enchant boots". Type at least 3 letters. Upper or lower case doesn't matter.
 - **Results**, one row per recipe (up to 200):
@@ -153,7 +155,7 @@ Settings ("Record guild milestones").
 ### ⚙️ Settings
 <details>
 <summary>Show the Settings tab</summary>
-<p align="center"><img src="docs/images/settings.webp" alt="Settings tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/settings.png" alt="Settings tab mockup" width="100%"></p>
 </details>
 
 - **Share and receive guild data**: turns sync on or off entirely.
@@ -161,6 +163,7 @@ Settings ("Record guild milestones").
 - **Show guild crafters in item tooltips** (on by default).
 - **Record guild milestones (Overview)** (on by default; kept on your computer only).
 - **Show minimap button**, and **debug logging** in chat.
+- **Reduce motion**: turns off the window, tab and sync animations.
 - **Window size**: 70% to 130%.
 - **Buttons:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
 - **What guildmates see from you**: a read-only list of what you share and what stays private, taken from the exact copy that is sent, plus what is never shared.
@@ -386,7 +389,9 @@ is in [PLAN.md section 10](PLAN.md#10-once-forever-is-live-from-4-nov-2026).
 ```sh
 luacheck .    # lint
 busted        # unit tests: Lua 5.1, stubbed WoW API in tests/helpers/
-node docs/mockups/render.js [font.woff2]   # regenerate the README pictures
+node tools/preview-tokens.js   # copy UI/Theme.lua's values into the browser preview
+node docs/mockups/render.js    # regenerate the README pictures from preview/index.html
+node tools/textures.js         # redraw the crest and icons (Media/Textures, power-of-two .tga)
 ```
 
 | Folder | What lives there |
@@ -394,7 +399,9 @@ node docs/mockups/render.js [font.woff2]   # regenerate the README pictures
 | `Core/` | start-up, events, saved data, guild roster, alts, the crafter index, Overview numbers and the milestones feed, text export; `Compat.lua` is the **only** file that touches client-specific APIs |
 | `Collect/` | reads gear, talents, professions, recipes, reputation and attunements |
 | `Sync/` | encoding (LibSerialize + LibDeflate), merge rules, the HI/RQ/PR/SQ/SO protocol |
-| `UI/` | theme, widgets, tabs and the item-tooltip line (colours and gradients only, no image files) |
+| `UI/` | `Theme.lua` (every colour, font, size, spacing step and motion timing), `Motion.lua`, widgets, tabs and the item-tooltip line |
+| `Media/` | the Chakra Petch title font (SIL OFL) and Arial Narrow font families, the crest and four small icons |
+| `preview/` | a browser mock-up of every window with state switches and a before/after view (open `preview/index.html`) |
 | `Data/` | profession, attunement and faction tables (IDs are verified or marked TODO, never guessed) |
 
 **Releasing:** push a tag like `v0.1.0`. The *Release* workflow runs the
@@ -403,11 +410,11 @@ GitHub Release. For CurseForge, add a `CF_API_KEY` repository secret and an
 `## X-Curse-Project-ID:` line to `ShortKings.toc`. Every push also produces
 an unpublished **test build** (Actions → Tests → `ShortKings-test-build`).
 
-**Theme palette** (from `UI/Theme.lua`):
+**Theme palette** (from `UI/Theme.lua`; the full system is in [DESIGN.md](DESIGN.md)):
 
-| Plum dark | Plum | Magenta | Hot pink | Ember | Flame | Leather | Gold |
+| Black | Surface | Line | Text | Dim | Gold | Beard | Spark |
 |---|---|---|---|---|---|---|---|
-| `#2A1220` | `#3D1A2E` | `#D94FA0` | `#F07ACB` | `#FF7A1A` | `#FFC24A` | `#6B3E1E` | `#D4AF37` |
+| `#000000` | `#111111` | `#2A2A2A` | `#F5F5F5` | `#A6A6A6` | `#FFC000` | `#F06BB0` | `#FF6A1A` |
 </details>
 
 ## 🙏 Credits
@@ -424,7 +431,11 @@ Libraries: Ace3 (AceComm, CallbackHandler, LibStub, ChatThrottleLib),
 [LibSerialize](https://github.com/rossnichols/LibSerialize) by Ross Nichols,
 [LibDeflate](https://github.com/SafeteeWoW/LibDeflate) by Haoqian He,
 LibDataBroker and LibDBIcon. Licences are listed in [Libs/README.md](Libs/README.md).
-The README mockups use [Marcellus](https://fonts.google.com/specimen/Marcellus)
-(SIL OFL) as a stand-in for the game's font.
+Titles use [Chakra Petch](https://fonts.google.com/specimen/Chakra+Petch) by
+Cadson Demak (SIL Open Font License 1.1, bundled in `Media/Fonts/` with its
+licence). The black-and-gold direction started from the Lamborghini-inspired
+DESIGN.md from [getdesign](https://www.npmjs.com/package/getdesign)
+(`docs/design/lamborghini-reference.md`); the crest is drawn from simple shapes
+by `tools/textures.js`.
 
 Released under the [MIT licence](LICENSE). Made with 💖 and 🧨 by the Short Kings.

@@ -112,7 +112,9 @@ function Crafters:Build(page)
 	self.title = Theme.Text(side, "title", "text")
 	self.title:SetPoint("TOPLEFT", SP.m, -SP.m)
 	self.title:SetPoint("TOPRIGHT", -SP.m, -SP.m)
-	self.title:SetWordWrap(false)
+	-- Long item names wrap to a second line rather than being cut off.
+	self.title:SetWordWrap(true)
+	if self.title.SetMaxLines then self.title:SetMaxLines(2) end
 	self.sub = Theme.Text(side, "small", "dim")
 	self.sub:SetPoint("TOPLEFT", self.title, "BOTTOMLEFT", 0, -SP.xs)
 	self.crafters = W.List(side, {
@@ -145,7 +147,7 @@ function Crafters:Build(page)
 		end,
 		onClick = function(c) SK.CharacterTab:ShowCharacter(c.guid) end,
 	})
-	self.crafters:SetPoint("TOPLEFT", SP.m, -60)
+	self.crafters:SetPoint("TOPLEFT", SP.m, -72)
 	self.crafters:SetPoint("BOTTOMRIGHT", -SP.m, S.control + SP.m * 2)
 	self.post = W.Button(side, "Post to guild chat", nil, S.control, function() Crafters:PostToGuild() end, "primary")
 	self.post:SetPoint("BOTTOMLEFT", SP.m, SP.m)

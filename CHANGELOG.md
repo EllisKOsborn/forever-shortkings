@@ -1,5 +1,50 @@
 # Changelog
 
+## Unreleased: design refresh (branch `design/refresh`)
+
+A new look for every window. Nothing about sync, saved data or features
+changed. **Not tested in game yet.**
+
+- **Black and gold.** True black surfaces, gold for the active tab, the one
+  main button on a screen and key numbers; the gnome's **pink beard** for
+  whatever you pick (selected rows, filters, check boxes) and the new crest;
+  **dynamite orange only for alerts and sync status** (old data, missing
+  enchants, updates, the sync dot). No gradients.
+- **One theme file.** `UI/Theme.lua` holds every colour (0–1 RGBA), font,
+  size, spacing step, border and motion timing; a test fails if a colour is
+  hard-coded anywhere else.
+- **Type.** Chakra Petch (free, SIL OFL, bundled) for the title, tabs and
+  section headings; the game's Arial Narrow for everything else, with the
+  same Korean, Chinese and Russian fallbacks Blizzard uses, so names in any
+  alphabet show. If the bundled font can't load, the game font is used and
+  `/sk debug` says so.
+- **Overview** is now three columns set like a spec sheet instead of six
+  equal boxes; the raid countdown is the one big number.
+- **Character** details are sections in two columns (talents, professions,
+  cooldowns / attunements, reputation) instead of one long text block.
+- **Lists:** quiet headers with a sort arrow, right-aligned numbers, a dash
+  for missing values, round status dots, row hover, and a sentence when a
+  list is empty ("Nobody matches …", "You're not in a guild …").
+- **Crafters:** loading placeholders while item names arrive; long item
+  names wrap instead of being cut off; the side panel keeps its frame and
+  explains itself when nothing is picked.
+- **Motion** (AnimationGroups only, 100–250 ms): the window fades and grows
+  in, the gold underline glides between tabs, new content lifts in, rows
+  highlight on hover, menus drop from their button, and the sync dot sends
+  out a ring when new data arrives. Opening with `/sk` or closing with Esc
+  stays instant. New setting: **Reduce motion**.
+- **Hit areas:** small buttons (Grats, Whisper, chips, check boxes with
+  their labels) have click areas of at least 24 px.
+- **Fits the screen:** the window shrinks itself if your UI scale and screen
+  size would push it off the edge.
+- Title bar: crest, sync status with a dot, and a Lua-error count when
+  something went wrong (hover for what to do). Own close button.
+- `preview/index.html`: a browser mock-up of every window with full, empty,
+  loading, error and worst-case data, plus a before/after view.
+- Fixed while stress-testing: "1 characters"-style plurals; the status dot
+  could drift left when the status text was cut off; the Settings window-size
+  buttons ran into the status column.
+
 ## v0.2.2 (2 Nov 2026): first release, for launch day
 
 The first downloadable release, and the version the guild starts with when

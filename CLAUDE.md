@@ -105,14 +105,20 @@ Data/     Professions, Attunements (quest IDs), Factions, Enchants
 Collect/  Character, Talents, Professions (recipe scan), Reputation,
           Attunements, Profile (full/public copies, cooldowns, main)
 Sync/     Codec (LibSerialize stable → LibDeflate), Merge (rules), Sync (protocol)
-UI/       Theme (colours/gradients only), Widgets (Button, Tab, Check, Menu,
-          SearchBox, List, TextPanel), MainFrame, OverviewTab (first tab,
-          six cards with deep links), RosterTab (+ raid filter, Oldest first),
-          CharacterTab (+ Ask for latest), CraftersTab, SettingsTab,
-          DebugWindow, Minimap, Tooltip ("Crafted by" line)
+UI/       Theme (EVERY colour/font/size/spacing/motion value), Motion
+          (AnimationGroups, Reduce motion), Widgets (Button, CloseButton,
+          Tab, Chip, Check, Menu, SearchBox, List, TextPanel, Block, Sheet),
+          MainFrame, OverviewTab (first tab, three spec-sheet columns),
+          RosterTab (+ raid filter, Oldest first), CharacterTab (+ Ask for
+          latest), CraftersTab, SettingsTab, DebugWindow, Minimap, Tooltip
+Media/    Fonts.xml (Arial Narrow families + CJK fallback), Fonts/ (Chakra
+          Petch, OFL), Textures/ (crest, arrow, close, dot, ring .tga)
+preview/  browser mock-up of every window (theme.css/js generated)
+tools/    textures.js (draws Media/Textures), preview-tokens.js
 Libs/     vendored Ace3 bits, LibSerialize, LibDeflate; LDB + LibDBIcon via .pkgmeta
 tests/    busted specs; tests/helpers/wow.lua is the stubbed WoW API
-docs/     FEATURE-REVIEW.md, mockups/, images/, prompts/
+docs/     FEATURE-REVIEW.md, mockups/render.js, images/ (+ before/), prompts/,
+          design/ (Lamborghini reference); DESIGN.md + PRODUCT.md at the root
 ```
 
 ## Sync protocol (prefix `ShortKings`, protocol 1)
@@ -189,6 +195,22 @@ oversized outgoing messages are recorded as errors, not sent.
     stored in `ShortKingsDB.feed` (max 50), never sent.
   - The window opens on the Overview once (`settings.overviewShown`), then
     the last tab.
+
+## Design refresh (branch `design/refresh`, 3 Nov 2026, not merged)
+- Owner asked for a redesign on its own branch; **never merge or push to
+  `main` until they say "merge it"**. The branch couldn't be pushed from
+  their Mac on 3 Nov (no GitHub login there).
+- Visual rules live in `DESIGN.md`. Nothing visual is hard-coded outside
+  `UI/Theme.lua` (`tests/design_spec.lua` enforces it). Colours: gold = where
+  you are / one primary action / key figure; beard pink = selections and the
+  crest; spark orange = alerts and sync status only.
+- Widgets keep no ad-hoc fields read before they're set: the test stub
+  returns a function for any unknown field, so state lives in plain tables
+  (Theme's border map, Motion's group map) or is initialised at creation.
+- After changing Theme.lua: `node tools/preview-tokens.js`, then
+  `node docs/mockups/render.js` (Chrome headless or Playwright → PNG).
+- Local test tools on the owner's Mac were built in a session scratch folder
+  (not persistent); rebuild with lua.org 5.1.5 + LuaRocks if needed.
 
 ## Waiting on the user (remind them when relevant)
 Full post-launch checklist: PLAN.md section 10.

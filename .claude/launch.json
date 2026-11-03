@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "preview",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": ["-c", "cd /private/tmp/claude-501/-Users-ellisosborn-Documents-forever-shortkings/18810052-2c98-4a37-a1a0-a77ae1294412/scratchpad/site && exec python3 -m http.server 8765 --bind 127.0.0.1"],
+      "port": 8765
+    }
+  ]
+}
