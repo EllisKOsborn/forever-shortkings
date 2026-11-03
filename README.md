@@ -17,11 +17,11 @@
 
 <p align="center">
   <a href="#install">Install</a> ·
-  <a href="#the-look">The look</a> ·
   <a href="#whats-inside">What's inside</a> ·
   <a href="#commands">Commands</a> ·
   <a href="#faq">FAQ</a> ·
-  <a href="#roadmap">Roadmap</a>
+  <a href="#roadmap">Roadmap</a> ·
+  <a href="#the-look">The look</a>
 </p>
 
 > [!NOTE]
@@ -30,41 +30,6 @@
 > pictures here are drawn by the [browser preview](preview/index.html) from
 > the addon's real colours, fonts and layout. Item icons are placeholders;
 > in game you see the real ones.
-
----
-
-<a id="the-look"></a>
-
-## 👑 The look
-
-<p align="center"><img src="docs/images/before-after.png" alt="The Overview tab before and after the redesign" width="100%"></p>
-
-Black and gold, the way WoW's own UI likes it, with the mascot on top: a gnome
-with a **pink beard** and **lit dynamite**.
-
-<p align="center"><img src="docs/images/palette.png" alt="Colour roles: black, surface, gold, beard pink, dynamite, text, good, bad" width="100%"></p>
-
-- **Every colour has one job.** Gold shows where you are and the one main
-  button on a screen. Pink shows what you've picked. Dynamite orange appears
-  only on alerts (old data, a missing enchant, an update) and the sync dot.
-  Green and red mean yes and no.
-- **Clear type.** Square-cut **Chakra Petch** for the title, tabs and
-  headings; the game's own **Arial Narrow** for names and numbers, with
-  Blizzard's Russian, Korean and Chinese fallbacks so every name shows.
-- **Quick, quiet motion.** The window fades in, the gold underline glides
-  between tabs, rows light up under the mouse, menus drop from their button,
-  and the sync dot sends out a ring when new data arrives. All of it is
-  under a fifth of a second, picks up where it was if you click again, and
-  turns off with **Reduce motion**. Opening with `/sk` and closing with Esc
-  are always instant.
-- **Honest states.** Lists explain themselves when they're empty ("Nobody
-  matches…", "You're not in a guild…"), item names show placeholders while
-  they load, missing values are a dash, and Lua errors are counted in the
-  title bar.
-- **Fits your screen.** The window shrinks itself if your UI scale and
-  screen size would push it off the edge.
-
-The full design system is in [DESIGN.md](DESIGN.md).
 
 ---
 
@@ -347,6 +312,41 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 
 Testing it in game? Work through [TESTING.md](TESTING.md). The plan for launch
 week is in [PLAN.md section 10](PLAN.md#10-once-forever-is-live-from-4-nov-2026).
+
+---
+
+<a id="the-look"></a>
+
+## 👑 The look
+
+<p align="center"><img src="docs/images/before-after.png" alt="The Overview tab before and after the redesign" width="100%"></p>
+
+Black and gold, the way WoW's own UI likes it, with the mascot on top: a gnome
+with a **pink beard** and **lit dynamite**.
+
+<p align="center"><img src="docs/images/palette.png" alt="Colour roles: black, surface, gold, beard pink, dynamite, text, good, bad" width="100%"></p>
+
+- **Every colour has one job.** Gold shows where you are and the one main
+  button on a screen. Pink shows what you've picked. Dynamite orange appears
+  only on alerts (old data, a missing enchant, an update) and the sync dot.
+  Green and red mean yes and no.
+- **Clear type.** Square-cut **Chakra Petch** for the title, tabs and
+  headings; the game's own **Arial Narrow** for names and numbers, with
+  Blizzard's Russian, Korean and Chinese fallbacks so every name shows.
+- **Quick, quiet motion.** The window fades in, the gold underline glides
+  between tabs, rows light up under the mouse, menus drop from their button,
+  and the sync dot sends out a ring when new data arrives. All of it is
+  under a fifth of a second, picks up where it was if you click again, and
+  turns off with **Reduce motion**. Opening with `/sk` and closing with Esc
+  are always instant.
+- **Honest states.** Lists explain themselves when they're empty ("Nobody
+  matches…", "You're not in a guild…"), item names show placeholders while
+  they load, missing values are a dash, and Lua errors are counted in the
+  title bar.
+- **Fits your screen.** The window shrinks itself if your UI scale and
+  screen size would push it off the edge.
+
+The full design system is in [DESIGN.md](DESIGN.md).
 
 ---
 
