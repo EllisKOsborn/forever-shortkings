@@ -30,15 +30,25 @@
   .scaler { transform-origin: top center; }
   .pane { display: flex; flex-direction: column; gap: 8px; align-items: center; }
   .pane > .cap { color: #9aa0a6; font-size: 12px; }
-  body.shot { background: #000; } body.shot .chrome, body.shot .note { display: none; } body.shot .stage { padding: 0; display: block; }
+  html:has(body.shot), body.shot { background: #000; } body.shot .chrome, body.shot .note { display: none; } body.shot .stage { padding: 0; display: block; }
   body.shot .win { border: 0; }
   .bannerArt { display: none; }
   body.banner .stage { display: none; } body.banner .bannerArt { display: flex; }
   .bannerArt { width: 1200px; height: 300px; background: #000; align-items: center; justify-content: center; gap: 40px; }
-  .bannerArt i { width: 160px; height: 160px; background: var(--tex-crest) center/contain no-repeat; }
+  .bannerArt i { width: 168px; height: 168px; background: url(img/crest-large.png) center/contain no-repeat; }
   .bannerArt b { display: block; font: 600 88px/1 "Chakra Petch SK", sans-serif; color: #fff; text-transform: uppercase; }
   .bannerArt span { display: block; margin-top: 14px; font: 28px "Arial Narrow", Arial, sans-serif; color: var(--dim); }
   .bannerArt em { display: block; width: 120px; height: 3px; background: var(--gold); margin-top: 22px; }
+  body.compare .stage { display: flex; flex-wrap: nowrap; gap: 24px; padding: 40px 24px 24px; align-items: flex-start; }
+  body.compare .pane > .cap { font: 600 15px "Chakra Petch SK", sans-serif; letter-spacing: .04em; text-transform: uppercase; color: #a6a6a6; }
+  .paletteArt { display: none; }
+  body.palette .stage { display: none; } body.palette .paletteArt { display: grid; }
+  .paletteArt { width: 1200px; padding: 40px; gap: 28px; grid-template-columns: repeat(4, 1fr); background: #000; }
+  .paletteArt div { display: flex; flex-direction: column; gap: 10px; }
+  .paletteArt i { height: 96px; border: 1px solid #2a2a2a; }
+  .paletteArt b { font: 600 15px "Chakra Petch SK", sans-serif; text-transform: uppercase; color: #f5f5f5; }
+  .paletteArt span { font: 14px/1.35 "Arial Narrow", Arial, sans-serif; color: #a6a6a6; }
+  .paletteArt code { font: 13px "Arial Narrow", Arial, sans-serif; color: #f5f5f5; }
   .before img { width: 880px; max-width: calc(100vw - 32px); display: block; border: 1px solid #3a3d42; }
 
   /* ---------- the addon window (mirrors the Lua layout) ---------- */
@@ -180,6 +190,7 @@
 </div>
 <div class="stage" id="stage"></div>
 <div class="bannerArt" aria-hidden="true"><i></i><div><b>Short Kings</b><span>Small in stature. Big in loot.</span><em></em></div></div>
+<div class="paletteArt" id="paletteArt" aria-hidden="true"></div>
 <p class="note">Everything in the window uses the addon's own values: colours, sizes, spacing and motion timings are generated from
   <code>UI/Theme.lua</code> (<code>node tools/preview-tokens.js</code>), and the title font is the bundled Chakra Petch. Item icons are game files,
   so gear slots show the slot name instead. Tooltips are the game's own (approximated here). All names and numbers are made up.
@@ -541,7 +552,7 @@ function render(opts = {}) {
   document.body.classList.toggle("reduce", S.reduce);
   const stage = $("#stage");
   // Window size (as in game) times a fit-to-screen factor for narrow browser windows.
-  const cols = S.view === "before" && innerWidth > 1840 ? 2 : 1;
+  const cols = S.view === "before" && (innerWidth > 1840 || SHOT === "compare") ? 2 : 1;
   const fit = SHOT ? 1 : Math.min(1, (innerWidth - 32 - (cols - 1) * 24) / cols / (T.sizes.windowW * S.scale));
   const k = S.scale * fit;
   const scaleWrap = (inner) => `<div class="scaler" style="transform:scale(${k});height:${T.sizes.windowH * k}px;width:${T.sizes.windowW * k}px;transform-origin:top left">${inner}</div>`;
@@ -647,7 +658,17 @@ try { Object.assign(S, JSON.parse(localStorage.getItem("skPreview") || "{}")); }
 const Q = new URLSearchParams(location.search);
 for (const k of ["screen", "data", "view", "raid"]) if (Q.get(k)) S[k] = Q.get(k);
 const SHOT = Q.get("shot");
-if (SHOT) { document.body.classList.add("shot"); S.view = "after"; S.reduce = true; if (SHOT === "banner") document.body.classList.add("banner"); }
+if (SHOT) {
+  document.body.classList.add("shot"); S.view = SHOT === "compare" ? "before" : "after"; S.reduce = true;
+  if (SHOT === "banner" || SHOT === "compare" || SHOT === "palette") document.body.classList.add(SHOT);
+}
+// Colour roles for the README palette picture (values straight from Theme.lua).
+const ROLES = [["void", "Black", "The window. True black, like the reference."], ["surface", "Surface", "Panels inside it: one tone step up, no shadows."],
+  ["gold", "Gold", "Where you are, the one main button, the key number."], ["beard", "Beard pink", "What you picked: rows, filters, ticks, the crest."],
+  ["spark", "Dynamite", "Alerts and the sync dot. Nothing else."], ["text", "Text", "Names and the numbers that matter."],
+  ["good", "Good", "Attuned, ready, shared."], ["bad", "Bad", "Not attuned, nobody can make it."]];
+const hex = (c) => "#" + c.slice(0, 3).map((v) => Math.round(v * 255).toString(16).padStart(2, "0")).join("").toUpperCase();
+$("#paletteArt").innerHTML = ROLES.map((r) => `<div><i style="background:${hex(T.color[r[0]])}"></i><b>${r[1]}</b><code>${hex(T.color[r[0]])}</code><span>${r[2]}</span></div>`).join("");
 G = makeGuild(S.data === "loading" || S.data === "error" ? "full" : S.data); if (S.data === "loading") G.members = [];
 ["segView", "segScreen", "segData", "segScale"].forEach(seg);
 $("#btnToggle").onclick = () => { if (S.open) closeWin(); else { S.open = true; render({ anim: "anim-in" }); } };

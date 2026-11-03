@@ -196,10 +196,10 @@ oversized outgoing messages are recorded as errors, not sent.
   - The window opens on the Overview once (`settings.overviewShown`), then
     the last tab.
 
-## Design refresh (branch `design/refresh`, 3 Nov 2026, not merged)
-- Owner asked for a redesign on its own branch; **never merge or push to
-  `main` until they say "merge it"**. The branch couldn't be pushed from
-  their Mac on 3 Nov (no GitHub login there).
+## Design refresh (merged into `main` on 3 Nov 2026, owner's request)
+- Built on branch `design/refresh`, then merged into `main` when the owner
+  asked. Not yet in a tagged release (v0.2.2 still has the old look); tag
+  only when asked. Untested in game.
 - Visual rules live in `DESIGN.md`. Nothing visual is hard-coded outside
   `UI/Theme.lua` (`tests/design_spec.lua` enforces it). Colours: gold = where
   you are / one primary action / key figure; beard pink = selections and the
@@ -208,7 +208,9 @@ oversized outgoing messages are recorded as errors, not sent.
   returns a function for any unknown field, so state lives in plain tables
   (Theme's border map, Motion's group map) or is initialised at creation.
 - After changing Theme.lua: `node tools/preview-tokens.js`, then
-  `node docs/mockups/render.js` (Chrome headless or Playwright → PNG).
+  `node docs/mockups/render.js` (Chrome headless or Playwright → PNG). The
+  README pictures (incl. before-after.png and palette.png) come from it;
+  the old pictures live in `docs/images/before/`.
 - Local test tools on the owner's Mac were built in a session scratch folder
   (not persistent); rebuild with lua.org 5.1.5 + LuaRocks if needed.
 

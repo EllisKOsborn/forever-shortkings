@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased: design refresh (branch `design/refresh`)
+## Unreleased: the new look (on `main` since 3 Nov 2026)
 
 A new look for every window. Nothing about sync, saved data or features
 changed. **Not tested in game yet.**

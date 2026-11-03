@@ -127,6 +127,14 @@ const TEXTURES = {
 
 fs.mkdirSync(TGA_DIR, { recursive: true });
 fs.mkdirSync(PNG_DIR, { recursive: true });
+// Large crest for the README banner only (PNG, not shipped to the game).
+const scale = (s, k) => ({ ...s, hit: (x, y) => s.hit(x / k, y / k) });
+{
+  const k = 8, px = render(64 * k, crest.map((s) => scale(s, k)));
+  writePNG(path.join(PNG_DIR, "crest-large.png"), 64 * k, px);
+  console.log("wrote crest-large 512x512 (PNG only)");
+}
+
 for (const [name, [size, shapes]] of Object.entries(TEXTURES)) {
   const px = render(size, shapes);
   writeTGA(path.join(TGA_DIR, name + ".tga"), size, px);

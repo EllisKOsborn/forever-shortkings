@@ -22,6 +22,8 @@ const SHOTS = {
   character: ["shot=1&screen=character&data=full", W, H],
   crafters: ["shot=1&screen=crafters&data=full", W, H],
   settings: ["shot=1&screen=settings&data=full", W, H],
+  "before-after": ["shot=compare&screen=overview&data=full", 2 * W + 72, H + 84],
+  palette: ["shot=palette", 1200, 484],
 };
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";

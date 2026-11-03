@@ -4,19 +4,20 @@
 
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-D94FA0?labelColor=2A1220">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.2.2%20alpha-FF7A1A?labelColor=2A1220">
-  <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FFC24A?labelColor=2A1220">
+  <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-FFC000?labelColor=000000">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.2.2%20%2B%20new%20look-F06BB0?labelColor=000000">
+  <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FF6A1A?labelColor=000000">
 </p>
 
 <p align="center">
   <b>The guild addon for the Short Kings of World of Warcraft: Forever.</b><br>
-  See every member's gear, talents, professions and recipes in one window.<br>
+  Everyone's gear, talents, professions, recipes and raid readiness in one window.<br>
   No website, no server, no uploads: it all travels over the guild's addon channel.
 </p>
 
 <p align="center">
   <a href="#install">Install</a> ·
+  <a href="#the-look">The look</a> ·
   <a href="#whats-inside">What's inside</a> ·
   <a href="#commands">Commands</a> ·
   <a href="#faq">FAQ</a> ·
@@ -24,11 +25,46 @@
 </p>
 
 > [!NOTE]
-> **v0.2.2 is the first release, for launch day, and hasn't been run in game yet.** It's built against
-> Blizzard's own Forever 1.60.1 interface code and tested with a simulated WoW
-> client. The pictures below are **mockups** drawn from the addon's real
-> colours and layout (the browser preview in `preview/`). Item icons are
-> placeholders; in game you see the real ones.
+> **Not run in game yet.** Short Kings is built against Blizzard's own Forever
+> 1.60.1 interface code and tested against a simulated WoW client. The
+> pictures here are drawn by the [browser preview](preview/index.html) from
+> the addon's real colours, fonts and layout. Item icons are placeholders;
+> in game you see the real ones.
+
+---
+
+<a id="the-look"></a>
+
+## 👑 The look
+
+<p align="center"><img src="docs/images/before-after.png" alt="The Overview tab before and after the redesign" width="100%"></p>
+
+Black and gold, the way WoW's own UI likes it, with the mascot on top: a gnome
+with a **pink beard** and **lit dynamite**.
+
+<p align="center"><img src="docs/images/palette.png" alt="Colour roles: black, surface, gold, beard pink, dynamite, text, good, bad" width="100%"></p>
+
+- **Every colour has one job.** Gold shows where you are and the one main
+  button on a screen. Pink shows what you've picked. Dynamite orange appears
+  only on alerts (old data, a missing enchant, an update) and the sync dot.
+  Green and red mean yes and no.
+- **Clear type.** Square-cut **Chakra Petch** for the title, tabs and
+  headings; the game's own **Arial Narrow** for names and numbers, with
+  Blizzard's Russian, Korean and Chinese fallbacks so every name shows.
+- **Quick, quiet motion.** The window fades in, the gold underline glides
+  between tabs, rows light up under the mouse, menus drop from their button,
+  and the sync dot sends out a ring when new data arrives. All of it is
+  under a fifth of a second, picks up where it was if you click again, and
+  turns off with **Reduce motion**. Opening with `/sk` and closing with Esc
+  are always instant.
+- **Honest states.** Lists explain themselves when they're empty ("Nobody
+  matches…", "You're not in a guild…"), item names show placeholders while
+  they load, missing values are a dash, and Lua errors are counted in the
+  title bar.
+- **Fits your screen.** The window shrinks itself if your UI scale and
+  screen size would push it off the edge.
+
+The full design system is in [DESIGN.md](DESIGN.md).
 
 ---
 
@@ -39,167 +75,99 @@
 | | What you get |
 |---|---|
 | 🏰 **Overview** | The guild at a glance: who's around, raid readiness, data health, professions, recipes and recent milestones |
-| 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains |
+| 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains and a raid-attunement view |
 | 🛡️ **Character** | Anyone's gear, talents, professions, cooldowns, attunements and reputations |
 | ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first |
-| ⚙️ **Settings** | Sync and privacy switches, window size, and a live status read-out |
-| 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, reminders, and a copyable debug report |
-| 👑 **The look** | Black and gold, with the gnome's pink beard for whatever you pick and dynamite orange only for alerts and sync. Quick, quiet animations (with a **Reduce motion** switch) |
+| ⚙️ **Settings** | Sharing and privacy switches, display options, window size, tools and a live status read-out |
+| 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, chat reminders and a copyable debug report |
 
 ### 🏰 Overview
-<p align="center"><img src="docs/images/overview.png" alt="Overview tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/overview.png" alt="Overview tab" width="100%"></p>
 
-Your one-stop dashboard, and the first tab. Six sections in three columns,
-set like a spec sheet, each with a link that takes you to where you can act on it:
+The first tab: six sections in three columns, set like a spec sheet. Each
+section has a link to the place where you can act on it.
 
-- **Guild**: members (and roughly how many players, with alts counted once), who's online and who's online with Short Kings, how many have shared their data, and how many characters are level 60, 50–59, 40–49 and 1–39. Link: *Open roster*.
-- **Raids**: days until raids open (9 Dec). Barrow Deeps and Hyjal Summit need no attunement, so the card shows how many level 60s you have. For Onyxia's Lair it counts attuned / not / unknown, plus how many have the quest done but the Drakefire Amulet out of their bags. Button: *Onyxia list* (the Roster with Onyxia picked).
-- **Data health**: members without Short Kings data, profiles older than a week, characters who haven't opened a profession window, and people on an old Short Kings (including you). Says "All good" when there's nothing to fix. Button: *Oldest first* (the Roster with missing and oldest data at the top).
-- **Professions**: how many characters have each crafting profession and how many are at 300 (or the best skill so far); professions **nobody** has are shown in red; one line for gathering. Link: *Find a crafter*.
-- **Recipes**: how many recipes the guild knows, from how many crafters, and how many **only one character** knows (with a few examples), so you know where you have no backup. Button: *Search recipes*.
-- **Recent milestones**: level-ups (every 10 levels), profession skill 75/150/225/300, Onyxia attunement and newly learned recipes, newest first. Hover for when, click to open the character, and press **Grats** to type "Grats Bramble on level 60!" into guild chat (you press Enter).
+- **Guild**: members, players (alts counted once), online now, running Short Kings, shared their data, and levels in bands (60, 50–59, 40–49, 1–39). *Open roster*.
+- **Raids**: the one big number, days until raids open on 9 Dec. Barrow Deeps (10) and Hyjal Summit (20) need no attunement, so it counts your level 60s. Onyxia's Lair (40) shows attuned / not attuned / unknown, and how many have the quest done but the Drakefire Amulet out of their bags. *Onyxia list*.
+- **Data health**: members without Short Kings data, profiles older than a week, profession windows never opened, and anyone on an old Short Kings (you included). "All good" when there's nothing to fix. *Oldest first* opens the Roster with missing and oldest data on top.
+- **Professions**: characters per crafting profession, how many are at 300 (or the best so far), **nobody** in red where the guild has a gap, and one line for gathering. *Find a crafter*.
+- **Recipes**: recipes the guild knows, from how many crafters, and how many **only one character** knows, with examples, so you can see where there's no backup. *Search recipes*.
+- **Recent milestones**: level-ups (every 10 levels), profession 75/150/225/300, Onyxia attunement and new recipes. Hover for when, click to open the character, **Grats** types "Grats Bramble on level 60!" into guild chat (you press Enter).
 
-The header line shows your guild, members, how many are online and the days until raids open.
-
-Milestones are worked out by **your own addon** when it sees a newer copy of a
-character, and kept on your computer only (the last 50). Nothing new is sent
-over the network. The first time your addon sees someone, it doesn't
-announce anything, so a fresh install doesn't fill the list. Turn it off in
-Settings ("Record guild milestones").
+The line above the columns shows your guild, members and who's online.
+Milestones are worked out by **your own addon** and kept on your computer
+only (the last 50); nothing extra is sent. Turn them off in Settings.
 
 ### 👥 Roster
-<p align="center"><img src="docs/images/roster.png" alt="Roster tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/roster.png" alt="Roster tab" width="100%"></p>
 
 - **Every guild member**, including people without the addon.
-- **Columns:**
-  - **Name** in class colour, marked *(you)* for your characters, plus a **+2** when alts are folded in.
-  - **Level** and **rank**.
-  - **Spec**: main talent tree and points, e.g. *Holy 21/30/0*.
-  - **Professions** with skill levels.
-  - **Item level**.
-  - **Online**: a coloured dot, then *Online*, *on alt* or how long ago they were last seen.
-  - **Ver**: their Short Kings version, in orange when out of date.
-  - **Data**: how fresh their profile is (orange when more than a week old: it may be out of date).
-- **Status dots:** 🟩 online with Short Kings · 🟨 online without it · ⬜ offline.
-- **Group alts** (on by default) folds each player's characters into one row, under the character they chose as their main.
-- **Sort** by clicking any column. Online members come first.
-- **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name.
-- **Counter** at the top: characters, how many have data, how many need an addon update, and whether a newer Short Kings is out.
-- **Copy** (top right) gives the list exactly as shown, as plain text to paste into Discord. Notes are never included.
-- **Raid picker** (*All raids*, Barrow Deeps (10), Hyjal Summit (20), Onyxia's Lair (40), the raids in Forever's first wave). Pick a raid to see who's attuned:
-  - Barrow Deeps and Hyjal Summit need no attunement, so they just say so;
-  - for Onyxia, an **Attuned** column: green tick *yes* (quest done, or the Drakefire Amulet in their bags), red cross *no*, grey *unknown* (no Short Kings data or gear hidden); an orange **!** means the quest is done but the amulet isn't in their bags (you need it in your bags to enter);
-  - filter buttons **All / Attuned / Not attuned / Unknown**;
-  - a counter such as "23 attuned · 9 not · 6 unknown";
-  - **Max level only** (on by default), where max level is the highest level in the guild;
-  - every character on its own row, even alts, with "alt of X" in the tooltip;
-  - a note for raids whose attunement quests aren't known yet.
+- **Columns:** **Name** in class colour (*(you)* in pink on your characters, **+2** when alts are folded in), **Level**, **Rank**, **Spec** (main tree and points), **Professions**, **iLvl**, **Online** (a dot, then *online*, *on alt* or how long ago), **Version** (orange when out of date) and **Data** (how fresh their profile is; orange after a week).
+- **Status dots:** 🟢 online with Short Kings · ⚪ online without it · ⚫ offline.
+- **Sort** by clicking a column (an arrow marks the sorted one). Online members come first.
+- **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name. A search with no matches says so.
+- **Group alts** (on by default) shows each player once, under their main.
+- **Counter**: characters, how many have data, how many need an update, and whether a newer Short Kings is out.
+- **Copy** gives the list exactly as shown, as plain text for Discord. Notes are never included.
+- **Hover a row** for online status, every profession, missing enchants, the public note (and officer note if you're an officer), their alts and their addon version. **Click** to open the character.
 
-  Your raid and filter choices are remembered.
+**Raid view.** Pick a raid from the menu (Barrow Deeps, Hyjal Summit or
+Onyxia's Lair, Forever's first wave) to see who's attuned:
 
-  <details>
-  <summary>Show the Roster with a raid picked</summary>
-  <p align="center"><img src="docs/images/attunement.png" alt="Roster with Onyxia's Lair picked: Attuned column and filters" width="100%"></p>
-  </details>
-- **Hover a row** to see:
-  - their online status;
-  - all their professions, including Cooking, First Aid and Fishing;
-  - missing enchants;
-  - the public note, plus the officer note if you're an officer;
-  - their alts, with each alt's online status;
-  - their addon version.
-- **Click a row** to open that character.
+<p align="center"><img src="docs/images/attunement.png" alt="Roster with Onyxia's Lair picked: Attuned column and filters" width="100%"></p>
+
+- Barrow Deeps and Hyjal Summit need no attunement, so they just say so.
+- For Onyxia, an **Attuned** column: *yes* (quest done, or the amulet in their bags), *no*, or *unknown* (no data, or gear hidden). An orange **!** means the quest is done but the amulet isn't in their bags, and you need it there to enter.
+- Filters **All / Attuned / Not attuned / Unknown**, a count such as "23 attuned · 9 not · 6 unknown", and **Max level only** (on by default).
+- Every character gets its own row, alts included, with "alt of X" in the tooltip. Your choices are remembered.
 
 ### 🛡️ Character
-<p align="center"><img src="docs/images/character.png" alt="Character tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/character.png" alt="Character tab" width="100%"></p>
 
-- **Buttons:** *< Roster*, *Me* (your own character), *Whisper* (opens a whisper to them), *Ask for latest*, and *Make this my main* on your own alts.
-- **Ask for latest** asks them (or their alt, if that's who is online) for their newest data. Their addon re-reads their character first. It works only while they're online with Short Kings, at most once every 30 seconds; otherwise it's greyed out with "Offline: showing their last known data". The header says "Asked for the latest data…" until the answer arrives.
-- **Header:** name, level, race, class and guild rank. It also shows how old the data is and where it came from: *this account*, *from them*, or *relayed by a guildmate*.
-- **Paperdoll** with all 19 slots, borders coloured by item quality.
-  - Hover a slot for the **real item tooltip**.
-  - **Shift-click** to link the item in chat.
-  - **Ctrl-click** to preview it in the dressing room.
-- **Average item level** and main talent tree in the middle of the paperdoll.
-- **Missing enchants:** an orange **!** on the slot, a note in the tooltip, and a count such as "2 missing enchants".
-- **Details** beside the paperdoll:
-  - **Alts** (same player) and **notes**.
-  - **Talents**: points in each tree.
-  - **Professions**: skill level, number of known recipes, or *not scanned yet*.
-  - **Cooldowns** (transmutes, Mooncloth and the like): time left, or *ready*.
-  - **Attunements** for the first raid wave: Onyxia's Lair (*done* / *not done*, plus a warning if the Drakefire Amulet isn't in their bags); Barrow Deeps and Hyjal Summit say *no attunement needed*.
-  - **Reputations**: raid and crafting factions first, then every faction at Friendly or above.
-- **Privacy:** if someone hides their gear or recipes, it says *hidden by this player* instead.
+- **Top:** *Back to roster*, *My character*, *Whisper* and the gold **Ask for latest** button (or *Make this my main* on your own alts).
+- **Ask for latest** asks them (or their online alt) for their newest data. It works while they're online with Short Kings, at most every 30 seconds; otherwise it's greyed out and says why.
+- **Header:** name in class colour, level, race, class and rank, plus how old the data is and where it came from (*this account*, *from them*, *relayed by a guildmate*). Old data says *may be out of date*.
+- **Paperdoll:** all 19 slots with item-quality borders. Hover for the **real item tooltip**, Shift-click to link it, Ctrl-click for the dressing room. The middle shows **average item level** in gold, the main talent tree, and how many enchants are missing (an orange **!** marks each slot).
+- **Details** in two columns:
+  - **Alts** and **notes**; **talents** per tree; **professions** with skill, recipe count or *not scanned yet*; **cooldowns** (transmutes, Mooncloth: time left or *ready*).
+  - **Attunements** for the first raid wave (with the amulet warning) and **reputations**: raid and crafting factions first, then everything at Friendly or above.
+- **Privacy:** hidden gear or recipes say *hidden by this player*.
+- **No data yet?** The panel says so and explains why, instead of showing empty boxes.
 
 ### ⚒️ Crafters
-<p align="center"><img src="docs/images/crafters.png" alt="Crafters tab mockup" width="100%"></p>
+<p align="center"><img src="docs/images/crafters.png" alt="Crafters tab" width="100%"></p>
 
-- **Search** part of an item or recipe name: "arcanite", "mooncloth", "enchant boots". Type at least 3 letters. Upper or lower case doesn't matter.
-- **Results**, one row per recipe (up to 200):
-  - the item's icon;
-  - its name in item-quality colour (enchants show the recipe name);
-  - the profession;
-  - how many guildmates can make it and how many are online, e.g. "3 crafters (1 online)".
-- **Hover a result** for the real item tooltip. **Click it** to open the side panel.
-- **Side panel**: every crafter, online first, then by skill:
-  - a status dot and their name in class colour;
-  - their skill level;
-  - *on Gillybean* when they're offline but an alt is online (Whisper goes to the alt), or *alt of X*;
-  - a **Whisper** button (greyed out when nobody on that player's characters is online);
-  - hover a crafter to see when their recipes were recorded; click to open their character.
-- **Post to guild chat** types "[Item] can be made by: A, B, C" into your chat box. You press Enter to send it.
-- **Copy** gives the crafter list as plain text for Discord.
-- Recipes come from what each crafter recorded when they last opened their profession window. If nobody has yet, the tab says so. People who hide their recipes aren't listed.
-- Item names load from the game a little at a time, so the first search can take a few seconds to fill in.
+- **Search** at least 3 letters of an item or recipe: "arcanite", "mooncloth", "enchant boots".
+- **Results** (up to 200): the item's icon, its name in quality colour, the profession, and how many crafters there are (and how many online). Hover for the real item tooltip; click to pick it.
+- **Side panel:** every crafter, online first, then by skill, with a status dot, their skill, *on Gillybean* when they're on an alt (Whisper goes there) or *alt of X*, and a **Whisper** button. Long item names wrap rather than being cut off.
+- **Post to guild chat** (gold) types "[Item] can be made by: A, B, C" into your chat box; you press Enter. **Copy** gives the list as plain text.
+- Recipes come from each crafter's last visit to their profession window. While item names load from the game, placeholder rows show where results will appear.
 
 ### ⚙️ Settings
-<details>
-<summary>Show the Settings tab</summary>
-<p align="center"><img src="docs/images/settings.png" alt="Settings tab mockup" width="100%"></p>
-</details>
+<p align="center"><img src="docs/images/settings.png" alt="Settings tab" width="100%"></p>
 
-- **Share and receive guild data**: turns sync on or off entirely.
-- **Share my gear and talents** / **Share my recipes and cooldowns**: privacy switches.
-- **Show guild crafters in item tooltips** (on by default).
-- **Record guild milestones (Overview)** (on by default; kept on your computer only).
-- **Show minimap button**, and **debug logging** in chat.
-- **Reduce motion**: turns off the window, tab and sync animations.
-- **Window size**: 70% to 130%.
-- **Buttons:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
-- **What guildmates see from you**: a read-only list of what you share and what stays private, taken from the exact copy that is sent, plus what is never shared.
-- **Live status:**
-  - version and guild;
-  - whether sync is running or paused, and why (combat, instance, …);
-  - whether this account may send;
-  - message counts;
-  - when your data last updated;
-  - which profession windows you still need to open.
+- **Sharing:** *Share and receive guild data* (sync on or off), *Share my gear and talents*, *Share my recipes and cooldowns*.
+- **Display:** *Show guild crafters in item tooltips*, *Record guild milestones*, *Show minimap button*, **Reduce motion**, *Debug logging in chat*.
+- **Window size:** 70% to 130%.
+- **Tools:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
+- **Status:** version, guild, whether sync is running or paused (and why), whether you may send, message counts, Lua errors caught, when your data last updated, and which profession windows you still need to open.
+- **What guildmates see from you:** a read-only list of exactly what you share, what stays private, and what's never shared.
 
 ### 🧨 Everywhere
-- **Open it** with `/sk` (or `/shortkings`) or the **minimap button**.
-  - Left-click opens the window.
-  - Right-click opens Settings.
-  - Drag the button to move it around the minimap.
-- **The window** opens on the Overview the first time, then on whichever tab you used last. It can be dragged by its title bar and remembers its place and size. **Esc** closes it, and the title bar shows your guild and whether sync is on.
-- **Automatic collection.** Every character you log in on is recorded:
-  - gear and item level, talents and reputations;
-  - professions, recipes (when you open the profession window) and cooldowns;
-  - attunements;
-  - your other characters.
-
-  It refreshes whenever something changes.
-- **"Crafted by" on every item tooltip**: hover any item (bags, chat links, the auction house, loot) to see a line such as "Short Kings: Bramble (online), Dabble +2 more". Online crafters come first, at most three names. Turn it off in Settings.
-- **Chat reminders:** which profession windows you still need to open, when a guildmate has a newer Short Kings, and a notice if a trial account can't share data.
-- **`/sk debug`** opens a copyable report of what the addon can see. Send it when something looks wrong. `/sk log` adds the recent activity log. It starts with the **live-client checks** that decide what we build next, and ends with the **last 10 Lua errors** Short Kings caught (kept in memory only).
+- **Open it** with `/sk` (or `/shortkings`) or the **minimap button**: left-click opens the window, right-click opens Settings, drag to move it.
+- **The window** opens on the Overview the first time, then on your last tab. Drag it by the title bar; it remembers where you left it. **Esc** closes it. The title bar shows the crest, your guild and the sync status.
+- **Automatic collection** on every character you play: gear, item level, talents, reputations, professions, recipes (when you open the profession window), cooldowns, attunements and your other characters.
+- **"Crafted by" on item tooltips:** hover any item to see "Short Kings: Bramble (online), Dabble +2 more". Online crafters first, at most three names.
+- **Chat reminders** for profession windows still to open, a newer Short Kings, and trial accounts that can't share.
+- **`/sk debug`** opens a copyable report of what the addon can see, starting with the live-client checks and ending with the last Lua errors it caught. **Send it when something looks wrong.**
 
 ### 🔒 Under the hood
-- **Your own data always wins.** A copy passed on by someone else can never overwrite a newer copy from the character themselves.
-- **Light on the network.** Only small fingerprints are broadcast, and full profiles are whispered to whoever needs them. Everything is rate-limited, so nobody gets disconnected.
-- **Careful with what it receives.** Messages over 32 KB are refused before unpacking, every profile is checked before it's stored, and no guildmate can flood you (60 messages a minute each).
-- **Stays out of your way.** Sync pauses in combat, in dungeons, raids, battlegrounds and arenas, and whenever the game locks addon chat. Big recipe lists are read a little at a time, so there are no hitches.
-- **Private by default where it matters.** Notes and officer notes are never sent, nor are gold, bags or chat. You choose whether gear and recipes are shared.
-- **Fair to everyone.** Members without the addon still appear in the roster. Trial accounts can still see their own data.
-- **Tidies up.** Members who leave the guild are forgotten 30 days later.
+- **Your own data always wins.** A copy relayed by someone else never overwrites a newer copy from the character themselves.
+- **Light on the network.** Only small fingerprints are broadcast; full profiles are whispered to whoever needs them, rate-limited so nobody is disconnected.
+- **Careful with what it receives.** Oversized messages (over 32 KB) are refused, every profile is checked before it's stored, and no guildmate can flood you (60 messages a minute each).
+- **Stays out of your way.** Sync pauses in combat, in every kind of instance and whenever the game locks addon chat. The window is safe to open in combat.
+- **Private where it matters.** Notes, officer notes, gold, bags and chat are never sent. You choose whether gear and recipes are shared.
+- **Tidies up.** Members who leave are forgotten 30 days later.
 
 ---
 
@@ -207,10 +175,16 @@ Settings ("Record guild milestones").
 
 ## 📦 Install
 
-1. Download the latest **`ShortKings-x.y.z.zip`** from
+> [!TIP]
+> **Want the new look before the next release?** Releases up to v0.2.2 still
+> have the old purple design. The newest build of `main` is under
+> **Actions → Tests → latest run → `ShortKings-test-build`** (needs a GitHub
+> login). Unzip it and install it the same way.
+
+1. Download **`ShortKings-x.y.z.zip`** from
    [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases)
-   (under *Assets*). The first release is **v0.2.2**, for launch day.
-2. Unzip it. You'll get a folder called **`ShortKings`**.
+   (under *Assets*).
+2. Unzip it. You get a folder called **`ShortKings`**.
 3. Move that folder into your Forever **AddOns** folder:
 
    🍎 **Mac**
@@ -222,21 +196,20 @@ Settings ("Record guild milestones").
    C:\Program Files (x86)\World of Warcraft\_forever_\Interface\AddOns\
    ```
 
-4. Restart the game. *Short Kings* should be listed under **AddOns** on the character screen.
+4. Restart the game. *Short Kings* is listed under **AddOns** on the character screen.
 
 > [!TIP]
 > **Can't find the folder?** In the Battle.net app, pick **WoW Forever**,
-> click the **⚙** next to Play, then **Show in Explorer** (Windows) or
-> **Show in Finder** (Mac). Open `Interface`, then `AddOns`. If there's no
+> click the **⚙** next to Play, then **Show in Finder** (Mac) or **Show in
+> Explorer** (Windows). Open `Interface`, then `AddOns`. If there's no
 > `AddOns` folder, create one, spelled exactly like that.
 
 > [!IMPORTANT]
 > The result must be `AddOns/ShortKings/ShortKings.toc`. A `ShortKings`
 > folder inside another `ShortKings` folder won't load.
 
-**First time in game:**
-- Open each of your **profession windows once** so your recipes are recorded. The addon reminds you which ones are left.
-- Log in on each **alt** once, too.
+**First time in game:** open each of your **profession windows once** so your
+recipes are recorded (the addon reminds you), and log in on each **alt** once.
 
 ---
 
@@ -248,8 +221,8 @@ Settings ("Record guild milestones").
 |---|---|
 | `/sk` | open or close the window (the minimap button does the same) |
 | `/sk debug` | get a copyable report of what the addon can see. **Send this when something's wrong** |
-| `/sk log` | get the same report plus the recent log |
-| `/sk scan` | re-read your character right now |
+| `/sk log` | the same report plus the recent log |
+| `/sk scan` | re-read your character now |
 | `/sk sync` | share your data now and ask for anything missing |
 | `/sk reset` | put the window back in the middle of the screen |
 
@@ -262,28 +235,20 @@ Settings ("Record guild milestones").
 ## ❓ FAQ
 
 <details>
-<summary><b>Someone shows "no addon/trial". Why?</b></summary>
+<summary><b>Someone shows no data. Why?</b></summary>
 
-They don't have Short Kings installed, haven't logged in since installing it,
-or are on a **trial account**. Trial accounts can't send addon messages, so
-their data can't reach anyone. From the outside, the addon can't tell these
-cases apart.
+They don't have Short Kings, haven't logged in since installing it, or are on
+a **trial account** (trial accounts can't send addon messages). From the
+outside the addon can't tell these apart, so it says all three.
 </details>
 
 <details>
-<summary><b>My alt is missing.</b></summary>
+<summary><b>My alt is missing, or isn't grouped under my main.</b></summary>
 
-The game only lets an addon read the character you're logged in as. Log in on
-the alt once and it will be saved and shared.
-</details>
-
-<details>
-<summary><b>My alt isn't grouped under my main.</b></summary>
-
-Log in on **both** characters at least once with the addon. Alts are only
-linked when each character confirms the other (so nobody can claim someone
-else as their alt). To choose which one is shown first, open that character
-on the Character tab and press **Make this my main**.
+The game only lets an addon read the character you're logged in as, so log in
+on each alt once. Alts are linked only when **both** characters have done
+that (so nobody can claim someone else as their alt). To choose which one is
+shown first, open it on the Character tab and press **Make this my main**.
 </details>
 
 <details>
@@ -291,53 +256,55 @@ on the Character tab and press **Make this my main**.
 
 Yes. In **Settings**, untick *Share my gear and talents* or *Share my recipes
 and cooldowns*. Guildmates then see "hidden by this player"; you still see
-your own. Your name, level and profession levels are always shared, as the
-guild roster already shows them. Notes and officer notes are never sent.
+your own. Name, level and profession levels are always shared, as the guild
+roster shows them anyway. Notes and officer notes are never sent.
 </details>
 
 <details>
 <summary><b>My recipes aren't showing.</b></summary>
 
-Open that profession's window once. Recipes are read from the profession
-window, so the Character tab says "not scanned yet" until you do. After
-that, your full recipe list is shared, you appear in the **Crafters** tab,
-and your name shows on the tooltips of the items you can make. Open the
-window again after learning new recipes.
-</details>
-
-<details>
-<summary><b>Can I see who can craft something?</b></summary>
-
-Yes: the **Crafters** tab. Type part of the item's name and click a result.
-Item tooltips also list guild crafters. Offline crafters are included, from
-the last time they opened their profession window, so you can whisper them
-later or catch them on an alt.
+Open that profession's window once. Until then the Character tab says "not
+scanned yet". After that your full recipe list is shared, you appear in
+**Crafters**, and your name shows on tooltips of items you can make. Open it
+again after learning new recipes.
 </details>
 
 <details>
 <summary><b>How quickly do changes show up for guildmates?</b></summary>
 
-The data comes from players' own games, not from Blizzard's armory. While
-you're both online, a change (new gear, a talent, a level) reaches
-guildmates in about **30–60 seconds**. **Ask for latest** on the Character
-tab gets it sooner. Offline members show what they had when they last
-played. Nothing is sent in combat or inside instances, so changes made there
-arrive once you're out. Recipes refresh when you open the profession window.
+The data comes from players' own games, not Blizzard's armory. While you're
+both online, a change reaches guildmates in about **30–60 seconds**; **Ask for
+latest** gets it sooner. Offline members show what they had when they last
+played. Nothing is sent in combat or instances, so changes made there arrive
+once you're out.
+</details>
+
+<details>
+<summary><b>The animations bother me.</b></summary>
+
+Settings → tick **Reduce motion**. Everything then happens instantly.
+</details>
+
+<details>
+<summary><b>The titles look like the normal game font.</b></summary>
+
+The game may have refused the bundled font. Nothing breaks: Short Kings falls
+back to the game font. Type `/sk debug` and send the text so we can check.
 </details>
 
 <details>
 <summary><b>It says "out of date" on the AddOns screen.</b></summary>
 
-Tick **Load out of date AddOns** for now, and tell an officer. The addon
-needs a new interface number for the latest game patch.
+Tick **Load out of date AddOns** for now and tell an officer. The addon needs
+a new interface number for the latest patch.
 </details>
 
 <details>
 <summary><b>Will it get me disconnected or slow my game down?</b></summary>
 
 It shouldn't. Messages are small, compressed and rate-limited through
-ChatThrottleLib, and nothing is sent during combat or inside instances.
-Recipe scans are spread over several frames.
+ChatThrottleLib, nothing is sent in combat or instances, and recipe scans are
+spread over several frames.
 </details>
 
 <details>
@@ -365,21 +332,21 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 ## 🗺️ Roadmap
 
 - [x] **v0.1**: data collection, guild sync, Roster, Character and Settings tabs, `/sk debug`
-- [x] **v0.1.1**: online/addon status dots, alts under mains, notes, version column, missing-enchant markers, accurate cooldowns, privacy toggles
-- [x] **v0.1.2**: raid attunement filter on the Roster, "Ask for latest", faster updates (30–60 s)
-- [x] **v0.2.0**: **Crafters** tab (search an item, see who can make it, Whisper, post to guild chat) and "Crafted by" on item tooltips
-- [x] **v0.2.1**: launch readiness: Forever's real raid attunements (Onyxia amulet check), `/sk debug` live-client checks and error capture, sync safety limits, sharing preview, "may be out of date" labels, Copy as text
-- [x] **v0.2.2**: **Overview** dashboard: guild at a glance, raid readiness, data health, profession coverage, single-crafter recipes, recent milestones with Grats
-- [ ] **In-game test round** after launch (4 Nov), then fixes (v0.2.3)
-- [ ] **v0.3**: **Raids**, built on Blizzard's guild calendar: sign-up status, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
+- [x] **v0.1.1**: status dots, alts under mains, notes, version column, missing-enchant markers, cooldowns, privacy switches
+- [x] **v0.1.2**: raid attunement view, "Ask for latest", faster updates (30–60 s)
+- [x] **v0.2.0**: **Crafters** tab and "Crafted by" on item tooltips
+- [x] **v0.2.1**: launch readiness: Forever's real raid attunements, live-client checks, sync safety limits, sharing preview, Copy as text
+- [x] **v0.2.2**: **Overview** dashboard with milestones and Grats
+- [x] **New look**: black and gold, pink-beard crest, Chakra Petch titles, motion with Reduce motion, empty and loading states ([before and after](#the-look))
+- [ ] **In-game test round** after launch (4 Nov), then fixes and the next release
+- [ ] **v0.3**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
 - [ ] **v0.4**: **Professions** tab (cooldown board, specialisations, reagents, favourites)
 - [ ] **v0.5**: craft requests, a short status line, lockout board
-- [ ] **Later**: raid attendance, shopping lists, guild bank viewer, and more in the [plan](PLAN.md#later-in-rough-priority-order)
+- [ ] **Later**: raid attendance, shopping lists, guild bank viewer and more in the [plan](PLAN.md#later-in-rough-priority-order)
 - [ ] CurseForge release
 
-Testing it in game? Work through the checklist in [TESTING.md](TESTING.md).
-The plan for launch week (what to check first, and what each result changes)
-is in [PLAN.md section 10](PLAN.md#10-once-forever-is-live-from-4-nov-2026).
+Testing it in game? Work through [TESTING.md](TESTING.md). The plan for launch
+week is in [PLAN.md section 10](PLAN.md#10-once-forever-is-live-from-4-nov-2026).
 
 ---
 
@@ -387,55 +354,54 @@ is in [PLAN.md section 10](PLAN.md#10-once-forever-is-live-from-4-nov-2026).
 <summary><b>🛠️ For developers</b></summary>
 
 ```sh
-luacheck .    # lint
-busted        # unit tests: Lua 5.1, stubbed WoW API in tests/helpers/
-node tools/preview-tokens.js   # copy UI/Theme.lua's values into the browser preview
-node docs/mockups/render.js    # regenerate the README pictures from preview/index.html
-node tools/textures.js         # redraw the crest and icons (Media/Textures, power-of-two .tga)
+luacheck .                      # lint
+busted                          # unit tests: Lua 5.1, stubbed WoW API in tests/helpers/
+node tools/preview-tokens.js    # copy UI/Theme.lua's values into the browser preview
+node docs/mockups/render.js     # regenerate the README pictures from preview/index.html
+node tools/textures.js          # redraw the crest and icons (power-of-two .tga)
 ```
+
+Open [`preview/index.html`](preview/index.html) in a browser to click through
+every window with full, empty, loading, error and worst-case data, or to see
+any tab before and after the redesign.
 
 | Folder | What lives there |
 |---|---|
-| `Core/` | start-up, events, saved data, guild roster, alts, the crafter index, Overview numbers and the milestones feed, text export; `Compat.lua` is the **only** file that touches client-specific APIs |
+| `Core/` | start-up, events, saved data, guild roster, alts, the crafter index, Overview numbers, milestones, text export; `Compat.lua` is the **only** file that touches client-specific APIs |
 | `Collect/` | reads gear, talents, professions, recipes, reputation and attunements |
 | `Sync/` | encoding (LibSerialize + LibDeflate), merge rules, the HI/RQ/PR/SQ/SO protocol |
-| `UI/` | `Theme.lua` (every colour, font, size, spacing step and motion timing), `Motion.lua`, widgets, tabs and the item-tooltip line |
-| `Media/` | the Chakra Petch title font (SIL OFL) and Arial Narrow font families, the crest and four small icons |
-| `preview/` | a browser mock-up of every window with state switches and a before/after view (open `preview/index.html`) |
-| `Data/` | profession, attunement and faction tables (IDs are verified or marked TODO, never guessed) |
+| `UI/` | `Theme.lua` (**every** colour, font, size, spacing step and motion timing; a test fails if one is hard-coded elsewhere), `Motion.lua`, widgets, tabs, the item-tooltip line |
+| `Media/` | Chakra Petch (SIL OFL), Arial Narrow font families, the crest and four small icons |
+| `Data/` | profession, attunement and faction tables (IDs verified or marked TODO, never guessed) |
+| `preview/`, `tools/`, `docs/` | the browser preview, the texture and token scripts, mock-up renderer and design notes |
 
-**Releasing:** push a tag like `v0.1.0`. The *Release* workflow runs the
-BigWigs packager, which builds `ShortKings-0.1.0.zip` and attaches it to a
-GitHub Release. For CurseForge, add a `CF_API_KEY` repository secret and an
-`## X-Curse-Project-ID:` line to `ShortKings.toc`. Every push also produces
-an unpublished **test build** (Actions → Tests → `ShortKings-test-build`).
+**Releasing:** push a tag like `v0.2.3` on `main`. The *Release* workflow runs
+the BigWigs packager, builds `ShortKings-0.2.3.zip` and attaches it to a GitHub
+Release with notes from CHANGELOG.md. Every push also produces an unpublished
+**test build** (Actions → Tests → `ShortKings-test-build`).
 
-**Theme palette** (from `UI/Theme.lua`; the full system is in [DESIGN.md](DESIGN.md)):
-
-| Black | Surface | Line | Text | Dim | Gold | Beard | Spark |
-|---|---|---|---|---|---|---|---|
-| `#000000` | `#111111` | `#2A2A2A` | `#F5F5F5` | `#A6A6A6` | `#FFC000` | `#F06BB0` | `#FF6A1A` |
+**Design:** [DESIGN.md](DESIGN.md) (the system), [PRODUCT.md](PRODUCT.md) (who it's for),
+[docs/design/lamborghini-reference.md](docs/design/lamborghini-reference.md) (the starting reference).
 </details>
 
 ## 🙏 Credits
 
 No code was copied from other guild-sync addons. API facts come from
-[warcraft.wiki.gg](https://warcraft.wiki.gg/wiki/Patch_1.60.1/API_changes),
 Blizzard's own UI source (mirrored at
 [Gethe/wow-ui-source](https://github.com/Gethe/wow-ui-source), `forever`
-branch), and public notes in the
-[Everloot](https://github.com/Everloot/everloot/pull/49) and
-[bff-wow](https://github.com/Shtian/bff-wow/issues/3) projects.
+branch), [warcraft.wiki.gg](https://warcraft.wiki.gg/wiki/Patch_1.60.1/API_changes),
+and public notes in the [Everloot](https://github.com/Everloot/everloot/pull/49)
+and [bff-wow](https://github.com/Shtian/bff-wow/issues/3) projects.
 
 Libraries: Ace3 (AceComm, CallbackHandler, LibStub, ChatThrottleLib),
 [LibSerialize](https://github.com/rossnichols/LibSerialize) by Ross Nichols,
 [LibDeflate](https://github.com/SafeteeWoW/LibDeflate) by Haoqian He,
-LibDataBroker and LibDBIcon. Licences are listed in [Libs/README.md](Libs/README.md).
+LibDataBroker and LibDBIcon. Licences are in [Libs/README.md](Libs/README.md).
+
 Titles use [Chakra Petch](https://fonts.google.com/specimen/Chakra+Petch) by
 Cadson Demak (SIL Open Font License 1.1, bundled in `Media/Fonts/` with its
 licence). The black-and-gold direction started from the Lamborghini-inspired
-DESIGN.md from [getdesign](https://www.npmjs.com/package/getdesign)
-(`docs/design/lamborghini-reference.md`); the crest is drawn from simple shapes
-by `tools/textures.js`.
+DESIGN.md by [getdesign](https://www.npmjs.com/package/getdesign). The crest
+is drawn from simple shapes by `tools/textures.js`.
 
 Released under the [MIT licence](LICENSE). Made with 💖 and 🧨 by the Short Kings.
