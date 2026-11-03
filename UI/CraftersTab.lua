@@ -122,6 +122,7 @@ function Crafters:Build(page)
 				if b.target then Compat.SendTell(SK.Identity:WhisperTarget(b.target)) end
 			end)
 			row.whisper:SetPoint("RIGHT", -SP.xxs, 0)
+			row.widgets[#row.widgets + 1] = row.whisper
 			row.whisper.disabledTooltip = "Offline"
 		end,
 		update = function(row, c)

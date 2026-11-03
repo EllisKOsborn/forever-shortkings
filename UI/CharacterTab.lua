@@ -106,7 +106,7 @@ local function slotButton(parent, slot)
 			self.icon:SetAlpha(link and 1 or Theme.ALPHA.disabledIcon)
 		end
 		local r, g, bl = qualityColor(link)
-		for _, t in ipairs(self.border) do t:SetColorTexture(r, g, bl, 1) end
+		Theme.SetBorderRGB(self, r, g, bl)
 	end
 	return b
 end

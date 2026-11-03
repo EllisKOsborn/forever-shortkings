@@ -81,7 +81,7 @@ end
 function Ov.ProfessionRows(o)
 	local rows = {}
 	for _, id in ipairs(SK.Overview.CRAFTS) do
-		local s = o.profs[id]
+		local s = o.profs[id] or { count = 0, maxed = 0, best = 0 }
 		local name = SK.Data.PROFESSIONS[id].key
 		if s.count == 0 then
 			rows[#rows + 1] = { label = name, labelTone = "text", value = "nobody", tone = "bad" }
@@ -92,7 +92,7 @@ function Ov.ProfessionRows(o)
 	end
 	local g = {}
 	for _, id in ipairs(SK.Overview.GATHERING) do
-		g[#g + 1] = SK.Data.PROFESSIONS[id].short .. " " .. o.profs[id].count
+		g[#g + 1] = SK.Data.PROFESSIONS[id].short .. " " .. (o.profs[id] and o.profs[id].count or 0)
 	end
 	rows[#rows + 1] = { text = "Gathering: " .. table.concat(g, "  ·  ") }
 	return rows
@@ -188,6 +188,7 @@ function Ov:Build(page)
 				if b.entry then Compat.OpenChat("/g " .. SK.Feed.GratsText(b.entry)) end
 			end)
 			row.grats:SetPoint("RIGHT", -SP.xxs, 0)
+			row.widgets[#row.widgets + 1] = row.grats
 			row.grats.tooltip = "Types a congratulation into guild chat. Press Enter to send it."
 		end,
 		update = function(row, e)

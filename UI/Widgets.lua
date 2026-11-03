@@ -44,7 +44,7 @@ function W.Button(parent, text, width, height, onClick, kind)
 	kind = kind or "ghost"
 	local look = BUTTON_LOOK[kind]
 	local b = CreateFrame("Button", nil, parent)
-	b.kind, b.disabled, b.active = kind, false, false
+	b.kind, b.disabled, b.active, b.hover = kind, false, false, false
 	height = height or S.control
 	b.bg = b:CreateTexture(nil, "BACKGROUND")
 	b.bg:SetAllPoints()
@@ -155,6 +155,7 @@ end
 ---------------------------------------------------------------------------
 function W.Chip(parent, text, onClick)
 	local c = CreateFrame("Button", nil, parent)
+	c.active, c.hover = false, false
 	c.bg = c:CreateTexture(nil, "BACKGROUND")
 	c.bg:SetAllPoints()
 	Theme.Border(c, "line")
@@ -376,6 +377,7 @@ end
 --   onClick = function(item, button) end,
 --   onEnter = function(row, item) end,                  -- optional tooltip
 --   decorate = function(row) end,                       -- optional: add widgets to a new row
+--                                                       -- (put them in row.widgets so empty rows hide them)
 --   update = function(row, item) end,                   -- optional: after a row is filled
 --   header = false,                                     -- optional: no header row
 -- }
@@ -478,6 +480,7 @@ function W.List(parent, opts)
 			Theme.Solid(row.skeleton, "raised")
 			row.skeleton:Hide()
 			row.cells = {}
+			row.widgets = {}
 			local cx = 0
 			for c, col in ipairs(opts.columns) do
 				local fs = Theme.Text(row, "body", "text")
@@ -571,8 +574,7 @@ function W.List(parent, opts)
 				row.sel:Hide()
 				row.hl:Hide()
 				row:SetShown(loading and i <= 6)
-				if row.grats then row.grats:Hide() end
-				if row.whisper then row.whisper:Hide() end
+				for _, w in ipairs(row.widgets) do w:Hide() end
 			end
 		end
 		local empty = #self.items == 0 and not loading and self.emptyText

@@ -59,7 +59,7 @@ describe("Nothing visual is hard-coded outside the theme", function()
 				assert.is_nil(src:find("SetVertexColor%(%s*[%d%.]"), file .. " sets a literal vertex colour")
 				assert.is_nil(src:find("SetColorTexture%(%s*[%d%.]+%s*,%s*[%d%.]+%s*,%s*[%d%.]+%s*,%s*[1-9%.]"),
 					file .. " sets a literal visible colour")
-				assert.is_nil(src:find("AddLine%(.-,%s*[%d%.]+%s*,%s*[%d%.]+"), file .. " has a literal tooltip colour")
+				assert.is_nil(src:find("AddLine%([^\n]-,%s*[%d%.]+%s*,%s*[%d%.]+"), file .. " has a literal tooltip colour")
 				assert.is_nil(src:find("UIPanelCloseButton", 1, true), file .. " uses the Blizzard close button")
 			end
 		end

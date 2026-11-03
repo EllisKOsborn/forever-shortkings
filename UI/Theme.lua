@@ -215,7 +215,10 @@ Theme.MOTION = {
 ---------------------------------------------------------------------------
 -- Building blocks
 ---------------------------------------------------------------------------
--- 1px border drawn as four textures (crisp at every UI scale).
+-- 1px border drawn as four textures (crisp at every UI scale). The
+-- textures are remembered here, keyed by frame.
+local borders = setmetatable({}, { __mode = "k" })
+
 function Theme.Border(frame, color, size, layer)
 	size = size or Theme.BORDER.hairline
 	local t = {}
@@ -227,13 +230,17 @@ function Theme.Border(frame, color, size, layer)
 	t[2]:SetPoint("BOTTOMLEFT"); t[2]:SetPoint("BOTTOMRIGHT"); t[2]:SetHeight(size)
 	t[3]:SetPoint("TOPLEFT"); t[3]:SetPoint("BOTTOMLEFT"); t[3]:SetWidth(size)
 	t[4]:SetPoint("TOPRIGHT"); t[4]:SetPoint("BOTTOMRIGHT"); t[4]:SetWidth(size)
-	frame.border = t
+	borders[frame] = t
 	return t
 end
 
 function Theme.SetBorderColor(frame, name, alpha)
-	if not frame.border then return end
-	for _, t in ipairs(frame.border) do Theme.Solid(t, name, alpha) end
+	for _, t in ipairs(borders[frame] or {}) do Theme.Solid(t, name, alpha) end
+end
+
+-- Border in an arbitrary colour (item quality on a gear slot).
+function Theme.SetBorderRGB(frame, r, g, b)
+	for _, t in ipairs(borders[frame] or {}) do t:SetColorTexture(r, g, b, 1) end
 end
 
 -- A flat panel: background tone plus an optional 1px border.
