@@ -76,7 +76,7 @@ function Main:Build()
 	title:SetText("SHORT KINGS")
 	local tagline = Theme.Text(bar, "small", "dim")
 	tagline:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -1)
-	tagline:SetText("Small in stature. Big in loot.")
+	tagline:SetText(SK.TAGLINE)
 
 	local close = W.CloseButton(bar, function() Main:Close() end)
 	close:SetPoint("RIGHT", -SP.m, 0)

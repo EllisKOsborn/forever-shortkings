@@ -189,7 +189,7 @@
   </div>
 </div>
 <div class="stage" id="stage"></div>
-<div class="bannerArt" aria-hidden="true"><i></i><div><b>Short Kings</b><span>Small in stature. Big in loot.</span><em></em></div></div>
+<div class="bannerArt" aria-hidden="true"><i></i><div><b>Short Kings</b><span>Height is not a stat.</span><em></em></div></div>
 <div class="paletteArt" id="paletteArt" aria-hidden="true"></div>
 <p class="note">Everything in the window uses the addon's own values: colours, sizes, spacing and motion timings are generated from
   <code>UI/Theme.lua</code> (<code>node tools/preview-tokens.js</code>), and the title font is the bundled Chakra Petch. Item icons are game files,
@@ -533,7 +533,7 @@ function windowHTML() {
   const err = S.data === "error", paused = err || !G.name || S.data === "loading";
   const why = err ? "combat" : "roster not loaded";
   const st = `${esc(G.name || "No guild")}  ·  ${paused ? "Sync paused: " + why : "Sync on"}${err ? '  ·  <span class="spark">2 errors</span>' : ""}`;
-  return `<div class="titlebar"><div class="crest" role="img" aria-label="Short Kings crest"></div><div class="brand display">Short Kings</div><div class="tagline">Small in stature. Big in loot.</div>
+  return `<div class="titlebar"><div class="crest" role="img" aria-label="Short Kings crest"></div><div class="brand display">Short Kings</div><div class="tagline">Height is not a stat.</div>
       <div class="status" title="${paused ? "Sync paused" : "Sync on. The dot flashes when new data arrives."}"><span class="sdot ${paused ? "paused" : ""}"><i class="ring"></i></span><span class="text ell">${st}</span></div>
       <div class="close" id="closeBtn" title="Close (Esc)"><i></i></div></div>
     <div class="tabbar">${TABS.map((t) => `<div class="tab display ${S.screen === t[0] ? "on" : ""}" data-tab="${t[0]}">${t[1]}</div>`).join("")}<i class="underline" id="ul"></i></div>

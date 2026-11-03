@@ -17,7 +17,7 @@ end
 
 local function onTooltip(tt)
 	Theme.TipLine(tt, "Short Kings", "gold")
-	Theme.TipLine(tt, "Small in stature. Big in loot.", "dim")
+	Theme.TipLine(tt, SK.TAGLINE, "dim")
 	Theme.TipLine(tt, "Left-click: open / close", "text")
 	Theme.TipLine(tt, "Right-click: settings", "text")
 end

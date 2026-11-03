@@ -46,7 +46,7 @@ and on laptops; sometimes opened in combat (sync pauses then).
 - SavedVariables (`ShortKingsDB`) must stay compatible.
 
 ## Brand Commitments
-- Name **Short Kings**, tagline "Small in stature. Big in loot."
+- Name **Short Kings**, tagline "Height is not a stat." (chosen 3 Nov 2026; replaced "Small in stature. Big in loot.")
 - Mascot: a gnome with a **pink beard** holding **lit dynamite**.
 - No real crest artwork exists; a simple shape-drawn crest is fine
   (confirmed 3 Nov 2026). Never fabricate mascot art.

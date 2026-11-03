@@ -1,6 +1,6 @@
 ## Interface: 16001
 ## Title: |cffD94FA0Short Kings|r
-## Notes: Guild gear, professions, recipes and raid sign-ups for the Short Kings guild. Small in stature. Big in loot.
+## Notes: Guild gear, professions, recipes and raid sign-ups for the Short Kings guild. Height is not a stat.
 ## Author: Short Kings guild
 ## Version: @project-version@
 ## SavedVariables: ShortKingsDB

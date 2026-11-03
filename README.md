@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.png" alt="Short Kings: Small in stature. Big in loot." width="100%">
+  <img src="docs/images/banner.png" alt="Short Kings: Height is not a stat." width="100%">
 </p>
 
 <p align="center">

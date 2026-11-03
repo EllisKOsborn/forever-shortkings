@@ -5,6 +5,7 @@ SK.ADDON_NAME = ADDON_NAME
 SK.PREFIX = "ShortKings" -- addon message prefix (max 16 chars)
 SK.PROTOCOL = 1          -- bump when the sync format changes incompatibly
 SK.SCHEMA = 1            -- bump when the SavedVariables layout changes
+SK.TAGLINE = "Height is not a stat." -- also in ShortKings.toc (Notes), README, preview
 
 do
 	local v

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- New tagline: **Height is not a stat.** (in the title bar, the minimap
+  tooltip and the AddOns list).
+
 ## v0.2.3 (3 Nov 2026): the new look
 
 A new look for every window. Nothing about sync, saved data or features
