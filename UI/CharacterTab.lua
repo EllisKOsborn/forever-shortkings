@@ -290,7 +290,7 @@ function Char.DetailSections(p, now, extra)
 		elseif hidden.recipes then
 			note = Theme.Paint("dim", "recipes hidden")
 		elseif pr.scanned then
-			note = Theme.Paint("dim", SK.Count(recipes) .. " recipes")
+			note = Theme.Paint("dim", Theme.Count(SK.Count(recipes), "recipe"))
 		else
 			note = Theme.Paint("spark", "not scanned yet")
 		end

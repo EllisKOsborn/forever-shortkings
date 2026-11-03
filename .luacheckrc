@@ -11,6 +11,7 @@ ignore = {
 }
 
 globals = {
+	"ShortKingsBody13",
 	"ShortKingsDB", "ShortKings",
 	"SLASH_SHORTKINGS1", "SLASH_SHORTKINGS2", "SlashCmdList", "UISpecialFrames",
 }

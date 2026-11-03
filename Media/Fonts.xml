@@ -1,0 +1,41 @@
+<!-- Body font families: the game's Arial Narrow, with the same Korean,
+	Chinese and Russian fallbacks Blizzard uses for its own Arial Narrow
+	fonts (Blizzard_Fonts_Shared/Mainline/GameFonts.xml, "PriceFont"), so
+	guildmates' names in any alphabet render. Sizes match Theme.TYPE. -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<FontFamily name="ShortKingsBody11" virtual="true">
+		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="11"/></Member>
+		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="10"/></Member>
+		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="10"/></Member>
+		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="10"/></Member>
+		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="11"/></Member>
+	</FontFamily>
+	<FontFamily name="ShortKingsBody12" virtual="true">
+		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="12"/></Member>
+		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="11"/></Member>
+		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="11"/></Member>
+		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="11"/></Member>
+		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="12"/></Member>
+	</FontFamily>
+	<FontFamily name="ShortKingsBody13" virtual="true">
+		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="13"/></Member>
+		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="12"/></Member>
+		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="12"/></Member>
+		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="12"/></Member>
+		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="13"/></Member>
+	</FontFamily>
+	<FontFamily name="ShortKingsBody15" virtual="true">
+		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="15"/></Member>
+		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="14"/></Member>
+		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="14"/></Member>
+		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="14"/></Member>
+		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="15"/></Member>
+	</FontFamily>
+	<FontFamily name="ShortKingsBody20" virtual="true">
+		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="20"/></Member>
+		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="19"/></Member>
+		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="19"/></Member>
+		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="19"/></Member>
+		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="20"/></Member>
+	</FontFamily>
+</Ui>

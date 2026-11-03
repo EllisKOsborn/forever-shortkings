@@ -235,7 +235,9 @@ function Main:Refresh()
 	local f = self.frame
 	f.status:SetText(Main.StatusText(SK.guildName, paused, why, #SK.errors))
 	f.dot:ClearAllPoints()
-	f.dot:SetPoint("RIGHT", f.status, "RIGHT", -(f.status:GetStringWidth() or 0) - SP.s, 0)
+	-- (a cut-off status still reports its full width: keep the dot inside)
+	local w = math.min(f.status:GetStringWidth() or 0, f.status:GetWidth() or 0)
+	f.dot:SetPoint("RIGHT", f.status, "RIGHT", -w - SP.s, 0)
 	f.dot:SetVertexColor(Theme.RGB(paused and "faint" or "spark"))
 end
 

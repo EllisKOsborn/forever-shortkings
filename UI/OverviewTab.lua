@@ -223,7 +223,7 @@ function Ov:Refresh()
 	local guild = SK.DBM:Guild()
 	local o = SK.Overview.Build(guild, Compat.Now())
 	self.data = o
-	local parts = { Theme.Paint("text", SK.guildName or "No guild"), o.members .. " members", o.online .. " online" }
+	local parts = { Theme.Paint("text", SK.guildName or "No guild"), Theme.Count(o.members, "member"), o.online .. " online" }
 	if not guild then parts[#parts + 1] = "join a guild to see guildmates here" end
 	self.header:SetText(table.concat(parts, "  ·  "))
 	self.guild:SetRows(Ov.GuildRows(o))

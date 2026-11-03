@@ -133,10 +133,14 @@ Theme.displayFailed = false -- set if the bundled font can't be loaded (shown in
 
 function Theme.Font(fs, role, color)
 	local t = Theme.TYPE[role] or Theme.TYPE.body
-	local file = t[1] == "display" and Theme.FONT.display or Theme.BodyFont()
+	-- Body text uses the font families in Media/Fonts.xml (they fall back
+	-- to Korean/Chinese fonts for names in those alphabets).
+	local family = t[1] == "body" and _G["ShortKingsBody" .. t[2]]
+	if family and fs.SetFontObject then
+		fs:SetFontObject(family)
 	-- SetFont returns false when the file can't be used; fall back to the
 	-- game font so text never disappears. (nil = older client, no result.)
-	if fs:SetFont(file, t[2], "") == false then
+	elseif fs:SetFont(t[1] == "display" and Theme.FONT.display or Theme.BodyFont(), t[2], "") == false then
 		if t[1] == "display" then Theme.displayFailed = true end
 		fs:SetFont(STANDARD_TEXT_FONT or Theme.FONT.body, t[2], "")
 	end
@@ -260,6 +264,12 @@ function Theme.Rule(parent, color, layer)
 	Theme.Solid(t, color or "line")
 	t:SetHeight(Theme.BORDER.hairline)
 	return t
+end
+
+-- "1 member", "3 members" (irregular plurals pass `many`).
+function Theme.Count(n, one, many)
+	n = n or 0
+	return n .. " " .. (n == 1 and one or (many or (one .. "s")))
 end
 
 function Theme.ClassText(name, classFile)

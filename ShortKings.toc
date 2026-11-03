@@ -37,6 +37,7 @@ Sync\Codec.lua
 Sync\Merge.lua
 Sync\Sync.lua
 
+Media\Fonts.xml
 UI\Theme.lua
 UI\Motion.lua
 UI\Widgets.lua

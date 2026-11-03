@@ -473,7 +473,7 @@ function Roster:Refresh()
 		else
 			self.attCount:SetText(string.format("%d attuned · %d not · %d unknown", counts.yes, counts.no, counts.unknown))
 		end
-		self.count:SetText(string.format("%d characters", counts.yes + counts.no + counts.unknown + counts.none))
+		self.count:SetText(Theme.Count(counts.yes + counts.no + counts.unknown + counts.none, "character"))
 		self.attList:SetEmptyText(Roster.EmptyText(guild ~= nil, self.filter))
 		self.attList:SetItems(rows)
 		return
@@ -488,7 +488,7 @@ function Roster:Refresh()
 			if x.outdated then outdated = outdated + 1 end
 		end
 	end
-	local text = string.format("%d characters · %d with data", total, withData)
+	local text = Theme.Count(total, "character") .. " · " .. withData .. " with data"
 	if outdated > 0 then text = text .. " · " .. Theme.Paint("spark", outdated .. " need an update") end
 	local newest = Roster.NewestVersion(guild)
 	if guild and newest and SK.VERSION ~= "dev" and SK.Sync.versionNewer(newest, SK.VERSION) then

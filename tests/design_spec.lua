@@ -35,6 +35,22 @@ describe("Theme", function()
 		assert.truthy(SK.Theme.Dot("good"):find("dot:8:8", 1, true))
 	end)
 
+	it("counts with the right plural", function()
+		assert.equal("1 member", SK.Theme.Count(1, "member"))
+		assert.equal("0 members", SK.Theme.Count(0, "member"))
+		assert.equal("151 characters", SK.Theme.Count(151, "character"))
+	end)
+
+	it("uses the body font family (with CJK fallbacks) when the client has loaded it", function()
+		local used
+		_G.ShortKingsBody13 = {}
+		local fs = { SetFontObject = function(_, f) used = f end, SetFont = function() error("raw font used") end,
+			SetTextColor = function() end, SetShadowOffset = function() end, SetShadowColor = function() end }
+		SK.Theme.Font(fs, "body")
+		assert.equal(_G.ShortKingsBody13, used)
+		_G.ShortKingsBody13 = nil
+	end)
+
 	it("falls back to the game font if the bundled font can't load", function()
 		local calls = {}
 		local fs = { SetFont = function(_, file) calls[#calls + 1] = file; return #calls > 1 end,
