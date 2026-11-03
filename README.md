@@ -129,7 +129,8 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 ### 🔒 Under the hood
 - **Your own data always wins.** A copy relayed by someone else never overwrites a newer copy from the character themselves.
 - **Light on the network.** Only small fingerprints are broadcast; full profiles are whispered to whoever needs them, rate-limited so nobody is disconnected.
-- **Careful with what it receives.** Oversized messages (over 32 KB) are refused, every profile is checked before it's stored, and no guildmate can flood you (60 messages a minute each).
+- **Careful with what it receives.** Nothing received is ever run as code. Messages from people outside the guild aren't even opened; oversized ones (over 32 KB, or over 256 KB unpacked) are refused; every field of every profile is checked before it's stored; a stranger can't pass themselves off as a guildmate who shares their first name; and no guildmate can flood you (60 messages a minute each, and senders of repeated bad messages are ignored until `/reload`). Details: [docs/SECURITY-REVIEW.md](docs/SECURITY-REVIEW.md).
+- **Built from pinned sources.** The release zip is built by GitHub Actions pinned to exact commits, and the bundled libraries are byte-for-byte the upstream files.
 - **Stays out of your way.** Sync pauses in combat, in every kind of instance and whenever the game locks addon chat. The window is safe to open in combat.
 - **Private where it matters.** Notes, officer notes, gold, bags and chat are never sent. You choose whether gear and recipes are shared.
 - **Tidies up.** Members who leave are forgotten 30 days later.

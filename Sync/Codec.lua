@@ -17,6 +17,10 @@ local STABLE = { stable = true }
 -- about 11 KB, so 32 KB leaves room while limiting how much a malformed
 -- message could expand to (LibDeflate has no output limit).
 Codec.MAX_ENCODED = 32 * 1024
+-- And refuse anything that decompresses to more than this. A crafted 32 KB
+-- message can expand to about 13 MB; a worst-case real profile serialises
+-- to well under 64 KB (tested), so 256 KB is generous.
+Codec.MAX_DECODED = 256 * 1024
 
 function Codec.Serialize(t)
 	return LibSerialize:SerializeEx(STABLE, t)
@@ -35,6 +39,7 @@ function Codec.Decode(str)
 	if not compressed then return nil, "bad encoding" end
 	local s = LibDeflate:DecompressDeflate(compressed)
 	if not s then return nil, "bad compression" end
+	if #s > Codec.MAX_DECODED then return nil, "too large decoded" end
 	local ok, t = LibSerialize:Deserialize(s)
 	if not ok or type(t) ~= "table" then return nil, "bad data" end
 	return t

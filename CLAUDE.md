@@ -74,6 +74,12 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
 - Pause sync in combat, in every instance type (party/raid/pvp/arena/scenario)
   and during `C_ChatInfo.InChatMessagingLockdown()`. All sends go through
   ChatThrottleLib via AceComm.
+- **Security** (`docs/SECURITY-REVIEW.md`, 3 Nov): everything received is
+  untrusted. New profile fields need a check in `Merge.FIELDS`; never run,
+  link or chat received text unchecked; keep `tests/security_spec.lua` green.
+  Loose (first-name) sender matches count only on GUILD, or by whisper from a
+  sender confirmed on GUILD this session. GitHub Actions are pinned to commit
+  SHAs (update the SHA and the `# vN` comment together).
 - **Privacy:** notes and officer notes are never synced. Our own characters
   keep a **full** profile in `ShortKingsDB.own[guid]`, and only the
   **public** copy (`Profile.Public`, which respects the share toggles) goes
@@ -119,7 +125,7 @@ preview/  browser mock-up of every window (theme.css/js generated)
 tools/    textures.js (draws Media/Textures), preview-tokens.js
 Libs/     vendored Ace3 bits, LibSerialize, LibDeflate; LDB + LibDBIcon via .pkgmeta
 tests/    busted specs; tests/helpers/wow.lua is the stubbed WoW API
-docs/     FEATURE-REVIEW.md, mockups/render.js, images/ (+ before/), prompts/,
+docs/     FEATURE-REVIEW.md, SECURITY-REVIEW.md, mockups/render.js, images/ (+ before/), prompts/,
           design/ (Lamborghini reference); DESIGN.md + PRODUCT.md at the root
 ```
 
@@ -144,7 +150,10 @@ Alts link only when **both** profiles list each other in `family`.
 
 Input limits (v0.2.1): `Codec.MAX_ENCODED` 32 KB (worst-case profile ~11 KB),
 max 60 incoming messages per sender per minute (`Sync.RATE_MAX`), and
-oversized outgoing messages are recorded as errors, not sent.
+oversized outgoing messages are recorded as errors, not sent. v0.2.5 adds
+`Codec.MAX_DECODED` 256 KB, `Merge.LIMITS` per field, only GUILD/WHISPER
+accepted, strangers dropped before decoding, and `Sync.MAX_STRIKES` (3 bad
+messages → sender ignored for the session).
 
 ## Dev environment notes (cloud sessions)
 - Lua 5.1 tooling: `apt-get install lua5.1 liblua5.1-0-dev luarocks`, then
@@ -159,6 +168,8 @@ oversized outgoing messages are recorded as errors, not sent.
 
 ## Status (2 Nov 2026)
 - v0.1 to v0.2.4 are code complete, **not tested in game**. See CHANGELOG.md.
+  v0.2.5 (unreleased, on the session branch) starts with the security
+  fixes from `docs/SECURITY-REVIEW.md`; test-round fixes join it.
   v0.2.2 = the Overview dashboard (owner asked for it before the test gate).
   (`docs/prompts/next-v0.1.2-v0.2.md` is done; v0.2.1 = launch readiness
   from `docs/PLAN-REVIEW.md`.)

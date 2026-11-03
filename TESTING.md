@@ -230,6 +230,19 @@ in game if anything looks different and send it.
         the window sits above the default UI, menus open on top, and item
         tooltips still show the "Short Kings:" crafter line.
 
+## v0.2.5 additions (security fixes)
+
+80. [ ] `/sk debug`, "== Your data ==": **"Passes guildmates' safety check:
+        yes"**. If it says no, copy the reason and send it: guildmates are
+        refusing your data.
+81. [ ] With a guildmate on v0.2.5 too: you still see each other's data
+        update within a minute (the stricter checks didn't block real data).
+        Then `/sk debug`, "== Sync ==": "Ignored senders this session: 0".
+82. [ ] Same `/sk debug` block: note the "Loose name matches confirmed"
+        number. 0 means sender names match the roster exactly (best case); a
+        higher number means the game reports names differently and the
+        first-name fallback is in use. Send it either way.
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).

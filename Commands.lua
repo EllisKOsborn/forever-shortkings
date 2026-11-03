@@ -102,11 +102,19 @@ function Commands.BuildReport()
 	local st = SK.Sync.stats
 	add("Sent %d, received %d, accepted %d, rejected %d, dropped %d, rate-limited %d, queued %d, buffered %d",
 		st.sent, st.received, st.accepted, st.rejected, st.dropped, st.limited, #SK.Sync.queue, #SK.Sync.buffer)
+	add("Ignored senders this session: %d (%d messages)   Loose name matches confirmed: %d",
+		SK.Count(SK.Sync.blocked), st.blocked, SK.Count(SK.Identity.confirmed))
 	add("Last raw sender: %q   Last reject reason: %s", tostring(SK.Sync.lastSender), tostring(SK.Sync.lastReject))
 
 	add("")
 	add("== Your data ==")
 	local own = SK.Profile:Own()
+	local shared = own and SK.DBM:Guild() and SK.DBM:Guild().profiles[own.guid]
+	if shared then
+		-- Guildmates run this same check on what we send; "no" means they'd drop it.
+		local valid, problem = SK.Merge.Validate(shared)
+		add("Passes guildmates' safety check: %s%s", yesno(valid), valid and "" or (" (" .. tostring(problem) .. ")"))
+	end
 	if own then
 		add("Hash %s, updated %s, %d gear slots, ilvl %s", tostring(own.hash), tostring(own.updated),
 			SK.Count(own.gear), tostring(own.ilvl))

@@ -9,8 +9,12 @@ manual-changelog:
 
 # LibStub, CallbackHandler, AceComm, LibSerialize and LibDeflate are committed
 # in Libs/. These two are fetched when the release zip is built.
+# LibDataBroker is pinned to a commit (its repo is no longer maintained, so
+# nothing new should appear there; if it does, we don't want it unreviewed).
 externals:
-  Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1.git
+  Libs/LibDataBroker-1.1:
+    url: https://github.com/tekkub/libdatabroker-1-1.git
+    commit: 1a63ede0248c11aa1ee415187c1f9c9489ce3e02
   Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
 
 ignore:

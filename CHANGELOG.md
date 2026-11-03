@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.2.5 (not released yet): security fixes
+
+From a security review (`docs/SECURITY-REVIEW.md`). Works alongside
+guildmates on v0.2.2 to v0.2.4: the protocol is unchanged, this version is
+just stricter about what it accepts. **Not run in game yet.**
+
+- **One bad profile can no longer break the addon for the guild.** Every
+  field of an incoming profile is checked (types, sizes, counts); anything
+  malformed is refused instead of saved and passed on.
+- **No impersonation by first name.** A whisper whose sender only matches a
+  member by first name is accepted only once that sender has been seen on
+  the guild channel this session.
+- **No zip bombs.** Messages from people who can't be guild members, or on
+  channels we never use, are dropped before decoding; anything that
+  decompresses to over 256 KB is refused; after 3 bad messages a sender is
+  ignored until `/reload`.
+- **No made-up chat text.** The "newer version" notice and the Version
+  column only show real version numbers from verified members.
+- Gear entries must be a single item link; profession names are plain text
+  in the pre-typed "Grats" message; the rate-limit table forgets idle senders.
+- `/sk debug` shows whether your own data passes guildmates' check, and how
+  many senders were ignored.
+- Build: GitHub Actions pinned to exact commits, LibDataBroker pinned to a
+  commit, and the test workflow has a read-only token.
+
 ## v0.2.4 (3 Nov 2026): new tagline
 
 - New tagline: **Height is not a stat.** (in the title bar, the minimap

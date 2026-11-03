@@ -28,14 +28,20 @@ Sync.RATE_WINDOW = 60          -- incoming messages per sender are limited per w
 Sync.RATE_MAX = 60             -- a full backfill (SO -> up to 60 PRs) still fits
 Sync.FRESH_INTERVAL = 30        -- "Ask for latest": at most one request per target per 30 s
 Sync.REBUILD_INTERVAL = 10      -- an RQ for our own character rebuilds it at most every 10 s
+Sync.MAX_STRIKES = 3            -- undecodable/oversized messages before a sender is ignored for the session
+Sync.MAX_RATE_KEYS = 200        -- forget idle senders in the rate table beyond this many
+Sync.CHANNELS = { GUILD = true, WHISPER = true } -- we never send on any other
 
 Sync.queue = {}
 Sync.queued = {}               -- key -> queue item
 Sync.buffer = {}
 Sync.pendingOffers = {}        -- requester guid -> true while our SO waits
 Sync.offerAcceptedAt = nil
-Sync.stats = { sent = 0, received = 0, dropped = 0, accepted = 0, rejected = 0, limited = 0 }
+Sync.stats = { sent = 0, received = 0, dropped = 0, accepted = 0, rejected = 0, limited = 0, blocked = 0 }
 Sync.rate = {}                 -- sender -> { start, count }
+Sync.rateKeys = 0
+Sync.strikes = {}              -- sender -> bad messages this session
+Sync.blocked = {}              -- sender -> true once MAX_STRIKES is reached
 Sync.lastReject = nil
 Sync.lastSender = nil          -- raw sender string of the last message (debug)
 Sync.freshAt = {}              -- guid -> time of our last "Ask for latest"
@@ -223,7 +229,7 @@ handlers.HI = function(self, msg, from)
 		if type(e) == "table" and type(e.g) == "string" and type(e.u) == "number"
 			and SK.Identity:IsMember(e.g) and not SK.DB.account[e.g] then
 			local m = guild.members[e.g]
-			m.addon, m.addonSeen = msg.v, Compat.Now()
+			m.addon, m.addonSeen = msg.v or m.addon, Compat.Now()
 			local stored = guild.profiles[e.g]
 			local owner = isOwnerEntry(from, e.g, stored)
 			if not stored then
@@ -365,31 +371,53 @@ local function versionNewer(a, b)
 end
 Sync.versionNewer = versionNewer
 
+-- A sender whose messages can't be decoded (or are far too big) costs us
+-- CPU each time; after MAX_STRIKES they are ignored until the next /reload.
+function Sync:Strike(sender, why)
+	local n = (self.strikes[sender] or 0) + 1
+	self.strikes[sender] = n
+	if n >= self.MAX_STRIKES and not self.blocked[sender] then
+		self.blocked[sender] = true
+		SK:Debug("ignoring %s for this session (%s)", tostring(sender), tostring(why))
+	end
+end
+
 function Sync:Handle(text, dist, sender)
-	local msg = SK.Codec.Decode(text)
+	-- Cheap checks first: nothing is decompressed for strangers, for other
+	-- channels (party, raid, custom) or for a sender already ignored.
+	if not self.CHANNELS[dist] or self.blocked[sender] or not SK.Identity:KnownSender(sender) then
+		self.stats.dropped = self.stats.dropped + 1
+		if self.blocked[sender] then self.stats.blocked = self.stats.blocked + 1 end
+		return
+	end
+	local msg, bad = SK.Codec.Decode(text)
 	if not msg or type(msg.t) ~= "string" then
 		self.stats.dropped = self.stats.dropped + 1
+		self.lastReject = bad or "no type"
+		self:Strike(sender, bad)
 		return
 	end
 	if type(msg.p) ~= "number" or msg.p > SK.PROTOCOL then
 		self.stats.dropped = self.stats.dropped + 1
 		return
 	end
-	if not versionWarned and SK.VERSION ~= "dev" and versionNewer(msg.v, SK.VERSION) then
-		versionWarned = true
-		SK:Print("A guildmate has Short Kings %s (you have %s). Please update.", tostring(msg.v), SK.VERSION)
-	end
-	local from, why = SK.Identity:SenderGUID(sender, type(msg.s) == "string" and msg.s or nil)
+	if not SK.Merge.IsVersion(msg.v) then msg.v = nil end
+	local from, why = SK.Identity:SenderGUID(sender, type(msg.s) == "string" and msg.s or nil, dist)
 	if not from then
 		self.stats.dropped = self.stats.dropped + 1
+		self.lastReject = why
 		SK:Debug("dropped %s from %s: %s", msg.t, tostring(sender), tostring(why))
 		return
 	end
 	if from == myGUID() or SK.DB.account[from] then return end -- our own echo
+	if not versionWarned and msg.v and SK.VERSION ~= "dev" and versionNewer(msg.v, SK.VERSION) then
+		versionWarned = true
+		SK:Print("A guildmate has Short Kings %s (you have %s). Please update.", msg.v, SK.VERSION)
+	end
 	SK.Identity:NoteSender(from, sender)
 	-- Any message proves the sender runs the addon (status dots, version column).
 	local m = SK.Identity:Member(from)
-	if m and type(msg.v) == "string" then
+	if m and msg.v then
 		m.addon, m.addonSeen = msg.v, Compat.Now()
 	end
 	local h = handlers[msg.t]
@@ -402,6 +430,17 @@ function Sync:AllowFrom(sender, now)
 	local key = tostring(sender)
 	local r = self.rate[key]
 	if not r or now - r.start >= self.RATE_WINDOW then
+		if not r then
+			self.rateKeys = self.rateKeys + 1
+			if self.rateKeys > self.MAX_RATE_KEYS then
+				-- Forget senders whose window has ended.
+				self.rateKeys = 0
+				for k, x in pairs(self.rate) do
+					if now - x.start >= self.RATE_WINDOW then self.rate[k] = nil else self.rateKeys = self.rateKeys + 1 end
+				end
+				self.rateKeys = self.rateKeys + 1
+			end
+		end
 		r = { start = now, count = 0 }
 		self.rate[key] = r
 	end

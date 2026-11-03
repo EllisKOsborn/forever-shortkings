@@ -8,6 +8,8 @@ on:
     tags:
       - "v*"
 
+# Third-party actions are pinned to a commit, not a tag that could be moved:
+# this job can publish releases, and its zip goes into everyone's game.
 permissions:
   contents: write
 
@@ -18,9 +20,9 @@ jobs:
       GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
       CF_API_KEY: ${{ secrets.CF_API_KEY }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
       - name: Install Subversion (needed to fetch LibDBIcon)
         run: sudo apt-get update && sudo apt-get install -y subversion
-      - uses: BigWigsMods/packager@v2
+      - uses: BigWigsMods/packager@e50a250f8705041e40f2fa1ddcb280a686d65aa0 # v2

@@ -24,8 +24,13 @@ local function crossed(list, a, b)
 	return best
 end
 
+-- Profession names come from other players' profiles, so links, colours
+-- and icons are stripped: they end up in text pre-typed into guild chat.
 local function profName(skillLine, pr)
-	if pr and type(pr.name) == "string" then return pr.name end
+	if pr and type(pr.name) == "string" then
+		local name = SK.Export.Plain(pr.name):gsub("|", ""):sub(1, 40)
+		if name ~= "" then return name end
+	end
 	local d = SK.Data.PROFESSIONS[skillLine]
 	return d and d.key or "a profession"
 end
