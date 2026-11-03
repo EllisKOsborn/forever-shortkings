@@ -141,6 +141,9 @@ function W.Tab(parent, text, onClick)
 	t:SetSize((t.label:GetStringWidth() or 0) + SP.l * 2, S.tabBar)
 	t:SetScript("OnEnter", function(self) if not self.active then self.label:SetTextColor(Theme.RGB("text")) end end)
 	t:SetScript("OnLeave", function(self) if not self.active then self.label:SetTextColor(Theme.RGB("dim")) end end)
+	-- Feedback the moment the button goes down, not when it's released.
+	t:SetScript("OnMouseDown", function(self) self.label:SetPoint("CENTER", 0, -1) end)
+	t:SetScript("OnMouseUp", function(self) self.label:SetPoint("CENTER", 0, 0) end)
 	t:SetScript("OnClick", onClick)
 	function t:SetActive(flag)
 		self.active = flag
@@ -177,6 +180,8 @@ function W.Chip(parent, text, onClick)
 	end
 	c:SetScript("OnEnter", function(self) self.hover = true; self:Paint(); tooltipFor(self) end)
 	c:SetScript("OnLeave", function(self) self.hover = false; self:Paint(); GameTooltip:Hide() end)
+	c:SetScript("OnMouseDown", function(self) if not self.active then Theme.Solid(self.bg, "pressed") end end)
+	c:SetScript("OnMouseUp", function(self) self:Paint() end)
 	c:SetScript("OnClick", onClick)
 	function c:SetActive(flag) self.active = flag; self:Paint() end
 	c:Paint()
