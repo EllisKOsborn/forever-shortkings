@@ -52,10 +52,11 @@
   --sz-windowH: 580px;
   --mo-open: 180ms;
   --mo-close: 120ms;
-  --mo-page: 150ms;
-  --mo-slide: 200ms;
-  --mo-hover: 100ms;
-  --mo-pulse: 450ms;
+  --mo-menu: 150ms;
+  --mo-slide: 150ms;
+  --mo-hover: 80ms;
+  --mo-pulse: 400ms;
+  --mo-pulseEvery: 8000ms;
   --mo-openScale: 0.97;
   --tex-crest: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAADDklEQVR4nO1aoW7rMBQ1KCgoGBgoHBgoGBgYLBgYKBwYeGBg3KRgYH9QMJBPKBgsmFnBA7M0OFAwUPBgQcFALRU8UOAnT9eqlcWJk/rGrp6vdKQ2ja/PObGvXSuEpEiRIkXLITnpSE4yyckWoD53QvNqLUCwzCELzau1gKeeN2AbmldrcXQG+J6zvqcAek1BIjwzcs1iMrSoA69DVnJyIjn5Y+RSn09i4YfegeTktSDfayz8ijrwNsQkJ08FuTSeQvOzdWAWGZV8LTnpNshzLTnZlRigfrtukLcLnCT6xsog+1ty0qvRrm+QLIO6p18jbw+4fLdvLKxGhybZDxeyMILeHMRrvLk8QTD1w2zrTWhJp3myS8nJoKLNpIZ4jUlFzgH0LUMboIftleX+2wbiNW4tOa9s0ymUAbr43OTuPZecbA4wQLU9z+W8sSx7wQ3QVfwX2VfmxQHiNRZ6xVG5K1aR4AZojCUnUw/iNaaQs/LeWAwIhmRAMiAZkAxIBiQDkgHJgBQpWg5B2RlgCPj+HmveQwh1BWUjQdlEUDYXlK0EZbICK7h3Am1/nCdi5fUpvC8oywRlGwdiVdhArj5WXt/ih54IFhHGyjv0aYDLcIwNq2SARwP+7ylA9kXwyxPBv1Cs7gAZXPOR+8t7ETRMmHsguBOU/ThCV9fgt0Pzz1HEA8lnDwQXJfkXHvI/YxpwfwQj4B7TgEtP8xSzBlxiGtDx9JSwoLjhvm/oaZ5iwVpffBrwEoFQG17aMOAxAqE2PLZhwCgCoTaM2jDgNAKhNpyiGwAmZBGIzaPdl60FZdMIRGtMWxVP9nuCWQTiZ+hrf4kJPUHZe0Dxqm/nV/UwTfgMIP4zuHgdcFawrClAbVvHgLrb6yXaf/6mISgbCMrWjgK26k+Q0fYOrrm0VX2UvpcYLARlFw5C1kXHVXDsVmWgyn0RRp1jgBCbCcuypwejyDaVtt7P+bAChnR+Xr+7zFuoJ/mVZWdOmaMIQdmDIWBWp2LDymLuMR5w2SIFVPisyUYFNlqq7RiHXYoUKv4BOO8onCBc5M8AAAAASUVORK5CYII=);
   --tex-arrow: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAU0lEQVR4nGNgGAV4wf///xNAmFzNOv////8MxTqkaub5////5f8IAGLzkGLA/P+YYD6xmhOwaIYB/OGB5G9cAHd4YPE3LoA9PHD4GxcgLjxGCAAAha7jHSgqPgUAAAAASUVORK5CYII=);

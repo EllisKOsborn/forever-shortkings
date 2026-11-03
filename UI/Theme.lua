@@ -209,10 +209,11 @@ end
 Theme.MOTION = {
 	open = 0.18,      -- window in
 	close = 0.12,     -- window out (exits are faster than entrances)
-	page = 0.15,      -- tab content fade
-	slide = 0.20,     -- active-tab underline glide
-	hover = 0.10,     -- row highlight fade-in (fade-out is instant)
-	pulse = 0.45,     -- sync ring
+	menu = 0.15,      -- a menu drops from its button
+	slide = 0.15,     -- active-tab underline glide (tabs are clicked often: kept short)
+	hover = 0.08,     -- row highlight fade-in (fade-out is instant)
+	pulse = 0.40,     -- sync ring
+	pulseEvery = 8,   -- at most one sync ring per 8 seconds
 	openScale = 0.97, -- window grows from 97 % to 100 %
 }
 

@@ -1,5 +1,9 @@
 -- Motion: the few animations the UI has, all AnimationGroups (alpha and
 -- scale; translation for the tab underline). Timings live in Theme.MOTION.
+-- WoW only offers quadratic smoothing ("OUT", "IN_OUT"), not custom curves,
+-- so durations are kept short to compensate. Every helper picks up from
+-- where the previous animation had got to, so clicking again mid-way never
+-- snaps back to the start.
 -- "Reduce motion" in Settings (settings.reduceMotion) makes every helper
 -- jump straight to its end state. Anything opened from the keyboard
 -- (/sk, Escape) is never animated: callers pass instant = true.
@@ -39,18 +43,31 @@ local function stopAll(frame)
 	end
 end
 
+-- How opaque the frame looks right now, part-way through a fade in or out.
+local function shownAlpha(frame)
+	local mine = groups[frame] or {}
+	for key, e in pairs(mine) do
+		if (key == "in" or key == "out") and e.alpha and e.g:IsPlaying() then
+			local p = e.alpha:GetSmoothProgress() or 0
+			local from, to = e.alpha:GetFromAlpha() or 0, e.alpha:GetToAlpha() or 1
+			return from + (to - from) * p
+		end
+	end
+	return frame:IsShown() and 1 or 0
+end
+
 -- Fade + grow in. origin: "CENTER" for the window (not anchored to a
 -- trigger), "TOP" for a menu that drops from its button.
 function Motion.In(frame, duration, scale, origin, instant)
+	local from = frame:IsShown() and shownAlpha(frame) or 0
 	stopAll(frame)
 	frame:SetAlpha(1)
 	frame:Show()
-	if instant or not Motion.Enabled() then return end
+	if instant or not Motion.Enabled() or from >= 1 then return end
 	local e = group(frame, "in")
 	local g = e.g
 	if not e.alpha then
 		e.alpha = g:CreateAnimation("Alpha")
-		e.alpha:SetFromAlpha(0)
 		e.alpha:SetToAlpha(1)
 		e.alpha:SetSmoothing("OUT")
 		e.scale = g:CreateAnimation("Scale")
@@ -58,8 +75,11 @@ function Motion.In(frame, duration, scale, origin, instant)
 		e.hasScale = Compat.SetAnimScale(e.scale, scale or 1, 1)
 		e.scale:SetOrigin(origin or "CENTER", 0, 0)
 	end
-	e.alpha:SetDuration(duration)
-	e.scale:SetDuration(e.hasScale and scale and duration or 0)
+	-- Interrupted fade-out: carry on from the current opacity, for the time
+	-- that's left, and don't grow again.
+	e.alpha:SetFromAlpha(from)
+	e.alpha:SetDuration(duration * (1 - from))
+	e.scale:SetDuration(e.hasScale and scale and from == 0 and duration or 0)
 	g:Play()
 end
 
@@ -73,9 +93,10 @@ function Motion.Out(frame, duration, instant)
 	end
 	local e = group(frame, "out")
 	local g = e.g
+	if g:IsPlaying() then return end
+	local from = shownAlpha(frame)
 	if not e.alpha then
 		e.alpha = g:CreateAnimation("Alpha")
-		e.alpha:SetFromAlpha(1)
 		e.alpha:SetToAlpha(0)
 		e.alpha:SetSmoothing("OUT")
 		g:SetScript("OnFinished", function()
@@ -83,32 +104,15 @@ function Motion.Out(frame, duration, instant)
 			frame:SetAlpha(1)
 		end)
 	end
-	if g:IsPlaying() then return end
 	stopAll(frame)
-	e.alpha:SetDuration(duration)
+	e.alpha:SetFromAlpha(from)
+	e.alpha:SetDuration(math.max(0.01, duration * from))
 	g:Play()
 end
 
 function Motion.IsLeaving(frame)
 	local e = groups[frame] and groups[frame].out
 	return e ~= nil and e.g:IsPlaying() and true or false
-end
-
--- A quick lift of new content: from `from` alpha (never 0, so the page is
--- readable at once) to 1.
-function Motion.Reveal(frame, duration, from)
-	if not Motion.Enabled() then frame:SetAlpha(1) return end
-	local e = group(frame, "reveal")
-	local g = e.g
-	if not e.alpha then
-		e.alpha = g:CreateAnimation("Alpha")
-		e.alpha:SetToAlpha(1)
-		e.alpha:SetSmoothing("OUT")
-	end
-	if g:IsPlaying() then g:Stop() end
-	e.alpha:SetFromAlpha(from or 0.4)
-	e.alpha:SetDuration(duration)
-	g:Play()
 end
 
 -- Hover highlight: fades in, disappears at once on leave.
@@ -153,7 +157,13 @@ function Motion.Glide(marker, dx, widthRatio, duration)
 		e.width:SetSmoothing("IN_OUT")
 		e.width:SetOrigin("LEFT", 0, 0)
 	end
-	if g:IsPlaying() then g:Stop() end
+	-- Clicked again mid-glide: start from where the marker is now, not from
+	-- the tab it was heading to.
+	if g:IsPlaying() and e.dx then
+		dx = dx + e.dx * (1 - (e.move:GetSmoothProgress() or 1))
+		g:Stop()
+	end
+	e.dx = dx
 	e.jump:SetOffset(dx, 0)
 	e.move:SetOffset(-dx, 0)
 	e.move:SetDuration(duration)
@@ -167,10 +177,13 @@ function Motion.Glide(marker, dx, widthRatio, duration)
 end
 
 -- Sync heard something: a ring grows out of the status dot and fades.
--- At most once every 2 s, and only while the window is on screen.
+-- A status signal, not a response to a click, so it may run a little past
+-- 300 ms. At most once per Theme.MOTION.pulseEvery seconds (a login backfill
+-- brings dozens of profiles; one ring says it, twenty would be noise), and
+-- only while the window is on screen.
 function Motion.Pulse(ring, now)
 	if not Motion.Enabled() or not ring:IsVisible() then return end
-	if lastPulse[ring] and now and now - lastPulse[ring] < 2 then return end
+	if lastPulse[ring] and now and now - lastPulse[ring] < Theme.MOTION.pulseEvery then return end
 	lastPulse[ring] = now
 	local e = group(ring, "pulse")
 	local g = e.g

@@ -77,8 +77,6 @@
   .underline { position: absolute; bottom: -1px; height: var(--sz-underline); background: var(--gold); left: 0; width: 0; }
 
   .content { position: absolute; left: var(--sp-l); right: var(--sp-l); top: calc(var(--sz-titleBar) + var(--sz-tabBar) + var(--sp-l)); bottom: var(--sp-l); }
-  .page.reveal { animation: reveal var(--mo-page) cubic-bezier(.5, 1, .89, 1); }
-  @keyframes reveal { from { opacity: .4; } to { opacity: 1; } }
   .abs { position: absolute; }
 
   /* controls */
@@ -105,7 +103,7 @@
   .menu:not(.abs) { position: relative; }
   .menu .btn { justify-content: space-between; padding: 0 var(--sp-s); width: 100%; }
   .menu .arrow { width: 8px; height: 8px; background: var(--dim); transform: scaleY(-1); -webkit-mask: var(--tex-arrow) center/contain no-repeat; mask: var(--tex-arrow) center/contain no-repeat; }
-  .pop { position: absolute; left: 0; top: calc(100% + 2px); width: 100%; background: var(--surface); border: 1px solid var(--lineStrong); z-index: 20; transform-origin: top; animation: popIn var(--mo-page) cubic-bezier(.5, 1, .89, 1); }
+  .pop { position: absolute; left: 0; top: calc(100% + 2px); width: 100%; background: var(--surface); border: 1px solid var(--lineStrong); z-index: 20; transform-origin: top; animation: popIn var(--mo-menu) cubic-bezier(.5, 1, .89, 1); }
   @keyframes popIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
   .pop div { height: var(--sz-row); line-height: var(--sz-row); padding: 0 var(--sp-s); cursor: pointer; }
   .pop div:hover { background: var(--raised); } .pop div.cur { color: var(--beard); }
@@ -554,7 +552,6 @@ function render(opts = {}) {
   $("#btnToggle").textContent = S.open ? "Close window" : "Open window";
   placeUnderline(false);
   if (opts.anim && S.open) { const w = $("#win"); w.classList.add(opts.anim); }
-  if (opts.reveal) $("#page").classList.add("reveal");
   wire();
 }
 let lastUL = null;

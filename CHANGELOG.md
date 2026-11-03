@@ -28,11 +28,12 @@ changed. **Not tested in game yet.**
 - **Crafters:** loading placeholders while item names arrive; long item
   names wrap instead of being cut off; the side panel keeps its frame and
   explains itself when nothing is picked.
-- **Motion** (AnimationGroups only, 100–250 ms): the window fades and grows
-  in, the gold underline glides between tabs, new content lifts in, rows
-  highlight on hover, menus drop from their button, and the sync dot sends
-  out a ring when new data arrives. Opening with `/sk` or closing with Esc
-  stays instant. New setting: **Reduce motion**.
+- **Motion** (AnimationGroups only, 80–180 ms): the window fades and grows
+  in, the gold underline glides between tabs, rows highlight on hover, menus
+  drop from their button, and the sync dot sends out a ring when new data
+  arrives (at most every 8 s). Clicking again mid-animation carries on from
+  where it was instead of starting over. Opening with `/sk` or closing with
+  Esc stays instant. New setting: **Reduce motion**.
 - **Hit areas:** small buttons (Grats, Whisper, chips, check boxes with
   their labels) have click areas of at least 24 px.
 - **Fits the screen:** the window shrinks itself if your UI scale and screen

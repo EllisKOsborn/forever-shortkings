@@ -206,13 +206,14 @@ in game if anything looks different and send it.
 71. [ ] **Open/close:** clicking the minimap button fades the window in (it
         grows very slightly). The × button fades it out. `/sk` and Esc open
         and close it at once, with no animation.
-72. [ ] **Tabs:** the gold underline glides to the tab you click; the page
-        brightens in quickly. Nothing waits for the animation.
+72. [ ] **Tabs:** the gold underline glides to the tab you click and the
+        page appears at once. Click tabs quickly one after another: the
+        underline never jumps back before moving.
 73. [ ] **Rows:** hovering a Roster row highlights it; clicking opens the
         character. The Online/Level/etc. header shows a small arrow on the
         sorted column, and clicking flips it.
 74. [ ] **Sync dot:** while sync is on, the orange dot next to "Sync on"
-        sends out a ring when a guildmate's data arrives (at most every 2 s).
+        sends out a ring when a guildmate's data arrives (at most every 8 s).
         In combat or an instance the dot turns grey and the text says why.
 75. [ ] **Reduce motion:** Settings → tick **Reduce motion**: open/close,
         tabs, hover and the sync ring all happen instantly.

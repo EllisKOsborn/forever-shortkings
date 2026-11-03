@@ -35,6 +35,14 @@ describe("Theme", function()
 		assert.truthy(SK.Theme.Dot("good"):find("dot:8:8", 1, true))
 	end)
 
+	it("keeps UI motion short (only the sync ring, a status signal, runs past 250 ms)", function()
+		for k, v in pairs(SK.Theme.MOTION) do
+			if k ~= "pulse" and k ~= "pulseEvery" and k ~= "openScale" then assert.is_true(v <= 0.25, k) end
+		end
+		assert.is_true(SK.Theme.MOTION.pulse <= 0.45)
+		assert.is_true(SK.Theme.MOTION.close < SK.Theme.MOTION.open) -- exits are faster
+	end)
+
 	it("counts with the right plural", function()
 		assert.equal("1 member", SK.Theme.Count(1, "member"))
 		assert.equal("0 members", SK.Theme.Count(0, "member"))

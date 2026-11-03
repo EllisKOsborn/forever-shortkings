@@ -174,7 +174,6 @@ end
 
 function Main:Select(key)
 	self:Build()
-	local changedTab = self.current ~= key
 	for i, tab in ipairs(self.tabs) do
 		local active = tab.key == key
 		if active and not tab.built then
@@ -185,7 +184,6 @@ function Main:Select(key)
 		self.frame.tabButtons[i]:SetActive(active)
 		if active then
 			self:PlaceUnderline(self.frame.tabButtons[i])
-			if changedTab and self.frame:IsShown() then Motion.Reveal(tab.page, M.page, 0.4) end
 		end
 	end
 	self.current = key

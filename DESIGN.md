@@ -54,10 +54,12 @@ to do; Crafters has loading bars; errors show in the title bar.
 ## Motion
 AnimationGroups only; quadratic ease-out (WoW has no custom curves).
 Window in 180 ms (fade + 97 → 100 % scale, centred), out 120 ms (fade);
-tab underline glides 200 ms (in-out); page lifts from 40 % in 150 ms; row
-hover fades in 100 ms and vanishes at once; menus 150 ms from their
-button; sync ring 450 ms, at most every 2 s. Keyboard opens (`/sk`, Esc)
-are instant. **Reduce motion** turns everything off.
+tab underline glides 150 ms (in-out) and the page itself appears at once
+(tabs are clicked too often for a fade); row hover fades in 80 ms and
+vanishes at once; menus 150 ms from their button; sync ring 400 ms, at most
+every 8 s. Interrupted animations continue from where they are. Keyboard
+opens (`/sk`, Esc) are instant. **Reduce motion** turns everything off (the
+owner asked for off, not gentler).
 
 ## Textures
 `tools/textures.js` draws them; all power-of-two `.tga`: crest 64, arrow 16,

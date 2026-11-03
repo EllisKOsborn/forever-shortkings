@@ -296,7 +296,7 @@ function W.Menu(parent, opts)
 		end
 		for i = #items + 1, #pop.entries do pop.entries[i]:Hide() end
 		pop:SetHeight(#items * h + 2)
-		Motion.In(pop, Theme.MOTION.page, 0.96, "TOP")
+		Motion.In(pop, Theme.MOTION.menu, 0.96, "TOP")
 		openMenu = self
 	end
 

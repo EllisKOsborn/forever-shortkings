@@ -153,10 +153,11 @@ window.SK_THEME = {
   "motion": {
     "open": 0.18,
     "close": 0.12,
-    "page": 0.15,
-    "slide": 0.2,
-    "hover": 0.1,
-    "pulse": 0.45,
+    "menu": 0.15,
+    "slide": 0.15,
+    "hover": 0.08,
+    "pulse": 0.4,
+    "pulseEvery": 8,
     "openScale": 0.97
   },
   "alpha": {
