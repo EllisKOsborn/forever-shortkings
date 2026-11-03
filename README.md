@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-FFC000?labelColor=000000">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.2.2%20%2B%20new%20look-F06BB0?labelColor=000000">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.2.3%20alpha-F06BB0?labelColor=000000">
   <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FF6A1A?labelColor=000000">
 </p>
 
@@ -139,12 +139,6 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 <a id="install"></a>
 
 ## 📦 Install
-
-> [!TIP]
-> **Want the new look before the next release?** Releases up to v0.2.2 still
-> have the old purple design. The newest build of `main` is under
-> **Actions → Tests → latest run → `ShortKings-test-build`** (needs a GitHub
-> login). Unzip it and install it the same way.
 
 1. Download **`ShortKings-x.y.z.zip`** from
    [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases)
@@ -302,8 +296,8 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.0**: **Crafters** tab and "Crafted by" on item tooltips
 - [x] **v0.2.1**: launch readiness: Forever's real raid attunements, live-client checks, sync safety limits, sharing preview, Copy as text
 - [x] **v0.2.2**: **Overview** dashboard with milestones and Grats
-- [x] **New look**: black and gold, pink-beard crest, Chakra Petch titles, motion with Reduce motion, empty and loading states ([before and after](#the-look))
-- [ ] **In-game test round** after launch (4 Nov), then fixes and the next release
+- [x] **v0.2.3**: the **new look**: black and gold, pink-beard crest, Chakra Petch titles, motion with Reduce motion, empty and loading states ([before and after](#the-look))
+- [ ] **In-game test round** after launch (4 Nov), then fixes (v0.2.4)
 - [ ] **v0.3**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
 - [ ] **v0.4**: **Professions** tab (cooldown board, specialisations, reagents, favourites)
 - [ ] **v0.5**: craft requests, a short status line, lockout board

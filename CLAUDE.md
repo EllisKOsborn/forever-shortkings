@@ -90,7 +90,8 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
 - **Releases:** pushing a tag `vX.Y.Z` on `main` runs `.github/workflows/release.yml`
   (BigWigs packager): it builds `ShortKings-vX.Y.Z.zip` and a GitHub Release
   whose notes come from CHANGELOG.md (`.pkgmeta` manual-changelog). First
-  release: **v0.2.2** (2 Nov 2026, the launch build). Tag only when the user asks.
+  release: **v0.2.2** (2 Nov 2026, the launch build); **v0.2.3** (3 Nov, the new
+  look). Tag only when the user asks.
 
 ## Layout
 ```
@@ -156,7 +157,7 @@ oversized outgoing messages are recorded as errors, not sent.
   Marcellus from fonts.gstatic.com (don't commit the font).
 
 ## Status (2 Nov 2026)
-- v0.1 to v0.2.2 are code complete, **not tested in game**. See CHANGELOG.md.
+- v0.1 to v0.2.3 are code complete, **not tested in game**. See CHANGELOG.md.
   v0.2.2 = the Overview dashboard (owner asked for it before the test gate).
   (`docs/prompts/next-v0.1.2-v0.2.md` is done; v0.2.1 = launch readiness
   from `docs/PLAN-REVIEW.md`.)
@@ -168,7 +169,7 @@ oversized outgoing messages are recorded as errors, not sent.
   roadmap). Don't build from the proposal files directly.
 - **Next:** PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
-  v0.2.3 fixes only, a first tagged release, and **v0.3 Raids** before 9 Dec
+  fixes only (now **v0.2.4**, as v0.2.3 became the new look), and **v0.3 Raids** before 9 Dec
   (`docs/prompts/next-v0.3-raids.md`). Professions tab is v0.4.
 - Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
   `AddEvent` is `HasRestrictions`; `GetDayEvent`/`EventGetInvite` are secret
@@ -196,10 +197,10 @@ oversized outgoing messages are recorded as errors, not sent.
   - The window opens on the Overview once (`settings.overviewShown`), then
     the last tab.
 
-## Design refresh (merged into `main` on 3 Nov 2026, owner's request)
-- Built on branch `design/refresh`, then merged into `main` when the owner
-  asked. Not yet in a tagged release (v0.2.2 still has the old look); tag
-  only when asked. Untested in game.
+## Design refresh (merged into `main` and released as v0.2.3, 3 Nov 2026)
+- Built on branch `design/refresh`, merged into `main` and tagged **v0.2.3**
+  when the owner asked (they chose to release before the in-game test).
+  Untested in game: fixes from the test round go into **v0.2.4**.
 - Visual rules live in `DESIGN.md`. Nothing visual is hard-coded outside
   `UI/Theme.lua` (`tests/design_spec.lua` enforces it). Colours: gold = where
   you are / one primary action / key figure; beard pink = selections and the

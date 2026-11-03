@@ -1,9 +1,11 @@
 # Changelog
 
-## Unreleased: the new look (on `main` since 3 Nov 2026)
+## v0.2.3 (3 Nov 2026): the new look
 
 A new look for every window. Nothing about sync, saved data or features
-changed. **Not tested in game yet.**
+changed, so it works alongside guildmates still on v0.2.2. **It hasn't been
+run in game yet:** if anything looks wrong, send the `/sk debug` text (and a
+screenshot if you can). Settings → **Reduce motion** turns the animations off.
 
 - **Black and gold.** True black surfaces, gold for the active tab, the one
   main button on a screen and key numbers; the gnome's **pink beard** for
