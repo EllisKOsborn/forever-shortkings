@@ -5,16 +5,19 @@ local _, SK = ...
 
 local Roster = SK:NewModule("RosterTab")
 local Theme, W = SK.Theme, SK.Widgets
+local S, SP = Theme.SIZES, Theme.SPACE
 
 -- "addon" = online with Short Kings, "online" = online without it, "offline".
 -- (Lives in Identity so non-UI code such as Sync and CraftIndex can use it.)
 Roster.Status = SK.Identity.Status
 
 local STATUS_RANK = { addon = 3, online = 2, offline = 1 }
+-- Round dots: green = online with Short Kings, white = online without it,
+-- dark grey = offline. (Gold and spark stay free for actions and alerts.)
 local DOT = {
-	addon = "|TInterface\\Buttons\\WHITE8X8:8:8:0:0:8:8:0:8:0:8:124:214:124|t",
-	online = "|TInterface\\Buttons\\WHITE8X8:8:8:0:0:8:8:0:8:0:8:255:194:74|t",
-	offline = "|TInterface\\Buttons\\WHITE8X8:8:8:0:0:8:8:0:8:0:8:110:90:100|t",
+	addon = Theme.Dot("good"),
+	online = Theme.Dot("text"),
+	offline = Theme.Dot("faint"),
 }
 Roster.DOT = DOT
 
@@ -184,19 +187,21 @@ local function byNum(key) return function(a, b)
 	return x < y
 end end
 
+-- Widths add up to the content width minus the scroll bar (836). The name
+-- gets the most room; numbers are right-aligned.
 local COLUMNS = {
-	{ key = "name", title = "Name", width = 170, sort = byName },
-	{ key = "level", title = "Lvl", width = 36, align = "RIGHT", sort = byNum("level") },
-	{ key = "rank", title = "Rank", width = 90, sort = byNum("rankIndex") },
-	{ key = "spec", title = "Spec", width = 120, sort = function(a, b) return (a.mainTree or "~") < (b.mainTree or "~") end },
-	{ key = "profs", title = "Professions", width = 150, sort = function(a, b) return a.profText < b.profText end },
-	{ key = "ilvl", title = "iLvl", width = 40, align = "RIGHT", sort = byNum("ilvl") },
+	{ key = "name", title = "Name", width = 196, sort = byName },
+	{ key = "level", title = "Level", width = 46, align = "RIGHT", sort = byNum("level") },
+	{ key = "rank", title = "Rank", width = 96, sort = byNum("rankIndex") },
+	{ key = "spec", title = "Spec", width = 128, sort = function(a, b) return (a.mainTree or "~") < (b.mainTree or "~") end },
+	{ key = "profs", title = "Professions", width = 140, sort = function(a, b) return a.profText < b.profText end },
+	{ key = "ilvl", title = "iLvl", width = 46, align = "RIGHT", sort = byNum("ilvl") },
 	{ key = "seen", title = "Online", width = 82, sort = function(a, b)
 		if a.status ~= b.status then return STATUS_RANK[a.status] > STATUS_RANK[b.status] end
 		return (a.lastSeen or 0) > (b.lastSeen or 0)
 	end },
-	{ key = "addon", title = "Ver", width = 50, sort = function(a, b) return (a.addon or "") > (b.addon or "") end },
-	{ key = "data", title = "Data", width = 70, sort = byNum("updated") },
+	{ key = "addon", title = "Version", width = 52, align = "RIGHT", sort = function(a, b) return (a.addon or "") > (b.addon or "") end },
+	{ key = "data", title = "Data", width = 50, align = "RIGHT", sort = byNum("updated") },
 }
 
 local ATT_RANK = { yes = 3, no = 2, unknown = 1, none = 0 }
@@ -204,20 +209,21 @@ local ATT_RANK = { yes = 3, no = 2, unknown = 1, none = 0 }
 -- While a raid is selected: Professions and Ver make room for Attuned.
 local ATT_COLUMNS = {
 	COLUMNS[1], COLUMNS[2], COLUMNS[3], COLUMNS[4],
-	{ key = "att", title = "Attuned", width = 100, sort = function(a, b)
+	{ key = "att", title = "Attuned", width = 140, sort = function(a, b)
 		if a.att ~= b.att then return ATT_RANK[a.att] > ATT_RANK[b.att] end
 		return byName(a, b)
 	end },
-	COLUMNS[6], COLUMNS[7], COLUMNS[9],
+	COLUMNS[6], COLUMNS[7],
+	{ key = "data", title = "Data", width = 102, align = "RIGHT", sort = byNum("updated") },
 }
 
 -- The game font has no check-mark glyphs, so the marks are the ready-check
 -- atlases from Blizzard's Forever ReadyCheck.lua (READY_CHECK_*_TEXTURE).
 local ATT_TEXT = {
-	yes = "|A:UI-LFG-ReadyMark:12:12|a |cff7CD67Cyes|r",
-	no = "|A:UI-LFG-DeclineMark:12:12|a |cffE06060no|r",
-	unknown = "|A:UI-LFG-PendingMark:12:12|a |cffB89AAAunknown|r",
-	none = "|cffB89AAAnot needed|r",
+	yes = "|A:UI-LFG-ReadyMark:12:12|a " .. Theme.Paint("good", "yes"),
+	no = "|A:UI-LFG-DeclineMark:12:12|a " .. Theme.Paint("bad", "no"),
+	unknown = "|A:UI-LFG-PendingMark:12:12|a " .. Theme.Paint("dim", "unknown"),
+	none = Theme.Paint("dim", "not needed"),
 }
 Roster.ATT_TEXT = ATT_TEXT
 
@@ -227,39 +233,39 @@ local function setCell(fs, r, col)
 	local C = Theme.Code
 	if k == "name" then
 		local extra = ""
-		if r.isSelf then extra = " " .. C("muted") .. "(you)|r" end
-		if r.alts and #r.alts > 0 then extra = extra .. " " .. C("flame") .. "+" .. #r.alts .. "|r" end
+		if r.isSelf then extra = " " .. C("beard") .. "(you)|r" end
+		if r.alts and #r.alts > 0 then extra = extra .. " " .. C("dim") .. "+" .. #r.alts .. "|r" end
 		fs:SetText(Theme.ClassText(r.name, r.class) .. extra)
 	elseif k == "level" then
-		fs:SetText(r.level > 0 and r.level or "")
+		fs:SetText(r.level > 0 and r.level or Theme.DASH)
 	elseif k == "rank" then
-		fs:SetText(C("muted") .. r.rank .. "|r")
+		fs:SetText(C("dim") .. r.rank .. "|r")
 	elseif k == "spec" then
-		fs:SetText(r.spec and ((r.mainTree or "") .. " " .. C("muted") .. r.spec .. "|r") or "")
+		fs:SetText(r.spec and ((r.mainTree or "") .. " " .. C("dim") .. r.spec .. "|r") or Theme.DASH)
 	elseif k == "profs" then
-		fs:SetText(r.profText)
+		fs:SetText(r.profText ~= "" and (C("dim") .. r.profText .. "|r") or Theme.DASH)
 	elseif k == "ilvl" then
-		fs:SetText(r.ilvl and string.format("%.0f", r.ilvl) or "")
+		fs:SetText(r.ilvl and string.format("%.0f", r.ilvl) or Theme.DASH)
 	elseif k == "seen" then
 		local dot = DOT[r.status] .. " "
 		if r.status == "offline" then
-			fs:SetText(dot .. C("muted") .. Theme.Ago(r.lastSeen, now) .. "|r")
+			fs:SetText(dot .. C("dim") .. Theme.Ago(r.lastSeen, now) .. "|r")
 		elseif r.onAlt then
-			fs:SetText(dot .. C("good") .. "on alt|r")
+			fs:SetText(dot .. "on alt")
 		else
-			fs:SetText(dot .. C("good") .. "Online|r")
+			fs:SetText(dot .. "online")
 		end
 	elseif k == "addon" then
-		if not r.addon then fs:SetText("")
-		elseif r.outdated then fs:SetText(C("ember") .. r.addon .. "|r")
-		else fs:SetText(C("muted") .. r.addon .. "|r") end
+		if not r.addon then fs:SetText(Theme.DASH)
+		elseif r.outdated then fs:SetText(C("spark") .. r.addon .. "|r")
+		else fs:SetText(C("dim") .. r.addon .. "|r") end
 	elseif k == "att" then
-		fs:SetText(ATT_TEXT[r.att or "unknown"] .. (r.attNote and " |cffFF7A1A!|r" or ""))
+		fs:SetText(ATT_TEXT[r.att or "unknown"] .. (r.attNote and (" " .. C("spark") .. "!|r") or ""))
 	elseif k == "data" then
 		if r.hasData and not r.isSelf and Theme.IsStale(r.updated, now) then
-			fs:SetText(C("ember") .. Theme.Ago(r.updated, now) .. "|r")
-		elseif r.hasData then fs:SetText(Theme.Ago(r.updated, now))
-		else fs:SetText(C("muted") .. "no addon|r") end
+			fs:SetText(C("spark") .. Theme.Ago(r.updated, now) .. "|r")
+		elseif r.hasData then fs:SetText(C("dim") .. Theme.Ago(r.updated, now) .. "|r")
+		else fs:SetText(C("faint") .. "none|r") end
 	end
 end
 
@@ -273,42 +279,42 @@ local function tooltip(row, r)
 	local now = SK.Compat.Now()
 	GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
 	GameTooltip:AddLine(Theme.ClassText(r.name, r.class))
-	if r.altOf then GameTooltip:AddLine("alt of " .. r.altOf, 0.72, 0.6, 0.67) end
+	if r.altOf then Theme.TipLine(GameTooltip, "alt of " .. r.altOf, "dim") end
 	if r.att then
 		local raid = Roster.Raid(SK.DB.settings.roster.raid)
-		GameTooltip:AddDoubleLine((raid and raid.name or "Raid") .. " attunement", ATT_TEXT[r.att], 1, 0.76, 0.29)
-		if r.attNote then GameTooltip:AddLine(r.attNote, 1, 0.48, 0.1) end
+		Theme.TipDouble(GameTooltip, (raid and raid.name or "Raid") .. " attunement", ATT_TEXT[r.att], "gold")
+		if r.attNote then Theme.TipLine(GameTooltip, r.attNote, "spark") end
 	end
-	GameTooltip:AddLine(DOT[r.status] .. " " .. STATUS_TEXT[r.status], 0.85, 0.8, 0.82)
-	if r.spec then GameTooltip:AddLine((r.mainTree or "Talents") .. " " .. r.spec, 1, 1, 1) end
-	for _, pr in ipairs(r.profs) do GameTooltip:AddDoubleLine(pr.name, pr.rank, 1, 1, 1, 1, 1, 1) end
+	Theme.TipLine(GameTooltip, DOT[r.status] .. " " .. STATUS_TEXT[r.status], "text")
+	if r.spec then Theme.TipLine(GameTooltip, (r.mainTree or "Talents") .. " " .. r.spec, "text") end
+	for _, pr in ipairs(r.profs) do Theme.TipDouble(GameTooltip, pr.name, pr.rank, "text", "text") end
 	if r.missingEnchants and r.missingEnchants > 0 then
-		GameTooltip:AddLine(r.missingEnchants .. " item(s) missing an enchant", 1, 0.48, 0.1)
+		Theme.TipLine(GameTooltip, r.missingEnchants .. " item(s) missing an enchant", "spark")
 	end
-	if r.note and r.note ~= "" then GameTooltip:AddLine("Note: " .. r.note, 0.94, 0.48, 0.8, true) end
+	if r.note and r.note ~= "" then Theme.TipLine(GameTooltip, "Note: " .. r.note, "beard", true) end
 	if r.officerNote and r.officerNote ~= "" then
-		GameTooltip:AddLine("Officer note: " .. r.officerNote, 1, 0.76, 0.29, true)
+		Theme.TipLine(GameTooltip, "Officer note: " .. r.officerNote, "gold", true)
 	end
 	if r.alts and #r.alts > 0 then
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine("Alts", 0.94, 0.48, 0.8)
+		Theme.TipLine(GameTooltip, "Alts", "beard")
 		for _, alt in ipairs(r.alts) do
 			local right = alt.status == "offline" and Theme.Ago(alt.lastSeen, now) or "online"
-			GameTooltip:AddDoubleLine(DOT[alt.status] .. " " .. Theme.ClassText(alt.name, alt.class) ..
-				"  " .. (alt.level > 0 and alt.level or ""), right, 1, 1, 1, 0.72, 0.6, 0.67)
+			Theme.TipDouble(GameTooltip, DOT[alt.status] .. " " .. Theme.ClassText(alt.name, alt.class) ..
+				"  " .. (alt.level > 0 and alt.level or ""), right, "text", "dim")
 		end
 	end
 	GameTooltip:AddLine(" ")
 	if not r.hasData then
-		GameTooltip:AddLine("No data yet. They may not have the addon, or be on a trial account (trials can't sync).", 0.7, 0.6, 0.65, true)
+		Theme.TipLine(GameTooltip, "No data yet. They may not have the addon, or be on a trial account (trials can't sync).", "dim", true)
 	elseif r.addon then
 		if not r.isSelf and Theme.IsStale(r.updated, now) then
-			GameTooltip:AddLine("Data is " .. Theme.Ago(r.updated, now) .. " old and may be out of date", 1, 0.48, 0.1)
+			Theme.TipLine(GameTooltip, "Data is " .. Theme.Ago(r.updated, now) .. " old and may be out of date", "spark")
 		end
-		GameTooltip:AddLine("Short Kings " .. r.addon .. (r.outdated and "  (update available)" or ""),
-			r.outdated and 1 or 0.7, r.outdated and 0.48 or 0.6, r.outdated and 0.1 or 0.65)
+		Theme.TipLine(GameTooltip, "Short Kings " .. r.addon .. (r.outdated and "  (update available)" or ""),
+			r.outdated and "spark" or "dim")
 	end
-	GameTooltip:AddLine("Click to view character", 1, 0.76, 0.29)
+	Theme.TipLine(GameTooltip, "Click to view character", "gold")
 	GameTooltip:Show()
 end
 
@@ -327,13 +333,14 @@ end
 function Roster:Build(page)
 	local rs = SK.DB.settings.roster
 	self.filter = ""
-	self.search = W.SearchBox(page, 210, "Search name, profession, note...", function(text)
+	-- Toolbar: search, raid picker, group alts, count, Copy.
+	self.search = W.SearchBox(page, 220, "Search name, profession, note", function(text)
 		Roster.filter = text
 		Roster:Refresh()
 	end)
 	self.search:SetPoint("TOPLEFT", 0, 0)
 	self.raidMenu = W.Menu(page, {
-		width = 150, items = raidItems,
+		width = 170, items = raidItems,
 		get = function() return rs.raid or "none" end,
 		set = function(v)
 			rs.raid = (v ~= "none") and v or nil
@@ -341,39 +348,38 @@ function Roster:Build(page)
 		end,
 	})
 	self.raidMenu.tooltip = "Pick a raid to see who is attuned"
-	self.raidMenu:SetPoint("LEFT", self.search, "RIGHT", 10, 0)
+	self.raidMenu:SetPoint("LEFT", self.search, "RIGHT", SP.s, 0)
 	self.groupCheck = W.Check(page, "Group alts", function() return SK.DB.settings.groupAlts end, function(v)
 		SK.DB.settings.groupAlts = v
 		Roster:Refresh()
 	end)
-	self.groupCheck:SetPoint("LEFT", self.raidMenu, "RIGHT", 14, 0)
-	self.count = Theme.Text(page, 12, "muted")
-	self.count:SetPoint("LEFT", self.groupCheck.label, "RIGHT", 16, 0)
-	self.copy = W.Button(page, "Copy", 56, 22, function() Roster:CopyText() end)
+	self.groupCheck.tooltip = "Show each player once, with their alts in the tooltip"
+	self.groupCheck:SetPoint("LEFT", self.raidMenu, "RIGHT", SP.l, 0)
+	self.copy = W.Button(page, "Copy", nil, S.control, function() Roster:CopyText() end)
 	self.copy:SetPoint("TOPRIGHT", 0, 0)
 	self.copy.tooltip = "Copy this list as plain text (for Discord). Notes are never included."
+	self.count = Theme.Text(page, "small", "dim")
+	self.count:SetPoint("LEFT", self.groupCheck.label, "RIGHT", SP.l, 0)
 	-- The counter stops at the Copy button (long texts are cut, not overlapped).
-	self.count:SetPoint("RIGHT", self.copy, "LEFT", -8, 0)
-	self.count:SetJustifyH("LEFT")
+	self.count:SetPoint("RIGHT", self.copy, "LEFT", -SP.s, 0)
+	self.count:SetJustifyH("RIGHT")
 	self.count:SetWordWrap(false)
-
 
 	-- Second toolbar row, shown only while a raid is selected.
 	local bar = CreateFrame("Frame", nil, page)
-	bar:SetPoint("TOPLEFT", 0, -28)
-	bar:SetPoint("TOPRIGHT", 0, -28)
-	bar:SetHeight(24)
+	bar:SetPoint("TOPLEFT", 0, -(S.control + SP.s))
+	bar:SetPoint("TOPRIGHT", 0, -(S.control + SP.s))
+	bar:SetHeight(S.control)
 	self.attBar = bar
 	self.filterTabs = {}
 	local prev
 	for _, f in ipairs(FILTERS) do
-		local t = W.Tab(bar, f[2], function()
+		local t = W.Chip(bar, f[2], function()
 			rs.attFilter = f[1]
 			Roster:Refresh()
 		end)
-		t:SetHeight(22)
 		t.value = f[1]
-		if prev then t:SetPoint("LEFT", prev, "RIGHT", 4, 0) else t:SetPoint("LEFT", 0, 0) end
+		if prev then t:SetPoint("LEFT", prev, "RIGHT", SP.xs, 0) else t:SetPoint("LEFT", 0, 0) end
 		self.filterTabs[#self.filterTabs + 1] = t
 		prev = t
 	end
@@ -381,15 +387,18 @@ function Roster:Build(page)
 		rs.maxLevelOnly = v
 		Roster:Refresh()
 	end)
-	self.maxCheck:SetPoint("LEFT", prev, "RIGHT", 14, 0)
-	self.attCount = Theme.Text(bar, 12, "muted")
-	self.attCount:SetPoint("LEFT", self.maxCheck.label, "RIGHT", 16, 0)
+	self.maxCheck:SetPoint("LEFT", prev, "RIGHT", SP.l, 0)
+	self.attCount = Theme.Text(bar, "small", "dim")
+	self.attCount:SetPoint("LEFT", self.maxCheck.label, "RIGHT", SP.l, 0)
+	self.attCount:SetPoint("RIGHT", 0, 0)
+	self.attCount:SetJustifyH("RIGHT")
+	self.attCount:SetWordWrap(false)
 
 	-- Two lists: the List widget builds its columns once, so instead of
 	-- rebuilding it we keep one per column set and show the one in use.
 	local function makeList(columns, sortCol)
 		local l = W.List(page, {
-			columns = columns, rowHeight = 20, setCell = setCell,
+			columns = columns, setCell = setCell,
 			onClick = function(r) SK.CharacterTab:ShowCharacter(r.guid) end,
 			onEnter = tooltip,
 		})
@@ -398,10 +407,17 @@ function Roster:Build(page)
 		return l
 	end
 	self.list = makeList(COLUMNS, 7)          -- online first
-	self.list:SetPoint("TOPLEFT", 0, -30)
+	self.list:SetPoint("TOPLEFT", 0, -(S.control + SP.m))
 	self.attList = makeList(ATT_COLUMNS, 7)    -- online first
-	self.attList:SetPoint("TOPLEFT", 0, -58)
+	self.attList:SetPoint("TOPLEFT", 0, -(2 * S.control + SP.s + SP.m))
 	self.attList:Hide()
+end
+
+-- What an empty roster says. Pure; tested.
+function Roster.EmptyText(hasGuild, filter)
+	if not hasGuild then return "You're not in a guild, so there's no roster to show." end
+	if filter and filter ~= "" then return "Nobody matches \"" .. filter .. "\". Try a name, a profession or part of a note." end
+	return "The guild roster hasn't loaded yet. It fills in a few seconds after login."
 end
 
 -- From the Overview's Data health card: normal Roster, missing and oldest
@@ -449,15 +465,16 @@ function Roster:Refresh()
 			t:SetShown(not noneNeeded)
 		end
 		self.maxCheck:Refresh()
-		self.maxCheck.label:SetText(maxLevel > 0 and ("Max level only (" .. maxLevel .. ")") or "Max level only")
+		self.maxCheck:SetLabel(maxLevel > 0 and ("Max level only (" .. maxLevel .. ")") or "Max level only")
 		if noneNeeded then
 			self.attCount:SetText(Theme.Code("good") .. "No attunement needed for this raid.|r")
 		elseif raid.status == "todo" then
-			self.attCount:SetText(Theme.Code("flame") .. "Attunement quests for this raid aren't known yet.|r")
+			self.attCount:SetText(Theme.Paint("spark", "Attunement quests for this raid aren't known yet."))
 		else
 			self.attCount:SetText(string.format("%d attuned · %d not · %d unknown", counts.yes, counts.no, counts.unknown))
 		end
 		self.count:SetText(string.format("%d characters", counts.yes + counts.no + counts.unknown + counts.none))
+		self.attList:SetEmptyText(Roster.EmptyText(guild ~= nil, self.filter))
 		self.attList:SetItems(rows)
 		return
 	end
@@ -472,13 +489,14 @@ function Roster:Refresh()
 		end
 	end
 	local text = string.format("%d characters · %d with data", total, withData)
-	if outdated > 0 then text = text .. " · " .. Theme.Code("ember") .. outdated .. " need an update|r" end
+	if outdated > 0 then text = text .. " · " .. Theme.Paint("spark", outdated .. " need an update") end
 	local newest = Roster.NewestVersion(guild)
 	if guild and newest and SK.VERSION ~= "dev" and SK.Sync.versionNewer(newest, SK.VERSION) then
-		text = text .. " · " .. Theme.Code("flame") .. "Short Kings " .. newest .. " is out (you have " .. SK.VERSION .. ")|r"
+		text = text .. " · " .. Theme.Paint("spark", "Short Kings " .. newest .. " is out (you have " .. SK.VERSION .. ")")
 	end
 	self.count:SetText(text)
 	self.groupCheck:Refresh()
+	self.list:SetEmptyText(Roster.EmptyText(guild ~= nil, self.filter))
 	self.list:SetItems(rows)
 end
 

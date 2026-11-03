@@ -57,6 +57,9 @@ function Commands.BuildReport()
 	local calPresent, calEvents = Compat.CalendarStatus()
 	add("Calendar: C_Calendar present=%s, guild events listed=%s, AddEvent present=%s (open the calendar once; 0 is normal before that)",
 		yesno(calPresent), tostring(calEvents), yesno(Compat.has("C_Calendar", "AddEvent")))
+	add("Display font (Chakra Petch) loaded: %s   Body font: %s   Reduce motion: %s",
+		SK.Theme and (SK.Theme.displayFailed and "NO, using the game font" or "yes (or window not opened yet)") or "n/a",
+		SK.Theme and tostring(SK.Theme.BodyFont()) or "n/a", yesno(SK.DB.settings.reduceMotion))
 	add("Recent Lua errors caught: %d (details at the end)", #SK.errors)
 
 	add("")
@@ -197,7 +200,7 @@ local HELP = {
 function Commands.Run(msg)
 	local cmd = (msg or ""):lower():match("^%s*(%S*)")
 	if cmd == "" then
-		SK.MainFrame:Toggle()
+		SK.MainFrame:Toggle(true) -- typed, so no animation
 	elseif cmd == "debug" then
 		SK.DebugWindow:Open(false)
 	elseif cmd == "log" then

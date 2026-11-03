@@ -16,10 +16,10 @@ local function onClick(_, button)
 end
 
 local function onTooltip(tt)
-	tt:AddLine(Theme.Code("pink") .. "Short Kings|r")
-	tt:AddLine("Small in stature. Big in loot.", Theme.RGB("flame"))
-	tt:AddLine("Left-click: open / close", 1, 1, 1)
-	tt:AddLine("Right-click: settings", 1, 1, 1)
+	Theme.TipLine(tt, "Short Kings", "gold")
+	Theme.TipLine(tt, "Small in stature. Big in loot.", "dim")
+	Theme.TipLine(tt, "Left-click: open / close", "text")
+	Theme.TipLine(tt, "Right-click: settings", "text")
 end
 
 -- Built-in fallback button.

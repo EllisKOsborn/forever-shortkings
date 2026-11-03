@@ -6,6 +6,10 @@ local _, SK = ...
 local Crafters = SK:NewModule("CraftersTab")
 local Theme, W, Compat = SK.Theme, SK.Widgets, SK.Compat
 local CI = SK.CraftIndex
+local S, SP = Theme.SIZES, Theme.SPACE
+
+Crafters.RESULTS_W = 476
+Crafters.SIDE_W = S.window[1] - 2 * SP.l - Crafters.RESULTS_W - SP.l
 
 local function profName(skillLine) return CI.ProfessionName(CI:Get(true), skillLine) end
 
@@ -28,26 +32,28 @@ function Crafters.CountText(total, online)
 	return text
 end
 
+-- Results: 476 - 12 (scroll bar) = 464.
 local RESULT_COLUMNS = {
-	{ key = "name", title = "Item or recipe", width = 232 },
-	{ key = "prof", title = "Profession", width = 96 },
-	{ key = "count", title = "Crafters", width = 126 },
+	{ key = "name", title = "Item or recipe", width = 250 },
+	{ key = "prof", title = "Profession", width = 100 },
+	{ key = "count", title = "Crafters", width = 114, align = "RIGHT" },
 }
 
+-- Side panel list: 356 - 2 x 12 padding - 12 (scroll bar) = 320.
 local CRAFTER_COLUMNS = {
-	{ key = "name", title = "Crafter", width = 146 },
-	{ key = "skill", title = "Skill", width = 40, align = "RIGHT" },
-	{ key = "info", title = "", width = 84 },
-	{ key = "btn", title = "", width = 58 },
+	{ key = "name", title = "Crafter", width = 138 },
+	{ key = "skill", title = "Skill", width = 44, align = "RIGHT" },
+	{ key = "info", title = "", width = 74 },
+	{ key = "btn", title = "", width = 64 },
 }
 
 local function setResultCell(fs, r, col)
 	if col.key == "name" then
 		fs:SetText(icon(r) .. coloured(r, r.name))
 	elseif col.key == "prof" then
-		fs:SetText(Theme.Code("muted") .. profName(r.skillLine) .. "|r")
+		fs:SetText(Theme.Paint("dim", profName(r.skillLine)))
 	elseif col.key == "count" then
-		fs:SetText(Crafters.CountText(r.total, r.online))
+		fs:SetText(r.online > 0 and (r.total .. Theme.Paint("dim", "  (" .. r.online .. " online)")) or tostring(r.total))
 	end
 end
 
@@ -56,10 +62,10 @@ local function setCrafterCell(fs, c, col)
 	if col.key == "name" then
 		fs:SetText(SK.RosterTab.DOT[c.status] .. " " .. Theme.ClassText(c.name, c.class))
 	elseif col.key == "skill" then
-		fs:SetText(c.skill > 0 and c.skill or "")
+		fs:SetText(c.skill > 0 and c.skill or Theme.DASH)
 	elseif col.key == "info" then
 		if c.via then fs:SetText(C("good") .. "on " .. (c.viaName or "alt") .. "|r")
-		elseif c.altOf then fs:SetText(C("muted") .. "alt of " .. c.altOf .. "|r")
+		elseif c.altOf then fs:SetText(C("dim") .. "alt of " .. c.altOf .. "|r")
 		else fs:SetText("") end
 	else
 		fs:SetText("")
@@ -68,16 +74,18 @@ end
 
 function Crafters:Build(page)
 	self.query = ""
-	self.search = W.SearchBox(page, 240, "Search an item or recipe...", function(text)
+	self.search = W.SearchBox(page, 260, "Search an item or recipe", function(text)
 		Crafters.query = text
 		Crafters:Refresh()
 	end)
 	self.search:SetPoint("TOPLEFT", 0, 0)
-	self.status = Theme.Text(page, 12, "muted")
-	self.status:SetPoint("LEFT", self.search, "RIGHT", 14, 0)
+	self.status = Theme.Text(page, "small", "dim")
+	self.status:SetPoint("LEFT", self.search, "RIGHT", SP.m, 0)
+	self.status:SetPoint("RIGHT", page, "LEFT", Crafters.RESULTS_W, 0)
+	self.status:SetWordWrap(false)
 
 	self.results = W.List(page, {
-		columns = RESULT_COLUMNS, rowHeight = 20, setCell = setResultCell,
+		columns = RESULT_COLUMNS, setCell = setResultCell,
 		onClick = function(r) Crafters:Select(r.recipeID) end,
 		onEnter = function(row, r)
 			GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
@@ -86,38 +94,34 @@ function Crafters:Build(page)
 			else
 				GameTooltip:SetText(r.name)
 			end
-			GameTooltip:AddLine("Click to see who can make it", 1, 0.76, 0.29)
+			Theme.TipLine(GameTooltip, "Click to see who can make it", "gold")
 			GameTooltip:Show()
 		end,
 	})
-	self.results:SetPoint("TOPLEFT", 0, -30)
+	self.results:SetPoint("TOPLEFT", 0, -(S.control + SP.m))
 	self.results:SetPoint("BOTTOMLEFT")
-	self.results:SetWidth(470)
-	self.hint = Theme.Text(page, 12, "muted")
-	self.hint:SetPoint("TOPLEFT", self.results, "TOPLEFT", 8, -34)
-	self.hint:SetWidth(440)
-	self.hint:SetJustifyH("LEFT")
+	self.results:SetWidth(Crafters.RESULTS_W)
+	self.hint = self.results.message
 
-	-- Side panel
+	-- Side panel: who can make the picked item. Keeps its frame when empty.
 	local side = CreateFrame("Frame", nil, page)
-	side:SetPoint("TOPLEFT", self.results, "TOPRIGHT", 12, 0)
+	side:SetPoint("TOPLEFT", self.results, "TOPRIGHT", SP.l, 0)
 	side:SetPoint("BOTTOMRIGHT")
-	Theme.Panel(side, { thickness = 1, gold = false, from = "plumDark", to = "plumLift" })
+	Theme.Panel(side, { bg = "surface", border = "line" })
 	self.side = side
-	self.title = Theme.Text(side, 14, "pink")
-	self.title:SetPoint("TOPLEFT", 10, -10)
-	self.title:SetPoint("TOPRIGHT", -10, -10)
-	self.title:SetJustifyH("LEFT")
+	self.title = Theme.Text(side, "title", "text")
+	self.title:SetPoint("TOPLEFT", SP.m, -SP.m)
+	self.title:SetPoint("TOPRIGHT", -SP.m, -SP.m)
 	self.title:SetWordWrap(false)
-	self.sub = Theme.Text(side, 11, "muted")
-	self.sub:SetPoint("TOPLEFT", self.title, "BOTTOMLEFT", 0, -4)
+	self.sub = Theme.Text(side, "small", "dim")
+	self.sub:SetPoint("TOPLEFT", self.title, "BOTTOMLEFT", 0, -SP.xs)
 	self.crafters = W.List(side, {
-		columns = CRAFTER_COLUMNS, rowHeight = 22, setCell = setCrafterCell,
+		columns = CRAFTER_COLUMNS, setCell = setCrafterCell,
 		decorate = function(row)
-			row.whisper = W.Button(row, "Whisper", 54, 18, function(b)
+			row.whisper = W.Button(row, "Whisper", 60, S.controlSmall, function(b)
 				if b.target then Compat.SendTell(SK.Identity:WhisperTarget(b.target)) end
 			end)
-			row.whisper:SetPoint("RIGHT", -2, 0)
+			row.whisper:SetPoint("RIGHT", -SP.xxs, 0)
 			row.whisper.disabledTooltip = "Offline"
 		end,
 		update = function(row, c)
@@ -128,30 +132,31 @@ function Crafters:Build(page)
 		onEnter = function(row, c)
 			GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
 			GameTooltip:AddLine(Theme.ClassText(c.name, c.class))
-			if c.altOf then GameTooltip:AddLine("alt of " .. c.altOf, 0.72, 0.6, 0.67) end
-			if c.via then GameTooltip:AddLine("Online on " .. (c.viaName or "an alt"), 0.49, 0.84, 0.49) end
+			if c.altOf then Theme.TipLine(GameTooltip, "alt of " .. c.altOf, "dim") end
+			if c.via then Theme.TipLine(GameTooltip, "Online on " .. (c.viaName or "an alt"), "good") end
 			if c.scanned then
 				local stale = Theme.IsStale(c.scanned)
-				GameTooltip:AddLine("Recipes recorded " .. Theme.Ago(c.scanned) .. " ago" ..
-					(stale and " (may be out of date)" or ""), stale and 1 or 0.72, stale and 0.48 or 0.6, stale and 0.1 or 0.67)
+				Theme.TipLine(GameTooltip, "Recipes recorded " .. Theme.Ago(c.scanned) .. " ago" ..
+					(stale and " (may be out of date)" or ""), stale and "spark" or "dim")
 			end
-			GameTooltip:AddLine("Click to view character", 1, 0.76, 0.29)
+			Theme.TipLine(GameTooltip, "Click to view character", "gold")
 			GameTooltip:Show()
 		end,
 		onClick = function(c) SK.CharacterTab:ShowCharacter(c.guid) end,
 	})
-	self.crafters:SetPoint("TOPLEFT", 6, -52)
-	self.crafters:SetPoint("BOTTOMRIGHT", -6, 40)
-	self.post = W.Button(side, "Post to guild chat", 150, 24, function() Crafters:PostToGuild() end)
-	self.post:SetPoint("BOTTOMLEFT", 8, 8)
-	self.copy = W.Button(side, "Copy", 56, 24, function() Crafters:CopyText() end)
-	self.copy:SetPoint("LEFT", self.post, "RIGHT", 8, 0)
+	self.crafters:SetPoint("TOPLEFT", SP.m, -60)
+	self.crafters:SetPoint("BOTTOMRIGHT", -SP.m, S.control + SP.m * 2)
+	self.post = W.Button(side, "Post to guild chat", nil, S.control, function() Crafters:PostToGuild() end, "primary")
+	self.post:SetPoint("BOTTOMLEFT", SP.m, SP.m)
+	self.copy = W.Button(side, "Copy", nil, S.control, function() Crafters:CopyText() end)
+	self.copy:SetPoint("LEFT", self.post, "RIGHT", SP.s, 0)
 	self.copy.tooltip = "Copy the crafter list as plain text (for Discord)."
 	self.post.tooltip = "Types the list into your chat box. Press Enter to send it."
-	self.empty = Theme.Text(side, 12, "muted")
-	self.empty:SetPoint("CENTER")
-	self.empty:SetWidth(300)
-	self.empty:SetText("Click a result to see who can make it.")
+	self.empty = Theme.Text(side, "body", "dim")
+	self.empty:SetPoint("TOPLEFT", SP.m, -SP.m)
+	self.empty:SetPoint("RIGHT", -SP.m, 0)
+	self.empty:SetJustifyV("TOP")
+	self.empty:SetText("Pick an item on the left to see who in the guild can make it, who's online, and to whisper them.")
 
 	SK:On("NAMES_LOADED", function()
 		if page:IsShown() then Crafters:Refresh() end
@@ -204,19 +209,20 @@ function Crafters:Refresh()
 
 	local C = Theme.Code
 	if state == "empty" then
-		self.hint:SetText("Recipes appear after crafters open their profession window once.")
+		self.results:SetEmptyText("Recipes appear after crafters open their profession window once.")
 		self.status:SetText("")
 	elseif state == "short" then
 		CI.Prefetch(index)
-		self.hint:SetText("Type at least 3 letters, e.g. \"arcanite\", \"mooncloth\" or \"enchant boots\".")
+		self.results:SetEmptyText("Type at least 3 letters, e.g. \"arcanite\", \"mooncloth\" or \"enchant boots\".")
 		self.status:SetText(string.format("%d recipes from %d crafters", index.recipeCount, index.crafterCount))
 	else
-		self.hint:SetText(#results == 0 and (loading > 0 and "Loading item names…" or "Nobody in the guild has that recipe yet.") or "")
+		self.results:SetEmptyText(loading > 0 and "Loading item names..." or "Nobody in the guild has that recipe yet.")
 		local text = (#results >= CI.MAX_RESULTS) and (CI.MAX_RESULTS .. "+ results, type more to narrow it down")
 			or (#results .. (#results == 1 and " result" or " results"))
-		if loading > 0 then text = text .. "  ·  " .. C("flame") .. "loading " .. loading .. " names…|r" end
+		if loading > 0 then text = text .. "  ·  " .. C("spark") .. "loading " .. loading .. " names...|r" end
 		self.status:SetText(text)
 	end
+	self.results:SetLoading(state ~= "empty" and state ~= "short" and loading > 0)
 
 	local r = self.selected and index.recipes[self.selected]
 	self.crafters:SetShown(r ~= nil)
@@ -229,7 +235,7 @@ function Crafters:Refresh()
 		return
 	end
 	local list = CI.Crafters(index, r.recipeID, guild, now)
-	self.title:SetText(icon(r) .. coloured(r, CI.NameOf(r) or "…"))
+	self.title:SetText(icon(r) .. coloured(r, CI.NameOf(r) or "..."))
 	self.sub:SetText(profName(r.skillLine) .. "  ·  " .. Crafters.CountText(#list, CI.OnlineCount(list)))
 	self.crafters:SetItems(list)
 end

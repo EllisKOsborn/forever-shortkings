@@ -5,6 +5,7 @@ local _, SK = ...
 
 local Debug = SK:NewModule("DebugWindow")
 local Theme, W = SK.Theme, SK.Widgets
+local S, SP = Theme.SIZES, Theme.SPACE
 
 function Debug:Build()
 	if self.frame then return self.frame end
@@ -18,30 +19,30 @@ function Debug:Build()
 	f:RegisterForDrag("LeftButton")
 	f:SetScript("OnDragStart", f.StartMoving)
 	f:SetScript("OnDragStop", f.StopMovingOrSizing)
-	Theme.Panel(f)
+	Theme.Panel(f, { bg = "void", border = "line" })
 	tinsert(UISpecialFrames, "ShortKingsDebugFrame")
 
-	local title = Theme.Text(f, 16, "pink")
+	local title = Theme.Text(f, "heading", "text")
 	f.title = title
-	title:SetPoint("TOPLEFT", 14, -12)
-	title:SetText("Short Kings debug report")
-	local hint = Theme.Text(f, 11, "muted")
-	hint:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -4)
-	hint:SetText("Click the text, press Ctrl+A (Cmd+A on Mac) then Ctrl+C to copy it.")
-	local close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
-	close:SetPoint("TOPRIGHT", -2, -2)
+	title:SetPoint("TOPLEFT", SP.l, -SP.l)
+	local hint = Theme.Text(f, "small", "dim")
+	hint:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -SP.xs)
+	hint:SetText("Click the text, press Ctrl+A (Cmd+A on Mac) then Ctrl+C (Cmd+C) to copy it.")
+	local close = W.CloseButton(f, function() f:Hide() end)
+	close:SetPoint("TOPRIGHT", -SP.s, -SP.s)
 
 	local scroll = CreateFrame("ScrollFrame", nil, f)
-	scroll:SetPoint("TOPLEFT", 14, -50)
-	scroll:SetPoint("BOTTOMRIGHT", -14, 44)
+	scroll:SetPoint("TOPLEFT", SP.l, -56)
+	scroll:SetPoint("BOTTOMRIGHT", -SP.l, S.control + SP.l * 2)
 	local bg = scroll:CreateTexture(nil, "BACKGROUND")
 	bg:SetAllPoints()
-	Theme.Solid(bg, "plumDark", 0.8)
+	Theme.Solid(bg, "surface")
 	local edit = CreateFrame("EditBox", nil, scroll)
 	edit:SetMultiLine(true)
 	edit:SetAutoFocus(false)
 	edit:SetWidth(600)
-	Theme.Font(edit, 11, "text")
+	edit:SetTextInsets(SP.s, SP.s, SP.s, SP.s)
+	Theme.Font(edit, "small", "text")
 	edit:SetScript("OnEscapePressed", function(self) self:ClearFocus(); f:Hide() end)
 	edit:SetScript("OnTextChanged", function(self, user) if user then self:SetText(Debug.text or "") end end)
 	scroll:SetScrollChild(edit)
@@ -52,11 +53,11 @@ function Debug:Build()
 	end)
 	f.edit = edit
 
-	local refresh = W.Button(f, "Refresh", 90, 22, function() Debug:Open() end)
+	local refresh = W.Button(f, "Refresh", nil, S.control, function() Debug:Open() end)
 	f.refresh = refresh
-	refresh:SetPoint("BOTTOMLEFT", 14, 12)
-	local log = W.Button(f, "Show log", 90, 22, function() Debug:Open(true) end)
-	log:SetPoint("LEFT", refresh, "RIGHT", 8, 0)
+	refresh:SetPoint("BOTTOMLEFT", SP.l, SP.l)
+	local log = W.Button(f, "Show log", nil, S.control, function() Debug:Open(true) end)
+	log:SetPoint("LEFT", refresh, "RIGHT", SP.s, 0)
 	f.log = log
 	self.frame = f
 	return f
@@ -71,7 +72,7 @@ function Debug:Open(withLog)
 	end
 	self.text = table.concat(lines, "\n")
 	local f = self:Build()
-	f.title:SetText("Short Kings debug report")
+	f.title:SetText("SHORT KINGS DEBUG REPORT")
 	f.refresh:Show()
 	f.log:Show()
 	f.edit:SetText(self.text)
@@ -83,7 +84,7 @@ end
 function Debug:ShowText(title, text)
 	self.text = text
 	local f = self:Build()
-	f.title:SetText(title)
+	f.title:SetText(title:upper())
 	f.refresh:Hide()
 	f.log:Hide()
 	f.edit:SetText(text)

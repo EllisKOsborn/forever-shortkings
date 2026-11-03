@@ -220,10 +220,11 @@ describe("v0.2.1 sharing preview and data freshness", function()
 	it("Settings shows the preview and what is never shared", function()
 		SK.DB.settings.share.gear = false
 		SK.MainFrame:Show("settings")
-		local text = SK.SettingsTab.status.fs:GetText()
-		assert.truthy(text:find("What guildmates see from you", 1, true))
-		assert.truthy(text:find("private|r  Gear and item level", 1, true))
-		assert.truthy(text:find("shared|r   Recipes", 1, true))
+		local text = SK.Widgets.SheetText(SK.SettingsTab.sections)
+		local C = SK.Theme.Code
+		assert.truthy(text:find("WHAT GUILDMATES SEE FROM YOU", 1, true))
+		assert.truthy(text:find("Gear and item level  " .. C("dim") .. "private|r", 1, true))
+		assert.truthy(text:find("Recipes  " .. C("good") .. "shared|r", 1, true))
 		assert.truthy(text:find("Never shared: Notes and officer notes", 1, true))
 	end)
 

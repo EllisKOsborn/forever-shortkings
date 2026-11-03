@@ -22,3 +22,7 @@ ignore:
   - .luacheckrc
   - .github
   - docs
+  - preview
+  - tools
+  - PRODUCT.md
+  - DESIGN.md

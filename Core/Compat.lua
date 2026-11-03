@@ -620,6 +620,27 @@ function Compat.ClassColor(classFile)
 	return 0.8, 0.8, 0.8
 end
 
+-- Client locale ("enUS" when unknown). Picks the body font in UI/Theme.lua.
+function Compat.Locale()
+	if has("GetLocale") then
+		local ok, l = pcall(GetLocale)
+		if ok and type(l) == "string" then return l end
+	end
+	return "enUS"
+end
+
+-- Scale animation from -> to (both uniform). Mainline has SetScaleFrom /
+-- SetScaleTo (SimpleAnimScaleAPI, 1.60.1); returns false if missing so the
+-- caller can drop the scale part and keep the fade.
+function Compat.SetAnimScale(anim, from, to)
+	if anim and anim.SetScaleFrom and anim.SetScaleTo then
+		anim:SetScaleFrom(from, from)
+		anim:SetScaleTo(to, to)
+		return true
+	end
+	return false
+end
+
 ---------------------------------------------------------------------------
 -- Calendar (read-only probe for /sk debug; the Raids tab comes in v0.3).
 -- Returns present, numGuildEvents (nil if the call isn't there or fails).

@@ -4,6 +4,7 @@ local _, SK = ...
 
 local Char = SK:NewModule("CharacterTab")
 local Theme, W, Compat = SK.Theme, SK.Widgets, SK.Compat
+local S, SP = Theme.SIZES, Theme.SPACE
 
 local SLOT_NAMES = {
 	[1] = "Head", [2] = "Neck", [3] = "Shoulder", [15] = "Back", [5] = "Chest", [4] = "Shirt",
@@ -40,27 +41,33 @@ local function qualityColor(link)
 	if hex then
 		return tonumber(hex:sub(3, 4), 16) / 255, tonumber(hex:sub(5, 6), 16) / 255, tonumber(hex:sub(7, 8), 16) / 255
 	end
-	return Theme.RGB("leather")
+	return Theme.RGB("line")
 end
 
 local function slotButton(parent, slot)
 	local b = CreateFrame("Button", nil, parent)
-	b:SetSize(38, 38)
+	b:SetSize(S.slot, S.slot)
 	b.slot = slot
 	local bg = b:CreateTexture(nil, "BACKGROUND")
 	bg:SetAllPoints()
-	Theme.Solid(bg, "plumDark")
+	Theme.Solid(bg, "pressed")
+	local inset = Theme.BORDER.slot
 	b.icon = b:CreateTexture(nil, "ARTWORK")
-	b.icon:SetPoint("TOPLEFT", 2, -2)
-	b.icon:SetPoint("BOTTOMRIGHT", -2, 2)
+	b.icon:SetPoint("TOPLEFT", inset, -inset)
+	b.icon:SetPoint("BOTTOMRIGHT", -inset, inset)
 	b.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-	Theme.Border(b, 2, false)
-	-- Missing-enchant marker: small ember corner with "!"
+	Theme.Border(b, "line", inset)
+	local hl = b:CreateTexture(nil, "HIGHLIGHT")
+	hl:SetPoint("TOPLEFT", inset, -inset)
+	hl:SetPoint("BOTTOMRIGHT", -inset, inset)
+	hl:SetColorTexture(Theme.RGBA("text", 0.12))
+	-- Missing-enchant marker: a spark dot with "!" in the corner
 	b.warn = b:CreateTexture(nil, "OVERLAY")
-	b.warn:SetSize(12, 12)
-	b.warn:SetPoint("TOPRIGHT", -1, -1)
-	Theme.Gradient(b.warn, "VERTICAL", "ember", "flame")
-	b.warnText = Theme.Text(b, 10, "plumDark", "OVERLAY")
+	b.warn:SetSize(14, 14)
+	b.warn:SetPoint("TOPRIGHT", 3, 3)
+	b.warn:SetTexture(Theme.TEX.dot)
+	b.warn:SetVertexColor(Theme.RGB("spark"))
+	b.warnText = Theme.Text(b, "micro", "onGold", "OVERLAY")
 	b.warnText:SetPoint("CENTER", b.warn, "CENTER", 0, 0)
 	b.warnText:SetText("!")
 	b.warnText:SetShadowOffset(0, 0)
@@ -71,12 +78,12 @@ local function slotButton(parent, slot)
 			GameTooltip:SetHyperlink(self.link)
 			if self.missingEnchant then
 				GameTooltip:AddLine(" ")
-				GameTooltip:AddLine("Short Kings: no enchant on this item", 1, 0.48, 0.1)
+				Theme.TipLine(GameTooltip, "Short Kings: no enchant on this item", "spark")
 				GameTooltip:Show()
 			end
 		else
 			GameTooltip:SetText(SLOT_NAMES[self.slot] or "Empty")
-			GameTooltip:AddLine("Empty", 0.7, 0.6, 0.65)
+			Theme.TipLine(GameTooltip, "Empty", "dim")
 		end
 		GameTooltip:Show()
 	end)
@@ -96,7 +103,7 @@ local function slotButton(parent, slot)
 			self.icon:SetAlpha(1)
 		else
 			self.icon:SetTexture(emptySlotTexture(self.slot) or "Interface\\Buttons\\WHITE8X8")
-			self.icon:SetAlpha(link and 1 or 0.35)
+			self.icon:SetAlpha(link and 1 or Theme.ALPHA.disabledIcon)
 		end
 		local r, g, bl = qualityColor(link)
 		for _, t in ipairs(self.border) do t:SetColorTexture(r, g, bl, 1) end
@@ -104,18 +111,18 @@ local function slotButton(parent, slot)
 	return b
 end
 
+-- The details area: two scrolling columns of sections.
+Char.DOLL_W = 250
+-- content width = doll + gap + column + (gap + scroll bar) + column + scroll bar
+Char.DETAIL_COL_W = math.floor((S.window[1] - 2 * SP.l - Char.DOLL_W - SP.xl - (SP.xl + SP.m) - SP.m) / 2)
+
 function Char:Build(page)
-	-- Header
-	self.back = W.Button(page, "< Roster", 80, 22, function() SK.MainFrame:Select("roster") end)
-	self.back:SetPoint("TOPLEFT", 0, 0)
-	self.mine = W.Button(page, "Me", 50, 22, function() Char:ShowCharacter(nil) end)
-	self.mine:SetPoint("LEFT", self.back, "RIGHT", 6, 0)
-	self.whisper = W.Button(page, "Whisper", 80, 22, function()
-		local target = Char.guid and SK.Identity:WhisperTarget(Char.guid)
-		if target then Compat.SendTell(target) end
-	end)
-	self.whisper:SetPoint("LEFT", self.mine, "RIGHT", 6, 0)
-	self.askLatest = W.Button(page, "Ask for latest", 110, 22, function()
+	-- Header: back link, then actions on the right (the primary one in gold).
+	self.back = W.Button(page, "Back to roster", nil, S.control, function() SK.MainFrame:Select("roster") end, "quiet")
+	self.back:SetPoint("TOPLEFT", -SP.s, 0)
+	self.mine = W.Button(page, "My character", nil, S.control, function() Char:ShowCharacter(nil) end, "quiet")
+	self.mine:SetPoint("LEFT", self.back, "RIGHT", 0, 0)
+	self.askLatest = W.Button(page, "Ask for latest", nil, S.control, function()
 		local guid = Char.shownGuid
 		if not guid then return end
 		local ok, why = SK.Sync:RequestFresh(guid)
@@ -126,60 +133,85 @@ function Char:Build(page)
 			SK:Print("Already asked. Give it a few seconds.")
 		end
 		Char:Refresh()
-	end)
+	end, "primary")
 	self.askLatest.tooltip = "Ask them (or their online alt) for their newest data"
 	self.askLatest.disabledTooltip = "Offline: showing their last known data"
-	self.askLatest:SetPoint("LEFT", self.whisper, "RIGHT", 6, 0)
-	self.makeMain = W.Button(page, "Make this my main", 140, 22, function()
+	self.askLatest:SetPoint("TOPRIGHT", 0, 0)
+	self.whisper = W.Button(page, "Whisper", nil, S.control, function()
+		local target = Char.guid and SK.Identity:WhisperTarget(Char.guid)
+		if target then Compat.SendTell(target) end
+	end)
+	self.whisper:SetPoint("RIGHT", self.askLatest, "LEFT", -SP.s, 0)
+	self.makeMain = W.Button(page, "Make this my main", nil, S.control, function()
 		if Char.shownGuid then SK.Profile:SetMain(Char.shownGuid); Char:Refresh() end
 	end)
 	self.makeMain.tooltip = "Your main is shown first when alts are grouped in the Roster."
-	self.makeMain:SetPoint("LEFT", self.mine, "RIGHT", 6, 0)
+	self.makeMain:SetPoint("TOPRIGHT", 0, 0)
 
-	self.name = Theme.Text(page, 18, "pink")
-	self.name:SetPoint("TOPLEFT", 0, -32)
-	self.info = Theme.Text(page, 12, "text")
-	self.info:SetPoint("TOPLEFT", self.name, "BOTTOMLEFT", 0, -4)
-	self.meta = Theme.Text(page, 11, "muted")
-	self.meta:SetPoint("TOPLEFT", self.info, "BOTTOMLEFT", 0, -3)
+	self.name = Theme.Text(page, "name", "text")
+	self.name:SetPoint("TOPLEFT", 0, -(S.control + SP.m))
+	self.name:SetPoint("RIGHT", 0, 0)
+	self.name:SetWordWrap(false)
+	self.info = Theme.Text(page, "body", "text")
+	self.info:SetPoint("TOPLEFT", self.name, "BOTTOMLEFT", 0, -SP.xs)
+	self.meta = Theme.Text(page, "small", "dim")
+	self.meta:SetPoint("TOPLEFT", self.info, "BOTTOMLEFT", 0, -SP.xxs)
+	self.meta:SetPoint("RIGHT", 0, 0)
+	self.meta:SetWordWrap(false)
 
-	-- Paperdoll
+	-- Paperdoll: slots around a centre that carries the one key figure.
+	local top = S.control + SP.m + 60
 	local doll = CreateFrame("Frame", nil, page)
-	doll:SetPoint("TOPLEFT", 0, -92)
-	doll:SetSize(250, 370)
-	Theme.Panel(doll, { thickness = 2, from = "plumDark", to = "plumLift" })
+	doll:SetPoint("TOPLEFT", 0, -top)
+	doll:SetPoint("BOTTOMLEFT", 0, 0)
+	doll:SetWidth(Char.DOLL_W)
+	Theme.Panel(doll, { bg = "surface", border = "line" })
+	self.doll = doll
+	local pitch = S.slot + SP.xs
 	self.slots = {}
 	for i, slot in ipairs(LEFT) do
 		local b = slotButton(doll, slot)
-		b:SetPoint("TOPLEFT", 10, -10 - (i - 1) * 42)
+		b:SetPoint("TOPLEFT", SP.s + 2, -SP.s - 2 - (i - 1) * pitch)
 		self.slots[slot] = b
 	end
 	for i, slot in ipairs(RIGHT) do
 		local b = slotButton(doll, slot)
-		b:SetPoint("TOPRIGHT", -10, -10 - (i - 1) * 42)
+		b:SetPoint("TOPRIGHT", -SP.s - 2, -SP.s - 2 - (i - 1) * pitch)
 		self.slots[slot] = b
 	end
 	for i, slot in ipairs(BOTTOM) do
 		local b = slotButton(doll, slot)
-		b:SetPoint("BOTTOM", (i - 2) * 46, 10)
+		b:SetPoint("BOTTOM", (i - 2) * (S.slot + SP.s), SP.s + 2)
 		self.slots[slot] = b
 	end
-	self.ilvl = Theme.Text(doll, 20, "flame")
-	self.ilvl:SetPoint("CENTER", 0, 40)
-	self.ilvlLabel = Theme.Text(doll, 11, "muted")
-	self.ilvlLabel:SetPoint("TOP", self.ilvl, "BOTTOM", 0, -2)
+	self.ilvl = Theme.Text(doll, "figure", "gold")
+	self.ilvl:SetPoint("CENTER", 0, 56)
+	self.ilvl:SetJustifyH("CENTER")
+	self.ilvlLabel = Theme.Text(doll, "micro", "dim")
+	self.ilvlLabel:SetPoint("TOP", self.ilvl, "BOTTOM", 0, -SP.xxs)
 	self.ilvlLabel:SetText("average item level")
-	self.specText = Theme.Text(doll, 12, "pink")
-	self.specText:SetPoint("TOP", self.ilvlLabel, "BOTTOM", 0, -16)
-	self.specText:SetWidth(150)
-	self.enchantText = Theme.Text(doll, 11, "ember")
-	self.enchantText:SetPoint("TOP", self.specText, "BOTTOM", 0, -14)
-	self.enchantText:SetWidth(150)
+	self.specText = Theme.Text(doll, "body", "text")
+	self.specText:SetPoint("TOP", self.ilvlLabel, "BOTTOM", 0, -SP.l)
+	self.specText:SetWidth(140)
+	self.specText:SetJustifyH("CENTER")
+	self.enchantText = Theme.Text(doll, "small", "spark")
+	self.enchantText:SetPoint("TOP", self.specText, "BOTTOM", 0, -SP.m)
+	self.enchantText:SetWidth(140)
+	self.enchantText:SetJustifyH("CENTER")
 
-	-- Details
-	self.details = W.TextPanel(page)
-	self.details:SetPoint("TOPLEFT", doll, "TOPRIGHT", 18, 0)
-	self.details:SetPoint("BOTTOMRIGHT", -14, 0)
+	-- Details: two columns of sections.
+	self.colA = W.Sheet(page, Char.DETAIL_COL_W)
+	self.colA:SetPoint("TOPLEFT", doll, "TOPRIGHT", SP.xl, 0)
+	self.colA:SetPoint("BOTTOM", doll, "BOTTOM", 0, 0)
+	self.colA:SetWidth(Char.DETAIL_COL_W)
+	self.colB = W.Sheet(page, Char.DETAIL_COL_W)
+	self.colB:SetPoint("TOPLEFT", self.colA, "TOPRIGHT", SP.xl + SP.m, 0)
+	self.colB:SetPoint("BOTTOM", doll, "BOTTOM", 0, 0)
+	self.colB:SetWidth(Char.DETAIL_COL_W)
+	self.empty = Theme.Text(page, "body", "dim")
+	self.empty:SetPoint("TOPLEFT", doll, "TOPRIGHT", SP.xl, 0)
+	self.empty:SetPoint("RIGHT", 0, 0)
+	self.empty:SetJustifyV("TOP")
 end
 
 Char.asked = {}    -- guid -> when we pressed "Ask for latest" (cleared by the answer)
@@ -208,96 +240,99 @@ function Char:ShowCharacter(guid)
 	SK.MainFrame:Show("character")
 end
 
-local function section(lines, title)
-	lines[#lines + 1] = ""
-	lines[#lines + 1] = Theme.Code("pink") .. title .. "|r"
-end
-
--- Text for the details panel. Pure-ish; uses only the profile.
-function Char.DetailText(p, now, extra)
-	local lines = {}
-	local C = Theme.Code
+-- Sections for the details columns (pure-ish; uses only the profile).
+-- Returns a list of { title=, rows=, col = 1 | 2 }.
+function Char.DetailSections(p, now, extra)
+	local out = {}
 	extra = extra or {}
+	local function section(title, col)
+		local s = { title = title, rows = {}, col = col }
+		out[#out + 1] = s
+		return s.rows
+	end
 	if extra.alts and #extra.alts > 0 then
-		section(lines, extra.isMain and "Alts" or "Same player")
+		local rows = section(extra.isMain and "Alts" or "Same player", 1)
 		for _, a in ipairs(extra.alts) do
-			lines[#lines + 1] = "  " .. Theme.ClassText(a.name, a.class) .. (a.isMain and (C("flame") .. "  (main)|r") or "")
+			rows[#rows + 1] = { label = Theme.ClassText(a.name, a.class), value = a.isMain and "main" or "", tone = "beard" }
 		end
 	end
 	if (extra.note and extra.note ~= "") or (extra.officerNote and extra.officerNote ~= "") then
-		section(lines, "Notes")
-		if extra.note and extra.note ~= "" then lines[#lines + 1] = "  " .. extra.note end
+		local rows = section("Notes", 1)
+		if extra.note and extra.note ~= "" then rows[#rows + 1] = { text = extra.note, tone = "text" } end
 		if extra.officerNote and extra.officerNote ~= "" then
-			lines[#lines + 1] = "  " .. C("flame") .. "Officer: |r" .. extra.officerNote
+			rows[#rows + 1] = { text = Theme.Paint("dim", "Officer: ") .. extra.officerNote, tone = "text" }
 		end
 	end
 	local hidden = p.hidden or {}
 	-- Talents
-	section(lines, "Talents")
+	local rows = section("Talents", 1)
 	if hidden.gear then
-		lines[#lines + 1] = C("muted") .. "  hidden by this player|r"
+		rows[#rows + 1] = { text = "hidden by this player" }
 	elseif p.talents and p.talents.trees then
 		for _, t in ipairs(p.talents.trees) do
-			lines[#lines + 1] = string.format("  %s  %s%d|r", t.n or "?", C("flame"), t.p or 0)
+			rows[#rows + 1] = { label = t.n or "?", value = tostring(t.p or 0) }
 		end
 	else
-		lines[#lines + 1] = C("muted") .. "  not available|r"
+		rows[#rows + 1] = { text = "not available" }
 	end
 	-- Professions
-	section(lines, "Professions")
+	rows = section("Professions", 1)
 	local profs = {}
 	for skillLine, pr in pairs(p.profs or {}) do profs[#profs + 1] = { id = skillLine, pr = pr } end
 	table.sort(profs, function(a, b) return (a.pr.name or "") < (b.pr.name or "") end)
-	if #profs == 0 then lines[#lines + 1] = C("muted") .. "  none|r" end
+	if #profs == 0 then rows[#rows + 1] = { text = "none" } end
 	for _, e in ipairs(profs) do
 		local pr = e.pr
 		local recipes = p.recipes and p.recipes[e.id]
 		local note
 		if SK.Data.GATHERING[e.id] then
-			note = ""
+			note = nil
 		elseif hidden.recipes then
-			note = "  " .. C("muted") .. "recipes hidden|r"
+			note = Theme.Paint("dim", "recipes hidden")
 		elseif pr.scanned then
-			note = string.format("  %s%d recipes|r", C("muted"), SK.Count(recipes))
+			note = Theme.Paint("dim", SK.Count(recipes) .. " recipes")
 		else
-			note = "  " .. C("ember") .. "not scanned yet|r"
+			note = Theme.Paint("spark", "not scanned yet")
 		end
-		lines[#lines + 1] = string.format("  %s  %d/%d%s", pr.name or "?", pr.rank or 0, pr.max or 0, note)
+		rows[#rows + 1] = { label = pr.name or "?", labelTone = "text",
+			value = (note and (note .. "   ") or "") .. string.format("%d/%d", pr.rank or 0, pr.max or 0) }
 	end
 	-- Cooldowns
 	local cds = {}
 	for id, expires in pairs(p.cds or {}) do cds[#cds + 1] = { id = id, at = expires } end
 	if #cds > 0 then
-		section(lines, "Cooldowns")
+		rows = section("Cooldowns", 1)
 		table.sort(cds, function(a, b) return a.at < b.at end)
 		for _, cd in ipairs(cds) do
 			local left = cd.at - now
 			local name = Compat.SpellName(cd.id) or ("Recipe " .. cd.id)
-			local when = left <= 0 and (C("good") .. "ready|r") or
-				string.format("%s%dh %dm|r", C("flame"), math.floor(left / 3600), math.floor(left % 3600 / 60))
-			lines[#lines + 1] = "  " .. name .. "  " .. when
+			if left <= 0 then
+				rows[#rows + 1] = { label = name, value = "ready", tone = "good" }
+			else
+				rows[#rows + 1] = { label = name, value = string.format("%dh %dm", math.floor(left / 3600), math.floor(left % 3600 / 60)) }
+			end
 		end
 	end
 	-- Attunements (first raid wave only; see Data/Attunements.lua)
-	section(lines, "Attunements")
+	rows = section("Attunements", 2)
 	for _, a in ipairs(SK.Data.ShownAttunements()) do
 		local state, note = SK.RosterTab.AttunementOf(p, a)
-		local mark
-		if state == "none" then mark = C("muted") .. "no attunement needed|r"
-		elseif state == "yes" then mark = C("good") .. "done|r"
-		elseif state == "no" then mark = C("bad") .. "not done|r"
-		else mark = C("muted") .. (a.status == "todo" and "unknown (TODO)" or "unknown") .. "|r" end
-		if note then mark = mark .. "  " .. C("ember") .. note .. "|r" end
-		lines[#lines + 1] = "  " .. a.name .. "  " .. mark
+		local value, tone
+		if state == "none" then value, tone = "no attunement needed", "dim"
+		elseif state == "yes" then value, tone = "done", "good"
+		elseif state == "no" then value, tone = "not done", "bad"
+		else value, tone = (a.status == "todo" and "unknown (TODO)" or "unknown"), "dim" end
+		rows[#rows + 1] = { label = a.name, labelTone = "text", value = value, tone = tone }
+		if note then rows[#rows + 1] = { text = note, tone = "spark", indent = true } end
 	end
 	-- Reputation: highlight list first, then everything else they have.
-	section(lines, "Reputation")
+	rows = section("Reputation", 2)
 	local shown = {}
 	for _, f in ipairs(SK.Data.FACTIONS) do
 		local r = p.reps and p.reps[f.id]
 		if r then
 			shown[f.id] = true
-			lines[#lines + 1] = string.format("  %s  %s%s|r", r.n or f.name, C("flame"), standingName(r.r))
+			rows[#rows + 1] = { label = r.n or f.name, labelTone = "text", value = standingName(r.r) }
 		end
 	end
 	local others = {}
@@ -306,11 +341,15 @@ function Char.DetailText(p, now, extra)
 	end
 	table.sort(others, function(a, b) return (a.n or "") < (b.n or "") end)
 	for _, r in ipairs(others) do
-		lines[#lines + 1] = string.format("  %s  %s%s|r", r.n or "?", C("muted"), standingName(r.r))
+		rows[#rows + 1] = { label = r.n or "?", value = standingName(r.r), tone = "dim" }
 	end
-	if not p.reps or SK.Count(p.reps) == 0 then lines[#lines + 1] = C("muted") .. "  none recorded|r" end
-	table.remove(lines, 1)
-	return table.concat(lines, "\n")
+	if not p.reps or SK.Count(p.reps) == 0 then rows[#rows + 1] = { text = "none recorded" } end
+	return out
+end
+
+-- Plain text of the details (tests, Copy).
+function Char.DetailText(p, now, extra)
+	return W.SheetText(Char.DetailSections(p, now, extra))
 end
 
 -- Alts of `guid` (mutually confirmed), for the details panel.
@@ -347,19 +386,21 @@ function Char:Refresh()
 	end
 	local ask = guid and Char.AskStatus(Char.asked[guid], Char.answered[guid], now, SK.Sync.FRESH_INTERVAL)
 	if ask and Char.asked[guid] and now - Char.asked[guid] >= SK.Sync.FRESH_INTERVAL then Char.asked[guid] = nil end
-	local askText = ask and ("  ·  " .. Theme.Code("flame") .. ask .. "|r") or ""
+	local askText = ask and ("  ·  " .. Theme.Paint("spark", ask)) or ""
 	self.makeMain:SetShown(mine and SK.DB.settings.main ~= guid)
 
 	if not p then
 		self.name:SetText(m and Theme.ClassText(m.name, m.class) or "No character")
 		self.info:SetText(m and ("Level " .. (m.level or "?") .. " · " .. (m.rank or "")) or "")
-		self.meta:SetText("No Short Kings data yet: they may not have the addon, or be on a trial account (trials can't sync)."
-			.. askText)
+		self.meta:SetText("No data synced yet" .. askText)
 		for _, b in pairs(self.slots) do b:SetItem(nil) end
-		self.ilvl:SetText("")
+		self.ilvl:SetText(Theme.DASH)
 		self.specText:SetText("")
 		self.enchantText:SetText("")
-		self.details:SetText("")
+		self.colA:Hide()
+		self.colB:Hide()
+		self.empty:SetText(Char.EmptyText(m ~= nil))
+		self.empty:Show()
 		return
 	end
 
@@ -372,7 +413,7 @@ function Char:Refresh()
 	local source = p.source == "self" and "this account" or (p.source == "owner" and "from them" or "relayed by a guildmate")
 	local ago = Theme.Ago(p.updated, now)
 	ago = ago == "now" and "just now" or (ago .. " ago")
-	local stale = (not mine and Theme.IsStale(p.updated, now)) and ("  ·  " .. Theme.Code("ember") .. "may be out of date|r") or ""
+	local stale = (not mine and Theme.IsStale(p.updated, now)) and ("  ·  " .. Theme.Paint("spark", "may be out of date")) or ""
 	self.meta:SetText(string.format("Updated %s (%s)  ·  Short Kings %s", ago, source, p.addon or "?") .. stale .. askText)
 
 	local hidden = p.hidden or {}
@@ -381,7 +422,7 @@ function Char:Refresh()
 	for slot, b in pairs(self.slots) do b:SetItem(p.gear and p.gear[slot], missing[slot]) end
 	if hidden.gear then
 		self.ilvl:SetText("")
-		self.specText:SetText(Theme.Code("muted") .. "Gear and talents\nhidden by this player|r")
+		self.specText:SetText(Theme.Paint("dim", "Gear and talents\nhidden by this player"))
 		self.enchantText:SetText("")
 	else
 		self.ilvl:SetText(p.ilvl and string.format("%.1f", p.ilvl) or "?")
@@ -392,9 +433,25 @@ function Char:Refresh()
 	end
 
 	local alts, isMain = altsOf(guild, guid)
-	self.details:SetText(Char.DetailText(p, now, {
+	local sections = Char.DetailSections(p, now, {
 		alts = alts, isMain = isMain, note = m and m.note, officerNote = m and m.officerNote,
-	}))
+	})
+	local a, b = {}, {}
+	for _, sec in ipairs(sections) do
+		if sec.col == 2 then b[#b + 1] = sec else a[#a + 1] = sec end
+	end
+	self.empty:Hide()
+	self.colA:Show()
+	self.colB:Show()
+	self.colA:SetSections(a)
+	self.colB:SetSections(b)
+end
+
+-- What the details area says when there's no profile. Pure; tested.
+function Char.EmptyText(isMember)
+	if not isMember then return "Pick someone on the Roster to see their gear, talents and professions." end
+	return "No data synced yet. They may not have Short Kings, or they're on a trial account (trials can't sync)."
+		.. " Their profile appears here the next time they log in with it."
 end
 
 SK.MainFrame:AddTab("character", "Character", Char)
