@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## v0.2.4 (3 Nov 2026): new tagline
 
 - New tagline: **Height is not a stat.** (in the title bar, the minimap
-  tooltip and the AddOns list).
+  tooltip and the AddOns list). Nothing else changed since v0.2.3; still
+  not run in game yet.
 
 ## v0.2.3 (3 Nov 2026): the new look
 
