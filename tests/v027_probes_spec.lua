@@ -76,9 +76,9 @@ describe("v0.2.7 profession probes", function()
 		_G.C_SpellBook = nil
 	end)
 
-	it("keeps every specialisation ID marked todo until the game confirms it", function()
+	it("every specialisation ID is confirmed (the game's names matched on 5 Nov)", function()
 		for _, list in pairs(SK.Data.SPECIALISATIONS) do
-			for _, spec in ipairs(list) do assert.equal("todo", spec.status) end
+			for _, spec in ipairs(list) do assert.equal("ok", spec.status) end
 		end
 		assert.is_nil(SK.Data.SPECIALISATIONS[171]) -- Alchemy: TBC
 		assert.is_nil(SK.Data.SPECIALISATIONS[197]) -- Tailoring: TBC

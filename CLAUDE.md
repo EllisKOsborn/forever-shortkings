@@ -69,7 +69,20 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   - Professions use `C_TradeSkillUI`; the Classic `GetTradeSkillInfo` and
     `GetCraftInfo` are gone.
   - Talents are `C_Traits` trees.
-  - Profession APIs (source checked 5 Nov, not yet in game):
+  - **Confirmed in game 5 Nov (owner's v0.2.7 `/sk debug`, level 1, no
+    profession yet):** every profession API we probe exists on the client
+    (`GetRecipeSchematic`, `GetCategoryInfo`, `GetCategories`,
+    `GetShowLearned`/`GetShowUnlearned`, `GetAllRecipeIDs`,
+    `GetFilteredRecipeIDs`, `GetRecipeCooldown`, `C_SpellBook.IsSpellKnown`,
+    `IsPlayerSpell`); only the Classic `GetNumTalentTabs`, `GetTalentTabInfo`,
+    `GetNumTradeSkills`, `GetTradeSkillInfo`, `GetCraftInfo`, `GetFactionInfo`
+    are missing. The window's filter defaults to **show unlearned = no**. All
+    10 specialisation spell IDs resolve to the expected names → `status = "ok"`.
+    Still unknown (needs a character with a profession): whether unlearned
+    recipes are listed, reagents with the window open/closed, category names,
+    and whether `IsSpellKnown` is true for a spec owner. Only 1 of 19 members
+    had the addon, so no sync between players has happened yet.
+  - Profession APIs (from the source, 5 Nov):
     `C_TradeSkillUI.GetRecipeSchematic(recipeSpellID, isRecraft)` →
     `reagentSlotSchematics[i].reagents[j].itemID|currencyID`,
     `.quantityRequired`, `.required`; `GetShowLearned`/`GetShowUnlearned`;
@@ -77,9 +90,9 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
     `GetAllRecipeIDs`, `GetFilteredRecipeIDs` are **not** in the generated
     docs (Blizzard's Forever UI calls `GetCategoryInfo`), so probe them.
     Known spells: `C_SpellBook.IsSpellKnown(spellID)` (global
-    `IsPlayerSpell` not in the docs). Specialisation spell IDs
-    (`Data/Professions.lua` `SPECIALISATIONS`) match on wowhead classic and
-    classicdb.ch but stay `status = "todo"` until the in-game probe.
+    `IsPlayerSpell` not in the docs, but present in game). Specialisation
+    spell IDs (`Data/Professions.lua` `SPECIALISATIONS`) match on wowhead
+    classic, classicdb.ch and the client's own names.
   - The guild roster is `C_Club` plus legacy `GetGuildRosterInfo`.
   - `C_Calendar` exists, but `AddEvent` is restricted.
   - `SendChatMessage` is **restricted** (only send on a button press, or
@@ -230,8 +243,9 @@ messages → sender ignored for the session).
   `Commands.ProfessionProbes`) is on `main`; the tag push dropped, so the
   owner publishes the release on the website. **v0.3.0 Professions is built**
   on `claude/affectionate-archimedes-tirbrl` (owner said "do all of them";
-  reminders must stay rare). Not released, not tested in game. Waiting for the
-  owner's v0.2.7 `/sk debug` answers (record them here), then TESTING 87–95.
+  reminders must stay rare). Not released, not tested in game. First v0.2.7
+  report received (facts above); still waiting for one **with a profession
+  window open and closed**, then TESTING 87–95.
   Plan and what was left out: **PLAN.md section 11**.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,

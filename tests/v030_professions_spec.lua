@@ -187,19 +187,20 @@ describe("v0.3 specialisations", function()
 		_G.C_SpellBook = { IsSpellKnown = function(id) return id == 20219 or id == 20222 end }
 		W.spellNames[20219] = "Gnomish Engineer"
 		W.spellNames[20222] = "Something Else" -- wrong ID on this client: ignored
+		for _, spec in ipairs(SK.Data.SPECIALISATIONS[202]) do spec.status = "todo" end -- not confirmed
 		SK.Profile:BuildSelf()
 		assert.same({ 20219 }, SK.Profile:Own().profs[202].specs)
 		-- and they reach the shared copy, which still passes guildmates' checks
 		local pub = SK.DBM:Guild().profiles[W.player.guid]
 		assert.same({ 20219 }, pub.profs[202].specs)
 		assert.is_true((SK.Merge.Validate(pub)))
+		for _, spec in ipairs(SK.Data.SPECIALISATIONS[202]) do spec.status = "ok" end
 	end)
 
 	it("a confirmed ID (status ok) doesn't need the name check", function()
 		_G.C_SpellBook = { IsSpellKnown = function(id) return id == 20222 end }
-		SK.Data.SPECIALISATIONS[202][2].status = "ok"
+		W.spellNames[20222] = "Gobelin" -- e.g. a French client
 		assert.same({ 20222 }, SK.Professions.ReadSpecs(202))
-		SK.Data.SPECIALISATIONS[202][2].status = "todo"
 	end)
 
 	it("nothing is recorded when the client can't tell", function()

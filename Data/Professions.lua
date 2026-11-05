@@ -29,27 +29,29 @@ function SK.Data.ProfessionShort(skillLine, name)
 	return name and name:sub(1, 4) or "?"
 end
 
--- Original-game specialisations (B3), candidates for v0.3. The spell IDs
--- match on two sources (wowhead.com/classic and classicdb.ch, checked
--- 5 Nov 2026) but are still status = "todo" until the in-game probe
--- (/sk debug, "Specialisations") confirms them on the Forever client.
+-- Original-game specialisations (B3). The spell IDs match on two sources
+-- (wowhead.com/classic and classicdb.ch, checked 5 Nov 2026) and the Forever
+-- client's own name for every ID matched in game (owner's v0.2.7 /sk debug,
+-- 5 Nov 2026, build 70790), so they are status = "ok". Whether
+-- C_SpellBook.IsSpellKnown says "yes" for someone who has one is still
+-- untested (the test character had none).
 -- Alchemy and Tailoring specialisations came in TBC, so they are not listed.
 SK.Data.SPECIALISATIONS = {
 	[202] = { -- Engineering
-		{ spell = 20219, name = "Gnomish Engineer", status = "todo" },
-		{ spell = 20222, name = "Goblin Engineer", status = "todo" },
+		{ spell = 20219, name = "Gnomish Engineer", status = "ok" },
+		{ spell = 20222, name = "Goblin Engineer", status = "ok" },
 	},
 	[165] = { -- Leatherworking
-		{ spell = 10656, name = "Dragonscale Leatherworking", status = "todo" },
-		{ spell = 10658, name = "Elemental Leatherworking", status = "todo" },
-		{ spell = 10660, name = "Tribal Leatherworking", status = "todo" },
+		{ spell = 10656, name = "Dragonscale Leatherworking", status = "ok" },
+		{ spell = 10658, name = "Elemental Leatherworking", status = "ok" },
+		{ spell = 10660, name = "Tribal Leatherworking", status = "ok" },
 	},
 	[164] = { -- Blacksmithing
-		{ spell = 9788, name = "Armorsmith", status = "todo" },
-		{ spell = 9787, name = "Weaponsmith", status = "todo" },
-		{ spell = 17041, name = "Master Axesmith", status = "todo" },
-		{ spell = 17040, name = "Master Hammersmith", status = "todo" },
-		{ spell = 17039, name = "Master Swordsmith", status = "todo" },
+		{ spell = 9788, name = "Armorsmith", status = "ok" },
+		{ spell = 9787, name = "Weaponsmith", status = "ok" },
+		{ spell = 17041, name = "Master Axesmith", status = "ok" },
+		{ spell = 17040, name = "Master Hammersmith", status = "ok" },
+		{ spell = 17039, name = "Master Swordsmith", status = "ok" },
 	},
 }
 

@@ -451,6 +451,12 @@ but Forever's own `Blizzard_Professions.lua` calls it, so it is probed, not
 assumed. Specialisation spell IDs agree on wowhead.com/classic and
 classicdb.ch (two sources); the game still has to confirm them.
 
+### Answers so far (owner's v0.2.7 report, 5 Nov, level 1 character with no profession)
+- All probed APIs exist in game; the window filter defaults to "show unlearned = no".
+- Specialisations: all 10 IDs have the right names in game → confirmed (`status = "ok"`).
+- Still open: unlearned recipes listed?, reagents with the window closed?,
+  Blueprint/camp categories? These need a character with a crafting profession.
+
 ### Proposed default order (owner to confirm the guild's top 3)
 1. **Guild coverage board + one-profession view** (crafters with skill and
    "recorded 3d ago", recipe list with crafter counts, filters). Builds on
