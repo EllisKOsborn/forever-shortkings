@@ -10,6 +10,7 @@ local S, SP = Theme.SIZES, Theme.SPACE
 
 Crafters.RESULTS_W = 476
 Crafters.SIDE_W = S.window[1] - 2 * SP.l - Crafters.RESULTS_W - SP.l
+Crafters.REAGENTS_H = 3 * Theme.SIZE.small + 4 * Theme.SPACE.xs -- up to three lines of reagents
 
 local function profName(skillLine) return CI.ProfessionName(CI:Get(true), skillLine) end
 
@@ -47,9 +48,11 @@ local CRAFTER_COLUMNS = {
 	{ key = "btn", title = "", width = 64 },
 }
 
+local function star(on) return on and (Theme.Star("beard") .. " ") or "" end
+
 local function setResultCell(fs, r, col)
 	if col.key == "name" then
-		fs:SetText(icon(r) .. coloured(r, r.name))
+		fs:SetText(star(SK.Favourites.IsRecipe(r.recipeID)) .. icon(r) .. coloured(r, r.name))
 	elseif col.key == "prof" then
 		fs:SetText(Theme.Paint("dim", profName(r.skillLine)))
 	elseif col.key == "count" then
@@ -60,7 +63,7 @@ end
 local function setCrafterCell(fs, c, col)
 	local C = Theme.Code
 	if col.key == "name" then
-		fs:SetText(SK.RosterTab.DOT[c.status] .. " " .. Theme.ClassText(c.name, c.class))
+		fs:SetText(SK.RosterTab.DOT[c.status] .. " " .. star(c.fav) .. Theme.ClassText(c.name, c.class))
 	elseif col.key == "skill" then
 		fs:SetText(c.skill > 0 and c.skill or Theme.DASH)
 	elseif col.key == "info" then
@@ -79,14 +82,24 @@ function Crafters:Build(page)
 		Crafters:Refresh()
 	end)
 	self.search:SetPoint("TOPLEFT", 0, 0)
+	self.favOnly = false
+	self.favChip = W.Chip(page, "Favourites", function()
+		Crafters.favOnly = not Crafters.favOnly
+		Crafters:Refresh()
+	end)
+	self.favChip:SetPoint("LEFT", self.search, "RIGHT", SP.s, 0)
+	self.favChip.tooltip = "Only your starred recipes. Right-click a result to star it."
 	self.status = Theme.Text(page, "small", "dim")
-	self.status:SetPoint("LEFT", self.search, "RIGHT", SP.m, 0)
+	self.status:SetPoint("LEFT", self.favChip, "RIGHT", SP.m, 0)
 	self.status:SetPoint("RIGHT", page, "LEFT", Crafters.RESULTS_W, 0)
 	self.status:SetWordWrap(false)
 
 	self.results = W.List(page, {
 		columns = RESULT_COLUMNS, setCell = setResultCell,
-		onClick = function(r) Crafters:Select(r.recipeID) end,
+		onClick = function(r, button)
+			if button == "RightButton" then SK.Favourites.ToggleRecipe(r.recipeID)
+			else Crafters:Select(r.recipeID) end
+		end,
 		onEnter = function(row, r)
 			GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
 			if r.itemID > 0 and GameTooltip.SetItemByID then
@@ -94,7 +107,8 @@ function Crafters:Build(page)
 			else
 				GameTooltip:SetText(r.name)
 			end
-			Theme.TipLine(GameTooltip, "Click to see who can make it", "gold")
+			Theme.TipLine(GameTooltip, "Click to see who can make it  ·  Right-click to " ..
+				(SK.Favourites.IsRecipe(r.recipeID) and "unstar" or "star"), "gold")
 			GameTooltip:Show()
 		end,
 	})
@@ -142,13 +156,29 @@ function Crafters:Build(page)
 				Theme.TipLine(GameTooltip, "Recipes recorded " .. Theme.Ago(c.scanned) .. " ago" ..
 					(stale and " (may be out of date)" or ""), stale and "spark" or "dim")
 			end
-			Theme.TipLine(GameTooltip, "Click to view character", "gold")
+			Theme.TipLine(GameTooltip, "Click to view character  ·  Right-click to " ..
+				(c.fav and "unstar" or "star"), "gold")
 			GameTooltip:Show()
 		end,
-		onClick = function(c) SK.CharacterTab:ShowCharacter(c.guid) end,
+		onClick = function(c, button)
+			if button == "RightButton" then SK.Favourites.ToggleCrafter(c.guid)
+			else SK.CharacterTab:ShowCharacter(c.guid) end
+		end,
 	})
 	self.crafters:SetPoint("TOPLEFT", SP.m, -72)
-	self.crafters:SetPoint("BOTTOMRIGHT", -SP.m, S.control + SP.m * 2)
+	self.crafters:SetPoint("BOTTOMRIGHT", -SP.m, S.control + SP.m * 2 + Crafters.REAGENTS_H)
+	-- Reagents (read from the game on this computer), above the buttons.
+	self.reagents = Theme.Text(side, "small", "dim")
+	self.reagents:SetPoint("BOTTOMLEFT", SP.m, S.control + SP.m * 2)
+	self.reagents:SetPoint("RIGHT", -SP.m, 0)
+	self.reagents:SetHeight(Crafters.REAGENTS_H - SP.s)
+	self.reagents:SetJustifyV("TOP")
+	self.reagents:SetWordWrap(true)
+	self.favButton = W.Chip(side, "Star", function()
+		if Crafters.selected then SK.Favourites.ToggleRecipe(Crafters.selected) end
+	end)
+	self.favButton:SetPoint("BOTTOMRIGHT", -SP.m, SP.m + 1)
+	self.favButton.tooltip = "Starred recipes show under Favourites, here and on the Professions tab."
 	self.post = W.Button(side, "Post to guild chat", nil, S.control, function() Crafters:PostToGuild() end, "primary")
 	self.post:SetPoint("BOTTOMLEFT", SP.m, SP.m)
 	self.copy = W.Button(side, "Copy", nil, S.control, function() Crafters:CopyText() end)
@@ -167,10 +197,34 @@ function Crafters:Build(page)
 	SK:On("CRAFT_INDEX_UPDATED", function()
 		if page:IsShown() then Crafters:Refresh() end
 	end)
+	SK:On("FAVOURITES_CHANGED", function()
+		if page:IsShown() then Crafters:Refresh() end
+	end)
+end
+
+-- From the Professions tab: open this recipe here. A recipe nobody knows
+-- yet (from the profession window's full list) still shows, with reagents.
+function Crafters:ShowRecipe(recipeID, skillLine)
+	self.selected, self.selectedSkill = recipeID, skillLine
+	SK.MainFrame:Show("crafters")
+	self:Refresh()
+end
+
+-- The picked recipe: from the index, or a known-to-nobody one.
+function Crafters:Picked(index)
+	if not self.selected then return nil end
+	local r = index.recipes[self.selected]
+	if r then return r end
+	local guild = SK.DBM:Guild()
+	local uni = guild and self.selectedSkill and guild.recipeUniverse[self.selectedSkill]
+	if uni and uni[self.selected] ~= nil then
+		local itemID = type(uni[self.selected]) == "number" and uni[self.selected] or 0
+		return { recipeID = self.selected, itemID = itemID, skillLine = self.selectedSkill, crafters = {} }
+	end
 end
 
 function Crafters:Select(recipeID)
-	self.selected = recipeID
+	self.selected, self.selectedSkill = recipeID, nil
 	self:Refresh()
 end
 
@@ -202,7 +256,14 @@ function Crafters:Refresh()
 	local index = CI:Get()
 	local guild = SK.DBM:Guild()
 	local now = Compat.Now()
-	local results, state, loading = CI.Search(index, self.query, CI.MAX_RESULTS)
+	local results, state, loading
+	if self.favOnly then
+		results, loading = CI.FavouriteResults(index, SK.Favourites.Recipes(), self.query)
+		state = "fav"
+	else
+		results, state, loading = CI.Search(index, self.query, CI.MAX_RESULTS)
+	end
+	self.favChip:SetActive(self.favOnly)
 	for _, r in ipairs(results) do
 		local list = CI.Crafters(index, r.recipeID, guild, now)
 		r.total, r.online = #list, CI.OnlineCount(list)
@@ -211,7 +272,11 @@ function Crafters:Refresh()
 	self.results:SetSelected(function(r) return r.recipeID == Crafters.selected end)
 
 	local C = Theme.Code
-	if state == "empty" then
+	if state == "fav" then
+		self.results:SetEmptyText("No starred recipes" .. (self.query ~= "" and " match that" or "") ..
+			". Right-click a result to star it.")
+		self.status:SetText(Theme.Count(#results, "favourite"))
+	elseif state == "empty" then
 		self.results:SetEmptyText("Recipes appear after crafters open their profession window once.")
 		self.status:SetText("")
 	elseif state == "short" then
@@ -227,10 +292,12 @@ function Crafters:Refresh()
 	end
 	self.results:SetLoading(state ~= "empty" and state ~= "short" and loading > 0)
 
-	local r = self.selected and index.recipes[self.selected]
+	local r = self:Picked(index)
 	self.crafters:SetShown(r ~= nil)
-	self.post:SetShown(r ~= nil)
-	self.copy:SetShown(r ~= nil)
+	self.post:SetShown(r ~= nil and #r.crafters > 0)
+	self.copy:SetShown(r ~= nil and #r.crafters > 0)
+	self.reagents:SetShown(r ~= nil)
+	self.favButton:SetShown(r ~= nil)
 	self.empty:SetShown(r == nil)
 	if not r then
 		self.title:SetText("")
@@ -238,9 +305,15 @@ function Crafters:Refresh()
 		return
 	end
 	local list = CI.Crafters(index, r.recipeID, guild, now)
-	self.title:SetText(icon(r) .. coloured(r, CI.NameOf(r) or "..."))
+	local fav = SK.Favourites.IsRecipe(r.recipeID)
+	self.favButton:SetActive(fav)
+	self.title:SetText(star(fav) .. icon(r) .. coloured(r, CI.NameOf(r) or "..."))
 	self.sub:SetText(profName(r.skillLine) .. "  ·  " .. Crafters.CountText(#list, CI.OnlineCount(list)))
 	self.crafters:SetItems(list)
+	self.crafters:SetEmptyText("Nobody in the guild knows this recipe yet.")
+	local reagents = SK.Reagents.Text(SK.Reagents.Lines(r.recipeID), Theme.Code)
+	self.reagents:SetText(reagents and ("Needs: " .. reagents) or
+		"Reagents show once you've opened this profession's window (they're read from your game).")
 end
 
 SK.MainFrame:AddTab("crafters", "Crafters", Crafters)

@@ -31,6 +31,7 @@ Merge.LIMITS = {
 	nodes = 600,     -- talents
 	att = 64,        -- attunement flags
 	family = 60,     -- characters on one account
+	specs = 4,       -- specialisations per profession (v0.3)
 	depth = 6,       -- nesting of fields this version doesn't know about
 }
 local L = Merge.LIMITS
@@ -116,6 +117,7 @@ local FIELDS = {
 		return v == nil or each(v, L.profs, function(k, p)
 			return isNum(k) and type(p) == "table" and optStr(p.name, L.text) and optNum(p.rank)
 				and optNum(p.max) and optIcon(p.icon) and optBool(p.primary) and optNum(p.scanned)
+				and (p.specs == nil or each(p.specs, L.specs, function(i, id) return isNum(i) and finite(id) end))
 		end)
 	end,
 	recipes = function(v)

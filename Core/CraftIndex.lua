@@ -225,6 +225,30 @@ function CI.Search(index, query, limit)
 	return results, "ok", loading
 end
 
+-- Starred recipes (Favourites), optionally narrowed by a query of any
+-- length. Same row shape as Search.
+function CI.FavouriteResults(index, favs, query)
+	query = (query or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
+	local results, loading = {}, 0
+	for recipeID in pairs(favs or {}) do
+		local r = index.recipes[recipeID]
+		if r then
+			local name = CI.NameOf(r)
+			if not name then
+				loading = loading + 1
+			elseif query == "" or name:lower():find(query, 1, true) then
+				results[#results + 1] = { recipeID = recipeID, itemID = r.itemID, skillLine = r.skillLine,
+					name = name, recipe = r }
+			end
+		end
+	end
+	table.sort(results, function(a, b)
+		if a.name ~= b.name then return a.name < b.name end
+		return a.recipeID < b.recipeID
+	end)
+	return results, loading
+end
+
 ---------------------------------------------------------------------------
 -- Crafters of a recipe or an item, best-reachable first
 ---------------------------------------------------------------------------
@@ -233,11 +257,12 @@ local STATUS_RANK = { addon = 3, online = 2, offline = 1 }
 -- One crafter's display info. A crafter who is offline but has a linked alt
 -- online is reachable through that alt (`via`).
 local function crafterInfo(index, guild, guid, skillLine, now)
+	index = index or {}
 	local m = guild.members[guid] or {}
 	local p = guild.profiles[guid]
 	local status = SK.Identity.Status(m, SK.DB.account[guid] and m.online, now)
 	local info = { guid = guid, name = m.name or (p and p.name) or "?", class = m.class or (p and p.class),
-		status = status, skill = index.skill[guid] and index.skill[guid][skillLine] or 0,
+		status = status, skill = index.skill and index.skill[guid] and index.skill[guid][skillLine] or 0,
 		scanned = index.scanned and index.scanned[guid] and index.scanned[guid][skillLine],
 		whisper = status ~= "offline" and guid or nil }
 	local g = index.groupOf and index.groupOf[guid]
@@ -259,14 +284,23 @@ local function crafterInfo(index, guild, guid, skillLine, now)
 	return info
 end
 
+CI.CrafterInfo = crafterInfo
+
+-- Reachable first; starred crafters (Favourites) first within the same status.
 local function sortCrafters(list)
+	for _, c in ipairs(list) do
+		if c.fav == nil then c.fav = SK.Favourites and SK.Favourites.IsCrafter(c.guid) or false end
+	end
 	table.sort(list, function(a, b)
 		if a.status ~= b.status then return STATUS_RANK[a.status] > STATUS_RANK[b.status] end
+		if a.fav ~= b.fav then return a.fav end
 		if a.skill ~= b.skill then return a.skill > b.skill end
 		return a.name:lower() < b.name:lower()
 	end)
 	return list
 end
+
+CI.SortCrafters = sortCrafters
 
 function CI.Crafters(index, recipeID, guild, now)
 	local r = index.recipes[recipeID]

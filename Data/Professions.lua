@@ -52,3 +52,24 @@ SK.Data.SPECIALISATIONS = {
 		{ spell = 17039, name = "Master Swordsmith", status = "todo" },
 	},
 }
+
+-- spellID -> { skillLine, name } for display. Profiles may carry any number;
+-- only IDs in this table are ever shown.
+SK.Data.SPEC_BY_SPELL = {}
+for skillLine, list in pairs(SK.Data.SPECIALISATIONS) do
+	for _, spec in ipairs(list) do
+		SK.Data.SPEC_BY_SPELL[spec.spell] = { skillLine = skillLine, name = spec.name, status = spec.status }
+	end
+end
+
+-- Highest skill in the original game (Forever is level 60, Classic-era
+-- professions). "At max" on the Professions board counts characters here.
+SK.Data.SKILL_CAP = 300
+
+-- Board order: crafting first, then gathering, then secondary.
+function SK.Data.ProfessionGroup(skillLine)
+	local p = SK.Data.PROFESSIONS[skillLine]
+	if p and not p.primary then return 3 end
+	if SK.Data.GATHERING[skillLine] then return 2 end
+	return 1
+end

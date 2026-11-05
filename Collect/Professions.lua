@@ -8,8 +8,29 @@ local Compat = SK.Compat
 Prof.CHUNK = 50          -- recipes processed per frame
 Prof.lastScan = nil      -- summary for /sk debug
 
+-- Specialisations (B3) the player knows for a profession, as spell IDs.
+-- An ID counts only when it is confirmed (status "ok" in Data/Professions)
+-- or this client's own name for the spell matches the expected name, so a
+-- wrong ID can never label anyone. Returns a list or nil.
+function Prof.ReadSpecs(skillLine)
+	local list = SK.Data.SPECIALISATIONS[skillLine]
+	if not list then return nil end
+	local out = {}
+	for _, spec in ipairs(list) do
+		if Compat.IsSpellKnown(spec.spell) then
+			local ok = spec.status == "ok" or Compat.SpellName(spec.spell) == spec.name
+			if ok then out[#out + 1] = spec.spell end
+		end
+	end
+	return #out > 0 and out or nil
+end
+
 function Prof.ReadSkills()
-	return Compat.ReadProfessions()
+	local profs = Compat.ReadProfessions()
+	for skillLine, p in pairs(profs) do
+		p.specs = Prof.ReadSpecs(skillLine)
+	end
+	return profs
 end
 
 ---------------------------------------------------------------------------
@@ -40,6 +61,7 @@ function Prof.ProcessRecipes(ids, done, runNow)
 				end
 				cat.total = cat.total + 1
 				if info.learned then cat.learned = cat.learned + 1 end
+				if SK.Reagents then SK.Reagents.Learn(id) end
 				if #cat.names < Prof.CATEGORY_SAMPLES and info.name then cat.names[#cat.names + 1] = info.name end
 				if info.learned then result.sampleLearned = result.sampleLearned or id
 				else result.sampleUnlearned = result.sampleUnlearned or id end
@@ -141,6 +163,7 @@ function Prof:StoreScan(result)
 		nLearned, Prof.lastScan.total, tostring(result.complete))
 	local cds = {}
 	for id, seconds in pairs(result.cds) do cds[id] = now + math.floor(seconds) end
+	Prof.SetScanRank(Compat.PlayerGUID(), result.skillLine, result.rank)
 	SK.Profile:SetScan(result.skillLine, {
 		name = result.name, rank = result.rank, max = result.max,
 		learned = result.learned, universe = result.universe, cds = cds, at = now,
@@ -163,6 +186,77 @@ function Prof.Unscanned(profile)
 	return out
 end
 
+---------------------------------------------------------------------------
+-- Freshness nudges: "your Tailoring went from 240 to 262 since you last
+-- opened it". Kept rare on purpose: only after a real gain (NUDGE_POINTS),
+-- at most one chat line per session and per NUDGE_EVERY, and never if the
+-- player turned it off. The Professions tab shows the same text quietly.
+---------------------------------------------------------------------------
+Prof.NUDGE_POINTS = 15         -- skill points gained since the last scan
+Prof.NUDGE_EVERY = 3 * 86400   -- at most one chat reminder every 3 days
+Prof.NUDGE_DELAY = 90          -- seconds after login
+
+function Prof.SetScanRank(guid, skillLine, rank)
+	if not guid or not skillLine or type(rank) ~= "number" or rank <= 0 then return end
+	SK.DB.scanRank[guid] = SK.DB.scanRank[guid] or {}
+	SK.DB.scanRank[guid][skillLine] = rank
+end
+
+-- Pure: { { skillLine, name, from, to } } for scanned crafting professions
+-- that gained at least NUDGE_POINTS since their scan.
+function Prof.Nudges(profile, ranks)
+	local out = {}
+	if not profile or type(profile.profs) ~= "table" then return out end
+	ranks = ranks or {}
+	for skillLine, p in pairs(profile.profs) do
+		local from = ranks[skillLine]
+		if p.scanned and not SK.Data.GATHERING[skillLine] and from and (p.rank or 0) - from >= Prof.NUDGE_POINTS then
+			out[#out + 1] = { skillLine = skillLine, name = p.name or tostring(skillLine), from = from, to = p.rank }
+		end
+	end
+	table.sort(out, function(a, b) return a.name < b.name end)
+	return out
+end
+
+-- Older data has no rank for its last scan: start counting from today.
+function Prof.FillScanRanks(profile)
+	if not profile or type(profile.profs) ~= "table" then return end
+	local ranks = SK.DB.scanRank[profile.guid] or {}
+	for skillLine, p in pairs(profile.profs) do
+		if p.scanned and ranks[skillLine] == nil then Prof.SetScanRank(profile.guid, skillLine, p.rank) end
+	end
+end
+
+function Prof.NudgeText(list)
+	local parts = {}
+	for _, n in ipairs(list) do
+		parts[#parts + 1] = string.format("%s went from %d to %d", n.name, n.from, n.to)
+	end
+	if #parts == 0 then return nil end
+	return "Your " .. table.concat(parts, ", ") .. " since you last opened " .. (#parts == 1 and "it" or "them")
+		.. ". Open the window" .. (#parts == 1 and "" or "s") .. " to update your recipes."
+end
+
+function Prof.CurrentNudges()
+	local own = SK.Profile:Own()
+	if not own then return {} end
+	Prof.FillScanRanks(own)
+	return Prof.Nudges(own, SK.DB.scanRank[own.guid])
+end
+
+-- Chat reminder. Returns true if it printed.
+function Prof:Nudge(now)
+	now = now or Compat.Now()
+	if self.nudged or not SK.DB.settings.profNudges then return false end
+	if SK.DB.nudgedAt and now - SK.DB.nudgedAt < Prof.NUDGE_EVERY then return false end
+	local text = Prof.NudgeText(Prof.CurrentNudges())
+	if not text then return false end
+	self.nudged = true
+	SK.DB.nudgedAt = now
+	SK:Print("%s", text)
+	return true
+end
+
 function Prof:Remind()
 	local own = SK.Profile:Own()
 	local missing = Prof.Unscanned(own)
@@ -182,4 +276,5 @@ function Prof:OnLogin()
 	SK:RegisterEvent("TRADE_SKILL_DATA_SOURCE_CHANGED", queue)
 	SK:RegisterEvent("NEW_RECIPE_LEARNED", queue)
 	SK.After(45, function() Prof:Remind() end)
+	SK.After(Prof.NUDGE_DELAY, function() Prof:Nudge() end)
 end

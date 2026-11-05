@@ -193,6 +193,7 @@ Theme.TEX = {
 	close = MEDIA .. "Textures\\close",
 	dot = MEDIA .. "Textures\\dot",
 	ring = MEDIA .. "Textures\\ring",
+	star = MEDIA .. "Textures\\star",
 }
 
 -- Inline round dot ("|T...|t") in a theme colour, for text.
@@ -200,6 +201,14 @@ function Theme.Dot(name, size)
 	local r, g, b = Theme.RGB(name)
 	size = size or 8
 	return string.format("|T%s:%d:%d:0:0:16:16:0:16:0:16:%d:%d:%d|t", Theme.TEX.dot, size, size,
+		math.floor(r * 255 + 0.5), math.floor(g * 255 + 0.5), math.floor(b * 255 + 0.5))
+end
+
+-- Inline star (favourites) in a theme colour.
+function Theme.Star(name, size)
+	local r, g, b = Theme.RGB(name or "beard")
+	size = size or 12
+	return string.format("|T%s:%d:%d:0:0:16:16:0:16:0:16:%d:%d:%d|t", Theme.TEX.star, size, size,
 		math.floor(r * 255 + 0.5), math.floor(g * 255 + 0.5), math.floor(b * 255 + 0.5))
 end
 

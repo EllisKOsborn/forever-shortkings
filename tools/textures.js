@@ -116,6 +116,13 @@ const crest = [
   cut(ellipse(32, 41.5, 3.2, 2.2, WHITE)),                          // mouth
 ];
 
+// Five-pointed star (favourites), centred in a 16 box.
+const starPts = [];
+for (let i = 0; i < 10; i++) {
+  const r = i % 2 === 0 ? 7.5 : 3.2, a = -Math.PI / 2 + (i * Math.PI) / 5;
+  starPts.push([8 + r * Math.cos(a), 8.6 + r * Math.sin(a)]);
+}
+
 const TEXTURES = {
   crest: [64, crest],
   // White glyphs, tinted in game with SetVertexColor.
@@ -123,6 +130,7 @@ const TEXTURES = {
   close: [16, [line([4, 4], [12, 12], 2, WHITE), line([12, 4], [4, 12], 2, WHITE)]],
   dot: [16, [circle(8, 8, 6, WHITE)]],
   ring: [32, [ring(16, 16, 13, 2.5, WHITE)]],
+  star: [16, [poly(starPts, WHITE)]],
 };
 
 fs.mkdirSync(TGA_DIR, { recursive: true });

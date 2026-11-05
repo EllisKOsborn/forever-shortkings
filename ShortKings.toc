@@ -17,6 +17,9 @@ Core\DB.lua
 Core\Identity.lua
 Core\Alts.lua
 Core\CraftIndex.lua
+Core\Favourites.lua
+Core\Reagents.lua
+Core\ProfBoard.lua
 Core\Export.lua
 Core\Feed.lua
 Core\Overview.lua
@@ -46,6 +49,7 @@ UI\OverviewTab.lua
 UI\RosterTab.lua
 UI\CharacterTab.lua
 UI\CraftersTab.lua
+UI\ProfessionsTab.lua
 UI\SettingsTab.lua
 UI\DebugWindow.lua
 UI\Minimap.lua

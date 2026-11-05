@@ -111,6 +111,8 @@ describe("Security", function()
 			{ "a version with free text", { addon = "9.9 get the fix at evil.example" } },
 			{ "not-a-number timestamp", { updated = 0 / 0 } },
 			{ "too many recipes", { recipes = { [164] = (function() local t = {} for i = 1, 2000 do t[i] = i end return t end)() } } },
+			{ "specialisation as text", { profs = { [202] = { name = "Engineering", rank = 1, specs = { "Gnome" } } } } },
+			{ "too many specialisations", { profs = { [202] = { name = "Engineering", rank = 1, specs = { 1, 2, 3, 4, 5 } } } } },
 			{ "deeply nested extra field", { extra = { { { { { { { 1 } } } } } } } } },
 		}
 		for _, case in ipairs(BAD) do

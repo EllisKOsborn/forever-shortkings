@@ -19,12 +19,18 @@ local DEFAULTS = {
 		craftTooltips = true,                     -- "Crafted by" lines on item tooltips (v0.2)
 		feed = true,                              -- record guild milestones for the Overview (v0.2.2)
 		reduceMotion = false,                     -- turn off UI animation (v0.2.3 design refresh)
+		profNudges = true,                        -- "open your Tailoring window" reminders (v0.3)
+		profView = "board",                       -- Professions tab: "board" or "cooldowns" (v0.3)
 	},
 	own = {},             -- [guid] = full profile of our own characters (never sent)
 	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns
 	account = {},  -- [guid] = true for characters seen on this account
 	seenGuids = {}, -- [name] = { guid, first, logins, changedFrom } (GUID stability check for /sk debug)
 	feed = {},      -- recent milestones, newest first, max 50 (local only, never sent)
+	favourites = { recipes = {}, crafters = {} }, -- starred recipes and crafters (v0.3, local only)
+	reagents = { build = nil, list = {} },        -- recipe reagents read from the game (v0.3, local only)
+	scanRank = {},  -- [guid] = { [skillLine] = skill when the recipes were last scanned } (nudges, local)
+	nudgedAt = nil, -- last "open your profession window" chat reminder
 	guilds = {},
 }
 

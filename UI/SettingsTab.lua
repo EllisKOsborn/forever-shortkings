@@ -55,6 +55,10 @@ function Settings:Build(page)
 	check("Record guild milestones (Overview)", function() return s.feed end, function(v)
 		s.feed = v
 	end)
+	check("Remind me to reopen profession windows", function() return s.profNudges end, function(v)
+		s.profNudges = v
+	end, "A chat line at most every few days, only after your skill has gone up by "
+		.. SK.Professions.NUDGE_POINTS .. " or more since you last opened that profession's window.")
 	check("Show minimap button", function() return not s.minimap.hide end, function(v)
 		SK.Minimap:SetShown(v)
 	end)
