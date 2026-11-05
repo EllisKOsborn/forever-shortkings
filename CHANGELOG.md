@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.7 (unreleased): profession checks
+## v0.2.7 (5 Nov 2026): profession checks
 
 Nothing changes in how the addon works. `/sk debug` gets a new block,
 **"Profession checks for v0.3"**, that records what the game shows before

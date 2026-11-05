@@ -134,7 +134,8 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   launch-day fixes: sync no longer blocked by the misleading flag, enchant
   check at max level, plus the security fixes); **v0.2.6** (5 Nov, hotfix: successful
   sends were counted as errors; the owner publishes it on the website because
-  tag pushes from cloud sessions drop). Tag only when
+  tag pushes from cloud sessions drop); **v0.2.7** (5 Nov, `/sk debug`
+  profession checks only, for v0.3 Step 1). Tag only when
   the user asks.
 
 ## Layout
