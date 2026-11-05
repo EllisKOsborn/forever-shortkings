@@ -280,7 +280,7 @@ const SLOT = { 1: "Head", 2: "Neck", 3: "Shoulder", 15: "Back", 5: "Chest", 4: "
 // ---------------------------------------------------------------- state
 const S = { view: "after", screen: "overview", data: "full", scale: 1, open: true, reduce: false, sort: { key: "seen", desc: false },
   search: "", raid: "none", attFilter: "all", groupAlts: true, crafterQuery: "arcanite", recipe: 0, charIdx: 1, menuOpen: false,
-  copy: false, checks: { sync: true, gear: true, recipes: true, tips: true, feed: true, minimap: true, reduce: false, debug: false } };
+  copy: false, checks: { sync: true, gear: true, recipes: true, tips: true, feed: true, nudges: true, minimap: true, reduce: false, debug: false } };
 let G = makeGuild("full");
 
 // ---------------------------------------------------------------- helpers
@@ -495,6 +495,65 @@ function crafters() {
     <div class="side" style="left:492px;right:0;top:36px;bottom:0">${side}</div>`;
 }
 
+// ---------------------------------------------------------------- professions (v0.3)
+const PROF_BOARD = [
+  ["Alchemy", 6, 3, 2, 300, 1, ""], ["Blacksmithing", 4, 2, 1, 300, 2, "Weaponsmith 2, Armorsmith 1"], ["Enchanting", 5, 2, 3, 300, 0, ""],
+  ["Engineering", 3, 1, 1, 300, 4, "Gnomish Engineer 2, Goblin Engineer 1"], ["Leatherworking", 2, 0, 0, 265, 9, "Tribal Leatherworking 1"],
+  ["Tailoring", 5, 2, 2, 300, 0, ""], ["Herbalism", 7, 3, 3, 300, null, ""], ["Mining", 6, 4, 2, 300, null, ""], ["Skinning", 0, 0, 0, 0, null, ""],
+  ["Cooking", 9, 2, 4, 300, 3, ""], ["First Aid", 11, 6, 4, 300, 12, ""], ["Fishing", 4, 1, 1, 275, null, ""]];
+const PROF_CRAFTERS = [["Brambletoe", "MAGE", 300, "addon", "", 0, 1], ["Copperpot", "PRIEST", 300, "online", "", 3, 0], ["Dorna", "WARRIOR", 285, "offline", "alt of Thalgrim", 9, 0],
+  ["Fizzwick", "ROGUE", 262, "offline", "", 21, 0], ["Nettle", "DRUID", 240, "addon", "", 1, 0], ["Pockets", "WARLOCK", 150, "offline", "", null, 0]];
+const PROF_RECIPES = [["Elixir of the Mongoose", "#ffffff", 4], ["Flask of Distilled Wisdom", "#ffffff", 1], ["Flask of the Titans", "#ffffff", 1, 1],
+  ["Greater Fire Protection Potion", "#ffffff", 3], ["Major Healing Potion", "#ffffff", 6], ["Major Mana Potion", "#ffffff", 5, 1], ["Transmute: Arcanite", "#ffffff", 2],
+  ["Transmute: Undeath to Water", "#ffffff", 1], ["Elixir of Giants", "#ffffff", 2]].sort((a, b) => a[0] < b[0] ? -1 : 1);
+const PROF_CDS = [["Transmute: Arcanite", "Copperpot", "PRIEST", "online", 0, "now", 0], ["Mooncloth", "Fizzwick", "ROGUE", "offline", 0, "3d ago", 1],
+  ["Transmute: Arcanite", "Brambletoe", "MAGE", "addon", 2.5, "now", 0], ["Mooncloth", "Nettle", "DRUID", "addon", 47, "4m ago", 0], ["Transmute: Undeath to Water", "Dorna", "WARRIOR", "offline", 70, "2d ago", 1]];
+const star = (on) => on ? `<span class="beard">&#9733;</span> ` : "";
+const recAgo = (d) => d === null ? DASH : `<span class="${d > 7 ? "spark" : "dim"}">${d === 0 ? "now" : d + "d ago"}</span>`;
+function professions() {
+  const none = !G.name || S.data === "empty";
+  const chips = (items, on) => items.map((x) => `<span class="chip ${x[0] === on ? "on" : ""}">${x[1]}</span>`).join("");
+  const nudge = `<div class="abs spark" style="left:0;right:0;top:36px;font-size:12px">Your Tailoring went from 240 to 262 since you last opened it. Open the window to update your recipes.</div>`;
+  if (S.prof) {
+    const ccell = (k, c) => c.key === "n" ? dot(k[3] === "addon" ? "good" : k[3] === "online" ? "text" : "faint") + star(k[6]) + `<span style="color:${CLASS[k[1]]}">${esc(k[0])}</span>${k[4] ? ` <span class="dim">&nbsp;${k[4]}</span>` : ""}`
+      : c.key === "s" ? k[2] : c.key === "p" ? "" : c.key === "r" ? recAgo(k[5]) : btn("Whisper", "small" + (k[3] === "offline" ? " disabled" : ""));
+    const rcell = (r, c) => c.key === "n" ? star(r[3]) + `<span style="color:${r[1]}">${esc(r[0])}</span>` : r[2] === 1 ? `<span class="spark">1</span>` : r[2];
+    return `${btn("All professions", "", 'style="position:absolute;left:0;top:0"')}<div class="abs" style="left:130px;top:3px;font-size:15px">Alchemy</div>
+      <div class="abs dim ell" style="right:0;top:4px;font-size:12px">6 characters, 2 online · ${PROF_RECIPES.length} recipes</div>
+      ${list([{ key: "n", t: "Character", w: 152 }, { key: "s", t: "Skill", w: 50, r: 1 }, { key: "p", t: "Speciality", w: 92 }, { key: "r", t: "Recipes", w: 70, r: 1 }, { key: "b", t: "", w: 64 }],
+        PROF_CRAFTERS, ccell, { click: true, style: "left:0;top:36px;bottom:0;width:440px" })}
+      <div class="abs" style="left:456px;top:36px;display:flex;gap:4px">${chips([["all", "All"], ["one", "Only one crafter"], ["fav", "Favourites"], ["nobody", "Nobody knows"]], "all")}</div>
+      ${list([{ key: "n", t: "Recipe", w: 290 }, { key: "c", t: "Crafters", w: 90, r: 1 }], PROF_RECIPES, rcell, { click: true, style: "left:456px;right:0;top:68px;bottom:0" })}`;
+  }
+  if (S.profView === "cooldowns") {
+    const cell = (r, c) => c.key === "n" ? esc(r[0]) : c.key === "w" ? dot(r[3] === "addon" ? "good" : r[3] === "online" ? "text" : "faint") + `<span style="color:${CLASS[r[2]]}">${esc(r[1])}</span>`
+      : c.key === "l" ? (r[4] === 0 ? `<span class="good">Ready</span>` : r[4] < 24 ? `${Math.floor(r[4])}h ${Math.round((r[4] % 1) * 60)}m` : `${Math.floor(r[4] / 24)}d ${Math.round(r[4] % 24)}h`)
+      : c.key === "a" ? `<span class="${r[6] ? "spark" : "dim"}">${r[5]}</span>` : btn("Whisper", "small" + (r[3] === "offline" ? " disabled" : ""));
+    return `<div class="abs" style="left:0;top:0;display:flex;gap:4px">${chips([["board", "Guild"], ["cooldowns", "Cooldowns"]], "cooldowns")}</div>
+      <div class="abs dim ell" style="right:0;top:4px;font-size:12px">2 ready · 5 cooldowns</div>
+      ${list([{ key: "n", t: "Cooldown", w: 270 }, { key: "w", t: "Crafter", w: 190 }, { key: "l", t: "Ready in", w: 110, r: 1 }, { key: "a", t: "As of", w: 140, r: 1 }, { key: "b", t: "", w: 126 }],
+        none ? [] : PROF_CDS, cell, { click: true, empty: "No profession cooldowns yet.", style: "left:0;top:36px;bottom:0;right:0" })}`;
+  }
+  const cell = (r, c) => {
+    const nobody = r[1] === 0;
+    switch (c.key) {
+      case "n": return nobody ? `<span class="dim">${r[0]}</span>` : r[0];
+      case "c": return nobody ? `<span class="spark">nobody</span>` : r[1];
+      case "m": return nobody ? DASH : r[2];
+      case "o": return nobody ? DASH : r[3] ? `<span class="good">${r[3]}</span>` : `<span class="dim">0</span>`;
+      case "t": return nobody ? DASH : r[4];
+      case "s": return recAgo(r[5]);
+      default: return `<span class="dim">${r[6]}</span>`;
+    }
+  };
+  return `<div class="abs" style="left:0;top:0;display:flex;gap:4px">${chips([["board", "Guild"], ["cooldowns", "Cooldowns"]], "board")}</div>
+    <div class="abs dim ell" style="right:0;top:4px;font-size:12px">${none ? "" : "1 profession nobody has"}</div>
+    ${none ? "" : nudge}
+    ${list([{ key: "n", t: "Profession", w: 170 }, { key: "c", t: "Characters", w: 88, r: 1 }, { key: "m", t: "At 300", w: 70, r: 1 }, { key: "o", t: "Online", w: 70, r: 1 },
+      { key: "t", t: "Top skill", w: 80, r: 1 }, { key: "s", t: "Latest recipes", w: 112, r: 1 }, { key: "x", t: "Specialisations", w: 246 }],
+      none ? PROF_BOARD.map((r) => [r[0], 0, 0, 0, 0, null, ""]) : PROF_BOARD, cell, { click: true, style: `left:0;top:${none ? 36 : 56}px;bottom:0;right:0` })}`;
+}
+
 // ---------------------------------------------------------------- settings
 function settings() {
   const err = S.data === "error";
@@ -503,7 +562,8 @@ function settings() {
   const head = (t) => { h += `<div class="block" style="left:0;top:${y}px;width:${L}px"><div class="bhead"><span class="h display">${t}</span></div></div>`; y += 32; };
   const ck = (k, label) => { h += check(k, label, `position:absolute;left:0;top:${y + 4}px`); y += 28; };
   head("Sharing"); ck("sync", "Share and receive guild data (sync)"); ck("gear", "Share my gear and talents"); ck("recipes", "Share my recipes and cooldowns");
-  y += 8; head("Display"); ck("tips", "Show guild crafters in item tooltips"); ck("feed", "Record guild milestones (Overview)"); ck("minimap", "Show minimap button");
+  y += 8; head("Display"); ck("tips", "Show guild crafters in item tooltips"); ck("feed", "Record guild milestones (Overview)");
+  ck("nudges", "Remind me to reopen profession windows"); ck("minimap", "Show minimap button");
   ck("reduce", "Reduce motion"); ck("debug", "Debug logging in chat");
   h += `<div class="abs" style="left:0;top:${y + 4}px">Window size</div>`; y += 22;
   h += `<div class="abs" style="left:0;top:${y}px;display:flex;align-items:center;gap:4px">${[70, 80, 90, 100, 110, 120, 130].map((v) =>
@@ -527,8 +587,8 @@ function settings() {
 }
 
 // ---------------------------------------------------------------- window
-const TABS = [["overview", "Overview"], ["roster", "Roster"], ["character", "Character"], ["crafters", "Crafters"], ["settings", "Settings"]];
-const RENDER = { overview, roster, character, crafters, settings };
+const TABS = [["overview", "Overview"], ["roster", "Roster"], ["character", "Character"], ["crafters", "Crafters"], ["professions", "Professions"], ["settings", "Settings"]];
+const RENDER = { overview, roster, character, crafters, professions, settings };
 function windowHTML() {
   const err = S.data === "error", paused = err || !G.name || S.data === "loading";
   const why = err ? "combat" : "roster not loaded";
@@ -656,7 +716,7 @@ function seg(id) {
 try { Object.assign(S, JSON.parse(localStorage.getItem("skPreview") || "{}")); } catch (e) { /* ignore */ }
 // ?screen=roster&data=worst&view=before&raid=ony  (and &shot=1 for the README pictures: window only, no chrome)
 const Q = new URLSearchParams(location.search);
-for (const k of ["screen", "data", "view", "raid"]) if (Q.get(k)) S[k] = Q.get(k);
+for (const k of ["screen", "data", "view", "raid", "prof", "profView"]) if (Q.get(k)) S[k] = Q.get(k);
 const SHOT = Q.get("shot");
 if (SHOT) {
   document.body.classList.add("shot"); S.view = SHOT === "compare" ? "before" : "after"; S.reduce = true;

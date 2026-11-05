@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.3.0 (not released yet): Professions
+
+A new **Professions** tab, after Crafters. Works alongside guildmates on
+v0.2.5 and later (no new message types).
+
+- **Guild board:** every profession, crafting first, then gathering, then
+  secondary, including the ones nobody has. Characters, how many at 300,
+  online now, top skill, when recipes were last recorded, and
+  specialisations. Click a row to open that profession.
+- **One profession:** its crafters (status, alt of, skill, specialisation,
+  how old their recipe list is, orange after a week, Whisper) and its
+  recipes with crafter counts. Filters: All, Only one crafter, Favourites,
+  and Nobody knows (only when the game's window lists unlearned recipes).
+  Click a recipe to open it in Crafters.
+- **Cooldown board:** everyone's profession cooldowns, ready first, with
+  how long ago we last heard from that player (orange after a day).
+- **Specialisations** from the original game (Engineering, Leatherworking,
+  Blacksmithing), read from your spellbook. A spell only counts when the
+  game's own name for it matches, so nobody gets a wrong label. Shared as a
+  small new field that older versions simply ignore.
+- **Reagents** in the Crafters panel and recipe tooltips, with how many you
+  have in your bags. Read from your own game and kept on your computer;
+  never sent.
+- **Favourites:** right-click a recipe or crafter to star it. A Favourites
+  filter in Crafters and Professions. Saved on your computer only.
+- **Reminder to reopen a profession window** when your skill has gone up 15
+  or more since you last opened it: on the tab, and in chat at most once
+  every three days. Can be turned off in Settings.
+
 ## v0.2.7 (5 Nov 2026): profession checks
 
 Nothing changes in how the addon works. `/sk debug` gets a new block,

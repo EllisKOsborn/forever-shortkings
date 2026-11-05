@@ -145,7 +145,9 @@ Core/     Init (events, timers, modules), Log (+ error capture: SK:Safe,
           SK:RecordError), Compat, DB (SavedVariables, pruning), Identity
           (roster, sender→GUID, Status dots, GUID-stability check), Alts
           (mutual-link groups), CraftIndex (recipe/item → crafters, async
-          names), Export (plain text for Copy), Feed (local milestones,
+          names), Favourites (local stars), Reagents (GetRecipeSchematic
+          cache, local), ProfBoard (numbers for the Professions tab),
+          Export (plain text for Copy), Feed (local milestones,
           never synced), Overview (numbers for the Overview tab)
 Data/     Professions, Attunements (quest IDs), Factions, Enchants
 Collect/  Character, Talents, Professions (recipe scan), Reputation,
@@ -156,9 +158,11 @@ UI/       Theme (EVERY colour/font/size/spacing/motion value), Motion
           Tab, Chip, Check, Menu, SearchBox, List, TextPanel, Block, Sheet),
           MainFrame, OverviewTab (first tab, three spec-sheet columns),
           RosterTab (+ raid filter, Oldest first), CharacterTab (+ Ask for
-          latest), CraftersTab, SettingsTab, DebugWindow, Minimap, Tooltip
+          latest), CraftersTab (+ reagents, Favourites chip), ProfessionsTab
+          (board / one profession / cooldowns), SettingsTab, DebugWindow,
+          Minimap, Tooltip
 Media/    Fonts.xml (Arial Narrow families + CJK fallback), Fonts/ (Chakra
-          Petch, OFL), Textures/ (crest, arrow, close, dot, ring .tga)
+          Petch, OFL), Textures/ (crest, arrow, close, dot, ring, star .tga)
 preview/  browser mock-up of every window (theme.css/js generated)
 tools/    textures.js (draws Media/Textures), preview-tokens.js
 Libs/     vendored Ace3 bits, LibSerialize, LibDeflate; LDB + LibDBIcon via .pkgmeta
@@ -222,11 +226,13 @@ messages → sender ignored for the session).
 - **Next (5 Nov):** **v0.3 Professions**: `docs/prompts/next-v0.3-professions.md`
   (the guild says professions matter most; Raids moves to v0.4, still before
   9 Dec). v0.2.6 hotfix is on `main` (5 Nov); the owner publishes the release.
-  **Step 1 in progress (5 Nov):** v0.2.7 probes built on
-  `claude/affectionate-archimedes-tirbrl` (`/sk debug` block "Profession
-  checks for v0.3", `Commands.ProfessionProbes`). Plan draft in **PLAN.md
-  section 11**, waiting for: the owner's v0.2.7 `/sk debug` (window open and
-  closed), the guild's top 3 features, and an OK. Don't build v0.3 before that.
+  **v0.2.7** (probes only: `/sk debug` block "Profession checks for v0.3",
+  `Commands.ProfessionProbes`) is on `main`; the tag push dropped, so the
+  owner publishes the release on the website. **v0.3.0 Professions is built**
+  on `claude/affectionate-archimedes-tirbrl` (owner said "do all of them";
+  reminders must stay rare). Not released, not tested in game. Waiting for the
+  owner's v0.2.7 `/sk debug` answers (record them here), then TESTING 87–95.
+  Plan and what was left out: **PLAN.md section 11**.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
   fixes only (now **v0.2.5**: v0.2.3 = new look, v0.2.4 = tagline). Raids is now
@@ -247,6 +253,19 @@ messages → sender ignored for the session).
     (event approach, not the Item mixin), at most 200 requests per search.
   - "Post to guild chat" uses `ChatFrameUtil.OpenChat("/g …")`; never
     `SendChatMessage`.
+- Decisions in v0.3.0:
+  - Specialisation detection: known (`C_SpellBook.IsSpellKnown`) **and**
+    (`status = "ok"` or the client's spell name equals the Data name). Synced
+    as `profs[skillLine].specs` (spell IDs); display only for IDs in
+    `SK.Data.SPEC_BY_SPELL`.
+  - Reagents are local only (`ShortKingsDB.reagents`, keyed by game build),
+    learned during scans and on demand. Never in profiles.
+  - Favourites: `ShortKingsDB.favourites` (local). Right-click to star.
+  - Nudges: `Professions.NUDGE_POINTS` 15, `NUDGE_EVERY` 3 days, once per
+    session, `settings.profNudges`; scan ranks in `ShortKingsDB.scanRank`.
+  - "At 300" uses `SK.Data.SKILL_CAP` (original-game cap; confirm in game).
+  - Clicking a recipe in Professions opens it in Crafters
+    (`CraftersTab:ShowRecipe`), including recipes nobody knows.
 - Decisions in v0.2.2:
   - Overview numbers come from `Core/Overview.lua` (pure); attunement logic
     lives in `Collect/Attunements.lua` (`Att.StateOf`), shared by Roster,

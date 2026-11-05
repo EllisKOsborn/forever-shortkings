@@ -259,8 +259,39 @@ in game if anything looks different and send it.
 86. [ ] If you see Blueprints or camp objects in a profession window, check
         they appear under "Recipe categories" with their names.
 
+## v0.3.0 additions (Professions)
+
+87. [ ] **Professions** tab (after Crafters) shows every profession; ones
+        nobody has say **nobody** in orange. Your own professions count.
+88. [ ] Click **Alchemy** (or any profession someone has): crafters on the
+        left with skill and "recipes recorded … ago"; recipes on the right
+        with crafter counts. **All professions** goes back.
+89. [ ] Filters: **Only one crafter** and **Favourites** change the recipe
+        list. **Nobody knows** appears only if your window lists unlearned
+        recipes (tell me if it's missing).
+90. [ ] Click a recipe: the **Crafters** tab opens on it. Under the crafter
+        list, **Needs:** shows its reagents with "(have N)" from your bags.
+        Tell me if it says reagents aren't available for a recipe you know.
+91. [ ] Right-click a recipe, then a crafter: both get a pink **star**.
+        Crafters → **Favourites** chip lists only starred recipes.
+        `/reload`: stars are still there.
+92. [ ] **Cooldowns** (top of the Professions tab): if you or a guildmate
+        has a cooldown recipe (a transmute, Mooncloth), it's listed with
+        "Ready" or the time left, and "as of".
+93. [ ] If you have Engineering, Leatherworking or Blacksmithing with a
+        specialisation, it shows on your row (Professions → that profession)
+        and on the board. Tell me if it's missing.
+94. [ ] Level a crafting profession by 15+ points **without** opening its
+        window, then `/reload`: about 90 s later chat says "Your … went from
+        … to …" once. It doesn't repeat for three days. The same line shows
+        on the Professions tab until you open that window.
+        Settings → untick **Remind me to reopen profession windows**: no
+        chat line.
+95. [ ] With a guildmate on v0.2.6 or v0.2.7: you still see each other's
+        data (the new specialisation field doesn't upset older versions).
+
 ## Known gaps in v0.1
 
-- No Professions or Raids tabs yet (rest of v0.2, and v0.3).
+- No Raids tab yet (v0.4).
 - Onyxia's quest ID is the Classic one (6502, Alliance). Horde characters count only via the amulet in their bags.
 - The title bar's ember animation comes in v0.4.

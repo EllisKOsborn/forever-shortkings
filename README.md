@@ -42,7 +42,8 @@
 | 🏰 **Overview** | The guild at a glance: who's around, raid readiness, data health, professions, recipes and recent milestones |
 | 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains and a raid-attunement view |
 | 🛡️ **Character** | Anyone's gear, talents, professions, cooldowns, attunements and reputations |
-| ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first |
+| ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first, with its reagents and your bag counts |
+| 🧪 **Professions** | Every profession in the guild, each profession's crafters and recipes, everyone's cooldowns, specialisations and favourites |
 | ⚙️ **Settings** | Sharing and privacy switches, display options, window size, tools and a live status read-out |
 | 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, chat reminders and a copyable debug report |
 
@@ -106,13 +107,30 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 - **Results** (up to 200): the item's icon, its name in quality colour, the profession, and how many crafters there are (and how many online). Hover for the real item tooltip; click to pick it.
 - **Side panel:** every crafter, online first, then by skill, with a status dot, their skill, *on Gillybean* when they're on an alt (Whisper goes there) or *alt of X*, and a **Whisper** button. Long item names wrap rather than being cut off.
 - **Post to guild chat** (gold) types "[Item] can be made by: A, B, C" into your chat box; you press Enter. **Copy** gives the list as plain text.
+- **Reagents** under the crafter list: icon, name, how many, and how many you have in your bags (green when you have enough). Read from your own game, so they show once you've opened that profession's window; never sent to anyone.
+- **Favourites:** right-click a result or a crafter to star it (a pink star). The **Favourites** chip lists only starred recipes; starred crafters come first among the same status. Saved on your computer only.
 - Recipes come from each crafter's last visit to their profession window. While item names load from the game, placeholder rows show where results will appear.
+
+### 🧪 Professions
+<p align="center"><img src="docs/images/professions.png" alt="Professions tab, guild board" width="100%"></p>
+
+- **Guild board:** one row per profession (crafting first, then gathering, then Cooking, First Aid and Fishing), including ones **nobody** has. Characters, how many are at 300, how many online, the top skill, when recipes were last recorded (orange after a week) and specialisations. Click a row to open that profession.
+- **A reminder line** when your skill has gone up 15 or more since you last opened that profession's window ("Your Tailoring went from 240 to 262…"). In chat it says it at most once every three days; you can turn that off in Settings.
+
+<p align="center"><img src="docs/images/professions-one.png" alt="One profession" width="100%"></p>
+
+- **One profession:** everyone with it (status dot, star, *alt of X*, skill, specialisation, "recipes recorded 3d ago" in orange after a week, **Whisper**) and every recipe known in the guild with its crafter count (a lone crafter in orange). Filters: **All**, **Only one crafter**, **Favourites**, and **Nobody knows** (recipes the game's window lists that nobody has learned, shown only once the game has listed some). Hover a recipe for its reagents; click to open it in Crafters; right-click to star it.
+
+<p align="center"><img src="docs/images/cooldowns.png" alt="Cooldown board" width="100%"></p>
+
+- **Cooldowns:** everyone's profession cooldowns (transmutes, Mooncloth…), ready first, then soonest. Shows who, how long, and **as of** when we last heard from them (orange after a day: a cooldown only updates while its owner is online). **Whisper** when they're on.
+- **Specialisations** (Gnomish/Goblin Engineer, Dragonscale/Elemental/Tribal Leatherworking, Armorsmith/Weaponsmith and the master smiths) are read from your spellbook. A spell only counts when the game's own name for it matches, so a wrong ID can never mislabel anyone.
 
 ### ⚙️ Settings
 <p align="center"><img src="docs/images/settings.png" alt="Settings tab" width="100%"></p>
 
 - **Sharing:** *Share and receive guild data* (sync on or off), *Share my gear and talents*, *Share my recipes and cooldowns*.
-- **Display:** *Show guild crafters in item tooltips*, *Record guild milestones*, *Show minimap button*, **Reduce motion**, *Debug logging in chat*.
+- **Display:** *Show guild crafters in item tooltips*, *Record guild milestones*, *Remind me to reopen profession windows*, *Show minimap button*, **Reduce motion**, *Debug logging in chat*.
 - **Window size:** 70% to 130%.
 - **Tools:** *Rescan my character*, *Sync now*, *Reset window position*, *Debug report*.
 - **Status:** version, guild, whether sync is running or paused (and why), whether you may send, message counts, Lua errors caught, when your data last updated, and which profession windows you still need to open.
@@ -123,7 +141,7 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 - **The window** opens on the Overview the first time, then on your last tab. Drag it by the title bar; it remembers where you left it. **Esc** closes it. The title bar shows the crest, your guild and the sync status.
 - **Automatic collection** on every character you play: gear, item level, talents, reputations, professions, recipes (when you open the profession window), cooldowns, attunements and your other characters.
 - **"Crafted by" on item tooltips:** hover any item to see "Short Kings: Bramble (online), Dabble +2 more". Online crafters first, at most three names.
-- **Chat reminders** for profession windows still to open, a newer Short Kings, and trial accounts that can't share.
+- **Chat reminders** for profession windows still to open (and, rarely, ones to reopen after your skill went up), a newer Short Kings, and trial accounts that can't share.
 - **`/sk debug`** opens a copyable report of what the addon can see, starting with the live-client checks and the profession checks for v0.3 (unlearned recipes, recipe categories, reagents, specialisations), and ending with the last Lua errors it caught. **Send it when something looks wrong.**
 
 ### 🔒 Under the hood
@@ -307,7 +325,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.5**: first in-game test (5 Nov): sync switched back on, enchant check at level 60, security fixes
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sk debug` profession checks (what the game shows, before v0.3 is built)
-- [ ] **v0.3 Professions**: guild coverage, crafters and recipes per profession, cooldown board, reagents, favourites
+- [ ] **v0.3.0 Professions** (built, waiting for the in-game test): guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
 - [ ] **In-game test round** with guildmates (TESTING.md), then fixes
 - [ ] **v0.4**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
 - [ ] **v0.5**: craft requests, a short status line, lockout board

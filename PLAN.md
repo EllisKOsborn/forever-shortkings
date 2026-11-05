@@ -402,7 +402,8 @@ Crafters and tooltips, Copy, the Overview's numbers and milestones.
    build). When you have CurseForge or Wago accounts, releases can go there
    too (P5); I prepare it, you do the upload.
 3. **v0.3 Professions** (moved first on 5 Nov: the guild says professions
-   matter most). Plan: "v0.3 Professions plan" below. Prompt:
+   matter most). Built 5 Nov (v0.3.0), waiting for the in-game test. Plan:
+   section 11. Prompt:
    `docs/prompts/next-v0.3-professions.md`.
 4. **v0.4.0 Raids, read-only** (target: before raids open on 9 Dec): raid
    events from the calendar, who signed up with role, spec, item level and
@@ -423,11 +424,16 @@ Crafters and tooltips, Copy, the Overview's numbers and milestones.
 - **Horde members**: if there are any, their Onyxia chain is different.
 - What players ask for in the first two weeks. Real requests beat any plan.
 
-## 11. v0.3 Professions plan (draft 5 Nov 2026, **waiting for the owner's OK**)
+## 11. v0.3 Professions plan (5 Nov 2026, **approved**: "do all of them")
 
-Nothing below gets built until (a) the owner sends a `/sk debug` from
-**v0.2.7** with a profession window open and closed, and (b) the owner
-picks the guild's top 3 and says OK.
+The owner approved all six features on 5 Nov, before the v0.2.7 answers,
+and asked that the "reopen" reminders are rare. So v0.3.0 is built to
+check each unknown at runtime and hide what the game doesn't support:
+"Nobody knows" appears only if the window lists unlearned recipes;
+reagents show only if the game returns them; a specialisation counts only
+if the game's own spell name matches. Once the v0.2.7 answers arrive,
+record them in CLAUDE.md and adjust (e.g. set confirmed spec IDs to
+`status = "ok"`).
 
 ### Step 1 facts (v0.2.7 probes; answers go into CLAUDE.md)
 | Question | Probe line in `/sk debug` | If yes | If no |
@@ -456,11 +462,15 @@ classicdb.ch (two sources); the game still has to confirm them.
 5. Specialisations (only once the probe confirms the IDs).
 6. Freshness nudges ("Tailoring went from 240 to 262, open the window").
 
-### What goes in v0.3.0 vs later
-- **v0.3.0:** the owner's top 3 from the list above, plus favourites and
-  freshness nudges if they are small once the tab exists. No new message
-  types; guildmates on v0.2.5+ keep working. A new `spec` profile field only
-  if specialisations are in (with a `Merge.FIELDS` check).
+### What went into v0.3.0 (built 5 Nov, not released)
+- All six above. No new message types; guildmates on v0.2.5+ keep working.
+  New profile field `profs[skillLine].specs` (list of up to 4 spell IDs,
+  checked in `Merge.FIELDS`; older versions ignore it). Favourites,
+  reagents and nudge state are local only.
+- Reminders: +15 skill since the last scan; chat at most once per session
+  and once every 3 days; Settings toggle; also shown on the tab.
+- Not done: tooltip specialisation lines (item 8 of the prompt), because
+  which item needs which specialisation isn't verified data.
 - **v0.3.1 (only if asked):** craft requests (D1, a new message type).
 - **Later:** shopping list (D6), camp planner (P6) if the categories show
   camp objects, "where to get it" (D4) only with a verified data source.

@@ -20,7 +20,8 @@ local function dot(status) return SK.RosterTab.DOT[status] or SK.RosterTab.DOT.o
 
 local function recordedText(ts, now)
 	if not ts then return Theme.DASH end
-	local text = Theme.Ago(ts, now) .. " ago"
+	local ago = Theme.Ago(ts, now)
+	local text = ago == "now" and ago or (ago .. " ago")
 	if Theme.IsStale(ts, now) then return Theme.Paint("spark", text) end
 	return Theme.Paint("dim", text)
 end
@@ -146,7 +147,8 @@ local function setCooldownCell(fs, r, col)
 	elseif k == "asof" then
 		if not r.asOf then fs:SetText(Theme.DASH)
 		else
-			local t = r.guid == Compat.PlayerGUID() and "now" or (Theme.Ago(r.asOf, Prof.now) .. " ago")
+			local ago = Theme.Ago(r.asOf, Prof.now)
+			local t = (r.guid == Compat.PlayerGUID() or ago == "now") and "now" or (ago .. " ago")
 			fs:SetText(Theme.Paint(r.stale and "spark" or "dim", t))
 		end
 	else
