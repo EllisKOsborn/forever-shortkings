@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.6 (not released yet): hotfix
+## v0.2.6 (5 Nov 2026): hotfix
 
 - **False "send errors" fixed.** v0.2.5 counted every *successful* send as an
   error (the message libraries report "sent: true", not Blizzard's result

@@ -121,7 +121,9 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   release: **v0.2.2** (2 Nov 2026, the launch build); **v0.2.3** (3 Nov, the new
   look); **v0.2.4** (3 Nov, tagline "Height is not a stat."); **v0.2.5** (5 Nov,
   launch-day fixes: sync no longer blocked by the misleading flag, enchant
-  check at max level, plus the security fixes). Tag only when
+  check at max level, plus the security fixes); **v0.2.6** (5 Nov, hotfix: successful
+  sends were counted as errors; the owner publishes it on the website because
+  tag pushes from cloud sessions drop). Tag only when
   the user asks.
 
 ## Layout
@@ -207,7 +209,7 @@ messages → sender ignored for the session).
   roadmap). Don't build from the proposal files directly.
 - **Next (5 Nov):** **v0.3 Professions**: `docs/prompts/next-v0.3-professions.md`
   (the guild says professions matter most; Raids moves to v0.4, still before
-  9 Dec). Releasing the v0.2.6 hotfix (commit c9385b3) waits on the owner's OK.
+  9 Dec). v0.2.6 hotfix is on `main` (5 Nov); the owner publishes the release.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
   fixes only (now **v0.2.5**: v0.2.3 = new look, v0.2.4 = tagline), and **v0.3 Raids** before 9 Dec
