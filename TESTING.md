@@ -243,6 +243,22 @@ in game if anything looks different and send it.
         higher number means the game reports names differently and the
         first-name fallback is in use. Send it either way.
 
+## v0.2.7 additions (profession checks)
+
+83. [ ] Learn a crafting profession at a trainer if you don't have one.
+        Open its window, tick **Show unlearned** in the window's filter if it
+        exists, close and reopen the window, then `/sk debug`. Send the
+        **"Profession checks for v0.3"** block.
+84. [ ] Close the profession window and run `/sk debug` again. Send the two
+        "Reagents" lines (this checks whether reagents can be read with the
+        window closed).
+85. [ ] If you have Engineering, Leatherworking or Blacksmithing, check the
+        "Specialisations" lines: a specialisation you have says known=yes.
+        Every line shows the game's name for the spell (tell me if a name
+        looks wrong).
+86. [ ] If you see Blueprints or camp objects in a profession window, check
+        they appear under "Recipe categories" with their names.
+
 ## Known gaps in v0.1
 
 - No Professions or Raids tabs yet (rest of v0.2, and v0.3).

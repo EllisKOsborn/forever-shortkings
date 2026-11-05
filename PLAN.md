@@ -230,7 +230,7 @@ sign-up calls are protected; and reading the sign-up list needs
 is closed, to avoid interfering with it.
 
 **Refined 2 Nov (checked against the 1.60.1 calendar docs)** — the build
-prompt is `docs/prompts/next-v0.3-raids.md`:
+prompt is `docs/prompts/next-v0.4-raids.md`:
 - Each sign-up (`CalendarEventInviteInfo`) includes the player's **GUID**,
   name, class, level and status, so line-ups key cleanly by GUID.
 - Blizzard's statuses are Invited, Available, Declined, Confirmed, Out,
@@ -301,7 +301,7 @@ section is the single source of truth for order and status.
   coverage board, one-profession view, specialisations (original-game ones
   only), cooldown board, reagents, favourites, freshness nudges. Craft
   requests (D1) are an optional v0.3.1.
-- **v0.4 Raids** (still before 9 Dec): `docs/prompts/next-v0.3-raids.md` (to be renamed v0.4), plus a
+- **v0.4 Raids** (still before 9 Dec): `docs/prompts/next-v0.4-raids.md`, plus a
   readiness card (P11) and a duplicate-alt sign-up check. Addon-native events
   (P13) only if the calendar turns out to be unusable.
 - ~~v0.4 Professions~~: moved to v0.3 (see above); camp planner (P6) still
@@ -391,8 +391,8 @@ Crafters and tooltips, Copy, the Overview's numbers and milestones.
 | "missing:" API lines | carry on | replace or drop what uses them (v0.2.3) |
 | You and a guildmate see each other's data | carry on | fix sync before anything else (sender format, roster names) |
 | GUID stable between logins | carry on | stop and redesign how characters are identified |
-| Profession window lists unlearned recipes | "recipes nobody has" goes into v0.4 | drop that idea; keep coverage and single-crafter counts |
-| Calendar present and guild events listed | build v0.3 Raids on Blizzard's calendar | plan addon-only raid events instead (Perplexity P13) before building |
+| Profession window lists unlearned recipes | "recipes nobody has" goes into v0.3 | drop that idea; keep coverage and single-crafter counts |
+| Calendar present and guild events listed | build v0.4 Raids on Blizzard's calendar | plan addon-only raid events instead (Perplexity P13) before building |
 | Drakefire Amulet line resolves | carry on | fix the amulet check |
 
 ### Step 4: build queue after the test
@@ -401,14 +401,15 @@ Crafters and tooltips, Copy, the Overview's numbers and milestones.
 2. **Release v0.2.3** with the fixes (v0.2.2, released 2 Nov, is the launch
    build). When you have CurseForge or Wago accounts, releases can go there
    too (P5); I prepare it, you do the upload.
-3. **v0.3.0 Raids, read-only** (target: before raids open on 9 Dec): raid
+3. **v0.3 Professions** (moved first on 5 Nov: the guild says professions
+   matter most). Plan: "v0.3 Professions plan" below. Prompt:
+   `docs/prompts/next-v0.3-professions.md`.
+4. **v0.4.0 Raids, read-only** (target: before raids open on 9 Dec): raid
    events from the calendar, who signed up with role, spec, item level and
    attunement, role counts, readiness card, Copy. Prompt:
-   `docs/prompts/next-v0.3-raids.md`.
-4. **v0.3.1 Raids actions:** Sign up / Tentative / Decline buttons, a
+   `docs/prompts/next-v0.4-raids.md`.
+5. **v0.4.1 Raids actions:** Sign up / Tentative / Decline buttons, a
    reminder before raids, and "invite everyone signed up" for the raid leader.
-5. **v0.4 Professions** (December): cooldown board, specialisations,
-   reagents, favourites; camp planner if step 5 confirms the data.
 6. **v0.5 Coordination** (January): craft requests, a short status line,
    lockout board.
 
@@ -421,3 +422,45 @@ Crafters and tooltips, Copy, the Overview's numbers and milestones.
   after a dungeon (it isn't in the 1.60.1 docs): decides the lockout board (P15).
 - **Horde members**: if there are any, their Onyxia chain is different.
 - What players ask for in the first two weeks. Real requests beat any plan.
+
+## 11. v0.3 Professions plan (draft 5 Nov 2026, **waiting for the owner's OK**)
+
+Nothing below gets built until (a) the owner sends a `/sk debug` from
+**v0.2.7** with a profession window open and closed, and (b) the owner
+picks the guild's top 3 and says OK.
+
+### Step 1 facts (v0.2.7 probes; answers go into CLAUDE.md)
+| Question | Probe line in `/sk debug` | If yes | If no |
+|---|---|---|---|
+| Window lists unlearned recipes? | "Last scan: … (unlearned listed: YES)" + the "show unlearned" filter | add the *Nobody knows* filter | drop it; keep single-crafter counts |
+| Reagents readable with the window **closed**, and for unknown recipes? | "Reagents, a recipe you know / don't know" | read locally, cache in SavedVariables, never synced | readable only while open: cache what each player's own scan sees, still local; propose sync design only if even that fails |
+| Specialisation spells known? | "Specialisations" (known=, client name=) | IDs become `status = "ok"`; `spec` field per profession | keep `todo`, no spec column |
+| Blueprints / camp objects in the window? | "Recipe categories" (names + examples) | camp planner (P6) becomes possible later | stays parked |
+
+Verified in Forever's API source (5 Nov): `C_TradeSkillUI.GetRecipeSchematic`
+(recipeSpellID, isRecraft) → `reagentSlotSchematics[].reagents[].itemID` and
+`quantityRequired`; `GetShowLearned`/`GetShowUnlearned`;
+`C_SpellBook.IsSpellKnown`. `GetCategoryInfo` is not in the generated docs
+but Forever's own `Blizzard_Professions.lua` calls it, so it is probed, not
+assumed. Specialisation spell IDs agree on wowhead.com/classic and
+classicdb.ch (two sources); the game still has to confirm them.
+
+### Proposed default order (owner to confirm the guild's top 3)
+1. **Guild coverage board + one-profession view** (crafters with skill and
+   "recorded 3d ago", recipe list with crafter counts, filters). Builds on
+   data everyone already sends; biggest everyday use.
+2. **Reagents** in the Crafters side panel and profession view (local, plus
+   "you have 3 / need 5" from your bags).
+3. **Cooldown board** (who can transmute / make cloth now). `cds` already syncs.
+4. Favourites (stars, local only).
+5. Specialisations (only once the probe confirms the IDs).
+6. Freshness nudges ("Tailoring went from 240 to 262, open the window").
+
+### What goes in v0.3.0 vs later
+- **v0.3.0:** the owner's top 3 from the list above, plus favourites and
+  freshness nudges if they are small once the tab exists. No new message
+  types; guildmates on v0.2.5+ keep working. A new `spec` profile field only
+  if specialisations are in (with a `Merge.FIELDS` check).
+- **v0.3.1 (only if asked):** craft requests (D1, a new message type).
+- **Later:** shopping list (D6), camp planner (P6) if the categories show
+  camp objects, "where to get it" (D4) only with a verified data source.

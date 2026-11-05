@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.2.7 (unreleased): profession checks
+
+Nothing changes in how the addon works. `/sk debug` gets a new block,
+**"Profession checks for v0.3"**, that records what the game shows before
+the Professions tab is built:
+
+- whether the profession window lists recipes you haven't learned (and
+  whether its "show unlearned" filter is on);
+- the window's recipe categories by name, with a few examples each (to see
+  how Forever's Blueprints and camp objects appear);
+- the reagents the game reports for a recipe you know and one you don't,
+  with the window open and closed;
+- whether you know each original-game specialisation (Gnomish/Goblin,
+  Dragonscale/Elemental/Tribal, Armorsmith/Weaponsmith and the master
+  smiths), and the game's own name for each spell ID.
+
 ## v0.2.6 (5 Nov 2026): hotfix
 
 - **False "send errors" fixed.** v0.2.5 counted every *successful* send as an

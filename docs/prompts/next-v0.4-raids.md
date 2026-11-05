@@ -1,7 +1,7 @@
-# Prompt: Short Kings v0.3 (Raids, on Blizzard's guild calendar)
+# Prompt: Short Kings v0.4 (Raids, on Blizzard's guild calendar)
 
 Copy everything below the line into a new Claude Code chat on the
-`forever-shortkings` repo. **Start only after the first in-game test round**
+`forever-shortkings` repo. **Start after v0.3 Professions ships** and the first in-game test round
 (TESTING.md and a `/sk debug` report), because this builds on sync, the
 roster and attunements working for real.
 
@@ -36,7 +36,7 @@ ship first. Commit as you go.
   `CalendarConstantsDocumentation.lua`, `PartyInfoDocumentation.lua`,
   `Blizzard_Calendar/Mainline` + `Camelot`), and are added to `Compat.PROBES`.
 
-## Release v0.3.0: Raids tab (read-only)
+## Release v0.4.0: Raids tab (read-only)
 
 ### 1. Event list
 - New tab **Raids**, after Crafters.
@@ -92,16 +92,16 @@ ship first. Commit as you go.
 - Bump `Profile.VERSION` only if old clients would reject the new field
   (they shouldn't: `Merge.Validate` ignores unknown fields; confirm with a test).
 
-Tests for v0.3.0: event filtering and raid matching; reading invites
+Tests for v0.4.0: event filtering and raid matching; reading invites
 (stub `C_Calendar` and its events in `tests/helpers/wow.lua`); role defaults
 and counts; line-up rows for members with and without data; never calling
 `OpenEvent` while Blizzard's calendar is shown; secret values ignored.
 
-Then update `CHANGELOG.md` (v0.3.0), `TESTING.md`, the README "What's inside"
+Then update `CHANGELOG.md` (v0.4.0), `TESTING.md`, the README "What's inside"
 (list everything), the FAQ ("How do I sign up?"), and mockups (a Raids scene,
 `docs/images/raids.webp`). Commit.
 
-## Release v0.3.1: actions and reminders
+## Release v0.4.1: actions and reminders
 
 ### 4. Sign up from our tab
 - Buttons: **Sign up / Tentative / Decline** for the selected event.
@@ -130,11 +130,11 @@ Then update `CHANGELOG.md` (v0.3.0), `TESTING.md`, the README "What's inside"
   next person on each click and show "Invite next (12 left)". Check in game
   and design for both.
 
-Tests for v0.3.1: reminder timing and settings; invite list (online,
+Tests for v0.4.1: reminder timing and settings; invite list (online,
 signed up, not in group); one-invite-per-click fallback; sign-up buttons call
 the right API for each event kind.
 
-Then CHANGELOG (v0.3.1), TESTING, README, PLAN (mark C1–C5 done or note what
+Then CHANGELOG (v0.4.1), TESTING, README, PLAN (mark C1–C5 done or note what
 changed), CLAUDE.md status. Commit and push.
 
 ## Out of scope

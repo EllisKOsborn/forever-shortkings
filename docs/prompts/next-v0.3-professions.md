@@ -22,7 +22,7 @@ branch `claude/short-kings-addon-hlf0t4` into your branch first and tell me.
 The game is live. My guild says **professions are the most important part**
 of the addon, so Professions moves ahead of Raids: **Professions = v0.3**,
 **Raids = v0.4** (still before raids open on 9 Dec). Update PLAN.md,
-CLAUDE.md and `docs/prompts/next-v0.3-raids.md` (rename it to `next-v0.4-raids.md`)
+CLAUDE.md and `docs/prompts/next-v0.4-raids.md` (rename it to `next-v0.4-raids.md`)
 to match.
 
 ## What already exists (build on it, don't duplicate it)

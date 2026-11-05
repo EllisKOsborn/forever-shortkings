@@ -124,7 +124,7 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 - **Automatic collection** on every character you play: gear, item level, talents, reputations, professions, recipes (when you open the profession window), cooldowns, attunements and your other characters.
 - **"Crafted by" on item tooltips:** hover any item to see "Short Kings: Bramble (online), Dabble +2 more". Online crafters first, at most three names.
 - **Chat reminders** for profession windows still to open, a newer Short Kings, and trial accounts that can't share.
-- **`/sk debug`** opens a copyable report of what the addon can see, starting with the live-client checks and ending with the last Lua errors it caught. **Send it when something looks wrong.**
+- **`/sk debug`** opens a copyable report of what the addon can see, starting with the live-client checks and the profession checks for v0.3 (unlearned recipes, recipe categories, reagents, specialisations), and ending with the last Lua errors it caught. **Send it when something looks wrong.**
 
 ### 🔒 Under the hood
 - **Your own data always wins.** A copy relayed by someone else never overwrites a newer copy from the character themselves.
@@ -306,10 +306,10 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.4**: new tagline, *Height is not a stat.*
 - [x] **v0.2.5**: first in-game test (5 Nov): sync switched back on, enchant check at level 60, security fixes
 - [x] **v0.2.6**: hotfix, no more false "send errors"
+- [ ] **v0.2.7**: `/sk debug` profession checks (what the game shows, before v0.3 is built)
 - [ ] **v0.3 Professions**: guild coverage, crafters and recipes per profession, cooldown board, reagents, favourites
 - [ ] **In-game test round** with guildmates (TESTING.md), then fixes
-- [ ] **v0.3**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
-- [ ] **v0.4**: **Professions** tab (cooldown board, specialisations, reagents, favourites)
+- [ ] **v0.4**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
 - [ ] **v0.5**: craft requests, a short status line, lockout board
 - [ ] **Later**: raid attendance, shopping lists, guild bank viewer and more in the [plan](PLAN.md#later-in-rough-priority-order)
 - [ ] CurseForge release

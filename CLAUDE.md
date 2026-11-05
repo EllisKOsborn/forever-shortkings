@@ -69,6 +69,17 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   - Professions use `C_TradeSkillUI`; the Classic `GetTradeSkillInfo` and
     `GetCraftInfo` are gone.
   - Talents are `C_Traits` trees.
+  - Profession APIs (source checked 5 Nov, not yet in game):
+    `C_TradeSkillUI.GetRecipeSchematic(recipeSpellID, isRecraft)` →
+    `reagentSlotSchematics[i].reagents[j].itemID|currencyID`,
+    `.quantityRequired`, `.required`; `GetShowLearned`/`GetShowUnlearned`;
+    `GetRecipeInfo` has `categoryID`. `GetCategoryInfo`/`GetCategories`,
+    `GetAllRecipeIDs`, `GetFilteredRecipeIDs` are **not** in the generated
+    docs (Blizzard's Forever UI calls `GetCategoryInfo`), so probe them.
+    Known spells: `C_SpellBook.IsSpellKnown(spellID)` (global
+    `IsPlayerSpell` not in the docs). Specialisation spell IDs
+    (`Data/Professions.lua` `SPECIALISATIONS`) match on wowhead classic and
+    classicdb.ch but stay `status = "todo"` until the in-game probe.
   - The guild roster is `C_Club` plus legacy `GetGuildRosterInfo`.
   - `C_Calendar` exists, but `AddEvent` is restricted.
   - `SendChatMessage` is **restricted** (only send on a button press, or
@@ -210,10 +221,15 @@ messages → sender ignored for the session).
 - **Next (5 Nov):** **v0.3 Professions**: `docs/prompts/next-v0.3-professions.md`
   (the guild says professions matter most; Raids moves to v0.4, still before
   9 Dec). v0.2.6 hotfix is on `main` (5 Nov); the owner publishes the release.
+  **Step 1 in progress (5 Nov):** v0.2.7 probes built on
+  `claude/affectionate-archimedes-tirbrl` (`/sk debug` block "Profession
+  checks for v0.3", `Commands.ProfessionProbes`). Plan draft in **PLAN.md
+  section 11**, waiting for: the owner's v0.2.7 `/sk debug` (window open and
+  closed), the guild's top 3 features, and an OK. Don't build v0.3 before that.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
-  fixes only (now **v0.2.5**: v0.2.3 = new look, v0.2.4 = tagline), and **v0.3 Raids** before 9 Dec
-  (`docs/prompts/next-v0.3-raids.md`). Professions tab is v0.4.
+  fixes only (now **v0.2.5**: v0.2.3 = new look, v0.2.4 = tagline). Raids is now
+  **v0.4** before 9 Dec (`docs/prompts/next-v0.4-raids.md`); Professions is v0.3.
 - Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
   `AddEvent` is `HasRestrictions`; `GetDayEvent`/`EventGetInvite` are secret
   during chat lockdown; `C_PartyInfo.InviteUnit` and `ConvertToRaid` exist.
