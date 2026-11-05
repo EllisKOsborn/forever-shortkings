@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.5 (not released yet): launch-day fixes and security fixes
+## v0.2.5 (5 Nov 2026): launch-day fixes and security fixes
 
 **Launch-day fixes** from the first in-game test (5 Nov 2026, build 70790):
 

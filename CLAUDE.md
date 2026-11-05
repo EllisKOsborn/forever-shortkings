@@ -115,7 +115,9 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   (BigWigs packager): it builds `ShortKings-vX.Y.Z.zip` and a GitHub Release
   whose notes come from CHANGELOG.md (`.pkgmeta` manual-changelog). First
   release: **v0.2.2** (2 Nov 2026, the launch build); **v0.2.3** (3 Nov, the new
-  look); **v0.2.4** (3 Nov, tagline "Height is not a stat."). Tag only when
+  look); **v0.2.4** (3 Nov, tagline "Height is not a stat."); **v0.2.5** (5 Nov,
+  launch-day fixes: sync no longer blocked by the misleading flag, enchant
+  check at max level, plus the security fixes). Tag only when
   the user asks.
 
 ## Layout
@@ -184,10 +186,12 @@ messages → sender ignored for the session).
 - Mockups: Playwright and Chromium are preinstalled. The stand-in font is
   Marcellus from fonts.gstatic.com (don't commit the font).
 
-## Status (2 Nov 2026)
-- v0.1 to v0.2.4 are code complete, **not tested in game**. See CHANGELOG.md.
-  v0.2.5 (unreleased, on the session branch) starts with the security
-  fixes from `docs/SECURITY-REVIEW.md`; test-round fixes join it.
+## Status (5 Nov 2026)
+- **v0.2.5 released 5 Nov**: the first build after an in-game test (owner,
+  solo: loads, GUID stable, interface 16001, a test send worked). It
+  includes the security fixes from `docs/SECURITY-REVIEW.md`. Sync between
+  two players has **not** been tested yet (v0.2.2–v0.2.4 never sent
+  anything because of the flag bug).
   v0.2.2 = the Overview dashboard (owner asked for it before the test gate).
   (`docs/prompts/next-v0.1.2-v0.2.md` is done; v0.2.1 = launch readiness
   from `docs/PLAN-REVIEW.md`.)
