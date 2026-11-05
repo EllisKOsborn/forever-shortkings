@@ -47,6 +47,32 @@ describe("Sending is not blocked by Blizzard's 'restricted' flag", function()
 		assert.is_table(item)
 	end)
 
+	it("treats AceComm's 'true' (sent) as success, not an error (v0.2.5 bug)", function()
+		SK.Sync.transport = function(_, _, _, _, cb, it) cb(it, 10, 10, true) end
+		for _ = 1, 6 do
+			SK.Sync:Enqueue(nil, "GUILD", nil, "NORMAL", { t = "HI", c = {} })
+			SK.Sync:Flush()
+		end
+		assert.equal(0, SK.Sync.stats.sendErrors or 0)
+		for _, line in ipairs(W.prints) do
+			assert.is_nil(line:find("is failing", 1, true))
+		end
+	end)
+
+	it("counts 'false' (not sent) as a failure, or retries it during chat lockdown", function()
+		SK.Sync.transport = function(_, _, _, _, cb, it) cb(it, 10, 10, false) end
+		SK.Sync:SendHello()
+		SK.Sync:Flush()
+		assert.equal(1, SK.Sync.stats.sendErrors)
+		assert.equal("not sent", SK.Sync.lastSendError)
+		W.lockdown = true
+		assert.equal("lockdown", (SK.Sync.SendOutcome(false)))
+		W.lockdown = false
+		assert.equal("ok", (SK.Sync.SendOutcome(true)))
+		assert.equal("ok", (SK.Sync.SendOutcome(nil)))
+		assert.equal("throttle", (SK.Sync.SendOutcome(3)))
+	end)
+
 	it("a success resets the failure streak", function()
 		SK.Sync.failStreak = 3
 		SK.Sync.transport = function(_, _, _, _, cb, it) cb(it, 0, 0, 0) end

@@ -27,7 +27,11 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   - `SendAddonMessage(..., "GUILD")` returns **0 (Success)** and arrives,
     even though `C_ChatInfo.AreOutgoingAddonChatMessagesRestricted()` returns
     **true**. That flag only gates Blizzard's esports CooldownBroadcaster.
-    **Never use it to block sending**: trust the send result code (v0.2.5).
+    **Never use it to block sending**: trust the send result (v0.2.5).
+  - Our AceComm callback gets **`true`/`false`** ("did it send"), not
+    Blizzard's numeric `SendAddonMessageResult`: ChatThrottleLib passes
+    `(arg, didSend, code)` and AceComm forwards only `didSend`.
+    `Sync.SendOutcome` handles both (v0.2.6 fix: v0.2.5 counted `true` as an error).
   - Addon-message sender = **"First Surname"** with a space, exactly like the
     roster name. `UnitFullName("player")` returns the surname as the *realm*
     (`"Pocus", "Hocus"`). `GetGuildInfo`'s realm is an internal name

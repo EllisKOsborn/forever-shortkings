@@ -101,19 +101,37 @@ local SUCCESS = Enum and Enum.SendAddonMessageResult and Enum.SendAddonMessageRe
 local THROTTLE = Enum and Enum.SendAddonMessageResult and Enum.SendAddonMessageResult.AddonMessageThrottle or 3
 Sync.SEND_FAIL_WARN = 5 -- tell the player after this many failures in a row
 
+-- What happened to one sent chunk. AceComm calls us with
+-- (item, sentBytes, totalBytes, didSend): ChatThrottleLib passes AceComm
+-- "didSend" (true/false) and AceComm drops Blizzard's numeric result code.
+-- Numbers are handled too, in case a library version passes the code.
+--   "ok" | "lockdown" | "throttle" | "failed", plus a reason for /sk debug
+function Sync.SendOutcome(result)
+	if result == true or result == SUCCESS then return "ok" end
+	if result == nil then return "ok" end -- older libraries: no information
+	if result == LOCKDOWN then return "lockdown" end
+	if result == THROTTLE then return "throttle" end
+	if result == false then
+		-- No reason given; chat lockdown is by far the likeliest cause.
+		if Compat.InChatLockdown() then return "lockdown" end
+		return "failed", "not sent"
+	end
+	return "failed", SK.Compat.SendResultName(result)
+end
+
 local function onChunkSent(item, _, _, result)
-	-- The send's own result code is the truth (see Compat.CanSendAddonMessages).
-	if result ~= nil and result ~= SUCCESS and result ~= THROTTLE and result ~= LOCKDOWN then
+	local outcome, reason = Sync.SendOutcome(result)
+	if outcome == "ok" then
+		Sync.failStreak = 0
+	elseif outcome == "failed" then
 		Sync.stats.sendErrors = (Sync.stats.sendErrors or 0) + 1
-		Sync.lastSendError = SK.Compat.SendResultName(result)
+		Sync.lastSendError = reason
 		Sync.failStreak = (Sync.failStreak or 0) + 1
 		if Sync.failStreak == Sync.SEND_FAIL_WARN then
-			SK:Print("Sending to guildmates is failing (%s). Please send the /sk debug text.", Sync.lastSendError)
+			SK:Print("Sending to guildmates is failing (%s). Please send the /sk debug text.", reason)
 		end
-	elseif result == SUCCESS then
-		Sync.failStreak = 0
 	end
-	if result == LOCKDOWN and not item.requeued then
+	if outcome == "lockdown" and not item.requeued then
 		item.requeued = true
 		item.tries = item.tries + 1
 		if item.tries < Sync.MAX_TRIES then

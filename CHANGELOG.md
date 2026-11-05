@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.6 (not released yet): hotfix
+
+- **False "send errors" fixed.** v0.2.5 counted every *successful* send as an
+  error (the message libraries report "sent: true", not Blizzard's result
+  number), so after 5 sends it would have shown "Sending to guildmates is
+  failing". Messages were going out fine; only the counting was wrong.
+  Seen in the owner's `/sk debug` ("Send errors: 3, last: true").
+
 ## v0.2.5 (5 Nov 2026): launch-day fixes and security fixes
 
 **Launch-day fixes** from the first in-game test (5 Nov 2026, build 70790):
