@@ -205,7 +205,10 @@ messages → sender ignored for the session).
   `docs/PERPLEXITY-PLAN.md`) were reviewed on 2 Nov: verdicts in
   `docs/PLAN-REVIEW.md`, agreed order in **PLAN.md section 7** (the single
   roadmap). Don't build from the proposal files directly.
-- **Next:** PLAN.md **section 10, "Once Forever is live"**: the in-game test
+- **Next (5 Nov):** **v0.3 Professions**: `docs/prompts/next-v0.3-professions.md`
+  (the guild says professions matter most; Raids moves to v0.4, still before
+  9 Dec). Releasing the v0.2.6 hotfix (commit c9385b3) waits on the owner's OK.
+- Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
   fixes only (now **v0.2.5**: v0.2.3 = new look, v0.2.4 = tagline), and **v0.3 Raids** before 9 Dec
   (`docs/prompts/next-v0.3-raids.md`). Professions tab is v0.4.

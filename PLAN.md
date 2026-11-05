@@ -296,11 +296,16 @@ section is the single source of truth for order and status.
   (single-crafter) and Recent milestones (P7, local only, never synced).
 - **Test gate** (4–7 Nov): owner runs TESTING.md; **v0.2.3** = fixes only,
   plus an API contract check in CI (P17).
-- **v0.3 Raids** (before 9 Dec): `docs/prompts/next-v0.3-raids.md`, plus a
+- **Reordered 5 Nov (owner): the guild says professions matter most.**
+  **v0.3 Professions** comes first (`docs/prompts/next-v0.3-professions.md`):
+  coverage board, one-profession view, specialisations (original-game ones
+  only), cooldown board, reagents, favourites, freshness nudges. Craft
+  requests (D1) are an optional v0.3.1.
+- **v0.4 Raids** (still before 9 Dec): `docs/prompts/next-v0.3-raids.md` (to be renamed v0.4), plus a
   readiness card (P11) and a duplicate-alt sign-up check. Addon-native events
   (P13) only if the calendar turns out to be unusable.
-- **v0.4 Professions** (Dec): cooldown board (B4), specialisations (B3),
-  reagents (B2), favourites (B6); camp planner (P6) once its data is verified.
+- ~~v0.4 Professions~~: moved to v0.3 (see above); camp planner (P6) still
+  waits for verified data.
 - **v0.5 Coordination** (Jan): craft requests (D1), status line (P8),
   lockout board (P15).
 - **v0.6 Polish:** ember animation, long spec names, two-column Character tab.
