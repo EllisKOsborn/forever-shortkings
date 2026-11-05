@@ -18,10 +18,28 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   far is tested only against a stubbed WoW API.
 
 ## Platform facts (verified, keep using the same sources)
-- Forever client **1.60.1, build 70532**, Mainline (12.x) UI with Midnight
-  "secret value" restrictions. TOC game type `camelot` (alias `forever`).
-- TOC **`## Interface: 16001`** (beta value, still to be confirmed in game).
+- Forever client **1.60.1** (live build **70790** at launch; the API source
+  matches it), Mainline (12.x) UI with Midnight "secret value"
+  restrictions. TOC game type `camelot` (alias `forever`).
+- TOC **`## Interface: 16001`**: **confirmed in game** on 5 Nov 2026.
   Single TOC with no suffix. The BigWigs packager detects it as Forever.
+- **Confirmed in game on 5 Nov 2026** (owner's first `/sk debug`):
+  - `SendAddonMessage(..., "GUILD")` returns **0 (Success)** and arrives,
+    even though `C_ChatInfo.AreOutgoingAddonChatMessagesRestricted()` returns
+    **true**. That flag only gates Blizzard's esports CooldownBroadcaster.
+    **Never use it to block sending**: trust the send result code (v0.2.5).
+  - Addon-message sender = **"First Surname"** with a space, exactly like the
+    roster name. `UnitFullName("player")` returns the surname as the *realm*
+    (`"Pocus", "Hocus"`). `GetGuildInfo`'s realm is an internal name
+    (`CAMWOWEU5Realm3PvE`).
+  - Player GUIDs (`Player-6937-…`) stay the same between logins.
+  - The real release zip is `ShortKings-vX.Y.Z-forever.zip`. The owner first
+    installed GitHub's "Source code (zip)" by mistake (version "dev",
+    LibDataBroker and LibDBIcon missing).
+  - `C_QuestLog.GetTitleForQuestID` returns nil for uncached quests (it isn't
+    proof that a quest is missing). Item 16309 (Drakefire Amulet) resolves.
+  - The guild is called **"Sweaty Pumpers"** for now (the name "Short Kings"
+    was taken). The final name is undecided; data is keyed per guild name.
 - **Source of truth for APIs:** Blizzard's UI source, `forever` branch of
   Gethe/wow-ui-source. Sparse-clone it and grep
   `Interface/AddOns/Blizzard_APIDocumentationGenerated/` plus the
@@ -229,10 +247,13 @@ messages → sender ignored for the session).
 
 ## Waiting on the user (remind them when relevant)
 Full post-launch checklist: PLAN.md section 10.
-1. Confirm the Mac AddOns folder (Battle.net → Forever → ⚙ → Show in Finder).
-   Expected: `/Applications/World of Warcraft/_forever_/Interface/AddOns`.
-2. In game, run `/dump select(4, GetBuildInfo())` (expect 16001).
-3. Install a test build, send the `/sk debug` text, and work through `TESTING.md`.
+Done on 5 Nov: interface 16001 confirmed, the addon loads, GUID stable,
+a test send worked. The Mac AddOns path is still not confirmed by name
+(the owner installed successfully).
+1. Install the **v0.2.5** release (the real `-forever.zip`), send `/sk debug`,
+   and work through `TESTING.md` (on their own, then with one guildmate).
+2. The final guild name (if it changes from "Sweaty Pumpers", data starts
+   fresh under the new name, which is expected).
 4. Onyxia attunement: whether any Horde members exist (Horde chain differs), and
    in-game check that the Drakefire Amulet check works.
 

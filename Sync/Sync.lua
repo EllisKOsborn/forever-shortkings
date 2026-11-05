@@ -97,7 +97,22 @@ function Sync:Enqueue(key, dist, target, prio, msg)
 	return item
 end
 
+local SUCCESS = Enum and Enum.SendAddonMessageResult and Enum.SendAddonMessageResult.Success or 0
+local THROTTLE = Enum and Enum.SendAddonMessageResult and Enum.SendAddonMessageResult.AddonMessageThrottle or 3
+Sync.SEND_FAIL_WARN = 5 -- tell the player after this many failures in a row
+
 local function onChunkSent(item, _, _, result)
+	-- The send's own result code is the truth (see Compat.CanSendAddonMessages).
+	if result ~= nil and result ~= SUCCESS and result ~= THROTTLE and result ~= LOCKDOWN then
+		Sync.stats.sendErrors = (Sync.stats.sendErrors or 0) + 1
+		Sync.lastSendError = SK.Compat.SendResultName(result)
+		Sync.failStreak = (Sync.failStreak or 0) + 1
+		if Sync.failStreak == Sync.SEND_FAIL_WARN then
+			SK:Print("Sending to guildmates is failing (%s). Please send the /sk debug text.", Sync.lastSendError)
+		end
+	elseif result == SUCCESS then
+		Sync.failStreak = 0
+	end
 	if result == LOCKDOWN and not item.requeued then
 		item.requeued = true
 		item.tries = item.tries + 1

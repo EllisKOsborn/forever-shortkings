@@ -41,8 +41,11 @@ function Ench.Enchantable(slot, link, class)
 end
 
 -- Sorted list of slot IDs that hold an item which should be enchanted but isn't.
-function Ench.Missing(gear, class)
+-- Only characters at max level are checked: levelling gear isn't worth
+-- enchanting, so flagging it is noise. `level` nil = unknown, still checked.
+function Ench.Missing(gear, class, level)
 	local out = {}
+	if level and level < SK.Compat.MaxPlayerLevel() then return out end
 	for slot, link in pairs(gear or {}) do
 		if Ench.Enchantable(slot, link, class) and SK.Compat.EnchantFromLink(link) == 0 then
 			out[#out + 1] = slot

@@ -62,7 +62,7 @@ local function makeRow(guild, guid, m, now, newest)
 		status = Roster.Status(m, isSelf, now), addon = version, isSelf = isSelf,
 		outdated = version and newest and version ~= "dev" and SK.Sync.versionNewer(newest, version) or false,
 		note = m.note, officerNote = m.officerNote,
-		missingEnchants = p and p.gear and #SK.Data.Enchants.Missing(p.gear, p.class) or nil,
+		missingEnchants = p and p.gear and #SK.Data.Enchants.Missing(p.gear, p.class, p.level) or nil,
 		hidden = p and p.hidden,
 	}
 end

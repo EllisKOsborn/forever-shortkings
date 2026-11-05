@@ -418,7 +418,7 @@ function Char:Refresh()
 
 	local hidden = p.hidden or {}
 	local missing = {}
-	for _, slot in ipairs(SK.Data.Enchants.Missing(p.gear, p.class)) do missing[slot] = true end
+	for _, slot in ipairs(SK.Data.Enchants.Missing(p.gear, p.class, p.level)) do missing[slot] = true end
 	for slot, b in pairs(self.slots) do b:SetItem(p.gear and p.gear[slot], missing[slot]) end
 	if hidden.gear then
 		self.ilvl:SetText("")

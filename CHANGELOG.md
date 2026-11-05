@@ -1,10 +1,24 @@
 # Changelog
 
-## v0.2.5 (not released yet): security fixes
+## v0.2.5 (not released yet): launch-day fixes and security fixes
 
-From a security review (`docs/SECURITY-REVIEW.md`). Works alongside
-guildmates on v0.2.2 to v0.2.4: the protocol is unchanged, this version is
-just stricter about what it accepts. **Not run in game yet.**
+**Launch-day fixes** from the first in-game test (5 Nov 2026, build 70790):
+
+- **Sync was switched off by mistake.** Blizzard's "addon chat restricted"
+  check says *restricted* on normal Forever realms (Blizzard only uses it for
+  an esports tool), so v0.2.2–v0.2.4 never sent anything. A real test send to
+  the guild worked, so Short Kings now only blocks trial accounts and trusts
+  each send's own result instead. If sends keep failing, it says so once in
+  chat, and `/sk debug` shows the error.
+- **Missing-enchant warnings only at max level (60).** Levelling gear is no
+  longer flagged.
+- Confirmed in game: interface 16001, your character's ID stays the same
+  between logins, and addon messages name the sender "First Surname" (the
+  same as the guild roster).
+
+**Security fixes** from a security review (`docs/SECURITY-REVIEW.md`). Works
+alongside guildmates on v0.2.2 to v0.2.4: the protocol is unchanged, this
+version is just stricter about what it accepts.
 
 - **One bad profile can no longer break the addon for the guild.** Every
   field of an incoming profile is checked (types, sizes, counts); anything

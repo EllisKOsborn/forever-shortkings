@@ -53,13 +53,45 @@ function Compat.IsTrial()
 	return false
 end
 
+-- Only trial accounts are blocked up front. Blizzard's
+-- C_ChatInfo.AreOutgoingAddonChatMessagesRestricted() says "restricted" on
+-- normal Forever realms (Blizzard uses it only to gate an esports tool on
+-- tournament realms), yet SendAddonMessage to GUILD returned Success and the
+-- message arrived (tested in game on 5 Nov 2026, build 70790). So the send's
+-- own result code decides; see Sync's onChunkSent.
 function Compat.CanSendAddonMessages()
 	if Compat.IsTrial() then return false, "trial" end
-	if has("C_ChatInfo", "AreOutgoingAddonChatMessagesRestricted")
-		and C_ChatInfo.AreOutgoingAddonChatMessagesRestricted() then
-		return false, "restricted"
-	end
 	return true
+end
+
+-- Blizzard's flag, for /sk debug only (never used to block sending).
+function Compat.AddonChatFlag()
+	if has("C_ChatInfo", "AreOutgoingAddonChatMessagesRestricted") then
+		local ok, v = pcall(C_ChatInfo.AreOutgoingAddonChatMessagesRestricted)
+		if ok then return v and true or false end
+	end
+	return nil
+end
+
+-- Name of a SendAddonMessageResult code, e.g. 11 -> "AddOnMessageLockdown".
+function Compat.SendResultName(code)
+	local E = Enum and Enum.SendAddonMessageResult
+	if E then
+		for name, value in pairs(E) do
+			if value == code then return name end
+		end
+	end
+	return tostring(code)
+end
+
+-- Highest level a character can reach (60 on Forever; API checked in 1.60.1).
+function Compat.MaxPlayerLevel()
+	local fn = GetMaxLevelForPlayerExpansion or GetMaxPlayerLevel
+	if fn then
+		local ok, v = pcall(fn)
+		if ok and type(v) == "number" and v > 0 then return v end
+	end
+	return 60
 end
 
 function Compat.InCombat()

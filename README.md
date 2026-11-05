@@ -141,9 +141,14 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 
 ## 📦 Install
 
-1. Download **`ShortKings-x.y.z.zip`** from
+1. Download **`ShortKings-vX.Y.Z-forever.zip`** from
    [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases)
-   (under *Assets*).
+   (the first file under *Assets*).
+
+   > [!WARNING]
+   > **Not "Source code (zip)".** GitHub adds those links to every release.
+   > They unzip to a folder like `forever-shortkings-0.2.4` and are missing
+   > two libraries. Renaming that folder doesn't fix it.
 2. Unzip it. You get a folder called **`ShortKings`**.
 3. Move that folder into your Forever **AddOns** folder:
 

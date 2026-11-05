@@ -74,7 +74,9 @@ function Commands.BuildReport()
 		yesno(IsTrialAccount and IsTrialAccount()), yesno(IsVeteranTrialAccount and IsVeteranTrialAccount()),
 		yesno(GameLimitedMode_IsActive and GameLimitedMode_IsActive()))
 	local canSend, why = Compat.CanSendAddonMessages()
-	add("Can send addon messages: %s %s", yesno(canSend), why and ("(" .. why .. ")") or "")
+	add("Can send addon messages: %s %s   (Blizzard's 'restricted' flag: %s, ignored)", yesno(canSend),
+		why and ("(" .. why .. ")") or "", yesno(Compat.AddonChatFlag()))
+	add("Send errors: %d   last: %s", SK.Sync.stats.sendErrors or 0, tostring(SK.Sync.lastSendError))
 
 	add("")
 	add("== Guild ==")
@@ -129,7 +131,7 @@ function Commands.BuildReport()
 		add("Cooldowns: %d (%d tracked recipes)  Reputations: %d", SK.Count(own.cds),
 			SK.Count(SK.DB.cooldownSpells[own.guid]), SK.Count(own.reps))
 		add("Missing enchants: %d   Sharing: gear=%s recipes=%s   Main: %s",
-			#SK.Data.Enchants.Missing(own.gear, own.class), yesno(SK.DB.settings.share.gear),
+			#SK.Data.Enchants.Missing(own.gear, own.class, own.level), yesno(SK.DB.settings.share.gear),
 			yesno(SK.DB.settings.share.recipes), tostring(SK.DB.settings.main))
 		add("Family (alts on this account in the guild): %d", own.family and #own.family or 0)
 	else
