@@ -19,9 +19,11 @@ local scanning = false
 local retries = 0
 
 -- Process recipe IDs in chunks so a big profession never causes a hitch.
--- `done(result)` gets { learned = {[id]=itemID|0}, universe = {...}, cds = {[id]=seconds} }
+-- `done(result)` gets { learned = {[id]=itemID|0}, universe = {...}, cds = {[id]=seconds},
+-- cats = {[categoryID]={total, learned, names}} } (cats: /sk debug only, never stored or sent)
+Prof.CATEGORY_SAMPLES = 3
 function Prof.ProcessRecipes(ids, done, runNow)
-	local result = { learned = {}, universe = {}, cds = {} }
+	local result = { learned = {}, universe = {}, cds = {}, cats = {} }
 	local i = 1
 	local function step()
 		local last = math.min(i + Prof.CHUNK - 1, #ids)
@@ -31,6 +33,16 @@ function Prof.ProcessRecipes(ids, done, runNow)
 			if info then
 				local itemID = info.itemID or 0
 				result.universe[id] = itemID
+				local cat = result.cats[info.categoryID or 0]
+				if not cat then
+					cat = { total = 0, learned = 0, names = {} }
+					result.cats[info.categoryID or 0] = cat
+				end
+				cat.total = cat.total + 1
+				if info.learned then cat.learned = cat.learned + 1 end
+				if #cat.names < Prof.CATEGORY_SAMPLES and info.name then cat.names[#cat.names + 1] = info.name end
+				if info.learned then result.sampleLearned = result.sampleLearned or id
+				else result.sampleUnlearned = result.sampleUnlearned or id end
 				if info.learned then
 					result.learned[id] = itemID
 					local cd = Compat.RecipeCooldown(id)
@@ -123,7 +135,8 @@ function Prof:StoreScan(result)
 	local now = Compat.Now()
 	local nLearned = SK.Count(result.learned)
 	Prof.lastScan = { skillLine = result.skillLine, name = result.name, learned = nLearned,
-		total = SK.Count(result.universe), complete = result.complete, at = now }
+		total = SK.Count(result.universe), complete = result.complete, at = now,
+		cats = result.cats or {}, sampleLearned = result.sampleLearned, sampleUnlearned = result.sampleUnlearned }
 	SK:Debug("scanned %s: %d learned of %d (complete list: %s)", tostring(result.name),
 		nLearned, Prof.lastScan.total, tostring(result.complete))
 	local cds = {}
@@ -163,7 +176,8 @@ function Prof:OnLogin()
 	local function queue()
 		SK:Debounce("tradeskill", 1, function() Prof:Scan() end)
 	end
-	SK:RegisterEvent("TRADE_SKILL_SHOW", function() retries = 0; queue() end)
+	SK:RegisterEvent("TRADE_SKILL_SHOW", function() retries = 0; Prof.windowOpen = true; queue() end)
+	SK:RegisterEvent("TRADE_SKILL_CLOSE", function() Prof.windowOpen = false end)
 	SK:RegisterEvent("TRADE_SKILL_LIST_UPDATE", queue)
 	SK:RegisterEvent("TRADE_SKILL_DATA_SOURCE_CHANGED", queue)
 	SK:RegisterEvent("NEW_RECIPE_LEARNED", queue)

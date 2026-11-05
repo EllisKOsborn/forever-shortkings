@@ -31,7 +31,7 @@ read_globals = {
 	"FACTION_BAR_COLORS", "TooltipDataProcessor", "ItemRefTooltip", "unpack", "ColorPickerFrame", "SetPortraitTexture", "GetScreenWidth", "GetScreenHeight",
 	-- C_ namespaces
 	"C_Timer", "C_AddOns", "C_ChatInfo", "C_GuildInfo", "C_Club", "C_CreatureInfo", "C_Traits",
-	"C_SpecializationInfo", "C_ClassTalents", "C_TradeSkillUI", "C_SkillInfo", "C_Reputation",
+	"C_SpecializationInfo", "C_ClassTalents", "C_TradeSkillUI", "C_SpellBook", "C_SkillInfo", "C_Reputation",
 	"C_QuestLog", "C_Item", "C_Spell", "C_ClassColor", "C_Calendar", "C_PartyInfo", "Enum",
 	-- Global API
 	"GetAddOnMetadata", "GetServerTime", "GetTime", "GetBuildInfo", "IsTrialAccount",
@@ -42,7 +42,7 @@ read_globals = {
 	"GetInventoryItemLink", "GetAverageItemLevel", "GetActiveTalentGroup", "GetNumTalentTabs",
 	"GetTalentTabInfo", "GetNumTalents", "GetTalentInfo", "GetProfessions", "GetProfessionInfo",
 	"GetNumTradeSkills", "GetTradeSkillInfo", "GetTradeSkillLine", "GetTradeSkillRecipeLink",
-	"GetTradeSkillItemLink", "GetNumFactions", "GetFactionInfo", "IsQuestFlaggedCompleted",
+	"GetTradeSkillItemLink", "GetNumFactions", "GetFactionInfo", "IsQuestFlaggedCompleted", "IsPlayerSpell", "IsSpellKnown",
 	"GetItemIcon", "GetSpellInfo", "GetItemInfo", "GetItemQualityColor", "GetInventorySlotInfo",
 	"CanViewOfficerNote", "GetMaxLevelForPlayerExpansion", "GetMaxPlayerLevel", "GetItemInfoInstant", "GetSpellCooldown", "GetItemCount", "GetLocale",
 }

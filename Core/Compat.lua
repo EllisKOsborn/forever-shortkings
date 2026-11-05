@@ -405,7 +405,74 @@ function Compat.RecipeInfo(recipeID)
 		local ok, out = pcall(C_TradeSkillUI.GetRecipeOutputItemData, recipeID)
 		if ok and out then itemID = out.itemID end
 	end
-	return { learned = info.learned and true or false, name = info.name, itemID = itemID }
+	return { learned = info.learned and true or false, name = info.name, itemID = itemID,
+		categoryID = info.categoryID }
+end
+
+-- C_TradeSkillUI.GetShowLearned / GetShowUnlearned (the window's filter
+-- checkboxes; in Forever's TradeSkillUIDocumentation). nil = unknown.
+function Compat.RecipeFilters()
+	local learned, unlearned
+	if has("C_TradeSkillUI", "GetShowLearned") then
+		local ok, v = pcall(C_TradeSkillUI.GetShowLearned)
+		if ok then learned = v and true or false end
+	end
+	if has("C_TradeSkillUI", "GetShowUnlearned") then
+		local ok, v = pcall(C_TradeSkillUI.GetShowUnlearned)
+		if ok then unlearned = v and true or false end
+	end
+	return learned, unlearned
+end
+
+-- Category name and parent for a recipe's categoryID. GetCategoryInfo is
+-- not in the generated docs, but Forever's own Blizzard_Professions.lua
+-- calls it (categoryInfo.name, .parentCategoryID), so we probe for it.
+function Compat.CategoryInfo(categoryID)
+	if not categoryID or not has("C_TradeSkillUI", "GetCategoryInfo") then return nil end
+	local ok, info = pcall(C_TradeSkillUI.GetCategoryInfo, categoryID)
+	if not ok or type(info) ~= "table" then return nil end
+	return clean(info.name), clean(info.parentCategoryID)
+end
+
+-- Reagents for a recipe: C_TradeSkillUI.GetRecipeSchematic(recipeSpellID,
+-- isRecraft[, recipeLevel]) -> CraftingRecipeSchematic (Forever's
+-- TradeSkillUIDocumentation / TradeSkillUITypesDocumentation).
+-- Returns { output = itemID, min, max, reagents = { {itemID, currencyID, qty, required} } }
+-- or nil plus a reason.
+function Compat.RecipeSchematic(recipeID)
+	if not has("C_TradeSkillUI", "GetRecipeSchematic") then return nil, "no GetRecipeSchematic" end
+	local ok, s = pcall(C_TradeSkillUI.GetRecipeSchematic, recipeID, false)
+	if not ok then return nil, "error: " .. tostring(s) end
+	if type(s) ~= "table" then return nil, "nothing returned" end
+	local out = { output = clean(s.outputItemID), min = clean(s.quantityMin), max = clean(s.quantityMax),
+		name = clean(s.name), reagents = {} }
+	for _, slot in ipairs(s.reagentSlotSchematics or {}) do
+		local first = slot.reagents and slot.reagents[1]
+		out.reagents[#out.reagents + 1] = {
+			itemID = first and clean(first.itemID), currencyID = first and clean(first.currencyID),
+			qty = clean(slot.quantityRequired), required = slot.required and true or false,
+		}
+	end
+	return out
+end
+
+-- Does the player know this spell? C_SpellBook.IsSpellKnown(spellID[, bank])
+-- is in Forever's SpellBookDocumentation (bank defaults to Player). The
+-- globals are older fallbacks. Returns known (nil = can't tell), source.
+function Compat.IsSpellKnown(spellID)
+	if has("C_SpellBook", "IsSpellKnown") then
+		local ok, v = pcall(C_SpellBook.IsSpellKnown, spellID)
+		if ok then return v and true or false, "C_SpellBook.IsSpellKnown" end
+	end
+	if has("IsPlayerSpell") then
+		local ok, v = pcall(IsPlayerSpell, spellID)
+		if ok then return v and true or false, "IsPlayerSpell" end
+	end
+	if has("IsSpellKnown") then
+		local ok, v = pcall(IsSpellKnown, spellID)
+		if ok then return v and true or false, "IsSpellKnown" end
+	end
+	return nil, "none"
 end
 
 -- Seconds remaining, or nil.
@@ -718,6 +785,10 @@ Compat.PROBES = {
 	"C_Item.GetItemQualityColor", "C_Item.GetItemInfo", "C_Spell.RequestLoadSpellData",
 	"C_Spell.GetSpellTexture", "C_Spell.GetSpellLink",
 	"ChatFrameUtil.SendTell", "ChatFrameUtil.OpenChat", "TooltipDataProcessor.AddTooltipPostCall",
+	-- v0.2.7 profession probes (for v0.3 Professions)
+	"C_TradeSkillUI.GetRecipeSchematic", "C_TradeSkillUI.GetCategoryInfo", "C_TradeSkillUI.GetCategories",
+	"C_TradeSkillUI.GetShowLearned", "C_TradeSkillUI.GetShowUnlearned",
+	"C_TradeSkillUI.GetProfessionInfoBySkillLineID", "C_SpellBook.IsSpellKnown", "IsPlayerSpell",
 }
 
 function Compat.ProbeAll()

@@ -22,6 +22,75 @@ local function safe(fn, ...)
 	return a, b, c, d
 end
 
+-- Facts we need before building v0.3 Professions (docs/prompts/next-v0.3-professions.md, Step 1).
+local function reagentLine(label, recipeID)
+	if not recipeID then return label .. ": no recipe to test (open a profession window first)" end
+	local s, why = Compat.RecipeSchematic(recipeID)
+	if not s then return string.format("%s: recipe %d: no reagents (%s)", label, recipeID, tostring(why)) end
+	local parts = {}
+	for _, r in ipairs(s.reagents) do
+		local id = r.itemID or r.currencyID
+		local nm = r.itemID and Compat.ItemName(r.itemID) or nil
+		parts[#parts + 1] = string.format("%sx %s%s%s", tostring(r.qty), r.currencyID and "currency " or "",
+			tostring(id), nm and (" " .. nm) or "")
+		if #parts >= 8 then break end
+	end
+	return string.format("%s: recipe %d %q makes %s (x%s-%s), %d reagent slots: %s", label, recipeID,
+		tostring(s.name), tostring(s.output), tostring(s.min), tostring(s.max), #s.reagents,
+		#parts > 0 and table.concat(parts, ", ") or "none")
+end
+
+function Commands.ProfessionProbes()
+	local L = {}
+	local function add(fmt, ...) L[#L + 1] = select("#", ...) > 0 and string.format(fmt, ...) or fmt end
+	local Prof = SK.Professions
+	local ls = Prof.lastScan
+	local showL, showU = Compat.RecipeFilters()
+	add("Profession window open now: %s   Filters: show learned=%s, show unlearned=%s",
+		yesno(Prof.windowOpen and true or false), yesno(showL), yesno(showU))
+	if ls then
+		add("Last scan: %s, %d learned of %d listed (unlearned listed: %s)", tostring(ls.name), ls.learned,
+			ls.total, ls.total > ls.learned and "YES" or "no")
+		local cats = {}
+		for id, c in pairs(ls.cats or {}) do cats[#cats + 1] = { id = id, c = c } end
+		table.sort(cats, function(a, b) return a.id < b.id end)
+		add("Recipe categories in that window: %d", #cats)
+		for i, e in ipairs(cats) do
+			if i > 40 then add("  ... %d more", #cats - 40) break end
+			local name, parent = Compat.CategoryInfo(e.id)
+			local parentName = parent and Compat.CategoryInfo(parent)
+			add("  category %s %q%s: %d listed, %d learned, e.g. %s", tostring(e.id), tostring(name),
+				parentName and (" in " .. string.format("%q", parentName)) or "", e.c.total, e.c.learned,
+				table.concat(e.c.names, "; "))
+		end
+	else
+		add("Last scan: none this session. Open a profession window, then /sk debug again.")
+	end
+	-- A learned recipe: from this session's scan, or from your saved recipes.
+	local learned = ls and ls.sampleLearned
+	if not learned then
+		local own = SK.Profile:Own()
+		for _, list in pairs(own and own.recipes or {}) do
+			learned = next(list)
+			if learned then break end
+		end
+	end
+	add(reagentLine("Reagents, a recipe you know", learned))
+	add(reagentLine("Reagents, a recipe you don't know", ls and ls.sampleUnlearned))
+	add("Specialisations (spell known? / client's name for that ID):")
+	local profs = {}
+	for skillLine in pairs(SK.Data.SPECIALISATIONS) do profs[#profs + 1] = skillLine end
+	table.sort(profs)
+	for _, skillLine in ipairs(profs) do
+		for _, spec in ipairs(SK.Data.SPECIALISATIONS[skillLine]) do
+			local known, how = Compat.IsSpellKnown(spec.spell)
+			add("  %s %d (%s): known=%s via %s, client name=%q", SK.Data.ProfessionShort(skillLine), spec.spell,
+				spec.name, yesno(known), tostring(how), tostring(safe(Compat.SpellName, spec.spell)))
+		end
+	end
+	return L
+end
+
 -- Everything someone helping you needs to know, as plain lines.
 function Commands.BuildReport()
 	local L = {}
@@ -61,6 +130,10 @@ function Commands.BuildReport()
 		SK.Theme and (SK.Theme.displayFailed and "NO, using the game font" or "yes (or window not opened yet)") or "n/a",
 		SK.Theme and tostring(SK.Theme.BodyFont()) or "n/a", yesno(SK.DB.settings.reduceMotion))
 	add("Recent Lua errors caught: %d (details at the end)", #SK.errors)
+
+	add("")
+	add("== Profession checks for v0.3 (please send this part too) ==")
+	for _, line in ipairs(Commands.ProfessionProbes()) do add("%s", line) end
 
 	add("")
 	add("== Player ==")

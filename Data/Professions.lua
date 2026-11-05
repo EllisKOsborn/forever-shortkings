@@ -28,3 +28,27 @@ function SK.Data.ProfessionShort(skillLine, name)
 	if p then return p.short end
 	return name and name:sub(1, 4) or "?"
 end
+
+-- Original-game specialisations (B3), candidates for v0.3. The spell IDs
+-- match on two sources (wowhead.com/classic and classicdb.ch, checked
+-- 5 Nov 2026) but are still status = "todo" until the in-game probe
+-- (/sk debug, "Specialisations") confirms them on the Forever client.
+-- Alchemy and Tailoring specialisations came in TBC, so they are not listed.
+SK.Data.SPECIALISATIONS = {
+	[202] = { -- Engineering
+		{ spell = 20219, name = "Gnomish Engineer", status = "todo" },
+		{ spell = 20222, name = "Goblin Engineer", status = "todo" },
+	},
+	[165] = { -- Leatherworking
+		{ spell = 10656, name = "Dragonscale Leatherworking", status = "todo" },
+		{ spell = 10658, name = "Elemental Leatherworking", status = "todo" },
+		{ spell = 10660, name = "Tribal Leatherworking", status = "todo" },
+	},
+	[164] = { -- Blacksmithing
+		{ spell = 9788, name = "Armorsmith", status = "todo" },
+		{ spell = 9787, name = "Weaponsmith", status = "todo" },
+		{ spell = 17041, name = "Master Axesmith", status = "todo" },
+		{ spell = 17040, name = "Master Hammersmith", status = "todo" },
+		{ spell = 17039, name = "Master Swordsmith", status = "todo" },
+	},
+}
