@@ -351,6 +351,27 @@ describe("v0.3 freshness nudges", function()
 	end)
 end)
 
+describe("v0.3 gathering professions with recipes (Forever's camping items)", function()
+	it("are scanned, indexed and shown like crafting ones", function()
+		local SK, W = setup()
+		W.professions = { { name = "Herbalism", rank = 4, max = 75, skillLine = 182 } }
+		SK.Profile:BuildSelf()
+		-- What the owner's game listed on 6 Nov: category "Camping", nothing learned yet
+		W.tradeskill = { skillLine = 182, name = "Herbalism", rank = 4, max = 75, recipes = {
+			[1263070] = { learned = true, itemID = 279947 }, [1263071] = { learned = false, itemID = 0 } } }
+		SK.Professions:Scan()
+		W.advance(1)
+		assert.same({ [1263070] = 279947 }, SK.Profile:Own().recipes[182])
+		local ctx = SK.ProfBoard.Context(W.now)
+		assert.equal(1, #SK.ProfBoard.Recipes(ctx, 182, "all"))
+		assert.equal(1, #SK.ProfBoard.Unknown(ctx, 182))
+		local me = SK.ProfBoard.Crafters(ctx, 182)[1]
+		assert.equal(W.now - 1, me.scanned)
+		local text = SK.CharacterTab.DetailText(SK.Profile:Own(), W.now)
+		assert.truthy(text:find("1 recipe", 1, true))
+	end)
+end)
+
 describe("v0.3 Professions tab", function()
 	local SK, W
 	before_each(function() SK, W = setup() end)

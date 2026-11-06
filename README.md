@@ -119,6 +119,7 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 
 <p align="center"><img src="docs/images/professions-one.png" alt="One profession" width="100%"></p>
 
+- **Gathering professions too:** in Forever, Herbalism and others have recipes (camping items like the Seed Hybridizer); they're recorded and listed like crafting ones.
 - **One profession:** everyone with it (status dot, star, *alt of X*, skill, specialisation, "recipes recorded 3d ago" in orange after a week, **Whisper**) and every recipe known in the guild with its crafter count (a lone crafter in orange). Filters: **All**, **Only one crafter**, **Favourites**, and **Nobody knows** (recipes the game's window lists that nobody has learned, shown only once the game has listed some). Hover a recipe for its reagents; click to open it in Crafters; right-click to star it.
 
 <p align="center"><img src="docs/images/cooldowns.png" alt="Cooldown board" width="100%"></p>

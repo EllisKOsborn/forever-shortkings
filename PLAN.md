@@ -454,8 +454,16 @@ classicdb.ch (two sources); the game still has to confirm them.
 ### Answers so far (owner's v0.2.7 report, 5 Nov, level 1 character with no profession)
 - All probed APIs exist in game; the window filter defaults to "show unlearned = no".
 - Specialisations: all 10 IDs have the right names in game → confirmed (`status = "ok"`).
-- Still open: unlearned recipes listed?, reagents with the window closed?,
-  Blueprint/camp categories? These need a character with a crafting profession.
+- 6 Nov (Herbalism 4/75): **unlearned recipes are listed** (Nobody knows
+  works); **Herbalism has a "Camping" category** (Seed Hybridizer,
+  Greenhouse, Incense Candle), so gathering professions have recipes;
+  reagents come back for an unlearned recipe with the window open; category
+  names work. The bundled display font failed to load (fixed in v0.3.0 by
+  preloading it, to be confirmed).
+- Still open: reagents with the window closed; `IsSpellKnown` for a spec owner.
+- **Camp planner (P6) is now possible**: the camping recipes, their
+  categories and reagents are all readable. Candidate for v0.3.x/v0.5,
+  only if the owner asks.
 
 ### Proposed default order (owner to confirm the guild's top 3)
 1. **Guild coverage board + one-profession view** (crafters with skill and

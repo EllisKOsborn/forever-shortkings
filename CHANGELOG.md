@@ -25,6 +25,12 @@ v0.2.5 and later (no new message types).
   never sent.
 - **Favourites:** right-click a recipe or crafter to star it. A Favourites
   filter in Crafters and Professions. Saved on your computer only.
+- **Gathering professions can have recipes** in Forever (Herbalism's
+  camping items, for example), so they're recorded, searchable and listed
+  like any other profession.
+- **Title font fix:** the Chakra Petch titles could fall back to the game
+  font (seen in an in-game report). The font is now loaded with the addon,
+  and `/sk debug` says how many texts got it.
 - **Reminder to reopen a profession window** when your skill has gone up 15
   or more since you last opened it: on the tab, and in chat at most once
   every three days. Can be turned off in Settings.

@@ -285,8 +285,8 @@ function Char.DetailSections(p, now, extra)
 		local pr = e.pr
 		local recipes = p.recipes and p.recipes[e.id]
 		local note
-		if SK.Data.GATHERING[e.id] then
-			note = nil
+		if SK.Data.GATHERING[e.id] and not (pr.scanned and SK.Count(recipes) > 0) then
+			note = nil -- gathering: only worth a note when it has recipes (Forever's camping items)
 		elseif hidden.recipes then
 			note = Theme.Paint("dim", "recipes hidden")
 		elseif pr.scanned then

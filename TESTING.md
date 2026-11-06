@@ -290,6 +290,13 @@ in game if anything looks different and send it.
 95. [ ] With a guildmate on v0.2.6 or v0.2.7: you still see each other's
         data (the new specialisation field doesn't upset older versions).
 
+96. [ ] Titles and tabs use the square **Chakra Petch** font (like the
+        README pictures). `/sk debug`: "Display font (Chakra Petch) loaded:
+        yes (N texts ok, 0 failed; font object present)". Send it if it says NO.
+97. [ ] With Herbalism (or any gathering profession), open its window:
+        Professions → Herbalism lists the camping recipes the window shows
+        under **Nobody knows** (or **All** once learned).
+
 ## Known gaps in v0.1
 
 - No Raids tab yet (v0.4).

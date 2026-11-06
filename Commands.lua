@@ -127,7 +127,9 @@ function Commands.BuildReport()
 	add("Calendar: C_Calendar present=%s, guild events listed=%s, AddEvent present=%s (open the calendar once; 0 is normal before that)",
 		yesno(calPresent), tostring(calEvents), yesno(Compat.has("C_Calendar", "AddEvent")))
 	add("Display font (Chakra Petch) loaded: %s   Body font: %s   Reduce motion: %s",
-		SK.Theme and (SK.Theme.displayFailed and "NO, using the game font" or "yes (or window not opened yet)") or "n/a",
+		SK.Theme and string.format("%s (%d texts ok, %d failed; font object %s)", SK.Theme.displayFailed and
+			"NO, some use the game font" or "yes (or window not opened yet)", SK.Theme.displayStats.ok,
+			SK.Theme.displayStats.failed, _G.ShortKingsDisplay13 and "present" or "missing") or "n/a",
 		SK.Theme and tostring(SK.Theme.BodyFont()) or "n/a", yesno(SK.DB.settings.reduceMotion))
 	add("Recent Lua errors caught: %d (details at the end)", #SK.errors)
 

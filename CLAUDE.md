@@ -78,10 +78,25 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
     `GetNumTradeSkills`, `GetTradeSkillInfo`, `GetCraftInfo`, `GetFactionInfo`
     are missing. The window's filter defaults to **show unlearned = no**. All
     10 specialisation spell IDs resolve to the expected names → `status = "ok"`.
-    Still unknown (needs a character with a profession): whether unlearned
-    recipes are listed, reagents with the window open/closed, category names,
-    and whether `IsSpellKnown` is true for a spec owner. Only 1 of 19 members
-    had the addon, so no sync between players has happened yet.
+    Only 1 of 19 members had the addon, so no sync between players has
+    happened yet.
+  - **Confirmed in game 6 Nov (second v0.2.7 report, Herbalism 4/75):**
+    - The window **lists unlearned recipes** (`GetAllRecipeIDs`: 0 learned,
+      3 listed) even with "show unlearned" off, so "Nobody knows" works.
+    - **Gathering professions have recipes in Forever**: Herbalism has a
+      category **"Camping"** (id 2716, parent "Herbalism"): Seed Hybridizer
+      (recipe 1263070 → item 279947), Greenhouse, Incense Candle. So never
+      assume `Data.GATHERING` means "no recipes".
+    - `GetCategoryInfo` works (name + parent).
+    - `GetRecipeSchematic` returns reagents **for an unlearned recipe with the
+      window open** (Seed Hybridizer: 4× 13465, 1× 8925, 2× 14047).
+    - The display font was reported **"NO, using the game font"** (first
+      SetFont with the bundled .ttf failed). v0.3.0 preloads it as XML Font
+      objects (`ShortKingsDisplay13/20/24` in `Media/Fonts.xml`) and checks
+      `GetFont()`; unconfirmed whether that fixes it.
+    - Still unknown: reagents with the window **closed**, reagents for a
+      learned recipe, `IsSpellKnown` for a spec owner. Drakefire Amulet name
+      was nil in both reports (uncached; it resolved on 5 Nov).
   - Profession APIs (from the source, 5 Nov):
     `C_TradeSkillUI.GetRecipeSchematic(recipeSpellID, isRecraft)` →
     `reagentSlotSchematics[i].reagents[j].itemID|currencyID`,
@@ -243,9 +258,9 @@ messages → sender ignored for the session).
   `Commands.ProfessionProbes`) is on `main`; the tag push dropped, so the
   owner publishes the release on the website. **v0.3.0 Professions is built**
   on `claude/affectionate-archimedes-tirbrl` (owner said "do all of them";
-  reminders must stay rare). Not released, not tested in game. First v0.2.7
-  report received (facts above); still waiting for one **with a profession
-  window open and closed**, then TESTING 87–95.
+  reminders must stay rare). Not released, not tested in game. Two v0.2.7
+  reports received (facts above); still waiting for one with the window
+  **closed** after a scan, then TESTING 87–97.
   Plan and what was left out: **PLAN.md section 11**.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,

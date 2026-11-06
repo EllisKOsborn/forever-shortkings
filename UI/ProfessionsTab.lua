@@ -112,7 +112,7 @@ local function setCrafterCell(fs, c, col)
 		fs:SetText(#c.specs > 0 and Theme.Paint("dim", table.concat(c.specs, ", ")) or "")
 	elseif k == "scan" then
 		if c.hidden then fs:SetText(Theme.Paint("dim", "private"))
-		elseif SK.Data.GATHERING[Prof.skillLine] then fs:SetText("")
+		elseif not c.scanned and SK.Data.GATHERING[Prof.skillLine] then fs:SetText("")
 		else fs:SetText(recordedText(c.scanned, Prof.now)) end
 	else
 		fs:SetText("")
@@ -389,7 +389,8 @@ function Prof:RefreshOne(ctx)
 	self.recipes:SetLoading(loading > 0 and #rows == 0)
 	local gathering = SK.Data.GATHERING[skillLine]
 	local empty = {
-		all = gathering and "Gathering professions have no recipes." or
+		all = gathering and "No recipes yet. In Forever some gathering professions have recipes too " ..
+			"(Herbalism: camping items); they appear once someone opens that window." or
 			"No recipes yet. They appear after crafters open their profession window once.",
 		one = "No recipe has just one crafter.",
 		fav = "No starred recipes. Right-click a recipe to star it.",

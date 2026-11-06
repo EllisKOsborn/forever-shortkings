@@ -38,4 +38,11 @@
 		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="19"/></Member>
 		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="20"/></Member>
 	</FontFamily>
+	<!-- Display face (Chakra Petch), declared here so the game loads the file
+		when the addon loads. Calling SetFont with a file the client hasn't
+		loaded yet can fail the first time (owner's /sk debug on 6 Nov said
+		"NO, using the game font"). Sizes match Theme.TYPE's display roles. -->
+	<Font name="ShortKingsDisplay13" font="Interface\AddOns\ShortKings\Media\Fonts\ChakraPetch-SemiBold.ttf" height="13"/>
+	<Font name="ShortKingsDisplay20" font="Interface\AddOns\ShortKings\Media\Fonts\ChakraPetch-SemiBold.ttf" height="20"/>
+	<Font name="ShortKingsDisplay24" font="Interface\AddOns\ShortKings\Media\Fonts\ChakraPetch-SemiBold.ttf" height="24"/>
 </Ui>

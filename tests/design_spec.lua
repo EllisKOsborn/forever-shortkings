@@ -68,6 +68,28 @@ describe("Theme", function()
 		assert.truthy(calls[1]:find("ChakraPetch", 1, true))
 		assert.is_true(SK.Theme.displayFailed)
 	end)
+
+	it("uses the preloaded display font object, and checks it really took", function()
+		local file = "Interface\\AddOns\\ShortKings\\Media\\Fonts\\ChakraPetch-SemiBold.ttf"
+		_G.ShortKingsDisplay13 = {}
+		local used
+		local fs = { SetFontObject = function(_, f) used = f end, GetFont = function() return file, 13 end,
+			SetFont = function() error("raw font used") end,
+			SetTextColor = function() end, SetShadowOffset = function() end, SetShadowColor = function() end }
+		SK.Theme.Font(fs, "heading")
+		assert.equal(_G.ShortKingsDisplay13, used)
+		assert.is_false(SK.Theme.displayFailed)
+		assert.equal(1, SK.Theme.displayStats.ok)
+		-- the object exists but the file didn't load: game font, and it's reported
+		local fell
+		fs.GetFont = function() return nil end
+		fs.SetFont = function(_, f) fell = f; return f ~= SK.Theme.FONT.display end
+		SK.Theme.Font(fs, "heading")
+		assert.is_true(SK.Theme.displayFailed)
+		assert.equal(1, SK.Theme.displayStats.failed)
+		assert.is_false(fell:find("ChakraPetch", 1, true) ~= nil)
+		_G.ShortKingsDisplay13 = nil
+	end)
 end)
 
 describe("Nothing visual is hard-coded outside the theme", function()

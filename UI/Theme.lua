@@ -130,6 +130,26 @@ Theme.TYPE = {
 }
 
 Theme.displayFailed = false -- set if the bundled font can't be loaded (shown in /sk debug)
+Theme.displayStats = { ok = 0, failed = 0 }
+
+-- Did this font string end up on the bundled display face?
+local function onDisplayFace(fs)
+	if not fs.GetFont then return true end
+	local file = fs:GetFont()
+	return type(file) == "string" and file:lower():find("chakrapetch", 1, true) ~= nil
+end
+
+local function setDisplay(fs, size)
+	-- 1. The font object from Media/Fonts.xml (its file is loaded with the addon).
+	local obj = _G["ShortKingsDisplay" .. size]
+	if obj and fs.SetFontObject then
+		fs:SetFontObject(obj)
+		if onDisplayFace(fs) then return true end
+	end
+	-- 2. The file directly. SetFont returns false when the file can't be used
+	--    (nil = older client, no result).
+	return fs:SetFont(Theme.FONT.display, size, "") ~= false and (obj == nil or onDisplayFace(fs))
+end
 
 function Theme.Font(fs, role, color)
 	local t = Theme.TYPE[role] or Theme.TYPE.body
@@ -138,10 +158,16 @@ function Theme.Font(fs, role, color)
 	local family = t[1] == "body" and _G["ShortKingsBody" .. t[2]]
 	if family and fs.SetFontObject then
 		fs:SetFontObject(family)
-	-- SetFont returns false when the file can't be used; fall back to the
-	-- game font so text never disappears. (nil = older client, no result.)
-	elseif fs:SetFont(t[1] == "display" and Theme.FONT.display or Theme.BodyFont(), t[2], "") == false then
-		if t[1] == "display" then Theme.displayFailed = true end
+	elseif t[1] == "display" then
+		if setDisplay(fs, t[2]) then
+			Theme.displayStats.ok = Theme.displayStats.ok + 1
+		else
+			-- Fall back to the game font so text never disappears.
+			Theme.displayFailed = true
+			Theme.displayStats.failed = Theme.displayStats.failed + 1
+			fs:SetFont(STANDARD_TEXT_FONT or Theme.FONT.body, t[2], "")
+		end
+	elseif fs:SetFont(Theme.BodyFont(), t[2], "") == false then
 		fs:SetFont(STANDARD_TEXT_FONT or Theme.FONT.body, t[2], "")
 	end
 	if color then fs:SetTextColor(Theme.RGB(color)) end
