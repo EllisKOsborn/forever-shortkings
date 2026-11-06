@@ -163,7 +163,8 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   check at max level, plus the security fixes); **v0.2.6** (5 Nov, hotfix: successful
   sends were counted as errors; the owner publishes it on the website because
   tag pushes from cloud sessions drop); **v0.2.7** (5 Nov, `/sk debug`
-  profession checks only, for v0.3 Step 1). Tag only when
+  profession checks only, for v0.3 Step 1); **v0.3.0** (6 Nov, the Professions
+  tab, reagents, favourites, specialisations, reminders). Tag only when
   the user asks.
 
 ## Layout
@@ -258,9 +259,13 @@ messages → sender ignored for the session).
   `Commands.ProfessionProbes`) is on `main`; the tag push dropped, so the
   owner publishes the release on the website. **v0.3.0 Professions is built**
   on `claude/affectionate-archimedes-tirbrl` (owner said "do all of them";
-  reminders must stay rare). Not released, not tested in game. Two v0.2.7
-  reports received (facts above); still waiting for one with the window
-  **closed** after a scan, then TESTING 87–97.
+  reminders must stay rare). **Released as v0.3.0 on 6 Nov** at the owner's
+  request (on `main`; tag push may drop, the owner publishes on the website).
+  Not tested in game yet: TESTING 87–97, and reagents with the window closed.
+  The owner says the titles **look fine in game** even though v0.2.7's
+  /sk debug reported the display font as failed (the check may have been a
+  false alarm; v0.3.0's debug line counts it per text).
+  **Next: CurseForge** (owner asked 6 Nov): `docs/CURSEFORGE.md`.
   Plan and what was left out: **PLAN.md section 11**.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,

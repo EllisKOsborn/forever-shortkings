@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.0 (not released yet): Professions
+## v0.3.0 (6 Nov 2026): Professions
 
 A new **Professions** tab, after Crafters. Works alongside guildmates on
 v0.2.5 and later (no new message types).
