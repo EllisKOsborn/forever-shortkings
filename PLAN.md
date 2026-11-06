@@ -324,7 +324,7 @@ section is the single source of truth for order and status.
   Forever allows automatic guild-chat replies (`SendChatMessage` is restricted)
 - D4 missing recipes with where to get them (needs a recipe-source table)
 - D9 guild fun events (raffles, fishing derby, contests)
-- CurseForge release
+- CurseForge release: **in progress (6 Nov)**, steps in `docs/CURSEFORGE.md`
 
 ### Not planned (and why)
 Loot council, DKP and soft reserves (use Gargul); consumable and world-buff
