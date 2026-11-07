@@ -22,9 +22,17 @@ Read-only for now: signing up still happens in Blizzard's calendar.
   combat or chat lockdown. `/sr debug` has a new Raids line.
 - Works with guildmates on v0.3.3 and later (the new `roles` profile field
   is simply ignored by older versions).
-- Overview wording: "Don't have it yet" is now **Not seen with the addon
-  yet** (the addon only knows which *characters* it has heard from; someone's
-  alt shows there until they log in on it), and its button is **Not seen yet**.
+- **Simpler "who has the addon" on the Overview:** two numbers, **Have
+  Short Royalty** and **Not seen with the addon yet** (they add up to your
+  member count), and the list of names. Alts the addon knows about count as
+  "has it" instead of having their own line. The button is **Not seen yet**.
+- **Officers can link alts for anyone:** on the Character tab, officers
+  (ranks that can edit officer notes) get **Alt of…** for a character that
+  hasn't logged in with the addon. Pick the main, or **Not an alt** to
+  overrule a guess from a guild note. Shared with everyone who has Short
+  Royalty; the newest officer link wins. (Like Guild Roster Manager's alt
+  groups. Writing guild notes from an addon isn't allowed in Forever.)
+- Long dropdown menus scroll with the mouse wheel.
 
 ## v0.3.6 (7 Nov 2026): fewer people wrongly listed as "doesn't have it"
 

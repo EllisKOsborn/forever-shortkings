@@ -227,6 +227,7 @@ end
 -- }
 ---------------------------------------------------------------------------
 local openMenu
+W.MENU_ROWS = 12 -- rows a menu shows before it scrolls
 
 function W.Menu(parent, opts)
 	local width = opts.width or 150
@@ -270,12 +271,16 @@ function W.Menu(parent, opts)
 		if openMenu == self then openMenu = nil end
 	end
 
-	function b:Open()
-		if openMenu and openMenu ~= self then openMenu:Close() end
+	-- Long lists show MENU_ROWS at a time and scroll with the mouse wheel.
+	pop.offset = 0
+	local function draw()
 		local items = opts.items()
 		local current = opts.get()
 		local h = S.row
-		for i, it in ipairs(items) do
+		local shown = math.min(#items, W.MENU_ROWS)
+		pop.offset = math.max(0, math.min(pop.offset, #items - shown))
+		for i = 1, shown do
+			local it = items[pop.offset + i]
 			local e = pop.entries[i]
 			if not e then
 				e = CreateFrame("Button", nil, pop)
@@ -287,6 +292,9 @@ function W.Menu(parent, opts)
 				Theme.Solid(hl, "raised")
 				e.text = Theme.Text(e, "body", "text")
 				e.text:SetPoint("LEFT", SP.s, 0)
+				e.text:SetPoint("RIGHT", -SP.s, 0)
+				e.text:SetJustifyH("LEFT")
+				e.text:SetWordWrap(false)
 				e:SetScript("OnClick", function(self)
 					b:Close()
 					opts.set(self.value)
@@ -299,8 +307,20 @@ function W.Menu(parent, opts)
 			e.text:SetTextColor(Theme.RGB(it.value == current and "beard" or "text"))
 			e:Show()
 		end
-		for i = #items + 1, #pop.entries do pop.entries[i]:Hide() end
-		pop:SetHeight(#items * h + 2)
+		for i = shown + 1, #pop.entries do pop.entries[i]:Hide() end
+		pop:SetHeight(shown * h + 2)
+		pop.more = #items > shown
+	end
+	pop:EnableMouseWheel(true)
+	pop:SetScript("OnMouseWheel", function(_, delta)
+		pop.offset = pop.offset - delta * 3
+		draw()
+	end)
+
+	function b:Open()
+		if openMenu and openMenu ~= self then openMenu:Close() end
+		pop.offset = 0
+		draw()
 		Motion.In(pop, Theme.MOTION.menu, 0.96, "TOP")
 		openMenu = self
 	end

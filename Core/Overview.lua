@@ -116,6 +116,9 @@ function Overview.Build(guild, now)
 		end
 	end
 	o.without = still
+	-- v0.4.0 (simpler Overview): a known alt of someone with the addon counts
+	-- as "has it", so Have + Not seen = Members.
+	o.hasAddon = o.hasAddon + #o.altsOf
 	table.sort(o.altsOf, function(a, b)
 		if a.ownerName ~= b.ownerName then return a.ownerName:lower() < b.ownerName:lower() end
 		return a.name:lower() < b.name:lower()

@@ -404,6 +404,14 @@ in game if anything looks different and send it.
 131. [ ] An event the title doesn't match ("Thursday raid"): the menu on the
         right lets you pick the raid; the size and attunement column follow.
 
+132. [ ] Overview → Guild: **Have Short Royalty** + **Not seen with the addon
+        yet** = Members, and there's no separate "Alts of players" line.
+133. [ ] As an officer: open a character on the Character tab who hasn't logged
+        in with the addon → **Alt of…** → pick their main. They leave the "Not
+        seen" list. A non-officer guildmate sees the same after a minute or two.
+134. [ ] Not an officer: the **Alt of…** menu doesn't appear.
+135. [ ] A long **Alt of…** list scrolls with the mouse wheel.
+
 ## Known gaps in v0.1
 
 - No Raids tab yet (v0.4).

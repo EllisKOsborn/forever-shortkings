@@ -115,6 +115,9 @@ function DBM:Guild(key)
 	local g = SK.DB.guilds[key]
 	if not g then
 		g = { members = {}, profiles = {}, recipeUniverse = {} }
+	end
+	-- v0.4.0: alt links set by this player as an officer: [altGuid] = { m = mainGuid or "" (not an alt), t = time }
+	if not g.officerLinks then g.officerLinks = {}
 		SK.DB.guilds[key] = g
 	end
 	return g

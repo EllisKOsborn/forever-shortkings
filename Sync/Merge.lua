@@ -31,6 +31,7 @@ Merge.LIMITS = {
 	nodes = 600,     -- talents
 	att = 64,        -- attunement flags
 	family = 60,     -- characters on one account
+	links = 200,     -- officer alt links (v0.4.0)
 	specs = 4,       -- specialisations per profession (v0.3)
 	depth = 6,       -- nesting of fields this version doesn't know about
 }
@@ -146,6 +147,14 @@ local FIELDS = {
 			if (k ~= "main" and k ~= "second") or (r ~= "TANK" and r ~= "HEALER" and r ~= "DPS") then return false end
 		end
 		return true
+	end,
+	-- v0.4.0: officer alt links { { a = altGuid, m = mainGuid or "", t = time }, ... }
+	-- and the sender's own claim to be an officer. Display only.
+	officer = function(v) return v == nil or v == true end,
+	links = function(v)
+		return v == nil or each(v, L.links, function(k, e)
+			return isNum(k) and type(e) == "table" and str(e.a, L.str) and str(e.m, L.str) and finite(e.t)
+		end)
 	end,
 	claims = function(v)
 		return v == nil or each(v, L.family, function(k, g) return isNum(k) and str(g, L.str) end)

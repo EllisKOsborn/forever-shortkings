@@ -1,8 +1,10 @@
 -- Accounts (v0.3.6): which guild characters without Short Royalty are really
 -- alts of someone who has it. The game doesn't tell addons which characters
 -- share an account, so three clues are used, strongest first:
---   "bnet"  the same Battle.net account (only where the game shares it)
---   "claim" the player marked it "This is my alt" (profile.claims)
+--   "bnet"    the same Battle.net account (only where the game shares it)
+--   "officer" an officer linked it with "Alt of..." (profile.links, v0.4.0;
+--             the newest link wins, and "Not an alt" overrules the guesses below)
+--   "claim"   the player marked it "This is my alt" (profile.claims)
 --   "note"  its guild note (or officer note) names exactly one guildmate
 --           who has the addon ("Bob's alt", "alt - Bob")
 -- Only used for the Overview/Roster wording ("alt of Bob" instead of
@@ -12,7 +14,8 @@ local _, SK = ...
 local Accounts = {}
 SK.Accounts = Accounts
 
-Accounts.HOW = { bnet = "same Battle.net account", claim = "they said so", note = "guild note" }
+Accounts.HOW = { bnet = "same Battle.net account", officer = "set by an officer", claim = "they said so",
+	note = "guild note" }
 Accounts.MIN_NAME = 3 -- shorter first names are too likely to match ordinary words in notes
 
 local function firstName(name)
@@ -32,9 +35,10 @@ end
 --   hasAddon: fn(guid) -> bool
 --   profiles: fn(guid) -> profile or nil (for claims)
 --   ids:      { [guid] = Battle.net account id } (may be empty)
--- Returns { [altGuid] = { owner = guid, how = "bnet"|"claim"|"note" } }.
-function Accounts.Links(members, hasAddon, profiles, ids)
-	ids = ids or {}
+--   officer:  { [altGuid] = { m = mainGuid or "", t = time } } (Accounts.OfficerLinks)
+-- Returns { [altGuid] = { owner = guid, how = "bnet"|"officer"|"claim"|"note" } }.
+function Accounts.Links(members, hasAddon, profiles, ids, officer)
+	ids, officer = ids or {}, officer or {}
 	local users, byAccount, byFirst = {}, {}, {}
 	for guid, m in pairs(members) do
 		if not m.leftAt and hasAddon(guid) then
@@ -59,8 +63,13 @@ function Accounts.Links(members, hasAddon, profiles, ids)
 	for guid, m in pairs(members) do
 		if not m.leftAt and not hasAddon(guid) then
 			local owner, how
+			local o = officer[guid]
 			if ids[guid] and byAccount[ids[guid]] then
 				owner, how = byAccount[ids[guid]], "bnet"
+			elseif o then
+				-- An officer's word (alt of X, or "not an alt") beats the guesses below.
+				local main = o.m ~= "" and members[o.m]
+				if main and not main.leftAt and hasAddon(o.m) and o.m ~= guid then owner, how = o.m, "officer" end
 			elseif claimed[guid] then
 				owner, how = claimed[guid], "claim"
 			else
@@ -81,6 +90,28 @@ function Accounts.Links(members, hasAddon, profiles, ids)
 	return links
 end
 
+-- Officer links from everyone who says they're an officer (profile.officer)
+-- plus our own, newest per character. Pure; tested.
+function Accounts.OfficerLinks(members, profiles, own)
+	local best = {}
+	local function take(alt, m, t)
+		if type(alt) ~= "string" or type(m) ~= "string" or type(t) ~= "number" then return end
+		if not best[alt] or t > best[alt].t then best[alt] = { m = m, t = t } end
+	end
+	for guid, m in pairs(members) do
+		local p = not m.leftAt and profiles(guid)
+		if type(p) == "table" and p.officer == true and type(p.links) == "table" then
+			for _, e in ipairs(p.links) do
+				if type(e) == "table" then take(e.a, e.m, e.t) end
+			end
+		end
+	end
+	for alt, e in pairs(own or {}) do
+		if type(e) == "table" then take(alt, e.m, e.t) end
+	end
+	return best
+end
+
 -- The same, from saved data and the game (Battle.net ids cached for a minute).
 Accounts.CACHE_FOR = 60
 function Accounts.Current(guild, now)
@@ -94,7 +125,8 @@ function Accounts.Current(guild, now)
 		c = { guild = guild, at = now, ids = ids, count = n }
 		Accounts.cache = c
 	end
+	local profile = function(g) return SK.Profile:Get(g, guild) end
 	return Accounts.Links(guild.members,
-		function(g) return SK.Identity.HasAddon(g, guild.members[g], SK.Profile:Get(g, guild)) end,
-		function(g) return SK.Profile:Get(g, guild) end, c.ids)
+		function(g) return SK.Identity.HasAddon(g, guild.members[g], profile(g)) end,
+		profile, c.ids, Accounts.OfficerLinks(guild.members, profile, guild.officerLinks))
 end

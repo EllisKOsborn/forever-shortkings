@@ -92,3 +92,17 @@ many senders were ignored this session.
   to `loadstring`, `SetHyperlink` (unless it passed `Merge.IsItemLink`), or
   chat without stripping it.
 - Keep `tests/security_spec.lua` green; add a case for every new message type.
+
+## Addendum (7 Nov 2026, v0.3.6–v0.4.0)
+
+New profile fields, all checked in `Merge.FIELDS` and display-only:
+- `claims` ("This is my alt"), `roles` (raid roles), `officer` + `links`
+  (officer alt links). **`officer` is self-asserted**: receivers can't check
+  rank permissions, so any member could claim it. The worst case is a wrong
+  "alt of X" label, or a character missing from "Not seen with the addon
+  yet". Nothing is hidden from the roster, and no other data is affected.
+  Officer links only count when the main has the addon, and the newest link
+  wins, so a real officer can correct one.
+- SQ/SO `a` (who runs the addon) only sets a local "seen" mark, never a
+  version, so it can't trigger "newer version" notices.
+- The Raids tab reads Blizzard's calendar (server data); no sync involved.

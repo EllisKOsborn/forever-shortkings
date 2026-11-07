@@ -138,6 +138,29 @@ function Profile.Claims(myAlts, guild)
 	return #out > 0 and out or nil
 end
 
+-- Officer alt links for the profile (v0.4.0): newest first, capped. Pure; tested.
+function Profile.Links(map)
+	local out = {}
+	for alt, e in pairs(type(map) == "table" and map or {}) do
+		if type(e) == "table" and type(e.m) == "string" and type(e.t) == "number" then
+			out[#out + 1] = { a = alt, m = e.m, t = e.t }
+		end
+	end
+	table.sort(out, function(x, y) if x.t ~= y.t then return x.t > y.t end return x.a < y.a end)
+	while #out > SK.Merge.LIMITS.links do table.remove(out) end
+	return #out > 0 and out or nil
+end
+
+-- As an officer: say whose alt a character is (main GUID), that it's not an
+-- alt (false), or clear what you said (nil).
+function Profile:SetOfficerLink(alt, main)
+	local guild = SK.DBM:Guild()
+	if not guild or not alt then return end
+	if main == nil then guild.officerLinks[alt] = nil
+	else guild.officerLinks[alt] = { m = main or "", t = Compat.Now() } end
+	self:BuildSelf()
+end
+
 -- Raid roles for the profile (v0.4.0): only valid values, nil if none.
 local VALID_ROLE = { TANK = true, HEALER = true, DPS = true }
 function Profile.Roles(r)
@@ -184,6 +207,8 @@ function Profile:BuildSelf()
 		family = familyOf(guild, guid),
 		claims = Profile.Claims(SK.DB.myAlts, guild),
 		roles = Profile.Roles(SK.DB.roles[guid]),
+		officer = Compat.CanEditOfficerNote() or nil,
+		links = Compat.CanEditOfficerNote() and Profile.Links(guild.officerLinks) or nil,
 		main = (main and SK.DB.account[main] and guild.members[main]) and main or nil,
 		recipes = {},
 		cds = {},

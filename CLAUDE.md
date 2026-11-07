@@ -421,7 +421,24 @@ messages → sender ignored for the session).
     shared as `profile.roles = { main, second }` (validated in
     `Merge.FIELDS`; older versions accept it as a plain extra field). Role
     guesses (`Data/Roles.lua`) are by class and tree ORDER, `status = "todo"`.
-  - `W.Menu:Choose(value)` added (tests and code).
+  - `W.Menu:Choose(value)` added (tests and code); menus show `W.MENU_ROWS`
+    (12) rows and scroll with the mouse wheel.
+  - Owner asked to simplify "who has the addon" (7 Nov) after research on
+    how other addons handle alts (GRM: manual alt groups by players and
+    officers, synced; others: guild notes; none can see accounts). So:
+    Overview shows **Have Short Royalty** (= characters with it + known alts)
+    and **Not seen with the addon yet**, no separate alts line; and
+    **officer alt links**: `Compat.CanEditOfficerNote`, "Alt of…" menu on the
+    Character tab (`Char.OfficerItems`), stored in `guild.officerLinks`
+    `[alt] = { m = main or "" (not an alt), t }`, sent as `profile.officer =
+    true` + `profile.links = { {a, m, t} }` (`Merge.FIELDS`, `LIMITS.links`
+    200; older versions accept them as plain extra fields).
+    `Accounts.OfficerLinks` merges, newest wins; order of clues: bnet >
+    officer (incl. "not an alt", which blocks claim/note) > claim > note.
+    The officer flag is **self-asserted** (receivers can't check rank
+    permissions): acceptable because links are display-only. Guild notes
+    can't be written by addons in Forever (`C_Club.SetClubMemberNote` has
+    restrictions). TESTING 132–135.
   - Not yet: sign-up buttons, reminders, invite everyone (v0.4.1, after the
     in-game test). TESTING 125–131.
 - **v0.3.7 (folded into v0.4.0, never released)**: wording only. The owner asked whether

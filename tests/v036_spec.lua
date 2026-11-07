@@ -99,7 +99,7 @@ describe("v0.3.6 alts of players who have the addon", function()
 		assert.is_nil(links.Y) -- "Ed" is under MIN_NAME letters
 	end)
 
-	it("the Overview lists them separately, with who they belong to", function()
+	it("the Overview leaves known alts out of 'not seen' and counts them as having it (v0.4.0)", function()
 		local o = SK.Overview.Build(guild, W.now)
 		local names = {}
 		for _, w in ipairs(o.without) do names[#names + 1] = w.name end
@@ -107,15 +107,9 @@ describe("v0.3.6 alts of players who have the addon", function()
 		assert.same({ "Cat Nap", "Dan Dare" }, names)
 		assert.equal(2, #o.altsOf)
 		assert.equal("Ann Smith", o.altsOf[1].ownerName)
+		assert.equal(o.members, o.hasAddon + #o.without) -- Have + Not seen = Members
 		local text = SK.OverviewTab.GuildText(o)
-		assert.truthy(text:find("Alts of players who have it", 1, true))
-		local tt = { lines = {} }
-		function tt:AddLine(t) self.lines[#self.lines + 1] = t end
-		function tt:AddDoubleLine(l, r) self.lines[#self.lines + 1] = l .. " | " .. r end
-		SK.OverviewTab.AltsTip(tt, o.altsOf)
-		local all = table.concat(tt.lines, "\n")
-		assert.truthy(all:find("Annbank", 1, true) and all:find("they said so", 1, true))
-		assert.truthy(all:find("Bobby Tables", 1, true) and all:find("guild note", 1, true))
+		assert.is_nil(text:find("Alts of players", 1, true)) -- no separate line any more
 	end)
 
 	it("the Roster says 'alt of' and sorts them after real gaps", function()

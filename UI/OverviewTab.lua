@@ -34,20 +34,6 @@ function Ov.WithoutText(without, max)
 	return text
 end
 
--- Hover list of alts of addon users (v0.3.6): "Bob  alt of Ann (guild note)".
-function Ov.AltsTip(tt, alts)
-	Theme.TipLine(tt, "Alts of players who have Short Royalty (" .. #alts .. ")")
-	for i = 1, math.min(#alts, Ov.TIP_NAMES) do
-		local a = alts[i]
-		Theme.TipDouble(tt, Theme.ClassText(a.name, a.class),
-			"alt of " .. Theme.ClassText(a.ownerName, a.ownerClass) .. Theme.Paint("dim", " (" .. SK.Accounts.HOW[a.how] .. ")"),
-			"text", "dim")
-	end
-	if #alts > Ov.TIP_NAMES then Theme.TipLine(tt, "and " .. (#alts - Ov.TIP_NAMES) .. " more", "dim") end
-	Theme.TipLine(tt, "They'll count as having it once they log in on that character. Spotted from the same " ..
-		"Battle.net account, \"This is my alt\" on the Character tab, or a guild note naming the player.", "dim", true)
-end
-
 Ov.TIP_NAMES = 60 -- names in the hover list (two per line); the Roster has the rest
 
 -- Hover list of everyone without the addon: two names per line, online first.
@@ -62,10 +48,9 @@ function Ov.WithoutTip(tt, without)
 		Theme.TipDouble(tt, name(without[i]), i + 1 <= shown and name(without[i + 1]) or "")
 	end
 	if #without > shown then Theme.TipLine(tt, "and " .. (#without - shown) .. " more: Not seen yet lists everyone", "dim") end
-	Theme.TipLine(tt, "Characters your addon hasn't heard from with Short Royalty. Some may have it on " ..
-		"another character: an alt shows here until they log in on it with the addon (or it's linked by " ..
-		"Battle.net account, \"This is my alt\" or a guild note). Trial accounts show here too: they can't " ..
-		"share. Online first (white dot).", "dim", true)
+	Theme.TipLine(tt, "Characters that haven't logged in with Short Royalty yet. An alt drops off once you " ..
+		"log in on it, or once an officer links it (Character tab, \"Alt of...\"). Online first (white dot).",
+		"dim", true)
 	Theme.TipLine(tt, "Not seen yet (top right) opens them in the Roster", "gold")
 end
 
@@ -81,10 +66,6 @@ function Ov.GuildRows(o)
 		local tip = function(tt) Ov.WithoutTip(tt, o.without) end
 		rows[#rows].tip = tip
 		rows[#rows + 1] = { text = Ov.WithoutText(o.without), indent = true, tip = tip }
-	end
-	if o.altsOf and #o.altsOf > 0 then
-		rows[#rows + 1] = { label = "Alts of players who have it", value = n(#o.altsOf), tone = "dim",
-			tip = function(tt) Ov.AltsTip(tt, o.altsOf) end }
 	end
 	rows[#rows + 1] = { sub = "Levels" }
 	for i, b in ipairs(SK.Overview.LEVEL_BANDS) do

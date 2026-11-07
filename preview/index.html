@@ -341,10 +341,10 @@ function overview() {
     + (without.length > 10 ? `<span class="dim"> and ${without.length - 10} more (point here to see all)</span>` : "");
   const guildRows = [{ label: "Members", value: live.length }, { label: "Players (alts counted once)", value: players },
     { label: "Online now", value: `<span class="dim">${withAddon} with addon&nbsp;&nbsp;&nbsp;</span>${online}` },
-    { label: "Have Short Royalty", value: hasIt.length, tone: hasIt.length ? "good" : "dim" },
+    { label: "Have Short Royalty", value: hasIt.length + alts.length, tone: hasIt.length ? "good" : "dim" },
     { label: "Not seen with the addon yet", value: without.length, tone: without.length ? "spark" : "good" },
     ...(without.length ? [{ text: shown, html: 1, indent: 1 }] : []),
-    ...(alts.length ? [{ label: "Alts of players who have it", value: alts.length, tone: "dim" }] : []), { sub: "Levels" }, ...bands.map((b) => ({ label: b[0], value: b[1], indent: true }))];
+    { sub: "Levels" }, ...bands.map((b) => ({ label: b[0], value: b[1], indent: true }))];
   const stale = live.filter((m) => m.hasData && m.updatedDays > 7).length, old = live.filter((m) => m.addon === "0.2.1").length;
   const health = [];
   if (G.name) health.push({ label: "Has the addon, no data here yet", value: 1, tone: "spark" });

@@ -150,6 +150,29 @@ function Char:Build(page)
 	self.myAlt.tooltip = "One of your characters that hasn't logged in with Short Royalty yet? Mark it, and " ..
 		"guildmates see it as your alt instead of \"not seen with the addon\". Click again to undo."
 	self.myAlt:SetPoint("RIGHT", self.whisper, "LEFT", -SP.s, 0)
+	-- v0.4.0: officers can say whose alt any character is (shared with the
+	-- guild through their profile; the newest officer link wins).
+	self.officerAlt = W.Menu(page, {
+		width = 150,
+		items = function() return Char.OfficerItems(Char.shownGuid) end,
+		get = function()
+			local guild = SK.DBM:Guild()
+			if not guild or not Char.shownGuid then return "unset" end
+			local links = SK.Accounts.OfficerLinks(guild.members, function(g) return SK.Profile:Get(g, guild) end,
+				guild.officerLinks)
+			local l = links[Char.shownGuid]
+			if not l then return "unset" end
+			return l.m == "" and "none" or l.m
+		end,
+		set = function(v)
+			if not Char.shownGuid then return end
+			SK.Profile:SetOfficerLink(Char.shownGuid, (v == "unset" and nil) or (v == "none" and false) or v)
+			Char:Refresh()
+		end,
+	})
+	self.officerAlt:SetPoint("RIGHT", self.myAlt, "LEFT", -SP.s, 0)
+	self.officerAlt.tooltip = "Officers: say whose alt this character is, so it isn't listed as \"not seen with " ..
+		"the addon\". Everyone in the guild with Short Royalty sees it. \"Not an alt\" overrules a guess from a guild note."
 	self.makeMain = W.Button(page, "Make this my main", nil, S.control, function()
 		if Char.shownGuid then SK.Profile:SetMain(Char.shownGuid); Char:Refresh() end
 	end)
@@ -378,6 +401,23 @@ local function altsOf(guild, guid)
 	return list, group.main == guid
 end
 
+-- The officer's "Alt of..." menu: not set, not an alt, then everyone who has
+-- Short Royalty (the only mains that matter here). Pure apart from saved data.
+function Char.OfficerItems(guid)
+	local items = { { value = "unset", text = "Alt of: not set" }, { value = "none", text = "Not an alt" } }
+	local guild = SK.DBM:Guild()
+	if not guild then return items end
+	local mains = {}
+	for g, m in pairs(guild.members) do
+		if g ~= guid and not m.leftAt and SK.Identity.HasAddon(g, m, SK.Profile:Get(g, guild)) then
+			mains[#mains + 1] = { value = g, text = "Alt of " .. (m.name or "?") }
+		end
+	end
+	table.sort(mains, function(a, b) return a.text:lower() < b.text:lower() end)
+	for _, it in ipairs(mains) do items[#items + 1] = it end
+	return items
+end
+
 function Char:Refresh()
 	if not self.slots then return end
 	local guild = SK.DBM:Guild()
@@ -400,6 +440,9 @@ function Char:Refresh()
 	local theirsHasIt = guid and SK.Identity.HasAddon(guid, m, p)
 	self.myAlt:SetShown(not mine and guid ~= nil and m ~= nil and (claimed or not theirsHasIt))
 	self.myAlt:SetText(claimed and "Not my alt" or "This is my alt")
+	local officer = SK.Compat.CanEditOfficerNote()
+	self.officerAlt:SetShown(officer and not mine and guid ~= nil and m ~= nil and not theirsHasIt)
+	if officer then self.officerAlt:Refresh() end
 
 	if not p then
 		self.name:SetText(m and Theme.ClassText(m.name, m.class) or "No character")

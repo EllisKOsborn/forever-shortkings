@@ -170,6 +170,16 @@ function Compat.CanViewOfficerNote()
 	return CanViewOfficerNote and CanViewOfficerNote() and true or false
 end
 
+-- Officers (v0.4.0): ranks the game lets edit officer notes. Used to decide
+-- who may link alts for other people.
+function Compat.CanEditOfficerNote()
+	if has("C_GuildInfo", "CanEditOfficerNote") then
+		local ok, v = pcall(C_GuildInfo.CanEditOfficerNote)
+		return ok and clean(v) == true
+	end
+	return false
+end
+
 local function hoursAgo(years, months, days, hours)
 	return ((years or 0) * 365 + (months or 0) * 30 + (days or 0)) * 24 + (hours or 0)
 end
@@ -957,7 +967,7 @@ Compat.PROBES = {
 	"C_Calendar.OpenCalendar", "C_Calendar.GetDayEvent", "C_Calendar.SetAbsMonth", "C_Calendar.GetNumInvites",
 	"C_Calendar.CloseEvent", "C_DateAndTime.GetCurrentCalendarTime", "ToggleCalendar",
 	"C_Item.GetItemIconByID", "C_Item.GetItemInfoInstant", "C_Spell.GetSpellName", "C_Spell.GetSpellCooldown",
-	"C_GuildInfo.CanViewOfficerNote",
+	"C_GuildInfo.CanViewOfficerNote", "C_GuildInfo.CanEditOfficerNote",
 	-- v0.2 Crafters and tooltips
 	"C_Item.GetItemNameByID", "C_Item.RequestLoadItemDataByID", "C_Item.GetItemQualityByID",
 	"C_Item.GetItemQualityColor", "C_Item.GetItemInfo", "C_Spell.RequestLoadSpellData",
