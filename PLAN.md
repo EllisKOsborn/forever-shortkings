@@ -461,6 +461,12 @@ classicdb.ch (two sources); the game still has to confirm them.
   names work. The bundled display font failed to load (fixed in v0.3.0 by
   preloading it, to be confirmed).
 - Still open: reagents with the window closed; `IsSpellKnown` for a spec owner.
+- **v0.3.1 (7 Nov, owner asked):** every recipe in the game, bundled from the
+  game's own data tables via wago.tools (`tools/recipes.js` → `Data/Recipes.lua`,
+  IDs only), search by name / group / material, Wowhead links, Getting started.
+  This replaced the "share each window's list over sync" idea (no protocol change).
+  Wowhead itself isn't used as a data source (its terms forbid copying it).
+  Later from the same data: where each recipe comes from (trainer / item).
 - **Camp planner (P6) is now possible**: the camping recipes, their
   categories and reagents are all readable. Candidate for v0.3.x/v0.5,
   only if the owner asks.

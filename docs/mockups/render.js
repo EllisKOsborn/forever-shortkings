@@ -24,6 +24,8 @@ const SHOTS = {
   professions: ["shot=1&screen=professions&data=full", W, H],
   "professions-one": ["shot=1&screen=professions&data=full&prof=171", W, H],
   cooldowns: ["shot=1&screen=professions&data=full&profView=cooldowns", W, H],
+  "all-recipes": ["shot=1&screen=professions&data=full&profView=recipes", W, H],
+  "getting-started": ["shot=1&screen=overview&data=full&start=1", W, H],
   settings: ["shot=1&screen=settings&data=full", W, H],
   "before-after": ["shot=compare&screen=overview&data=full", 2 * W + 72, H + 84],
   palette: ["shot=palette", 1200, 484],

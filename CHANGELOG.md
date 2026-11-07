@@ -1,5 +1,23 @@
 # Changelog
 
+## v0.3.1 (not released yet): every recipe, search, Getting started
+
+- **Every recipe in the game.** Professions → **All recipes** lists all
+  ~2,250 profession recipes in Forever, learned or not. Search by name, by
+  the profession window's group ("camping") or by a material ("thorium bar"
+  shows everything that uses it), or pick a profession to see them all. The
+  list comes from the game's own data for the Forever build (via
+  wago.tools); names come from your game.
+- **Nobody knows** on each profession now lists every recipe nobody in the
+  guild has learned, not only what your own window showed.
+- **Reagents everywhere:** shown even with the profession window closed and
+  for recipes nobody knows.
+- **Wowhead link** for any recipe (Crafters panel), to copy into your browser.
+- **Getting started** checklist on the Overview for new players, and a
+  welcome line the first time Short Kings loads.
+- Fix: item names the game can't load are no longer asked for again and
+  again (they could slow down searches).
+
 ## v0.3.0 (6 Nov 2026): Professions
 
 A new **Professions** tab, after Crafters. Works alongside guildmates on

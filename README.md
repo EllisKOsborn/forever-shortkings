@@ -43,7 +43,7 @@
 | 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains and a raid-attunement view |
 | 🛡️ **Character** | Anyone's gear, talents, professions, cooldowns, attunements and reputations |
 | ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first, with its reagents and your bag counts |
-| 🧪 **Professions** | Every profession in the guild, each profession's crafters and recipes, everyone's cooldowns, specialisations and favourites |
+| 🧪 **Professions** | Every profession in the guild, **every recipe in the game** (search by name, group or material), each profession's crafters, everyone's cooldowns, specialisations and favourites |
 | ⚙️ **Settings** | Sharing and privacy switches, display options, window size, tools and a live status read-out |
 | 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, chat reminders and a copyable debug report |
 
@@ -58,6 +58,10 @@ section has a link to the place where you can act on it.
 - **Data health**: members without Short Kings data, profiles older than a week, profession windows never opened, and anyone on an old Short Kings (you included). "All good" when there's nothing to fix. *Oldest first* opens the Roster with missing and oldest data on top.
 - **Professions**: characters per crafting profession, how many are at 300 (or the best so far), **nobody** in red where the guild has a gap, and one line for gathering. *Find a crafter*.
 - **Recipes**: recipes the guild knows, from how many crafters, and how many **only one character** knows, with examples, so you can see where there's no backup. *Search recipes*.
+- **Getting started** (new players, in place of milestones): open your profession windows (it names which), check your Character tab, choose what you share, mark your main on an alt, and how many guildmates have Short Kings. Ticks itself off and goes away when done, or click **Hide**.
+
+<p align="center"><img src="docs/images/getting-started.png" alt="Getting started" width="100%"></p>
+
 - **Recent milestones**: level-ups (every 10 levels), profession 75/150/225/300, Onyxia attunement and new recipes. Hover for when, click to open the character, **Grats** types "Grats Bramble on level 60!" into guild chat (you press Enter).
 
 The line above the columns shows your guild, members and who's online.
@@ -107,7 +111,8 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 - **Results** (up to 200): the item's icon, its name in quality colour, the profession, and how many crafters there are (and how many online). Hover for the real item tooltip; click to pick it.
 - **Side panel:** every crafter, online first, then by skill, with a status dot, their skill, *on Gillybean* when they're on an alt (Whisper goes there) or *alt of X*, and a **Whisper** button. Long item names wrap rather than being cut off.
 - **Post to guild chat** (gold) types "[Item] can be made by: A, B, C" into your chat box; you press Enter. **Copy** gives the list as plain text.
-- **Reagents** under the crafter list: icon, name, how many, and how many you have in your bags (green when you have enough). Read from your own game, so they show once you've opened that profession's window; never sent to anyone.
+- **Wowhead** gives you the recipe's [Wowhead](https://www.wowhead.com/forever) page as a link to copy. **Star** (top right) adds it to your favourites.
+- **Reagents** under the crafter list: icon, name, how many, and how many you have in your bags (green when you have enough). From your own game when it can say, otherwise from the built-in recipe list, so they show even for recipes nobody knows. Never sent to anyone.
 - **Favourites:** right-click a result or a crafter to star it (a pink star). The **Favourites** chip lists only starred recipes; starred crafters come first among the same status. Saved on your computer only.
 - Recipes come from each crafter's last visit to their profession window. While item names load from the game, placeholder rows show where results will appear.
 
@@ -120,7 +125,11 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 <p align="center"><img src="docs/images/professions-one.png" alt="One profession" width="100%"></p>
 
 - **Gathering professions too:** in Forever, Herbalism and others have recipes (camping items like the Seed Hybridizer); they're recorded and listed like crafting ones.
-- **One profession:** everyone with it (status dot, star, *alt of X*, skill, specialisation, "recipes recorded 3d ago" in orange after a week, **Whisper**) and every recipe known in the guild with its crafter count (a lone crafter in orange). Filters: **All**, **Only one crafter**, **Favourites**, and **Nobody knows** (recipes the game's window lists that nobody has learned, shown only once the game has listed some). Hover a recipe for its reagents; click to open it in Crafters; right-click to star it.
+- **All recipes:** every profession recipe in Forever (about 2,250), learned or not. Type at least 3 letters: a recipe or item ("mooncloth"), a group from the profession window ("camping", "transmutes") or a **material** ("thorium bar" shows everything that uses it). Or pick a profession to see all of its recipes. Each row shows the profession, group and how many guildmates can make it (**nobody** in orange). Click for crafters, reagents and a Wowhead link.
+
+<p align="center"><img src="docs/images/all-recipes.png" alt="All recipes search" width="100%"></p>
+
+- **One profession:** everyone with it (status dot, star, *alt of X*, skill, specialisation, "recipes recorded 3d ago" in orange after a week, **Whisper**) and every recipe known in the guild with its crafter count (a lone crafter in orange). Filters: **All**, **Only one crafter**, **Favourites**, and **Nobody knows** (every recipe of that profession in the game that nobody in the guild has learned). Hover a recipe for its reagents; click to open it in Crafters; right-click to star it.
 
 <p align="center"><img src="docs/images/cooldowns.png" alt="Cooldown board" width="100%"></p>
 
@@ -142,6 +151,7 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 - **The window** opens on the Overview the first time, then on your last tab. Drag it by the title bar; it remembers where you left it. **Esc** closes it. The title bar shows the crest, your guild and the sync status.
 - **Automatic collection** on every character you play: gear, item level, talents, reputations, professions, recipes (when you open the profession window), cooldowns, attunements and your other characters.
 - **"Crafted by" on item tooltips:** hover any item to see "Short Kings: Bramble (online), Dabble +2 more". Online crafters first, at most three names.
+- **A welcome line** the first time Short Kings loads, pointing to *Getting started*.
 - **Chat reminders** for profession windows still to open (and, rarely, ones to reopen after your skill went up), a newer Short Kings, and trial accounts that can't share.
 - **`/sk debug`** opens a copyable report of what the addon can see, starting with the live-client checks and the profession checks for v0.3 (unlearned recipes, recipe categories, reagents, specialisations), and ending with the last Lua errors it caught. **Send it when something looks wrong.**
 
@@ -326,6 +336,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.5**: first in-game test (5 Nov): sync switched back on, enchant check at level 60, security fixes
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sk debug` profession checks (what the game shows, before v0.3 is built)
+- [ ] **v0.3.1**: every recipe in the game with search (name, group, material), Wowhead links, Getting started
 - [x] **v0.3.0 Professions**: guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
 - [ ] **In-game test round** with guildmates (TESTING.md), then fixes
 - [ ] **v0.4**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
@@ -420,6 +431,11 @@ Libraries: Ace3 (AceComm, CallbackHandler, LibStub, ChatThrottleLib),
 [LibSerialize](https://github.com/rossnichols/LibSerialize) by Ross Nichols,
 [LibDeflate](https://github.com/SafeteeWoW/LibDeflate) by Haoqian He,
 LibDataBroker and LibDBIcon. Licences are in [Libs/README.md](Libs/README.md).
+
+The built-in recipe list (`Data/Recipes.lua`) is generated by
+`tools/recipes.js` from the game's own data tables for the Forever build, as
+published by [wago.tools](https://wago.tools). Only IDs are stored; every name
+comes from your own game. Recipe links point to [Wowhead](https://www.wowhead.com/forever).
 
 Titles use [Chakra Petch](https://fonts.google.com/specimen/Chakra+Petch) by
 Cadson Demak (SIL Open Font License 1.1, bundled in `Media/Fonts/` with its

@@ -297,6 +297,27 @@ in game if anything looks different and send it.
         Professions → Herbalism lists the camping recipes the window shows
         under **Nobody knows** (or **All** once learned).
 
+## v0.3.1 additions (every recipe, Getting started)
+
+98. [ ] Professions → **All recipes**: type "mooncloth", then "camping", then
+        "thorium bar". Results appear (names may fill in over a second or two)
+        and "thorium bar" lists recipes that **use** it ("uses Thorium Bar").
+99. [ ] Pick **Leatherworking** (or any profession) in the menu with the
+        search empty: all of its recipes are listed. Tell me if you spot
+        recipes that aren't in Forever (old or unused ones).
+100. [ ] Click a recipe nobody knows: Crafters shows "Nobody in the guild
+        knows this recipe yet" and **Needs:** with its materials, even with
+        no profession window open.
+101. [ ] **Wowhead** button: a window with the link opens, already selected;
+        Ctrl+C (Cmd+C), paste it into your browser: it opens the right
+        Wowhead Forever page.
+102. [ ] On a new character (or after deleting the saved variables): chat
+        says "Welcome to Short Kings!" once; the Overview shows **Getting
+        started**; the steps tick off as you open profession windows, the
+        Character tab and Settings; **Hide** puts the milestones back.
+103. [ ] `/sk debug`, "== Professions API ==": the "Recipe list" line shows
+        about 2,250 recipes and "not on this client: 0" (or a small number).
+
 ## Known gaps in v0.1
 
 - No Raids tab yet (v0.4).

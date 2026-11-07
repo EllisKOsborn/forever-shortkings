@@ -365,10 +365,14 @@ function overview() {
     <div class="abs" style="left:${x(2)}px;top:28px;width:${W}px">${block("Raids", raidRows, ["Onyxia list", "raid"], "position:static")}
       ${block("Professions", profRows, ["Find a crafter", "crafters"], "position:static;margin-top:20px")}</div>
     <div class="abs" style="left:${x(3)}px;top:28px;width:${W}px">
-      <div class="block" style="position:relative;height:196px"><div class="bhead"><span class="h display">Recent milestones</span></div>
+      ${S.start ? block("Getting started", [
+        { label: "Open your profession windows once", lt: 1, value: "to do", tone: "spark" }, { text: "Tailoring, Alchemy", tone: "dim", indent: 1 },
+        { label: "Check your Character tab", value: "done", tone: "good" }, { label: "Choose what you share (Settings)", lt: 1, value: "to do", tone: "spark" },
+        { label: "Get guildmates to install it", lt: 1, value: "to do", tone: "spark" }, { text: "1 of 29 have it", tone: "dim", indent: 1 }],
+        ["Hide", "overview"], "position:static") : `<div class="block" style="position:relative;height:196px"><div class="bhead"><span class="h display">Recent milestones</span></div>
       ${list([{ key: "w", w: 36 }, { key: "t", w: W - 36 - 52 - 12 }, { key: "b", w: 52 }], feed, (e, c) => c.key === "w" ? `<span class="dim">${e[0]}</span>` : c.key === "t" ? cls(e[1]).replace(esc(e[1].name), esc(e[1].name.split(" ")[0])) + " " + esc(e[2]) : (e[3] ? btn("Grats", "small") : ""),
-        { header: false, click: true, empty: "Level-ups, profession milestones, attunements and new recipes show here as your addon sees them.", style: "left:0;right:0;top:32px;bottom:0" })}</div>
-      ${block("Recipes", recipeRows, ["Search recipes", "crafters"], "position:static;margin-top:20px")}</div>`;
+        { header: false, click: true, empty: "Level-ups, profession milestones, attunements and new recipes show here as your addon sees them.", style: "left:0;right:0;top:32px;bottom:0" })}</div>`}
+      ${block("Recipes", recipeRows, ["Search recipes", "professions"], "position:static;margin-top:20px")}</div>`;
 }
 
 // ---------------------------------------------------------------- roster
@@ -485,11 +489,14 @@ function crafters() {
       <div class="abs dim" style="left:12px;top:${r.name.length > 44 ? 50 : 32}px;font-size:12px">${r.prof} · ${plural(r.crafters.length, "crafter")}${r.crafters.some((k) => k[3]) ? ` (${r.crafters.filter((k) => k[3]).length} online)` : ""}</div>
       ${list([{ key: "n", t: "Crafter", w: 138 }, { key: "s", t: "Skill", w: 44, r: 1 }, { key: "i", t: "", w: 74 }, { key: "b", t: "", w: 64 }], r.crafters,
         (k, c) => c.key === "n" ? dot(k[3] ? "good" : "faint") + `<span style="color:${CLASS[k[1]]}">${esc(k[0])}</span>` : c.key === "s" ? k[2] : c.key === "i" ? `<span class="dim">${k[4] || ""}</span>` : btn("Whisper", "small" + (k[3] ? "" : " disabled")),
-        { click: true, style: "left:12px;right:12px;top:72px;bottom:48px" })}
-      ${btn("Post to guild chat", "primary", 'style="position:absolute;left:12px;bottom:12px"')}${btn("Copy", "", 'style="position:absolute;left:156px;bottom:12px"')}`
+        { click: true, style: "left:12px;right:12px;top:72px;bottom:96px" })}
+      <span class="chip" style="position:absolute;right:12px;top:12px">Star</span>
+      <div class="abs dim" style="left:12px;right:12px;bottom:48px;font-size:12px;line-height:1.35">Needs: 1 Thorium Bar <span class="good">(have 3)</span>, &nbsp;1 Arcane Crystal <span class="dim">(have 0)</span></div>
+      ${btn("Post to guild chat", "primary", 'style="position:absolute;left:12px;bottom:12px"')}${btn("Copy", "", 'style="position:absolute;left:156px;bottom:12px"')}${btn("Wowhead", "", 'style="position:absolute;left:226px;bottom:12px"')}`
     : `<div class="abs dim" style="left:12px;right:12px;top:12px;line-height:1.35">Pick an item on the left to see who in the guild can make it, who's online, and to whisper them.</div>`;
   return `<div class="search abs" style="left:0;top:0;width:260px"><input id="csearch" placeholder="Search an item or recipe" value="${esc(S.crafterQuery)}"></div>
-    <div class="abs dim ell" style="left:272px;width:204px;top:4px;font-size:12px">${st}</div>
+    <span class="chip" style="position:absolute;left:268px;top:1px">Favourites</span>
+    <div class="abs dim ell" style="left:368px;width:108px;top:4px;font-size:12px">${st}</div>
     ${list([{ key: "n", t: "Item or recipe", w: 250 }, { key: "p", t: "Profession", w: 100 }, { key: "c", t: "Crafters", w: 114, r: 1 }], loading ? [] : results, cell,
       { click: true, loading, empty, sel: (x) => x === r, style: "left:0;top:36px;bottom:0;width:476px", rowAttr: (x) => `data-recipe="${results.indexOf(x)}"` })}
     <div class="side" style="left:492px;right:0;top:36px;bottom:0">${side}</div>`;
@@ -525,11 +532,25 @@ function professions() {
       <div class="abs" style="left:456px;top:36px;display:flex;gap:4px">${chips([["all", "All"], ["one", "Only one crafter"], ["fav", "Favourites"], ["nobody", "Nobody knows"]], "all")}</div>
       ${list([{ key: "n", t: "Recipe", w: 290 }, { key: "c", t: "Crafters", w: 90, r: 1 }], PROF_RECIPES, rcell, { click: true, style: "left:456px;right:0;top:68px;bottom:0" })}`;
   }
+  if (S.profView === "recipes") {
+    const ALL = [["Arcanite Bar", "#ffffff", "Alchemy", "Transmutes", 2, "Thorium Bar"], ["Arcanite Reaper", "#a335ee", "Blacksmithing", "Axes", 1, "Thorium Bar"],
+      ["Dense Grinding Stone", "#ffffff", "Blacksmithing", "Materials", 4, "Thorium Bar"], ["Imperial Plate Belt", "#1eff00", "Blacksmithing", "Plate Belts", 0, "Thorium Bar"],
+      ["Mithril Gyro-Shot", "#ffffff", "Engineering", "Ammunition", 0, "Thorium Bar"], ["Runic Plate Boots", "#0070dd", "Blacksmithing", "Plate Boots", 0, "Thorium Bar"],
+      ["Thorium Grenade", "#ffffff", "Engineering", "Explosives", 2, "Thorium Bar"], ["Thorium Widget", "#ffffff", "Engineering", "Parts", 1, ""], ["Thorium Bar", "#ffffff", "Mining", "Smelted Bars", 3, ""]];
+    const cell = (r, c) => c.key === "n" ? `<span style="color:${r[1]}">${esc(r[0])}</span>` : c.key === "p" ? `<span class="dim">${r[2]}</span>`
+      : c.key === "g" ? `<span class="dim">${r[3]}${r[5] && !r[0].startsWith("Thorium") ? " &nbsp;·&nbsp; uses " + r[5] : ""}</span>` : r[4] === 0 ? `<span class="spark">nobody</span>` : r[4] === 1 ? `<span class="spark">1</span>` : r[4];
+    return `<div class="abs" style="left:0;top:0;display:flex;gap:4px">${chips([["board", "Guild"], ["recipes", "All recipes"], ["cooldowns", "Cooldowns"]], "recipes")}</div>
+      <div class="abs dim ell" style="right:0;top:4px;font-size:12px">${ALL.length} recipes</div>
+      <div class="search abs" style="left:0;top:36px;width:300px"><input placeholder="Search recipes, groups or materials" value="thorium"></div>
+      ${btn("All professions", "", 'style="position:absolute;left:308px;top:36px;width:170px;text-align:left"')}
+      ${list([{ key: "n", t: "Recipe", w: 330 }, { key: "p", t: "Profession", w: 130 }, { key: "g", t: "Group", w: 266 }, { key: "c", t: "Crafters", w: 110, r: 1 }],
+        ALL, cell, { click: true, style: "left:0;top:72px;bottom:0;right:0" })}`;
+  }
   if (S.profView === "cooldowns") {
     const cell = (r, c) => c.key === "n" ? esc(r[0]) : c.key === "w" ? dot(r[3] === "addon" ? "good" : r[3] === "online" ? "text" : "faint") + `<span style="color:${CLASS[r[2]]}">${esc(r[1])}</span>`
       : c.key === "l" ? (r[4] === 0 ? `<span class="good">Ready</span>` : r[4] < 24 ? `${Math.floor(r[4])}h ${Math.round((r[4] % 1) * 60)}m` : `${Math.floor(r[4] / 24)}d ${Math.round(r[4] % 24)}h`)
       : c.key === "a" ? `<span class="${r[6] ? "spark" : "dim"}">${r[5]}</span>` : btn("Whisper", "small" + (r[3] === "offline" ? " disabled" : ""));
-    return `<div class="abs" style="left:0;top:0;display:flex;gap:4px">${chips([["board", "Guild"], ["cooldowns", "Cooldowns"]], "cooldowns")}</div>
+    return `<div class="abs" style="left:0;top:0;display:flex;gap:4px">${chips([["board", "Guild"], ["recipes", "All recipes"], ["cooldowns", "Cooldowns"]], "cooldowns")}</div>
       <div class="abs dim ell" style="right:0;top:4px;font-size:12px">2 ready · 5 cooldowns</div>
       ${list([{ key: "n", t: "Cooldown", w: 270 }, { key: "w", t: "Crafter", w: 190 }, { key: "l", t: "Ready in", w: 110, r: 1 }, { key: "a", t: "As of", w: 140, r: 1 }, { key: "b", t: "", w: 126 }],
         none ? [] : PROF_CDS, cell, { click: true, empty: "No profession cooldowns yet.", style: "left:0;top:36px;bottom:0;right:0" })}`;
@@ -546,7 +567,7 @@ function professions() {
       default: return `<span class="dim">${r[6]}</span>`;
     }
   };
-  return `<div class="abs" style="left:0;top:0;display:flex;gap:4px">${chips([["board", "Guild"], ["cooldowns", "Cooldowns"]], "board")}</div>
+  return `<div class="abs" style="left:0;top:0;display:flex;gap:4px">${chips([["board", "Guild"], ["recipes", "All recipes"], ["cooldowns", "Cooldowns"]], "board")}</div>
     <div class="abs dim ell" style="right:0;top:4px;font-size:12px">${none ? "" : "1 profession nobody has"}</div>
     ${none ? "" : nudge}
     ${list([{ key: "n", t: "Profession", w: 170 }, { key: "c", t: "Characters", w: 88, r: 1 }, { key: "m", t: "At 300", w: 70, r: 1 }, { key: "o", t: "Online", w: 70, r: 1 },
@@ -716,7 +737,7 @@ function seg(id) {
 try { Object.assign(S, JSON.parse(localStorage.getItem("skPreview") || "{}")); } catch (e) { /* ignore */ }
 // ?screen=roster&data=worst&view=before&raid=ony  (and &shot=1 for the README pictures: window only, no chrome)
 const Q = new URLSearchParams(location.search);
-for (const k of ["screen", "data", "view", "raid", "prof", "profView"]) if (Q.get(k)) S[k] = Q.get(k);
+for (const k of ["screen", "data", "view", "raid", "prof", "profView", "start"]) if (Q.get(k)) S[k] = Q.get(k);
 const SHOT = Q.get("shot");
 if (SHOT) {
   document.body.classList.add("shot"); S.view = SHOT === "compare" ? "before" : "after"; S.reduce = true;
