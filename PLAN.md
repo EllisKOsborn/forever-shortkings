@@ -494,3 +494,33 @@ classicdb.ch (two sources); the game still has to confirm them.
 - **v0.3.1 (only if asked):** craft requests (D1, a new message type).
 - **Later:** shopping list (D6), camp planner (P6) if the categories show
   camp objects, "where to get it" (D4) only with a verified data source.
+
+## 12. Roadmap review (7 Nov 2026, after v0.3.6)
+
+Where we are: professions (v0.3.x) are done and the sync fix is out. The guild
+is **levelling** (owner level 15; 27 members, 8 sharing data), and raids
+open on **9 Dec**. The owner asked what to build next.
+
+### Recommended now
+| # | What | Why now | Size | Notes |
+|---|---|---|---|---|
+| 1 | **Raids tab, read-only (v0.4.0)** | The 9 Dec deadline; needs time for in-game testing | L | `docs/prompts/next-v0.4-raids.md`: calendar events, who signed up with spec, role, ilvl, attunement, role counts, readiness card. Nothing new on the wire except a main/second role in the profile |
+| 2 | **API safety check in CI (P17)** | Agreed on 2 Nov, never built. A Forever patch that renames an API would break things silently | S | CI compares every API the addon calls against Blizzard's Forever source |
+| 3 | **Levelling buddies** (new) | The guild is levelling *now*; data is already there (roster level, zone, online) | S | Overview card: "Online near your level (±3)": name, level, zone, Whisper and **Invite** (button press only; `C_PartyInfo.InviteUnit`). No new sync |
+| 4 | **"Ask them to install" button** (new) | Adoption is the real bottleneck (8 of 27 share data) | S | Next to "Not seen with the addon yet": pre-types a guild-chat line with the CurseForge link; you press Enter (never sent automatically) |
+| 5 | **Craft requests (D1)** | Professions are the guild's top priority; the natural next step | M | "Ask to craft" in Crafters; the crafter gets a request list with reagent totals and marks it done. New message type, owner-only |
+| 6 | **Shopping list (D6)** | Builds on reagents and favourites | S–M | Pick recipes and quantities, see total reagents and "have / need" from your bags. Local only |
+| 7 | **Automatic "my alts"** | Only if the owner's Warband currency test lists alts | S | `C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters` → automatic claims |
+
+### Keep for later (unchanged reasons)
+Raid actions (sign-up buttons, invite everyone; v0.4.1, after v0.4.0 is
+tested); lockout board (P15, needs raids and a verified API); status line
+(P8, first free text on the wire); attendance (D2); Onyxia step tracker
+(P10, needs verified quest IDs); camp planner (P6, needs verified data);
+guild bank viewer (D5); loot history (D3, prefer Gargul); `!sr` chat
+lookups (D7, `SendChatMessage` is restricted).
+
+### Not planned
+Same list as section 7, plus: no automatic alt detection beyond the
+player's own account (addons can't see other players' accounts; confirmed by
+research on 7 Nov).
