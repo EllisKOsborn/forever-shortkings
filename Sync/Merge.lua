@@ -31,7 +31,6 @@ Merge.LIMITS = {
 	nodes = 600,     -- talents
 	att = 64,        -- attunement flags
 	family = 60,     -- characters on one account
-	links = 200,     -- officer alt links (v0.4.0)
 	specs = 4,       -- specialisations per profession (v0.3)
 	depth = 6,       -- nesting of fields this version doesn't know about
 }
@@ -137,8 +136,8 @@ local FIELDS = {
 	att = function(v)
 		return v == nil or each(v, L.att, function(k, x) return str(k, L.str) and type(x) == "boolean" end)
 	end,
-	-- v0.3.6: characters the player says are their alts (not logged in with
-	-- the addon yet). Only used to show "alt of X" instead of "doesn't have it".
+	-- v0.3.6 sent "This is my alt" marks; v0.4.0 dropped the feature but still
+	-- checks the field, since guildmates on v0.3.6 keep sending it.
 	-- v0.4.0: raid roles { main = "TANK"|"HEALER"|"DPS", second = same or nil }.
 	roles = function(v)
 		if v == nil then return true end
@@ -147,14 +146,6 @@ local FIELDS = {
 			if (k ~= "main" and k ~= "second") or (r ~= "TANK" and r ~= "HEALER" and r ~= "DPS") then return false end
 		end
 		return true
-	end,
-	-- v0.4.0: officer alt links { { a = altGuid, m = mainGuid or "", t = time }, ... }
-	-- and the sender's own claim to be an officer. Display only.
-	officer = function(v) return v == nil or v == true end,
-	links = function(v)
-		return v == nil or each(v, L.links, function(k, e)
-			return isNum(k) and type(e) == "table" and str(e.a, L.str) and str(e.m, L.str) and finite(e.t)
-		end)
 	end,
 	claims = function(v)
 		return v == nil or each(v, L.family, function(k, g) return isNum(k) and str(g, L.str) end)

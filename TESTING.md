@@ -60,8 +60,8 @@ the `/sr debug` text when something looks wrong.
 23. [ ] **Group alts** (ticked by default): log in on two characters at least
         once each. They show as one row, "+1", with the alt in the tooltip.
         Untick it and both show separately.
-24. [ ] Character tab → **Make this my main** on an alt. The Roster then lists
-        that character first.
+24. [ ] ~~Make this my main~~ (removed in v0.4.0: the highest-level
+        character is shown first).
 25. [ ] **Notes**: a member's public note shows in the Roster tooltip and on
         the Character tab. If you're an officer, the officer note shows too.
         Search finds words in notes.
@@ -368,14 +368,7 @@ in game if anything looks different and send it.
 
 119. [ ] A guildmate still on v0.3.2 or older (if anyone is): they're **not** in
         "Not seen with the addon yet"; the Roster's Version column says **old**.
-120. [ ] `/sr debug` → "Battle.net accounts the game shares: N of M". Send me
-        the number: 0 means the game doesn't share them for guildmates.
-121. [ ] Character tab → one of your alts that hasn't logged in with the addon
-        → **This is my alt**. On the Overview it moves to "Alts of players who
-        have it". A guildmate sees the same within a minute or two.
-122. [ ] A character whose guild note says "<name>'s alt" (name = someone with
-        the addon) shows under "Alts of players who have it", not "Don't have
-        it yet". Point at the line: it says "guild note".
+120–122. ~~Battle.net, This is my alt, guild notes~~ (removed in v0.4.0).
 123. [ ] Someone you've never been online with, who has the addon: after a
         guildmate with the addon logs in, they disappear from "Not seen with the addon yet".
 
@@ -405,12 +398,11 @@ in game if anything looks different and send it.
         right lets you pick the raid; the size and attunement column follow.
 
 132. [ ] Overview → Guild: **Have Short Royalty** + **Not seen with the addon
-        yet** = Members, and there's no separate "Alts of players" line.
-133. [ ] As an officer: open a character on the Character tab who hasn't logged
-        in with the addon → **Alt of…** → pick their main. They leave the "Not
-        seen" list. A non-officer guildmate sees the same after a minute or two.
-134. [ ] Not an officer: the **Alt of…** menu doesn't appear.
-135. [ ] A long **Alt of…** list scrolls with the mouse wheel.
+        yet** = Members, and there's no "Alts of players" line.
+133. [ ] Character tab on someone else: no "This is my alt" or "Alt of…"; on
+        your own alt: no "Make this my main".
+134. [ ] A long dropdown (Raids → the raid menu, Professions → All recipes'
+        profession menu) scrolls with the mouse wheel.
 
 ## Known gaps in v0.1
 

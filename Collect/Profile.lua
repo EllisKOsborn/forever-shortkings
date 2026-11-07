@@ -125,42 +125,6 @@ local function refreshCooldowns(guid, cds, now)
 	end
 end
 
--- "This is my alt" marks as a sorted list for the profile (v0.3.6): only
--- current members that aren't our own logged-in characters. Pure; tested.
-function Profile.Claims(myAlts, guild)
-	local out = {}
-	for guid in pairs(type(myAlts) == "table" and myAlts or {}) do
-		local m = guild and guild.members[guid]
-		if m and not m.leftAt and not SK.DB.account[guid] then out[#out + 1] = guid end
-	end
-	table.sort(out)
-	while #out > SK.Merge.LIMITS.family do table.remove(out) end
-	return #out > 0 and out or nil
-end
-
--- Officer alt links for the profile (v0.4.0): newest first, capped. Pure; tested.
-function Profile.Links(map)
-	local out = {}
-	for alt, e in pairs(type(map) == "table" and map or {}) do
-		if type(e) == "table" and type(e.m) == "string" and type(e.t) == "number" then
-			out[#out + 1] = { a = alt, m = e.m, t = e.t }
-		end
-	end
-	table.sort(out, function(x, y) if x.t ~= y.t then return x.t > y.t end return x.a < y.a end)
-	while #out > SK.Merge.LIMITS.links do table.remove(out) end
-	return #out > 0 and out or nil
-end
-
--- As an officer: say whose alt a character is (main GUID), that it's not an
--- alt (false), or clear what you said (nil).
-function Profile:SetOfficerLink(alt, main)
-	local guild = SK.DBM:Guild()
-	if not guild or not alt then return end
-	if main == nil then guild.officerLinks[alt] = nil
-	else guild.officerLinks[alt] = { m = main or "", t = Compat.Now() } end
-	self:BuildSelf()
-end
-
 -- Raid roles for the profile (v0.4.0): only valid values, nil if none.
 local VALID_ROLE = { TANK = true, HEALER = true, DPS = true }
 function Profile.Roles(r)
@@ -176,12 +140,6 @@ function Profile:SetRoles(main, second)
 	self:BuildSelf()
 end
 
-function Profile:ToggleMyAlt(guid)
-	if not guid or SK.DB.account[guid] then return end
-	SK.DB.myAlts[guid] = (not SK.DB.myAlts[guid]) or nil
-	self:BuildSelf() -- fires SELF_UPDATED, which announces the change
-end
-
 function Profile:BuildSelf()
 	local guild = SK.DBM:Guild()
 	local guid = Compat.PlayerGUID()
@@ -190,7 +148,6 @@ function Profile:BuildSelf()
 	local now = Compat.Now()
 	local old = SK.DB.own[guid] or {}
 	local member = guild.members[guid]
-	local main = SK.DB.settings.main
 
 	local c = SK.Character.Read()
 	local p = {
@@ -205,11 +162,7 @@ function Profile:BuildSelf()
 		reps = SK.Reputation.Read(),
 		att = SK.Attunements.Read(),
 		family = familyOf(guild, guid),
-		claims = Profile.Claims(SK.DB.myAlts, guild),
 		roles = Profile.Roles(SK.DB.roles[guid]),
-		officer = Compat.CanEditOfficerNote() or nil,
-		links = Compat.CanEditOfficerNote() and Profile.Links(guild.officerLinks) or nil,
-		main = (main and SK.DB.account[main] and guild.members[main]) and main or nil,
 		recipes = {},
 		cds = {},
 	}
@@ -261,12 +214,6 @@ function Profile:SetScan(skillLine, scan)
 	end
 	guild.recipeUniverse[skillLine] = uni
 	self:Commit(guild, p, scan.at)
-end
-
--- Mark one of our characters as the main (shown first when alts are grouped).
-function Profile:SetMain(guid)
-	SK.DB.settings.main = guid
-	self:BuildSelf()
 end
 
 function Profile:OnLogin()

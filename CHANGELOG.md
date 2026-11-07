@@ -24,14 +24,18 @@ Read-only for now: signing up still happens in Blizzard's calendar.
   is simply ignored by older versions).
 - **Simpler "who has the addon" on the Overview:** two numbers, **Have
   Short Royalty** and **Not seen with the addon yet** (they add up to your
-  member count), and the list of names. Alts the addon knows about count as
-  "has it" instead of having their own line. The button is **Not seen yet**.
-- **Officers can link alts for anyone:** on the Character tab, officers
-  (ranks that can edit officer notes) get **Alt of…** for a character that
-  hasn't logged in with the addon. Pick the main, or **Not an alt** to
-  overrule a guess from a guild note. Shared with everyone who has Short
-  Royalty; the newest officer link wins. (Like Guild Roster Manager's alt
-  groups. Writing guild notes from an addon isn't allowed in Forever.)
+  member count), and the list of names. It counts characters: an alt shows
+  as "not seen" until its player logs in on it once with the addon. The
+  button is **Not seen yet**.
+- **Removed the alt guessing from v0.3.6** to keep things simple: the
+  Battle.net matching, guild-note matching, **This is my alt** and the
+  separate "Alts of players who have it" line are gone, and so is **Make
+  this my main** (your highest-level character is shown as the main). Alts
+  still link themselves once they've logged in with the addon, so Roster
+  grouping and Crafters' "on <alt>" whispers work as before. Professions and
+  recipes were never affected: every character shares its own.
+- Fixed: in v0.3.6, pointing at an alt the addon had guessed could show a
+  Lua error in the Roster tooltip.
 - Long dropdown menus scroll with the mouse wheel.
 
 ## v0.3.6 (7 Nov 2026): fewer people wrongly listed as "doesn't have it"

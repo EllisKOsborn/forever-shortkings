@@ -57,7 +57,8 @@ function Raids.Match(title, pickedKey)
 	if pickedKey then
 		for _, r in ipairs(shown) do if r.key == pickedKey then return r end end
 	end
-	local words = SK.Accounts.Words(title)
+	local words = {}
+	for w in tostring(title or ""):lower():gsub("[%p%c]", " "):gmatch("%S+") do words[w] = true end
 	for _, r in ipairs(shown) do
 		for _, k in ipairs(r.keywords or {}) do
 			if words[k] then return r end

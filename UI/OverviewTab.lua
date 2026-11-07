@@ -48,9 +48,8 @@ function Ov.WithoutTip(tt, without)
 		Theme.TipDouble(tt, name(without[i]), i + 1 <= shown and name(without[i + 1]) or "")
 	end
 	if #without > shown then Theme.TipLine(tt, "and " .. (#without - shown) .. " more: Not seen yet lists everyone", "dim") end
-	Theme.TipLine(tt, "Characters that haven't logged in with Short Royalty yet. An alt drops off once you " ..
-		"log in on it, or once an officer links it (Character tab, \"Alt of...\"). Online first (white dot).",
-		"dim", true)
+	Theme.TipLine(tt, "Characters that haven't logged in with Short Royalty yet. An alt drops off once its " ..
+		"player logs in on it with the addon. Online first (white dot).", "dim", true)
 	Theme.TipLine(tt, "Not seen yet (top right) opens them in the Roster", "gold")
 end
 
@@ -283,7 +282,7 @@ function Ov:Refresh()
 	local entries = SK.Feed.Entries(guild, SK.Feed.MAX)
 	self.feed.list:SetItems(entries)
 
-	local steps, allDone = SK.Onboarding.Steps(SK.Profile:Own(), SK.DB.settings.seen, SK.DB.settings.main,
+	local steps, allDone = SK.Onboarding.Steps(SK.Profile:Own(), SK.DB.settings.seen, nil,
 		o.hasAddon, o.members)
 	local showStart = SK.Onboarding.Visible(allDone)
 	self.start:SetShown(showStart)

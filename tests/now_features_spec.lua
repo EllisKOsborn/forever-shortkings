@@ -100,16 +100,17 @@ describe("A2 alts", function()
 		assert.equal(3, #SK2.RosterTab.Rows(g, W.now, nil, false))
 	end)
 
-	it("our own profiles carry family and the chosen main", function()
+	it("our own profiles carry family (the main is picked automatically since v0.4.0)", function()
 		local SK2, W = H.load()
 		W.member("Pip", W.player.guid)
 		W.member("Pipalt", "Player-1-ALT")
 		SK2.Identity:ReadRoster()
 		SK2.DB.account["Player-1-ALT"] = true
-		SK2.Profile:SetMain("Player-1-ALT")
+		SK2.DB.settings.main = "Player-1-ALT" -- an old saved choice is no longer sent
+		SK2.Profile:BuildSelf()
 		local pub = SK2.DBM:Guild().profiles[W.player.guid]
 		assert.same({ "Player-1-ALT" }, pub.family)
-		assert.equal("Player-1-ALT", pub.main)
+		assert.is_nil(pub.main)
 	end)
 end)
 

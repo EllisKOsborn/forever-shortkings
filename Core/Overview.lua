@@ -18,7 +18,7 @@ function Overview.Build(guild, now)
 	now = now or SK.Compat.Now()
 	local o = {
 		members = 0, online = 0, withAddon = 0, withData = 0, players = 0,
-		hasAddon = 0, without = {}, addonNoData = 0, altsOf = {},
+		hasAddon = 0, without = {}, addonNoData = 0,
 		levels = {}, maxLevel = 0,
 		stale = 0, noData = 0, unscanned = 0, outdated = 0, newest = nil, selfOutdated = false,
 		profs = {}, raids = {}, recipes = { total = 0, crafters = 0, single = 0, singleExamples = {} },
@@ -99,30 +99,6 @@ function Overview.Build(guild, now)
 			o.outdated = o.outdated + 1
 		end
 	end
-
-	-- v0.3.6: characters without the addon that are alts of someone who has
-	-- it (same Battle.net account, "This is my alt", or a guild note) move to
-	-- their own list.
-	local links = SK.Accounts.Current(guild, now)
-	local still = {}
-	for _, w in ipairs(o.without) do
-		local l = links[w.guid]
-		if l then
-			local owner = guild.members[l.owner]
-			w.owner, w.ownerName, w.ownerClass, w.how = l.owner, owner and owner.name or "?", owner and owner.class, l.how
-			o.altsOf[#o.altsOf + 1] = w
-		else
-			still[#still + 1] = w
-		end
-	end
-	o.without = still
-	-- v0.4.0 (simpler Overview): a known alt of someone with the addon counts
-	-- as "has it", so Have + Not seen = Members.
-	o.hasAddon = o.hasAddon + #o.altsOf
-	table.sort(o.altsOf, function(a, b)
-		if a.ownerName ~= b.ownerName then return a.ownerName:lower() < b.ownerName:lower() end
-		return a.name:lower() < b.name:lower()
-	end)
 
 	-- Members without the addon: online first (you can ask them now), then by name.
 	table.sort(o.without, function(a, b)

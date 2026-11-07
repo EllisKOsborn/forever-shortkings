@@ -170,16 +170,6 @@ function Compat.CanViewOfficerNote()
 	return CanViewOfficerNote and CanViewOfficerNote() and true or false
 end
 
--- Officers (v0.4.0): ranks the game lets edit officer notes. Used to decide
--- who may link alts for other people.
-function Compat.CanEditOfficerNote()
-	if has("C_GuildInfo", "CanEditOfficerNote") then
-		local ok, v = pcall(C_GuildInfo.CanEditOfficerNote)
-		return ok and clean(v) == true
-	end
-	return false
-end
-
 local function hoursAgo(years, months, days, hours)
 	return ((years or 0) * 365 + (months or 0) * 30 + (days or 0)) * 24 + (hours or 0)
 end
@@ -250,38 +240,6 @@ local function readClubRoster()
 		end
 	end
 	return out, #ids
-end
-
--- Battle.net account of guild members, where the game shares it (v0.3.6):
--- the guild community's member info has bnetAccountId (the same number for
--- every character of one Battle.net account), and C_BattleNet answers for
--- your Battle.net friends. Either may be empty for most guildmates; /sr debug
--- says how many were found. Returns { [guid] = id }, count.
-function Compat.AccountIDs(guids)
-	local out, n = {}, 0
-	local function put(guid, id)
-		id = clean(id)
-		if type(guid) == "string" and type(id) == "number" and id > 0 and not out[guid] then
-			out[guid], n = id, n + 1
-		end
-	end
-	if has("C_Club", "GetGuildClubId") and has("C_Club", "GetClubMembers") and has("C_Club", "GetMemberInfo") then
-		local clubId = C_Club.GetGuildClubId()
-		local ids = clubId and C_Club.GetClubMembers(clubId)
-		for _, memberId in ipairs(type(ids) == "table" and ids or {}) do
-			local ok, info = pcall(C_Club.GetMemberInfo, clubId, memberId)
-			if ok and type(info) == "table" then put(clean(info.guid), info.bnetAccountId) end
-		end
-	end
-	if has("C_BattleNet", "GetAccountInfoByGUID") then
-		for _, guid in ipairs(guids or {}) do
-			if not out[guid] then
-				local ok, info = pcall(C_BattleNet.GetAccountInfoByGUID, guid)
-				if ok and type(info) == "table" then put(guid, info.bnetAccountID) end
-			end
-		end
-	end
-	return out, n
 end
 
 -- Returns list, complete, source. `complete` means we believe offline
@@ -967,7 +925,7 @@ Compat.PROBES = {
 	"C_Calendar.OpenCalendar", "C_Calendar.GetDayEvent", "C_Calendar.SetAbsMonth", "C_Calendar.GetNumInvites",
 	"C_Calendar.CloseEvent", "C_DateAndTime.GetCurrentCalendarTime", "ToggleCalendar",
 	"C_Item.GetItemIconByID", "C_Item.GetItemInfoInstant", "C_Spell.GetSpellName", "C_Spell.GetSpellCooldown",
-	"C_GuildInfo.CanViewOfficerNote", "C_GuildInfo.CanEditOfficerNote",
+	"C_GuildInfo.CanViewOfficerNote",
 	-- v0.2 Crafters and tooltips
 	"C_Item.GetItemNameByID", "C_Item.RequestLoadItemDataByID", "C_Item.GetItemQualityByID",
 	"C_Item.GetItemQualityColor", "C_Item.GetItemInfo", "C_Spell.RequestLoadSpellData",

@@ -185,13 +185,10 @@ describe("v0.3.1 getting started", function()
 		assert.is_true(allDone)
 	end)
 
-	it("the main step is optional and only for players with alts", function()
+	it("has no 'mark your main' step any more (v0.4.0)", function()
 		local own = SK.Profile:Own()
 		own.family = { "Player-1-Z" }
-		local steps = SK.Onboarding.Steps(own, {}, nil, 1, 2)
-		local main
-		for _, s in ipairs(steps) do if s.key == "main" then main = s end end
-		assert.is_true(main.optional)
+		for _, s in ipairs(SK.Onboarding.Steps(own, {}, nil, 1, 2)) do assert.is_not.equal("main", s.key) end
 	end)
 
 	it("says welcome once, remembers tabs, and the Overview card can be hidden", function()

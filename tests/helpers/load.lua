@@ -12,7 +12,7 @@ local FILES = {
 	"Core/Init.lua", "Core/Log.lua", "Core/Compat.lua", "Core/DB.lua", "Core/Identity.lua", "Core/Alts.lua",
 	"Core/CraftIndex.lua", "Core/Favourites.lua", "Core/Reagents.lua", "Core/ProfBoard.lua",
 	"Core/RecipeDB.lua", "Core/Onboarding.lua",
-	"Core/Export.lua", "Core/Feed.lua", "Core/Accounts.lua", "Core/Overview.lua", "Core/Raids.lua",
+	"Core/Export.lua", "Core/Feed.lua", "Core/Overview.lua", "Core/Raids.lua",
 	"Data/Professions.lua", "Data/Recipes.lua", "Data/Attunements.lua", "Data/Roles.lua", "Data/Factions.lua", "Data/Enchants.lua",
 	"Collect/Character.lua", "Collect/Talents.lua", "Collect/Professions.lua",
 	"Collect/Reputation.lua", "Collect/Attunements.lua", "Collect/Profile.lua",

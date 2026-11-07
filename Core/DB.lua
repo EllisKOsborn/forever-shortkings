@@ -30,7 +30,6 @@ local DEFAULTS = {
 	account = {},  -- [guid] = true for characters seen on this account
 	roles = {},    -- [guid] = { main = "TANK"|"HEALER"|"DPS", second = ... } raid roles per character (v0.4.0, in the profile)
 	raidPick = {}, -- [eventID] = raid key: the player's own raid match for a calendar event (v0.4.0, local)
-	myAlts = {},   -- [guid] = true: guildmates this player marked "This is my alt" (v0.3.6, sent as profile.claims)
 	seenGuids = {}, -- [name] = { guid, first, logins, changedFrom } (GUID stability check for /sr debug)
 	feed = {},      -- recent milestones, newest first, max 50 (local only, never sent)
 	favourites = { recipes = {}, crafters = {} }, -- starred recipes and crafters (v0.3, local only)
@@ -115,9 +114,7 @@ function DBM:Guild(key)
 	local g = SK.DB.guilds[key]
 	if not g then
 		g = { members = {}, profiles = {}, recipeUniverse = {} }
-	end
-	-- v0.4.0: alt links set by this player as an officer: [altGuid] = { m = mainGuid or "" (not an alt), t = time }
-	if not g.officerLinks then g.officerLinks = {}
+
 		SK.DB.guilds[key] = g
 	end
 	return g

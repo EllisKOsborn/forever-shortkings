@@ -9,9 +9,9 @@ local Onb = SK:NewModule("Onboarding")
 Onb.WELCOME_DELAY = 12 -- seconds after login
 
 -- Pure. Returns steps, allDone. Each step: { key, text, detail, done, optional }.
---   own: our full profile (or nil), seen: settings.seen, main: settings.main,
+--   own: our full profile (or nil), seen: settings.seen, (unused since v0.4.0),
 --   withAddon / members: guild counts (Core/Overview).
-function Onb.Steps(own, seen, main, withAddon, members)
+function Onb.Steps(own, seen, _, withAddon, members)
 	seen = seen or {}
 	local steps = {}
 	local function add(key, text, done, detail, optional)
@@ -24,9 +24,6 @@ function Onb.Steps(own, seen, main, withAddon, members)
 		#missing > 0 and table.concat(missing, ", ") or (hasProfs and nil or "none learned yet"))
 	add("character", "Check your Character tab", seen.character)
 	add("settings", "Choose what you share (Settings)", seen.settings)
-	if own and own.family and #own.family > 0 then
-		add("main", "On an alt? Mark your main", main ~= nil, nil, true)
-	end
 	local others = math.max(0, (withAddon or 0) - 1)
 	add("guild", "Get guildmates to install it", others > 0,
 		string.format("%d of %d have it", withAddon or 0, members or 0))
