@@ -12,8 +12,8 @@
 
 | # | You asked for | Problem | What I propose |
 |---|---|---|---|
-| 1 | A new repo `EllisKOsborn/short-kings-addon` | This session can only reach `elliskosborn/forever-shortkings`, which is empty and ready to use. | Use `forever-shortkings`. The in-game folder will still be called `ShortKings`, because the release zip sets that, not the repo name. |
-| 2 | Key characters by **Name-Realm** | Forever has **no realms**. Names are two-part (first name + surname) and unique across the region. The exact `sender` format in addon messages is not documented. | Key every character by its **player GUID**, which is stable and unique, and show the roster name. `/sk debug` prints the real formats so we can check them in game. |
+| 1 | A new repo `EllisKOsborn/short-kings-addon` | This session can only reach `elliskosborn/forever-shortkings`, which is empty and ready to use. | Use `forever-shortkings`. The in-game folder will still be called `ShortRoyalty`, because the release zip sets that, not the repo name. |
+| 2 | Key characters by **Name-Realm** | Forever has **no realms**. Names are two-part (first name + surname) and unique across the region. The exact `sender` format in addon messages is not documented. | Key every character by its **player GUID**, which is stable and unique, and show the roster name. `/sr debug` prints the real formats so we can check them in game. |
 | 3 | Data for **all characters on the account** | An addon can only read a character while you are logged in as it. | Each alt is recorded the first time you log in as it, and again on every later login. The window shows "last updated" for each one. |
 | 4 | Every client sends a manifest of **every** character every few minutes | With 100 members that is 100 × 100 entries going round guild chat. It grows with the square of guild size and risks throttling. | Each client announces **only its own account's characters**. For members who are offline, a new arrival sends one query when it logs in, and a single peer (chosen with a random delay) offers to fill the gaps. Traffic grows in step with guild size. |
 | 5 | "Which recipes **nobody** has" | That needs a list of every recipe that exists. Forever adds 600+ recipes, and no verified list has been published. | Build the list from what members see: when anyone opens a profession window, record **unlearned** recipes too, not only learned ones. "All recipes" = everything any member has seen. The list grows as people scan. Caveat: this depends on the Forever profession window showing unlearned recipes, which I'll check in game. |
@@ -21,7 +21,7 @@
 | 7 | Attunements table | Only the Onyxia attunement is confirmed for Forever. Raids open on 9 Dec, and Molten Core isn't in the first wave. | Fill in only the quest IDs I can check against two sources, and mark everything else **TODO**. No guessed IDs. |
 | 8 | Pause in **raids and dungeons** | Battlegrounds and arenas are instances too, and Midnight's chat-lockdown rules can block addon messages at other times. | Pause in **every** instance type, in combat, and whenever `C_ChatInfo.InChatMessagingLockdown()` is true. Messages wait in a queue and send later. |
 | 9 | Show trial members as "can't sync" | Other players can't see from outside that someone is on a trial. A trial member and a member without the addon look the same. | The roster shows **"No data (no addon / trial)"**. On a trial player's own screen, the addon shows a clear notice and turns sending off. |
-| 10 | Crafters tab | Forever's Blizzard UI already includes Blizzard's own guild crafter lookup (`C_GuildInfo.QueryGuildMembersForRecipe`). | Keep our tab, because it works for offline members and can search by item name. `/sk debug` reports whether Blizzard's version is turned on. |
+| 10 | Crafters tab | Forever's Blizzard UI already includes Blizzard's own guild crafter lookup (`C_GuildInfo.QueryGuildMembersForRecipe`). | Keep our tab, because it works for offline members and can search by item name. `/sr debug` reports whether Blizzard's version is turned on. |
 | 11 | Talents | Forever's talent window runs on the modern trait system (`C_Traits`), drawn as Classic-style trees. | Store points per tree (e.g. 31/20/0) plus the talent spell IDs and ranks, so anyone can see names and icons whatever their class. |
 
 ---
@@ -29,15 +29,15 @@
 ## 2. File layout
 
 ```
-forever-shortkings/            (zipped as ShortKings/ by the packager)
-├─ ShortKings.toc              ## Interface: 16001  (one TOC, no suffix)
+forever-shortkings/            (zipped as ShortRoyalty/ by the packager)
+├─ ShortRoyalty.toc              ## Interface: 16001  (one TOC, no suffix)
 ├─ embeds.xml                  loads the libraries
 ├─ Libs/                       fetched by .pkgmeta externals (not committed)
 ├─ Core/
 │  ├─ Init.lua                 namespace, version, event dispatcher
 │  ├─ Compat.lua               the only file that calls WoW APIs that vary;
 │  │                           detects what exists at runtime
-│  ├─ Log.lua                  debug ring buffer (/sk debug)
+│  ├─ Log.lua                  debug ring buffer (/sr debug)
 │  ├─ DB.lua                   SavedVariables schema, migrations, pruning
 │  └─ Identity.lua             GUID ↔ name, guild roster cache
 ├─ Collect/
@@ -60,7 +60,7 @@ forever-shortkings/            (zipped as ShortKings/ by the packager)
 │  ├─ RosterTab.lua  CharacterTab.lua  CraftersTab.lua  Tooltip.lua
 │  ├─ ProfessionsTab.lua  SettingsTab.lua
 │  └─ Minimap.lua              LibDBIcon
-├─ Commands.lua                /sk, /sk debug, /sk scan, /sk reset
+├─ Commands.lua                /sk, /sr debug, /sr scan, /sr reset
 ├─ tests/                      busted specs and a stubbed WoW API
 ├─ .luacheckrc  .busted  .pkgmeta
 ├─ .github/workflows/ci.yml       luacheck + busted on every push
@@ -75,10 +75,10 @@ list 16001 or include the 12.x lockdown fixes.
 
 ---
 
-## 3. Data schema (`ShortKingsDB`, account-wide)
+## 3. Data schema (`ShortRoyaltyDB`, account-wide)
 
 ```lua
-ShortKingsDB = {
+ShortRoyaltyDB = {
   schema   = 1,
   settings = { sync = true, debug = false,
                minimap = { hide = false },
@@ -119,7 +119,7 @@ BULK priority.
 
 ## 4. Sync protocol
 
-Prefix `ShortKings`. Every message is a serialised table
+Prefix `ShortRoyalty`. Every message is a serialised table
 `{ t = type, p = protocolVersion, ... }`. Clients ignore messages that
 carry a newer major protocol version.
 
@@ -183,7 +183,7 @@ runtime and copes if it's missing.
 | Guild roster | `C_GuildInfo.GuildRoster`, `GetNumGuildMembers`/`GetGuildRosterInfo` ❓, fallback `C_Club.GetGuildClubId/GetClubMembers/GetMemberInfo` ✅ | Forever's guild UI uses C_Club |
 | Server time | `GetServerTime` | ✅ |
 
-**Open questions only the game can answer** (all printed by `/sk debug`):
+**Open questions only the game can answer** (all printed by `/sr debug`):
 - What `sender` looks like in `CHAT_MSG_ADDON` with two-part names.
 - Whether `GetGuildRosterInfo` still exists and returns GUIDs.
 - Whether the profession window shows unlearned recipes.
@@ -260,7 +260,7 @@ which explains where each idea came from.
 
 ### Done (awaiting in-game test)
 - **v0.1**: collection, sync, Roster/Character/Settings tabs, `/sk`,
-  `/sk debug`, minimap button, theme, tests, CI, packager.
+  `/sr debug`, minimap button, theme, tests, CI, packager.
 - **v0.1.1**:
   - A1 status dots (online with addon / without / offline)
   - A2 alts grouped under their main (mutually confirmed), "Make this my main"
@@ -285,7 +285,7 @@ section is the single source of truth for order and status.
 - **v0.2.1 launch readiness** — ✅ code complete 2 Nov. No new message types:
   - attunement fix: Barrow Deeps and Hyjal need none; Onyxia quest **and**
     Drakefire Amulet in bags; MC/BWL/Naxx hidden from the picker
-  - `/sk debug`: last errors, calendar probes, GUID stability, unlearned recipes
+  - `/sr debug`: last errors, calendar probes, GUID stability, unlearned recipes
   - sync hardening: 32 KB message cap, per-sender rate limit
   - sharing preview in Settings; clearer "relayed / stale / not scanned" labels
   - Copy as text (Roster, Crafters) for Discord (D8)
@@ -363,18 +363,18 @@ client. This is the order of work once the game is live. Nothing new gets
 built until steps 1 to 3 are done.
 
 ### Step 1: first evening on your own (about 30 minutes)
-1. Download **ShortKings-v0.2.2.zip** from the GitHub **Releases** page
-   (under *Assets*). Unzip it so you have `AddOns/ShortKings/ShortKings.toc`
+1. Download **ShortRoyalty-v0.2.2.zip** from the GitHub **Releases** page
+   (under *Assets*). Unzip it so you have `AddOns/ShortRoyalty/ShortRoyalty.toc`
    (path in the README's Install section). Share the same link with the guild.
 2. Character screen → **AddOns**: Short Royalty is listed and not "out of date"
    (if it is, tick *Load out of date AddOns* and tell me).
 3. In game, type `/console scriptErrors 1` once so Lua errors show.
 4. Type `/dump select(4, GetBuildInfo())` and note the number (expect 16001).
 5. Open each of your **profession windows** once, and open the **Calendar** once.
-6. Type `/sk debug`, copy everything and send it to me. The parts that matter
+6. Type `/sr debug`, copy everything and send it to me. The parts that matter
    most are **"Live-client checks"**, any **"missing:"** lines and
    **"Recent errors"**.
-7. Log out and back in on the same character, then `/sk debug` again (checks
+7. Log out and back in on the same character, then `/sr debug` again (checks
    that your character's ID stays the same).
 8. Work through TESTING.md items 1–15 and 22–29 (on your own), plus 50–66.
 
@@ -384,9 +384,9 @@ Crafters and tooltips, Copy, the Overview's numbers and milestones.
 
 ### Step 3: what your report decides
 
-| Check (from `/sk debug`) | If it's fine | If not |
+| Check (from `/sr debug`) | If it's fine | If not |
 |---|---|---|
-| Interface number is 16001 | nothing to do | change `## Interface:` in `ShortKings.toc`, new build |
+| Interface number is 16001 | nothing to do | change `## Interface:` in `ShortRoyalty.toc`, new build |
 | No Lua errors | carry on | fix them first (v0.2.3) |
 | "missing:" API lines | carry on | replace or drop what uses them (v0.2.3) |
 | You and a guildmate see each other's data | carry on | fix sync before anything else (sender format, roster names) |
@@ -436,7 +436,7 @@ record them in CLAUDE.md and adjust (e.g. set confirmed spec IDs to
 `status = "ok"`).
 
 ### Step 1 facts (v0.2.7 probes; answers go into CLAUDE.md)
-| Question | Probe line in `/sk debug` | If yes | If no |
+| Question | Probe line in `/sr debug` | If yes | If no |
 |---|---|---|---|
 | Window lists unlearned recipes? | "Last scan: … (unlearned listed: YES)" + the "show unlearned" filter | add the *Nobody knows* filter | drop it; keep single-crafter counts |
 | Reagents readable with the window **closed**, and for unknown recipes? | "Reagents, a recipe you know / don't know" | read locally, cache in SavedVariables, never synced | readable only while open: cache what each player's own scan sees, still local; propose sync design only if even that fails |

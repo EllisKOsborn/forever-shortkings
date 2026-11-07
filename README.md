@@ -45,7 +45,7 @@
 | ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first, with its reagents and your bag counts |
 | 🧪 **Professions** | Every profession in the guild, each profession's crafters and recipes, everyone's cooldowns, specialisations and favourites |
 | ⚙️ **Settings** | Sharing and privacy switches, display options, window size, tools and a live status read-out |
-| 🧨 **Everywhere** | `/sk`, a minimap button, "Crafted by" lines on item tooltips, chat reminders and a copyable debug report |
+| 🧨 **Everywhere** | `/sr`, a minimap button, "Crafted by" lines on item tooltips, chat reminders and a copyable debug report |
 
 ### 🏰 Overview
 <p align="center"><img src="docs/images/overview.png" alt="Overview tab" width="100%"></p>
@@ -138,12 +138,12 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 - **What guildmates see from you:** a read-only list of exactly what you share, what stays private, and what's never shared.
 
 ### 🧨 Everywhere
-- **Open it** with `/sk` (or `/sr`, `/shortroyalty`, `/shortkings`) or the **minimap button**: left-click opens the window, right-click opens Settings, drag to move it.
+- **Open it** with `/sr` (or `/shortroyalty`, `/sk`) or the **minimap button**: left-click opens the window, right-click opens Settings, drag to move it.
 - **The window** opens on the Overview the first time, then on your last tab. Drag it by the title bar; it remembers where you left it. **Esc** closes it. The title bar shows the crest, your guild and the sync status.
 - **Automatic collection** on every character you play: gear, item level, talents, reputations, professions, recipes (when you open the profession window), cooldowns, attunements and your other characters.
 - **"Crafted by" on item tooltips:** hover any item to see "Short Royalty: Bramble (online), Dabble +2 more". Online crafters first, at most three names.
 - **Chat reminders** for profession windows still to open (and, rarely, ones to reopen after your skill went up), a newer Short Royalty, and trial accounts that can't share.
-- **`/sk debug`** opens a copyable report of what the addon can see, starting with the live-client checks and the profession checks for v0.3 (unlearned recipes, recipe categories, reagents, specialisations), and ending with the last Lua errors it caught. **Send it when something looks wrong.**
+- **`/sr debug`** opens a copyable report of what the addon can see, starting with the live-client checks and the profession checks for v0.3 (unlearned recipes, recipe categories, reagents, specialisations), and ending with the last Lua errors it caught. **Send it when something looks wrong.**
 
 ### 🔒 Under the hood
 - **Your own data always wins.** A copy relayed by someone else never overwrites a newer copy from the character themselves.
@@ -160,7 +160,7 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 
 ## 📦 Install
 
-1. Download **`ShortKings-vX.Y.Z-forever.zip`** from
+1. Download **`ShortRoyalty-vX.Y.Z-forever.zip`** from
    [**Releases**](https://github.com/EllisKOsborn/forever-shortkings/releases)
    (the first file under *Assets*).
 
@@ -168,9 +168,8 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
    > **Not "Source code (zip)".** GitHub adds those links to every release.
    > They unzip to a folder like `forever-shortkings-0.2.4` and are missing
    > two libraries. Renaming that folder doesn't fix it.
-2. Unzip it. You get a folder called **`ShortKings`**. The addon was called
-   Short Kings before the guild became Short Royalty. The folder keeps the
-   old name on purpose, so everyone's saved data carries over.
+2. Unzip it. You get a folder called **`ShortRoyalty`**. (Tried an early
+   test build called `ShortKings`? Delete that old folder.)
 3. Move that folder into your Forever **AddOns** folder:
 
    🍎 **Mac**
@@ -191,8 +190,8 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 > `AddOns` folder, create one, spelled exactly like that.
 
 > [!IMPORTANT]
-> The result must be `AddOns/ShortKings/ShortKings.toc`. A `ShortKings`
-> folder inside another `ShortKings` folder won't load.
+> The result must be `AddOns/ShortRoyalty/ShortRoyalty.toc`. A `ShortRoyalty`
+> folder inside another `ShortRoyalty` folder won't load.
 
 **First time in game:** open each of your **profession windows once** so your
 recipes are recorded (the addon reminds you), and log in on each **alt** once.
@@ -205,14 +204,14 @@ recipes are recorded (the addon reminds you), and log in on each **alt** once.
 
 | Type this | To |
 |---|---|
-| `/sk` | open or close the window (the minimap button does the same) |
-| `/sk debug` | get a copyable report of what the addon can see. **Send this when something's wrong** |
-| `/sk log` | the same report plus the recent log |
-| `/sk scan` | re-read your character now |
-| `/sk sync` | share your data now and ask for anything missing |
-| `/sk reset` | put the window back in the middle of the screen |
+| `/sr` | open or close the window (the minimap button does the same) |
+| `/sr debug` | get a copyable report of what the addon can see. **Send this when something's wrong** |
+| `/sr log` | the same report plus the recent log |
+| `/sr scan` | re-read your character now |
+| `/sr sync` | share your data now and ask for anything missing |
+| `/sr reset` | put the window back in the middle of the screen |
 
-`/sr`, `/shortroyalty` and `/shortkings` work too, if another addon already uses `/sk`.
+`/shortroyalty` and `/sk` work too, if another addon already uses `/sr`.
 
 ---
 
@@ -275,7 +274,7 @@ Settings → tick **Reduce motion**. Everything then happens instantly.
 <summary><b>The titles look like the normal game font.</b></summary>
 
 The game may have refused the bundled font. Nothing breaks: Short Royalty falls
-back to the game font. Type `/sk debug` and send the text so we can check.
+back to the game font. Type `/sr debug` and send the text so we can check.
 </details>
 
 <details>
@@ -317,7 +316,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 
 ## 🗺️ Roadmap
 
-- [x] **v0.1**: data collection, guild sync, Roster, Character and Settings tabs, `/sk debug`
+- [x] **v0.1**: data collection, guild sync, Roster, Character and Settings tabs, `/sr debug`
 - [x] **v0.1.1**: status dots, alts under mains, notes, version column, missing-enchant markers, cooldowns, privacy switches
 - [x] **v0.1.2**: raid attunement view, "Ask for latest", faster updates (30–60 s)
 - [x] **v0.2.0**: **Crafters** tab and "Crafted by" on item tooltips
@@ -327,7 +326,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.4**: new tagline, *Height is not a stat.*
 - [x] **v0.2.5**: first in-game test (5 Nov): sync switched back on, enchant check at level 60, security fixes
 - [x] **v0.2.6**: hotfix, no more false "send errors"
-- [x] **v0.2.7**: `/sk debug` profession checks (what the game shows, before v0.3 is built)
+- [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.0 Professions**: guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
 - [ ] **In-game test round** with guildmates (TESTING.md), then fixes
 - [ ] **v0.4**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
@@ -401,9 +400,9 @@ any tab before and after the redesign.
 | `preview/`, `tools/`, `docs/` | the browser preview, the texture and token scripts, mock-up renderer and design notes |
 
 **Releasing:** push a tag like `v0.2.3` on `main`. The *Release* workflow runs
-the BigWigs packager, builds `ShortKings-0.2.3.zip` and attaches it to a GitHub
+the BigWigs packager, builds `ShortRoyalty-0.2.3.zip` and attaches it to a GitHub
 Release with notes from CHANGELOG.md. Every push also produces an unpublished
-**test build** (Actions → Tests → `ShortKings-test-build`).
+**test build** (Actions → Tests → `ShortRoyalty-test-build`).
 
 **Design:** [DESIGN.md](DESIGN.md) (the system), [PRODUCT.md](PRODUCT.md) (who it's for),
 [docs/design/lamborghini-reference.md](docs/design/lamborghini-reference.md) (the starting reference).

@@ -15,7 +15,7 @@ Identity.lastSender = {}     -- guid -> sender string exactly as received (for w
 Identity.byFirst = {}        -- first word of each member's name -> true (loose-match candidates)
 Identity.confirmed = {}      -- sender string -> guid, loose matches seen on the GUILD channel
 Identity.rosterSource = "none"
-Identity.rosterSample = nil  -- first raw roster name, for /sk debug
+Identity.rosterSample = nil  -- first raw roster name, for /sr debug
 
 local function normalise(name)
 	if type(name) ~= "string" then return nil end

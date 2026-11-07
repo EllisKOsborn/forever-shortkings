@@ -48,10 +48,27 @@ describe("Guild rename", function()
 	end)
 
 	it("shows the new name to players but keeps the technical names", function()
-		local toc = io.open("ShortKings.toc"):read("*a")
+		local toc = io.open("ShortRoyalty.toc"):read("*a")
 		assert.truthy(toc:find("## Title: |cffD94FA0Short Royalty|r", 1, true))
-		assert.truthy(toc:find("## SavedVariables: ShortKingsDB", 1, true))
-		assert.equal("ShortKings", SK.PREFIX)
+		assert.truthy(toc:find("## SavedVariables: ShortRoyaltyDB", 1, true))
+		assert.equal("ShortRoyalty", SK.PREFIX)
 		assert.truthy(SK.CHAT_PREFIX:find("Short Royalty", 1, true))
+	end)
+
+	it("uses the ShortRoyalty folder everywhere the game loads files from", function()
+		for _, f in ipairs({ "ShortRoyalty.toc", "embeds.xml", "Media/Fonts.xml", "UI/Theme.lua", ".pkgmeta" }) do
+			local text = io.open(f):read("*a")
+			assert.is_nil(text:find("ShortKings", 1, true), f .. " still mentions ShortKings")
+		end
+		-- every media path in Fonts.xml points at a file that exists in this folder
+		local xml = io.open("Media/Fonts.xml"):read("*a")
+		local n = 0
+		for path in xml:gmatch('Interface\\AddOns\\ShortRoyalty\\([^"]+)"') do
+			n = n + 1
+			local local_path = path:gsub("\\", "/")
+			assert.is_not_nil(io.open(local_path), "missing " .. local_path)
+		end
+		assert.is_true(n > 0)
+		assert.truthy(io.open(".pkgmeta"):read("*a"):find("package-as: ShortRoyalty", 1, true))
 	end)
 end)

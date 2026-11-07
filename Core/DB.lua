@@ -1,4 +1,4 @@
--- SavedVariables (ShortKingsDB, account-wide): schema, defaults, pruning.
+-- SavedVariables (ShortRoyaltyDB, account-wide): schema, defaults, pruning.
 local _, SK = ...
 
 local DBM = SK:NewModule("DBM")
@@ -25,7 +25,7 @@ local DEFAULTS = {
 	own = {},             -- [guid] = full profile of our own characters (never sent)
 	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns
 	account = {},  -- [guid] = true for characters seen on this account
-	seenGuids = {}, -- [name] = { guid, first, logins, changedFrom } (GUID stability check for /sk debug)
+	seenGuids = {}, -- [name] = { guid, first, logins, changedFrom } (GUID stability check for /sr debug)
 	feed = {},      -- recent milestones, newest first, max 50 (local only, never sent)
 	favourites = { recipes = {}, crafters = {} }, -- starred recipes and crafters (v0.3, local only)
 	reagents = { build = nil, list = {} },        -- recipe reagents read from the game (v0.3, local only)
@@ -53,7 +53,7 @@ function DBM:Load(saved)
 end
 
 function DBM:OnInit()
-	ShortKingsDB = self:Load(ShortKingsDB)
+	ShortRoyaltyDB = self:Load(ShortRoyaltyDB)
 end
 
 function DBM.GuildKey(guildName, realm)

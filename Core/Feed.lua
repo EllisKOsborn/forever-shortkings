@@ -3,7 +3,7 @@
 --
 -- Worked out locally whenever a profile is replaced by a newer one (from a
 -- guildmate, or our own rebuild), by comparing the old and new copies. It is
--- stored only in ShortKingsDB.feed and NEVER sent: every client builds its
+-- stored only in ShortRoyaltyDB.feed and NEVER sent: every client builds its
 -- own, so there is no protocol change. The first copy we ever see of a
 -- character produces nothing, so a fresh install doesn't announce everyone.
 local _, SK = ...

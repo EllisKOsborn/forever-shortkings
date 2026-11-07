@@ -1,5 +1,5 @@
 -- luacheck: globals C_TradeSkillUI
--- v0.2.7: /sk debug probes that answer the questions v0.3 Professions needs
+-- v0.2.7: /sr debug probes that answer the questions v0.3 Professions needs
 -- (docs/prompts/next-v0.3-professions.md, Step 1).
 local H = require("tests.helpers.load")
 

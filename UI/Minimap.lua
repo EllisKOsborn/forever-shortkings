@@ -24,7 +24,7 @@ end
 
 -- Built-in fallback button.
 local function createFallback(settings)
-	local b = CreateFrame("Button", "ShortKingsMinimapButton", Minimap)
+	local b = CreateFrame("Button", "ShortRoyaltyMinimapButton", Minimap)
 	b:SetSize(32, 32)
 	b:SetFrameStrata("MEDIUM")
 	b:SetFrameLevel(8)
@@ -73,11 +73,11 @@ function MM:OnLogin()
 	local LDB = LibStub("LibDataBroker-1.1", true)
 	local DBIcon = LibStub("LibDBIcon-1.0", true)
 	if LDB and DBIcon then
-		local obj = LDB:NewDataObject("ShortKings", {
+		local obj = LDB:NewDataObject("ShortRoyalty", {
 			type = "launcher", text = "Short Royalty", icon = MM.ICON,
 			OnClick = onClick, OnTooltipShow = onTooltip,
 		})
-		DBIcon:Register("ShortKings", obj, settings)
+		DBIcon:Register("ShortRoyalty", obj, settings)
 		self.lib = DBIcon
 		self.mode = "LibDBIcon"
 	else
@@ -91,7 +91,7 @@ function MM:SetShown(show)
 	local settings = SK.DB.settings.minimap
 	settings.hide = not show
 	if self.lib then
-		if show then self.lib:Show("ShortKings") else self.lib:Hide("ShortKings") end
+		if show then self.lib:Show("ShortRoyalty") else self.lib:Hide("ShortRoyalty") end
 	elseif self.button then
 		self.button:SetShown(show)
 	end

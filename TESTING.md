@@ -1,13 +1,13 @@
 # In-game test checklist
 
 Nothing has been confirmed in game yet. Tick these off as you go and send
-the `/sk debug` text when something looks wrong.
+the `/sr debug` text when something looks wrong.
 
 ## Before you start
 
 - [ ] Type `/dump select(4, GetBuildInfo())` in chat. It should print **16001**.
       If it prints a different number, tell me (the `## Interface:` line in
-      `ShortKings.toc` must match).
+      `ShortRoyalty.toc` must match).
 - [ ] On the character screen, **AddOns** lists *Short Royalty* and it isn't
       marked "out of date". (If it is, tick "Load out of date AddOns" for now.)
 
@@ -33,7 +33,7 @@ the `/sk debug` text when something looks wrong.
         "N recipes". Does N match the number of recipes you know?
 12. [ ] If you have a cooldown (e.g. a transmute), it appears under **Cooldowns**.
 13. [ ] Reputation lists your factions with the right standing.
-14. [ ] `/sk debug` opens a report. **Please copy it and send it to me**:
+14. [ ] `/sr debug` opens a report. **Please copy it and send it to me**:
         - "UnitFullName" and "Roster sample name" show how Forever writes names.
         - "missing:" lines show which APIs don't exist.
         - "Attunement quests … known to this client" shows whether the
@@ -132,7 +132,7 @@ the `/sk debug` text when something looks wrong.
         disappears. Tick it again and it's back.
 48. [ ] A guildmate turns off "Share my recipes": after their next update
         they're no longer listed in Crafters or on tooltips.
-49. [ ] `/sk debug`, "== Crafters ==": the recipe and crafter counts look
+49. [ ] `/sr debug`, "== Crafters ==": the recipe and crafter counts look
         right, and "Item tooltip line: hooked=yes".
 
 ## v0.2.1 additions (launch readiness)
@@ -140,18 +140,18 @@ the `/sk debug` text when something looks wrong.
 50. [ ] Raid picker lists Barrow Deeps (10), Hyjal Summit (20) and Onyxia's
         Lair (40) only. Barrow and Hyjal say "No attunement needed for this raid."
 51. [ ] Onyxia: a character with the Drakefire Amulet in their bags shows
-        *yes*. Put it in the bank, `/sk scan`: still *yes* but with an orange
+        *yes*. Put it in the bank, `/sr scan`: still *yes* but with an orange
         "!" and "Drakefire Amulet not in bags" in the tooltip.
-52. [ ] `/sk debug`, "== Attunement quests ==": the line "Onyxia's Lair item
+52. [ ] `/sr debug`, "== Attunement quests ==": the line "Onyxia's Lair item
         16309" shows name="Drakefire Amulet" and resolves=yes.
 
-53. [ ] `/sk debug` starts with **"Live-client checks"**. Copy the whole block
+53. [ ] `/sr debug` starts with **"Live-client checks"**. Copy the whole block
         to me. Log out and back in on the same character, run it again, and
         check it says "GUID stable between logins: yes so far (2 logins …)".
-54. [ ] Open your profession window, then `/sk debug`: the "unlearned recipes"
-        line now has an answer. Open the Calendar once, then `/sk debug`: the
+54. [ ] Open your profession window, then `/sr debug`: the "unlearned recipes"
+        line now has an answer. Open the Calendar once, then `/sr debug`: the
         "Calendar" line shows how many guild events are listed.
-55. [ ] If you ever see a Lua error, `/sk debug` lists it under
+55. [ ] If you ever see a Lua error, `/sr debug` lists it under
         "Recent errors". Send me that part too.
 
 56. [ ] Settings → **What guildmates see from you**: untick "Share my gear and
@@ -191,7 +191,7 @@ in game if anything looks different and send it.
 
 67. [ ] **Title font:** "SHORT ROYALTY", the tab names and the section headings
         use the square-cut Chakra Petch font. If they look like the normal
-        game font instead, run `/sk debug`: the line "Display font (Chakra
+        game font instead, run `/sr debug`: the line "Display font (Chakra
         Petch) loaded" says NO when the game refused the file.
 68. [ ] **Body font:** names and numbers use a narrow, plain font (Arial
         Narrow). Names with accents (and Cyrillic/Korean/Chinese, if anyone
@@ -232,13 +232,13 @@ in game if anything looks different and send it.
 
 ## v0.2.5 additions (security fixes)
 
-80. [ ] `/sk debug`, "== Your data ==": **"Passes guildmates' safety check:
+80. [ ] `/sr debug`, "== Your data ==": **"Passes guildmates' safety check:
         yes"**. If it says no, copy the reason and send it: guildmates are
         refusing your data.
 81. [ ] With a guildmate on v0.2.5 too: you still see each other's data
         update within a minute (the stricter checks didn't block real data).
-        Then `/sk debug`, "== Sync ==": "Ignored senders this session: 0".
-82. [ ] Same `/sk debug` block: note the "Loose name matches confirmed"
+        Then `/sr debug`, "== Sync ==": "Ignored senders this session: 0".
+82. [ ] Same `/sr debug` block: note the "Loose name matches confirmed"
         number. 0 means sender names match the roster exactly (best case); a
         higher number means the game reports names differently and the
         first-name fallback is in use. Send it either way.
@@ -247,9 +247,9 @@ in game if anything looks different and send it.
 
 83. [ ] Learn a crafting profession at a trainer if you don't have one.
         Open its window, tick **Show unlearned** in the window's filter if it
-        exists, close and reopen the window, then `/sk debug`. Send the
+        exists, close and reopen the window, then `/sr debug`. Send the
         **"Profession checks for v0.3"** block.
-84. [ ] Close the profession window and run `/sk debug` again. Send the two
+84. [ ] Close the profession window and run `/sr debug` again. Send the two
         "Reagents" lines (this checks whether reagents can be read with the
         window closed).
 85. [ ] If you have Engineering, Leatherworking or Blacksmithing, check the
@@ -291,7 +291,7 @@ in game if anything looks different and send it.
         data (the new specialisation field doesn't upset older versions).
 
 96. [ ] Titles and tabs use the square **Chakra Petch** font (like the
-        README pictures). `/sk debug`: "Display font (Chakra Petch) loaded:
+        README pictures). `/sr debug`: "Display font (Chakra Petch) loaded:
         yes (N texts ok, 0 failed; font object present)". Send it if it says NO.
 97. [ ] With Herbalism (or any gathering profession), open its window:
         Professions → Herbalism lists the camping recipes the window shows
@@ -301,8 +301,11 @@ in game if anything looks different and send it.
 
 98. [ ] The window title, AddOns list and minimap tooltip say **Short Royalty**.
 99. [ ] `/sr` and `/shortroyalty` open the window (`/sk` still does too).
-100. [ ] Your guildmates and your own data are still there after the rename
-        (the Roster isn't empty). `/sk debug` → Guild shows key "Short Royalty-…".
+100. [ ] Delete any old `ShortKings` folder first. Only **one** Short Royalty
+        is listed under AddOns, the folder is `AddOns/ShortRoyalty/`, and the
+        fonts and crest show (they load from the new folder path).
+101. [ ] `/sr debug` → Guild shows key "Short Royalty-…", and the window opens
+        with no Lua errors.
 
 ## Known gaps in v0.1
 

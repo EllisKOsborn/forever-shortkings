@@ -41,9 +41,9 @@ jobs:
           args: -d
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: ShortKings-test-build
+          name: ShortRoyalty-test-build
           # Both paths share .release/, so the download contains a ready
-          # "ShortKings" folder (plus the zip the packager made).
+          # "ShortRoyalty" folder (plus the zip the packager made).
           path: |
-            .release/ShortKings/
+            .release/ShortRoyalty/
             .release/*.zip

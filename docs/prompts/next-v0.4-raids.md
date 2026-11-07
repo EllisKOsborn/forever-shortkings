@@ -2,7 +2,7 @@
 
 Copy everything below the line into a new Claude Code chat on the
 `forever-shortkings` repo. **Start after v0.3 Professions ships** and the first in-game test round
-(TESTING.md and a `/sk debug` report), because this builds on sync, the
+(TESTING.md and a `/sr debug` report), because this builds on sync, the
 roster and attunements working for real.
 
 ---
@@ -144,7 +144,7 @@ changed), CLAUDE.md status. Commit and push.
 
 ## Definition of done
 - `busted --lua=lua5.1` and `luacheck .` pass locally and in CI.
-- Every new WoW API is checked against the Forever source and probed in `/sk debug`.
+- Every new WoW API is checked against the Forever source and probed in `/sr debug`.
 - Docs and mockups are updated, commits are pushed to your designated branch,
   and there's no PR unless I ask.
 - Finish with a short plain-language summary, the new TESTING.md items, and

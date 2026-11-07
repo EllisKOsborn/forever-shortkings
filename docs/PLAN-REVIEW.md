@@ -65,7 +65,7 @@ Labels: **Adopt** (as proposed) · **Adapt** (useful, different scope) ·
 
 | Stage | Verdict | Reasoning |
 |---|---|---|
-| 0 Validate the alpha | **Adopt** | Gate. TESTING.md plus the new `/sk debug` probes and error capture |
+| 0 Validate the alpha | **Adopt** | Gate. TESTING.md plus the new `/sr debug` probes and error capture |
 | 1 Clearer data states | **Adopt (small)** | Character tab: "relayed copy", "stale" (> 7 days) and "not scanned" labels. Debug: data-health lines |
 | 2 Sharing preview | **Adopt** | Read-only, uses `Profile.Public` itself, so it can't drift from what's sent |
 | 2 Delete my data from everyone | **Defer** | Can't be guaranteed (offline copies). Needs a protocol design and owner approval |
@@ -81,7 +81,7 @@ The decisions are also recorded in its section 7.
 | P1 Attunement table | **Modify, adopt** | Verified: Blizzard's overview lists attunement only for Onyxia ("Drakefire Amulet is in your inventory. It does not need to be equipped"), and Icy Veins says Barrow Deeps and Hyjal have none. Amulet item 16309 is confirmed by warcraft.wiki.gg and Wowhead Forever. MC/BWL/Naxx are hidden from the picker (data kept). The amulet is checked with `C_Item.GetItemCount` (Forever docs; bags only by default) and shown alongside the quest, not instead of it |
 | P2 CLAUDE.md tense | **Adopt** | |
 | P3 Proof pass | **Adopt** | Calendar probes, GUID stability, sender and roster samples, unlearned-recipe count |
-| P4 Error capture | **Adopt** | Last 10 errors in `/sk debug` |
+| P4 Error capture | **Adopt** | Last 10 errors in `/sr debug` |
 | P5 Distribution | **Modify** | Packaging already exists. A small "update available" line in the Roster counter now; CurseForge/Wago need the owner's accounts |
 | P6 Camp planner | **Defer** | Needs verified camp objects and spells. Revisit once the owner sees them in game |
 | P7 Levelling feed | **Adopt** (v0.2.3) | Local only, no protocol change. Time-sensitive (5 weeks of levelling), but after the first test round |
@@ -129,7 +129,7 @@ Update 2 Nov: the owner asked for the Overview now, so it shipped as
 | Release | When | Contents |
 |---|---|---|
 | **v0.2.1 launch readiness** | now (before 4 Nov) | P1 attunement fix + amulet check · P2 · P3 probes · P4 error capture · P18/P19 hardening · sharing preview · data-state labels · Copy as text · "update available" line |
-| **Test gate** | 4–7 Nov | Owner runs TESTING.md and sends `/sk debug`. v0.2.2 = fixes only, plus P17 |
+| **Test gate** | 4–7 Nov | Owner runs TESTING.md and sends `/sr debug`. v0.2.2 = fixes only, plus P17 |
 | **v0.2.3 Overview** | Nov | Overview tab: population, data health, profession coverage, single-crafter recipes, attunement summary, levelling feed (P7), deep links |
 | **v0.3.0 / v0.3.1 Raids** | before 9 Dec | `docs/prompts/next-v0.3-raids.md`, plus readiness card (P11) and duplicate-alt check. P13 fallback only if the calendar fails |
 | **v0.4 Professions** | Dec | Cooldown board (B4), specialisations (B3), reagents (B2), favourites (B6). Camps (P6) if verified |

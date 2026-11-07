@@ -31,7 +31,7 @@ end
 
 -- Original-game specialisations (B3). The spell IDs match on two sources
 -- (wowhead.com/classic and classicdb.ch, checked 5 Nov 2026) and the Forever
--- client's own name for every ID matched in game (owner's v0.2.7 /sk debug,
+-- client's own name for every ID matched in game (owner's v0.2.7 /sr debug,
 -- 5 Nov 2026, build 70790), so they are status = "ok". Whether
 -- C_SpellBook.IsSpellKnown says "yes" for someone who has one is still
 -- untested (the test character had none).

@@ -2,7 +2,7 @@
 
 The release workflow (`.github/workflows/release.yml`, BigWigs packager)
 already uploads to CurseForge on every release, as a **WoW Forever** file,
-once two things exist: a CurseForge **project ID** in `ShortKings.toc` and a
+once two things exist: a CurseForge **project ID** in `ShortRoyalty.toc` and a
 **CF_API_KEY** secret on GitHub. Steps 1 to 5 are yours (they need your
 accounts); step 6 is mine.
 
@@ -24,7 +24,7 @@ accounts); step 6 is mine.
 ## 2. First file (needed for CurseForge's review)
 New projects are reviewed by CurseForge before they go public (usually a day
 or two). The review needs a file:
-1. Download **`ShortKings-v0.3.0-forever.zip`** from the GitHub release
+1. Download **`ShortRoyalty-v0.3.0-forever.zip`** from the GitHub release
    (the real zip, not "Source code").
 2. On the project: **Files → Upload file**. Game version: **WoW Forever
    1.60.1** (pick the Forever flavour). Release type: **Beta** (sync between
@@ -44,7 +44,7 @@ file.
 Just the number.
 
 ## 6. (Me) wire it up
-I add `## X-Curse-Project-ID: <number>` to `ShortKings.toc`. From the next
+I add `## X-Curse-Project-ID: <number>` to `ShortRoyalty.toc`. From the next
 release on (publish it on GitHub as usual), the workflow uploads the same
 zip to CurseForge automatically. Tags with "beta" in the name (e.g.
 `v0.3.1-beta`) go up as Beta files; plain `vX.Y.Z` as Release.

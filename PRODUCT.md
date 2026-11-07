@@ -43,7 +43,7 @@ and on laptops; sometimes opened in combat (sync pauses then).
 - Only fonts that ship with the game or the addon render. Textures must be
   .tga/.blp, power-of-two sizes.
 - Motion only through AnimationGroups (alpha, translation, scale, rotation).
-- SavedVariables (`ShortKingsDB`) must stay compatible.
+- SavedVariables (`ShortRoyaltyDB`) must stay compatible.
 
 ## Brand Commitments
 - Name **Short Royalty**, tagline "Height is not a stat." (chosen 3 Nov 2026; replaced "Small in stature. Big in loot.")

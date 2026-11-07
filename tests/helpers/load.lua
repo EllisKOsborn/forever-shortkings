@@ -26,7 +26,7 @@ local UI_FILES = {
 }
 
 local function loadUI(SK)
-	for _, f in ipairs(UI_FILES) do assert(loadfile(f))("ShortKings", SK) end
+	for _, f in ipairs(UI_FILES) do assert(loadfile(f))("ShortRoyalty", SK) end
 end
 
 local function load()
@@ -35,7 +35,7 @@ local function load()
 	for _, f in ipairs(LIBS) do assert(loadfile(f))() end
 	local SK = {}
 	for _, f in ipairs(FILES) do
-		assert(loadfile(f))("ShortKings", SK)
+		assert(loadfile(f))("ShortRoyalty", SK)
 	end
 	-- What ADDON_LOADED would do.
 	SK.DBM:Load({})

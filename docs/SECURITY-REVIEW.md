@@ -13,7 +13,7 @@ below was tried against the stubbed WoW API (`tests/security_spec.lua`).
   internet or your account, and can't send chat for you.
 - **Nothing private leaks.** Notes, officer notes, gold, bags and chat are
   never sent (checked again: only `guild.profiles` copies go on the wire,
-  and the `/sk debug` report and "Copy as text" don't include notes).
+  and the `/sr debug` report and "Copy as text" don't include notes).
 - What **was** possible: annoy or mislead people. Before this review,
   someone could break the addon's windows for the whole guild with one
   crafted message, pretend to be a guild member, freeze people's game, or
@@ -45,7 +45,7 @@ below was tried against the stubbed WoW API (`tests/security_spec.lua`).
 | 7 | Low | The rate-limit table remembered every sender forever. | Idle senders are forgotten. |
 | 8 | Medium | **Build pipeline.** GitHub Actions used movable tags (`@v2`), and LibDataBroker was fetched from whatever its (unmaintained) repo's latest commit is. If either were taken over, a release zip could include someone else's code. The test workflow also had more permissions than it needs. | Actions pinned to exact commits; LibDataBroker pinned to the commit we already ship; the test workflow's token is read-only. |
 
-`/sk debug` now shows **"Passes guildmates' safety check: yes"** (if it ever
+`/sr debug` now shows **"Passes guildmates' safety check: yes"** (if it ever
 says no, guildmates are refusing your data, and the reason is shown) and how
 many senders were ignored this session.
 
@@ -57,7 +57,7 @@ many senders were ignored this session.
   copy always wins as soon as they log in, and our own characters are never
   overwritten. Signing profiles would need public-key cryptography in Lua
   and a way to share keys, which is out of proportion for a 50-person guild.
-  If someone does this, `/sk debug` and the Roster's "updated" times help
+  If someone does this, `/sr debug` and the Roster's "updated" times help
   spot it; remove them from the guild.
 - **A guild member can still cost you about 3 seconds of CPU per session**
   (three bad messages before they're ignored).

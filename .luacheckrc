@@ -11,9 +11,9 @@ ignore = {
 }
 
 globals = {
-	"ShortKingsBody13",
-	"ShortKingsDB", "ShortKings",
-	"SLASH_SHORTKINGS1", "SLASH_SHORTKINGS2", "SLASH_SHORTKINGS3", "SLASH_SHORTKINGS4", "SlashCmdList", "UISpecialFrames",
+	"ShortRoyaltyBody13",
+	"ShortRoyaltyDB", "ShortRoyalty",
+	"SLASH_SHORTROYALTY1", "SLASH_SHORTROYALTY2", "SLASH_SHORTROYALTY3", "SlashCmdList", "UISpecialFrames",
 }
 
 read_globals = {

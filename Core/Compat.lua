@@ -3,7 +3,7 @@
 -- function degrades a feature instead of throwing a Lua error.
 --
 -- Verified against Blizzard's UI source for WoW Forever 1.60.1 (70532).
--- Items marked "unverified" must be confirmed in game (see /sk debug).
+-- Items marked "unverified" must be confirmed in game (see /sr debug).
 local _, SK = ...
 
 local Compat = {}
@@ -64,7 +64,7 @@ function Compat.CanSendAddonMessages()
 	return true
 end
 
--- Blizzard's flag, for /sk debug only (never used to block sending).
+-- Blizzard's flag, for /sr debug only (never used to block sending).
 function Compat.AddonChatFlag()
 	if has("C_ChatInfo", "AreOutgoingAddonChatMessagesRestricted") then
 		local ok, v = pcall(C_ChatInfo.AreOutgoingAddonChatMessagesRestricted)
@@ -741,7 +741,7 @@ function Compat.SetAnimScale(anim, from, to)
 end
 
 ---------------------------------------------------------------------------
--- Calendar (read-only probe for /sk debug; the Raids tab comes in v0.3).
+-- Calendar (read-only probe for /sr debug; the Raids tab comes in v0.3).
 -- Returns present, numGuildEvents (nil if the call isn't there or fails).
 ---------------------------------------------------------------------------
 function Compat.CalendarStatus()
@@ -755,7 +755,7 @@ function Compat.CalendarStatus()
 end
 
 ---------------------------------------------------------------------------
--- Report for /sk debug: which APIs this client actually has.
+-- Report for /sr debug: which APIs this client actually has.
 ---------------------------------------------------------------------------
 Compat.PROBES = {
 	"C_ChatInfo.SendAddonMessage", "C_ChatInfo.InChatMessagingLockdown",

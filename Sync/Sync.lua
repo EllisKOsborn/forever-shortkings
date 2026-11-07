@@ -105,7 +105,7 @@ Sync.SEND_FAIL_WARN = 5 -- tell the player after this many failures in a row
 -- (item, sentBytes, totalBytes, didSend): ChatThrottleLib passes AceComm
 -- "didSend" (true/false) and AceComm drops Blizzard's numeric result code.
 -- Numbers are handled too, in case a library version passes the code.
---   "ok" | "lockdown" | "throttle" | "failed", plus a reason for /sk debug
+--   "ok" | "lockdown" | "throttle" | "failed", plus a reason for /sr debug
 function Sync.SendOutcome(result)
 	if result == true or result == SUCCESS then return "ok" end
 	if result == nil then return "ok" end -- older libraries: no information
@@ -128,7 +128,7 @@ local function onChunkSent(item, _, _, result)
 		Sync.lastSendError = reason
 		Sync.failStreak = (Sync.failStreak or 0) + 1
 		if Sync.failStreak == Sync.SEND_FAIL_WARN then
-			SK:Print("Sending to guildmates is failing (%s). Please send the /sk debug text.", reason)
+			SK:Print("Sending to guildmates is failing (%s). Please send the /sr debug text.", reason)
 		end
 	end
 	if outcome == "lockdown" and not item.requeued then

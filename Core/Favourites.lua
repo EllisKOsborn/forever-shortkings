@@ -1,5 +1,5 @@
 -- Favourites (B6): starred recipes and crafters. Saved on this computer
--- only (ShortKingsDB.favourites), never sent to anyone.
+-- only (ShortRoyaltyDB.favourites), never sent to anyone.
 local _, SK = ...
 
 local Fav = SK:NewModule("Favourites")
