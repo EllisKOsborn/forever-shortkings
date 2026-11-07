@@ -42,6 +42,7 @@ Theme.COLOR = {
 -- Alphas used with a colour (a tint, a selected row).
 Theme.ALPHA = {
 	selected = 0.16, -- beard tint behind a selected row or chip
+	alert = 0.14,    -- spark tint behind the reminder bar
 	hover = 1,
 	disabledIcon = 0.35,
 }
@@ -196,6 +197,7 @@ Theme.SIZES = {
 	pad = 16,           -- window inner margin
 	control = 24,       -- buttons, search box, menu
 	controlSmall = 20,  -- buttons inside list rows
+	banner = 40,        -- the orange reminder bar under the tabs (adds to the window height)
 	minHit = 24,        -- smallest click area; smaller controls widen their hit box
 	check = 16,
 	row = 22,           -- list row pitch

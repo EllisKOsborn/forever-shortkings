@@ -690,6 +690,29 @@ function Compat.SendTell(name)
 	return false
 end
 
+-- Opens one of your own profession windows (v0.3.4, the reminder banner).
+-- Blizzard's Forever UI has OpenProfessionUIToSkillLine (Blizzard_Professions
+-- bootstrap, always loaded) and C_TradeSkillUI.OpenTradeSkill(skillLineID);
+-- neither is restricted. Not in combat. Returns ok, why.
+function Compat.CanShowProfession()
+	return type(_G.OpenProfessionUIToSkillLine) == "function" or has("C_TradeSkillUI", "OpenTradeSkill")
+end
+
+function Compat.ShowProfession(skillLine)
+	if type(skillLine) ~= "number" then return false, "unknown" end
+	if Compat.InCombat() then return false, "combat" end
+	local ok, opened
+	if type(_G.OpenProfessionUIToSkillLine) == "function" then
+		ok = pcall(_G.OpenProfessionUIToSkillLine, skillLine)
+		if ok then return true end
+	end
+	if has("C_TradeSkillUI", "OpenTradeSkill") then
+		ok, opened = pcall(C_TradeSkillUI.OpenTradeSkill, skillLine)
+		if ok and opened ~= false then return true end
+	end
+	return false, "unavailable"
+end
+
 -- Opens the chat box with `text` already typed. ChatFrameUtil.OpenChat is
 -- in the same Forever file; its edit box parses a leading "/g " into the
 -- guild channel (ParseText on the next frame).

@@ -24,8 +24,9 @@ end
 
 -- The chosen window size, shrunk if it wouldn't fit on screen (big UI
 -- scale on a small display). Pure; tested.
-function Main.FitScale(chosen, screenW, screenH)
-	local ww, wh = S.window[1], S.window[2]
+-- extraH: the reminder bar's height while it shows.
+function Main.FitScale(chosen, screenW, screenH, extraH)
+	local ww, wh = S.window[1], S.window[2] + (extraH or 0)
 	local fit = 1e9
 	if screenW and screenW > 0 then fit = math.min(fit, screenW * 0.96 / ww) end
 	if screenH and screenH > 0 then fit = math.min(fit, screenH * 0.94 / wh) end
@@ -35,7 +36,7 @@ end
 function Main:ApplyScale()
 	if not self.frame then return end
 	local chosen = SK.DB.settings.window.scale or 1
-	self.frame:SetScale(Main.FitScale(chosen, UIParent:GetWidth(), UIParent:GetHeight()))
+	self.frame:SetScale(Main.FitScale(chosen, UIParent:GetWidth(), UIParent:GetHeight(), self.bannerH))
 end
 
 function Main:Build()
@@ -131,6 +132,32 @@ function Main:Build()
 	underline:Hide()
 	f.underline = underline
 
+	-- Reminder bar (v0.3.4): orange, under the tabs, on every tab, while your
+	-- profession windows haven't been opened. The window grows by its height
+	-- so no tab's layout moves.
+	local banner = CreateFrame("Frame", nil, f)
+	banner:SetPoint("TOPLEFT", SP.l, -(S.titleBar + S.tabBar + SP.m))
+	banner:SetPoint("TOPRIGHT", -SP.l, -(S.titleBar + S.tabBar + SP.m))
+	banner:SetHeight(S.banner)
+	banner.bg = banner:CreateTexture(nil, "BACKGROUND")
+	banner.bg:SetAllPoints()
+	Theme.Solid(banner.bg, "spark", Theme.ALPHA.alert)
+	banner.edge = banner:CreateTexture(nil, "ARTWORK")
+	banner.edge:SetPoint("TOPLEFT")
+	banner.edge:SetPoint("BOTTOMLEFT")
+	banner.edge:SetWidth(SP.xxs)
+	Theme.Solid(banner.edge, "spark")
+	banner.button = W.Button(banner, "Open", nil, S.control, function(b) Main:OpenNextProfession(b.skillLine, b.profName) end, "primary")
+	banner.button:SetPoint("RIGHT", -SP.s, 0)
+	banner.text = Theme.Text(banner, "body", "text")
+	banner.text:SetPoint("LEFT", SP.m, 0)
+	banner.text:SetPoint("RIGHT", banner.button, "LEFT", -SP.m, 0)
+	banner.text:SetJustifyH("LEFT")
+	banner.text:SetWordWrap(true)
+	banner:Hide()
+	f.banner = banner
+	self.bannerH = 0
+
 	-- Content area
 	local content = CreateFrame("Frame", nil, f)
 	content:SetPoint("TOPLEFT", SP.l, -(S.titleBar + S.tabBar + SP.l))
@@ -153,6 +180,9 @@ function Main:Build()
 		changed()
 		Motion.Pulse(ring, SK.Compat.Now())
 	end)
+	-- The bar's Open button is off in combat.
+	SK:RegisterEvent("PLAYER_REGEN_DISABLED", function() if f:IsShown() then Main:UpdateBanner() end end)
+	SK:RegisterEvent("PLAYER_REGEN_ENABLED", function() if f:IsShown() then Main:UpdateBanner() end end)
 	SK:RegisterEvent("UI_SCALE_CHANGED", function() Main:ApplyScale() end)
 	SK:RegisterEvent("DISPLAY_SIZE_CHANGED", function() Main:ApplyScale() end)
 	return f
@@ -190,6 +220,46 @@ function Main:Select(key)
 	SK.DB.settings.window.tab = key
 	SK.Onboarding.Seen(key)
 	self:Refresh()
+end
+
+-- Show, hide or update the reminder bar; grow or shrink the window to fit.
+function Main:UpdateBanner()
+	local f = self.frame
+	if not f then return end
+	local info = SK.Professions.Banner(SK.Profile:Own(), SK.DB.settings.share)
+	local b = f.banner
+	b:SetShown(info ~= nil)
+	local extra = info and (S.banner + SP.m) or 0
+	if info then
+		b.text:SetText(info.text)
+		b.button:SetText("Open " .. info.next.name)
+		b.button:SetWidth(math.max(S.minHit * 2, (b.button.label:GetStringWidth() or 0) + SP.l * 2))
+		b.button.skillLine, b.button.profName = info.next.skillLine, info.next.name
+		local can = SK.Compat.CanShowProfession()
+		b.button:SetShown(can)
+		b.button:SetDisabled(SK.Compat.InCombat())
+		b.button.disabledTooltip = "Not in combat"
+		b.button.tooltip = "Opens your " .. info.next.name .. " window. The addon records your recipes " ..
+			"as soon as it opens; this bar goes away when all are done."
+		b.text:SetPoint("RIGHT", can and b.button or b, can and "LEFT" or "RIGHT", -SP.m, 0)
+	end
+	if extra ~= self.bannerH then
+		self.bannerH = extra
+		f:SetHeight(S.window[2] + extra)
+		f.content:SetPoint("TOPLEFT", SP.l, -(S.titleBar + S.tabBar + SP.l + extra))
+		self:ApplyScale()
+	end
+end
+
+function Main:OpenNextProfession(skillLine, name)
+	local ok, why = SK.Compat.ShowProfession(skillLine)
+	if ok then return true end
+	if why == "combat" then
+		SK:Print("You can open %s after combat.", name or "it")
+	else
+		SK:Print("Couldn't open %s from here. Open it from your spellbook or professions book instead.", name or "it")
+	end
+	return false
 end
 
 -- Words for the title-bar status. Pure; tested.
@@ -230,6 +300,7 @@ function Main:Refresh()
 	for _, tab in ipairs(self.tabs) do
 		if tab.key == self.current and tab.built and tab.module.Refresh then tab.module:Refresh() end
 	end
+	self:UpdateBanner()
 	local paused, why = SK.Sync:IsPaused()
 	local f = self.frame
 	f.status:SetText(Main.StatusText(SK.guildName, paused, why, #SK.errors))

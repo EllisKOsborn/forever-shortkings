@@ -1,7 +1,14 @@
 # Changelog
 
-## v0.3.4 (not released yet): one crafter's recipes, who has the addon
+## v0.3.4 (not released yet): one crafter's recipes, who has the addon, profession reminder
 
+- **Hard-to-miss profession reminder.** Until you've opened each of your
+  crafting profession windows once, an orange bar sits under the tabs on
+  every tab ("Your guild can't see your recipes yet. Open your Alchemy and
+  Tailoring windows once.") with a gold **Open Alchemy** button that opens
+  the window for you. It moves on to the next profession, and goes away by
+  itself when they're all done. The button is off in combat. No bar if you
+  chose not to share recipes. The login chat line now points to it.
 - **Professions: click a crafter to see their recipes.** In one profession
   (say Tailoring), clicking a name used to jump to the Character tab. Now it
   shows only that person's recipes on the right, with their name and skill

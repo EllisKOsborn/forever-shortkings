@@ -173,17 +173,45 @@ end
 ---------------------------------------------------------------------------
 -- Reminders
 ---------------------------------------------------------------------------
--- Crafting professions whose recipes have never been scanned.
-function Prof.Unscanned(profile)
+-- Crafting professions whose recipes have never been scanned:
+-- { { skillLine =, name = }, ... } by name.
+function Prof.UnscannedLines(profile)
 	local out = {}
-	if not profile or not profile.profs then return out end
+	if not profile or type(profile.profs) ~= "table" then return out end
 	for skillLine, p in pairs(profile.profs) do
-		if not SK.Data.GATHERING[skillLine] and not p.scanned then
-			out[#out + 1] = p.name or tostring(skillLine)
+		if type(skillLine) == "number" and type(p) == "table" and not SK.Data.GATHERING[skillLine] and not p.scanned then
+			out[#out + 1] = { skillLine = skillLine, name = p.name or tostring(skillLine) }
 		end
 	end
-	table.sort(out)
+	table.sort(out, function(a, b) return a.name < b.name end)
 	return out
+end
+
+-- The same, names only.
+function Prof.Unscanned(profile)
+	local out = {}
+	for i, l in ipairs(Prof.UnscannedLines(profile)) do out[i] = l.name end
+	return out
+end
+
+-- "Tailoring", "Tailoring and Cooking", "Alchemy, Cooking and First Aid"
+local function joinNames(names)
+	if #names <= 1 then return names[1] or "" end
+	return table.concat(names, ", ", 1, #names - 1) .. " and " .. names[#names]
+end
+
+-- The orange reminder bar on every tab (v0.3.4). Pure; tested.
+-- Returns nil (no bar) or { text, next = { skillLine, name }, count }.
+-- No bar when you chose not to share recipes: then there's nothing to fix.
+function Prof.Banner(own, share)
+	if not own or (share and share.recipes == false) then return nil end
+	local lines = Prof.UnscannedLines(own)
+	if #lines == 0 then return nil end
+	local names = {}
+	for i, l in ipairs(lines) do names[i] = l.name end
+	local text = "Your guild can't see your recipes yet. Open your " .. joinNames(names) ..
+		(#names == 1 and " window" or " windows") .. " once."
+	return { text = text, next = lines[1], count = #lines }
 end
 
 ---------------------------------------------------------------------------
@@ -261,7 +289,7 @@ function Prof:Remind()
 	local own = SK.Profile:Own()
 	local missing = Prof.Unscanned(own)
 	if #missing > 0 then
-		SK:Print("Open your %s window once so the guild can see your recipes.",
+		SK:Print("Open your %s window once so the guild can see your recipes (/sr has a button for it).",
 			table.concat(missing, ", "))
 	end
 end

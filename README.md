@@ -151,6 +151,10 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 
 ### 🧨 Everywhere
 - **Open it** with `/sr` (or `/shortroyalty`, `/sk`) or the **minimap button**: left-click opens the window, right-click opens Settings, drag to move it.
+- **Profession reminder bar:** until you've opened each of your crafting profession windows once (that's when your recipes are recorded), an orange bar sits under the tabs on **every** tab: "Your guild can't see your recipes yet. Open your Alchemy and Tailoring windows once." Its gold **Open Alchemy** button opens that window for you (not in combat), then the next one, and the bar goes away by itself when all are done. The window grows by the bar's height, so nothing on the tabs moves. No bar if you chose not to share recipes.
+
+<p align="center"><img src="docs/images/reminder.png" alt="Profession reminder bar" width="100%"></p>
+
 - **The window** opens on the Overview the first time, then on your last tab. Drag it by the title bar; it remembers where you left it. **Esc** closes it. The title bar shows the crest, your guild and the sync status.
 - **Automatic collection** on every character you play: gear, item level, talents, reputations, professions, recipes (when you open the profession window), cooldowns, attunements and your other characters.
 - **"Crafted by" on item tooltips:** hover any item to see "Short Royalty: Bramble (online), Dabble +2 more". Online crafters first, at most three names.
@@ -341,7 +345,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.3**: fix: guildmates can see each other's data (big messages sent as numbered pieces)
-- [ ] **v0.3.4** (built, not released): click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't
+- [ ] **v0.3.4** (built, not released): click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't; orange "open your profession windows" bar with an Open button
 - [x] **v0.3.2**: every recipe in the game with search (name, group, material), Wowhead links, Getting started, on CurseForge
 - [x] **v0.3.0 Professions**: guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
 - [x] **v0.3.1**: renamed to **Short Royalty** (window, folder, download and `/sr`)

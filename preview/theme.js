@@ -138,6 +138,7 @@ window.SK_THEME = {
     "pad": 16,
     "control": 24,
     "controlSmall": 20,
+    "banner": 40,
     "minHit": 24,
     "check": 16,
     "row": 22,
@@ -162,6 +163,7 @@ window.SK_THEME = {
   },
   "alpha": {
     "selected": 0.16,
+    "alert": 0.14,
     "hover": 1,
     "disabledIcon": 0.35
   },

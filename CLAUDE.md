@@ -337,7 +337,15 @@ messages → sender ignored for the session).
   who don't (`Overview.Build` → `hasAddon`, `without`, `addonNoData`;
   `Identity.HasAddon` = own account, a version heard (HI), or any profile).
   *Without addon* = `RosterTab:ShowWithoutAddon` (Version column sorts
-  no-addon first). TESTING 111–115.
+  no-addon first). Also the orange **profession reminder bar** (owner picked
+  "banner on every tab" + "open it for me" from a list of options):
+  `Professions.Banner(own, share)` (pure), `MainFrame:UpdateBanner` (the
+  window grows by `SIZES.banner + SP.m` so tab layouts don't move),
+  `Compat.ShowProfession(skillLine)` → Blizzard's `OpenProfessionUIToSkillLine`
+  (Blizzard_Professions bootstrap) or `C_TradeSkillUI.OpenTradeSkill`, neither
+  restricted in the forever source; not in combat. Unconfirmed in game.
+  TESTING 111–117. (`Compat.OpenProfession` is the old *read which window is
+  open* function; don't confuse them.)
 - **CurseForge uploads are automatic** (checked 7 Nov: the v0.3.2 Release run
   logged "Uploading ShortRoyalty-v0.3.2-forever.zip (1.60.1 release) …
   Success!"). Owner still renames the project from "Short Kings" and archives

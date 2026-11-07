@@ -86,6 +86,13 @@
   .tab:hover { color: var(--text); } .tab.on { color: var(--text); }
   .underline { position: absolute; bottom: -1px; height: var(--sz-underline); background: var(--gold); left: 0; width: 0; }
 
+  /* v0.3.4 reminder bar: the window grows by its height while it shows */
+  .win.remind { height: calc(var(--sz-windowH) + var(--sz-banner) + var(--sp-m)); }
+  .remindbar { position: absolute; left: var(--sp-l); right: var(--sp-l); top: calc(var(--sz-titleBar) + var(--sz-tabBar) + var(--sp-m)); height: var(--sz-banner);
+    display: flex; align-items: center; gap: var(--sp-m); padding: 0 var(--sp-s) 0 var(--sp-m); box-sizing: border-box; border-left: 2px solid var(--spark); }
+  .remindbar::before { content: ""; position: absolute; inset: 0; background: var(--spark); opacity: var(--alert); pointer-events: none; }
+  .remindbar .rtext { flex: 1; position: relative; } .remindbar .btn { position: relative; flex: none; }
+  .win.remind .content { top: calc(var(--sz-titleBar) + var(--sz-tabBar) + var(--sp-l) + var(--sz-banner) + var(--sp-m)); }
   .content { position: absolute; left: var(--sp-l); right: var(--sp-l); top: calc(var(--sz-titleBar) + var(--sz-tabBar) + var(--sp-l)); bottom: var(--sp-l); }
   .abs { position: absolute; }
 
@@ -634,6 +641,7 @@ function windowHTML() {
       <div class="status" title="${paused ? "Sync paused" : "Sync on. The dot flashes when new data arrives."}"><span class="sdot ${paused ? "paused" : ""}"><i class="ring"></i></span><span class="text ell">${st}</span></div>
       <div class="close" id="closeBtn" title="Close (Esc)"><i></i></div></div>
     <div class="tabbar">${TABS.map((t) => `<div class="tab display ${S.screen === t[0] ? "on" : ""}" data-tab="${t[0]}">${t[1]}</div>`).join("")}<i class="underline" id="ul"></i></div>
+    ${S.remind ? `<div class="remindbar" style="--alert:${T.alpha.alert}"><span class="rtext">Your guild can't see your recipes yet. Open your Alchemy and Tailoring windows once.</span>${btn("Open Alchemy", "primary")}</div>` : ""}
     <div class="content"><div class="page" id="page" style="position:absolute;inset:0">${RENDER[S.screen]()}</div></div>
     ${S.copy ? copyWin() : ""}`;
 }
@@ -653,7 +661,7 @@ function render(opts = {}) {
   const fit = SHOT ? 1 : Math.min(1, (innerWidth - 32 - (cols - 1) * 24) / cols / (T.sizes.windowW * S.scale));
   const k = S.scale * fit;
   const scaleWrap = (inner) => `<div class="scaler" style="transform:scale(${k});height:${T.sizes.windowH * k}px;width:${T.sizes.windowW * k}px;transform-origin:top left">${inner}</div>`;
-  const win = S.open ? `<div class="win" id="win">${windowHTML()}</div>` : `<div style="width:${T.sizes.windowW}px;height:${T.sizes.windowH}px;display:grid;place-items:center;color:#9aa0a6">Window closed. Press "Open window" (or click the minimap button in game).</div>`;
+  const win = S.open ? `<div class="win ${S.remind ? "remind" : ""}" id="win">${windowHTML()}</div>` : `<div style="width:${T.sizes.windowW}px;height:${T.sizes.windowH}px;display:grid;place-items:center;color:#9aa0a6">Window closed. Press "Open window" (or click the minimap button in game).</div>`;
   if (S.view === "after") stage.innerHTML = `<div class="pane">${scaleWrap(win)}</div>`;
   else stage.innerHTML = `<div class="pane before"><span class="cap">Before (v0.2.2)</span><img alt="The old ${S.screen} tab" src="../docs/images/before/${BEFORE[S.screen]}.webp"></div>
     <div class="pane"><span class="cap">After (design refresh)</span>${scaleWrap(win)}</div>`;
@@ -753,7 +761,7 @@ function seg(id) {
 try { Object.assign(S, JSON.parse(localStorage.getItem("skPreview") || "{}")); } catch (e) { /* ignore */ }
 // ?screen=roster&data=worst&view=before&raid=ony  (and &shot=1 for the README pictures: window only, no chrome)
 const Q = new URLSearchParams(location.search);
-for (const k of ["screen", "data", "view", "raid", "prof", "profView", "start", "crafter"]) if (Q.get(k)) S[k] = Q.get(k);
+for (const k of ["screen", "data", "view", "raid", "prof", "profView", "start", "crafter", "remind"]) if (Q.get(k)) S[k] = Q.get(k);
 const SHOT = Q.get("shot");
 if (SHOT) {
   document.body.classList.add("shot"); S.view = SHOT === "compare" ? "before" : "after"; S.reduce = true;

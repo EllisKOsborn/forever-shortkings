@@ -351,6 +351,14 @@ in game if anything looks different and send it.
         to Members, and the names listed really don't have it.
 115. [ ] **Without addon** opens the Roster with those members on top.
 
+116. [ ] On a character with a profession whose window you haven't opened with
+        the addon (or after `/run ShortRoyaltyDB.own=nil` and `/reload`): the
+        orange bar shows under the tabs on every tab. **Open Tailoring** (or
+        whichever) opens that profession window. Does it? Tell me if not.
+117. [ ] After opening each one, the bar names the next, then disappears, and
+        the window goes back to its normal height. In combat the button is
+        greyed out.
+
 ## Known gaps in v0.1
 
 - No Raids tab yet (v0.4).
