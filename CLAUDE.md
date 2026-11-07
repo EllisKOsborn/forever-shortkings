@@ -365,6 +365,13 @@ messages → sender ignored for the session).
   (an invisible hover frame per row, `W.Block`); the Overview's "Don't have it
   yet" row and its names use `OverviewTab.WithoutTip` (all names, two per
   line, capped at `TIP_NAMES` 60). TESTING 118.
+- **v0.3.6 (built, not on `main`)**: an old-protocol message ("\133…",
+  v0.3.2 and earlier) from an exact roster name sets `m.oldAddon` (local,
+  never synced); `Identity.HasAddon` counts it, Roster Version shows "old",
+  Overview counts it as outdated. Other reasons someone with the addon can
+  show as "doesn't have it": alts count per character (an alt that never
+  logged in with the addon), and members never online at the same time as
+  you whose profile nobody relayed yet. TESTING 119.
 - **CurseForge uploads are automatic** (checked 7 Nov: the v0.3.2 Release run
   logged "Uploading ShortRoyalty-v0.3.2-forever.zip (1.60.1 release) …
   Success!"). Owner still renames the project from "Short Kings" and archives

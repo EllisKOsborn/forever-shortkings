@@ -95,7 +95,9 @@ function Overview.Build(guild, now)
 			end
 		end
 		local v = mine and SK.VERSION or m.addon
-		if v and o.newest and v ~= "dev" and newer(o.newest, v) then o.outdated = o.outdated + 1 end
+		if (v and o.newest and v ~= "dev" and newer(o.newest, v)) or (not v and m.oldAddon) then
+			o.outdated = o.outdated + 1
+		end
 	end
 
 	-- Members without the addon: online first (you can ask them now), then by name.

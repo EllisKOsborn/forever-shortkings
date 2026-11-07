@@ -48,7 +48,8 @@ function Ov.WithoutTip(tt, without)
 		Theme.TipDouble(tt, name(without[i]), i + 1 <= shown and name(without[i + 1]) or "")
 	end
 	if #without > shown then Theme.TipLine(tt, "and " .. (#without - shown) .. " more: Without addon lists everyone", "dim") end
-	Theme.TipLine(tt, "Online first (white dot). Trial accounts show here too: they can't share.", "dim", true)
+	Theme.TipLine(tt, "Online first (white dot). Each character counts on its own: an alt shows here until it " ..
+		"has logged in once with the addon. Trial accounts show here too: they can't share.", "dim", true)
 	Theme.TipLine(tt, "Without addon (top right) opens them in the Roster", "gold")
 end
 

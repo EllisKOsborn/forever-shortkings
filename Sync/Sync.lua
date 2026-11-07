@@ -514,6 +514,12 @@ function Sync:OnCommReceived(prefix, wire, dist, sender)
 		if why == "old protocol" then
 			self.stats.dropped = self.stats.dropped + 1
 			self.lastReject = "sent by an older Short Royalty (before v0.3.3): they need to update"
+			-- It still proves they run Short Royalty (our prefix), just an old
+			-- one: note it so the Overview and Roster don't count them as
+			-- "doesn't have it" (v0.3.6). Exact roster names only.
+			local guid = SK.Identity:ResolveSender(sender)
+			local m = guid and SK.Identity:Member(guid)
+			if m then m.oldAddon = now end
 		elseif why == "bad frame" then
 			self.stats.dropped = self.stats.dropped + 1
 			self.lastReject = why

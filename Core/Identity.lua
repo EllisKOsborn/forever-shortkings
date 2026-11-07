@@ -125,7 +125,7 @@ end
 -- read as "no" even with the addon installed.
 function Identity.HasAddon(guid, m, profile)
 	if SK.DB.account[guid] then return true end
-	if m and m.addon then return true end
+	if m and (m.addon or m.oldAddon) then return true end
 	return profile ~= nil
 end
 

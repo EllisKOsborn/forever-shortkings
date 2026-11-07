@@ -61,7 +61,9 @@ local function makeRow(guild, guid, m, now, newest)
 		ilvl = p and p.ilvl, spec = spec, mainTree = mainTree, profText = profText, profs = profs,
 		status = Roster.Status(m, isSelf, now), addon = version, isSelf = isSelf,
 		hasAddon = SK.Identity.HasAddon(guid, m, p),
-		outdated = version and newest and version ~= "dev" and SK.Sync.versionNewer(newest, version) or false,
+		outdated = (version and newest and version ~= "dev" and SK.Sync.versionNewer(newest, version))
+			or (not version and m.oldAddon ~= nil) or false,
+		oldAddon = not version and m.oldAddon ~= nil or nil,
 		note = m.note, officerNote = m.officerNote,
 		missingEnchants = p and p.gear and #SK.Data.Enchants.Missing(p.gear, p.class, p.level) or nil,
 		hidden = p and p.hidden,
@@ -268,7 +270,8 @@ local function setCell(fs, r, col)
 			fs:SetText(dot .. "online")
 		end
 	elseif k == "addon" then
-		if not r.addon then fs:SetText(r.hasAddon and C("dim") .. "?|r" or Theme.DASH)
+		if not r.addon and r.oldAddon then fs:SetText(C("spark") .. "old|r")
+		elseif not r.addon then fs:SetText(r.hasAddon and C("dim") .. "?|r" or Theme.DASH)
 		elseif r.outdated then fs:SetText(C("spark") .. r.addon .. "|r")
 		else fs:SetText(C("dim") .. r.addon .. "|r") end
 	elseif k == "att" then
@@ -317,7 +320,10 @@ local function tooltip(row, r)
 		end
 	end
 	GameTooltip:AddLine(" ")
-	if not r.hasData and r.hasAddon then
+	if r.oldAddon then
+		Theme.TipLine(GameTooltip, "Runs an old Short Royalty (v0.3.2 or earlier) that can't share with yours. " ..
+			"They need to update.", "spark", true)
+	elseif not r.hasData and r.hasAddon then
 		Theme.TipLine(GameTooltip, "Has Short Royalty" .. (r.addon and (" " .. r.addon) or "") ..
 			", but their data hasn't reached you yet.", "spark", true)
 	elseif not r.hasData then

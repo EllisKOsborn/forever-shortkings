@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.3.6 (not released yet)
+
+- **Fixed: guildmates on an old Short Royalty were listed as not having it.**
+  Messages from v0.3.2 and earlier are in the old format, which newer
+  versions can't read, so they were thrown away before the addon noted who
+  sent them. Now they count as having the addon: the Roster's Version column
+  says **old** (orange) and Data health counts them under "Running an old
+  Short Royalty", so you know to tell them to update.
+- The "Don't have it yet" tooltip explains that each character counts on its
+  own: an alt shows there until it has logged in once with the addon.
+
 ## v0.3.5 (7 Nov 2026)
 
 - **Overview: the full list of who doesn't have Short Royalty.** "and 4 more"

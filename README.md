@@ -72,7 +72,7 @@ only (the last 50); nothing extra is sent. Turn them off in Settings.
 <p align="center"><img src="docs/images/roster.png" alt="Roster tab" width="100%"></p>
 
 - **Every guild member**, including people without the addon.
-- **Columns:** **Name** in class colour (*(you)* in pink on your characters, **+2** when alts are folded in), **Level**, **Rank**, **Spec** (main tree and points), **Professions**, **iLvl**, **Online** (a dot, then *online*, *on alt* or how long ago), **Version** (orange when out of date) and **Data** (how fresh their profile is; orange after a week).
+- **Columns:** **Name** in class colour (*(you)* in pink on your characters, **+2** when alts are folded in), **Level**, **Rank**, **Spec** (main tree and points), **Professions**, **iLvl**, **Online** (a dot, then *online*, *on alt* or how long ago), **Version** (orange when out of date; **old** for v0.3.2 or earlier, which can't share with newer versions) and **Data** (how fresh their profile is; orange after a week).
 - **Status dots:** 🟢 online with Short Royalty · ⚪ online without it · ⚫ offline.
 - **Sort** by clicking a column (an arrow marks the sorted one). Online members come first.
 - **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name. A search with no matches says so.
@@ -345,6 +345,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.3**: fix: guildmates can see each other's data (big messages sent as numbered pieces)
+- [ ] **v0.3.6** (built, not released): guildmates on an old version no longer listed as "doesn't have it"
 - [x] **v0.3.5**: point at "Don't have it yet" on the Overview for the full list
 - [x] **v0.3.4**: click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't; orange "open your profession windows" bar with an Open button
 - [x] **v0.3.2**: every recipe in the game with search (name, group, material), Wowhead links, Getting started, on CurseForge
