@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-FFC000?labelColor=000000">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.3.3%20alpha-F06BB0?labelColor=000000">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.3.4%20alpha-F06BB0?labelColor=000000">
   <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FF6A1A?labelColor=000000">
 </p>
 
@@ -345,7 +345,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.3**: fix: guildmates can see each other's data (big messages sent as numbered pieces)
-- [ ] **v0.3.4** (built, not released): click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't; orange "open your profession windows" bar with an Open button
+- [x] **v0.3.4**: click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't; orange "open your profession windows" bar with an Open button
 - [x] **v0.3.2**: every recipe in the game with search (name, group, material), Wowhead links, Getting started, on CurseForge
 - [x] **v0.3.0 Professions**: guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
 - [x] **v0.3.1**: renamed to **Short Royalty** (window, folder, download and `/sr`)

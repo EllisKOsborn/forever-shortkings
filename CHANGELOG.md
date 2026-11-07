@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.4 (not released yet): one crafter's recipes, who has the addon, profession reminder
+## v0.3.4 (7 Nov 2026): one crafter's recipes, who has the addon, profession reminder
 
 - **Hard-to-miss profession reminder.** Until you've opened each of your
   crafting profession windows once, an orange bar sits under the tabs on

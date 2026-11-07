@@ -189,7 +189,9 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   `ShortRoyalty-…`); **v0.3.2** (7 Nov, every recipe from wago.tools
   data, search, Wowhead links, Getting started; first release for CurseForge,
   project **1788068**); **v0.3.3** (7 Nov, sync fix: our own numbered
-  pieces, protocol 2; can't talk to v0.3.2 or earlier). Tag only when
+  pieces, protocol 2; can't talk to v0.3.2 or earlier); **v0.3.4** (7 Nov,
+  crafter's recipes in Professions, who has the addon on the Overview, orange
+  profession reminder bar with an Open button). Tag only when
   the user asks.
 
 ## Layout
@@ -329,7 +331,7 @@ messages → sender ignored for the session).
   share profiles between players at all; v0.3.3 can't talk to them either.
   On `main` 7 Nov (the owner publishes the release; it uploads to CurseForge
   automatically). TESTING 108–110.
-- **v0.3.4 (built 7 Nov, not released)** on `claude/short-kings-addon-hlf0t4`,
+- **v0.3.4 (on `main` 7 Nov; the owner publishes the release)**, from `claude/short-kings-addon-hlf0t4`,
   owner's request: clicking a crafter in one profession shows **their**
   recipes (`ProfessionsTab:PickCrafter`, `ProfBoard.Recipes(ctx, line,
   filter, crafterGUID)`), with **Character** and **Everyone** buttons; the
