@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.3 (not released yet): guildmates can see each other
+## v0.3.3 (7 Nov 2026): guildmates can see each other
 
 **Everyone has to update.** v0.3.3 can't exchange data with v0.3.2 or
 earlier (its messages are packaged differently), and `/sr debug` says so if a

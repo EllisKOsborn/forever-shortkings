@@ -188,7 +188,8 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   renamed to Short Royalty, technical names included; first zip named
   `ShortRoyalty-…`); **v0.3.2** (7 Nov, every recipe from wago.tools
   data, search, Wowhead links, Getting started; first release for CurseForge,
-  project **1788068**). Tag only when
+  project **1788068**); **v0.3.3** (7 Nov, sync fix: our own numbered
+  pieces, protocol 2; can't talk to v0.3.2 or earlier). Tag only when
   the user asks.
 
 ## Layout
@@ -321,12 +322,13 @@ messages → sender ignored for the session).
   built on top of the v0.3.1 rename from another session): every recipe in the
   game from wago.tools data, All recipes search, Wowhead links, Getting
   started, CurseForge ID. Not tested in game: TESTING 87–107.
-- **v0.3.3 (sync fix, 7 Nov)** on branch `claude/short-kings-addon-hlf0t4`,
+- **v0.3.3 (sync fix, 7 Nov)**, from branch `claude/short-kings-addon-hlf0t4`,
   built on `main` after v0.3.2: our own numbered pieces (`Sync/Frames.lua`,
   protocol 2) because AceComm multi-part messages arrived corrupted between
   two players (see "Sync protocol" below). Released v0.3.2 and earlier can't
   share profiles between players at all; v0.3.3 can't talk to them either.
-  Not yet on `main` or released. TESTING 108–110.
+  On `main` 7 Nov (the owner publishes the release; it uploads to CurseForge
+  automatically). TESTING 108–110.
 - **CurseForge uploads are automatic** (checked 7 Nov: the v0.3.2 Release run
   logged "Uploading ShortRoyalty-v0.3.2-forever.zip (1.60.1 release) …
   Success!"). Owner still renames the project from "Short Kings" and archives
