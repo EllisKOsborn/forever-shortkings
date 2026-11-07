@@ -1,64 +1,101 @@
-# Getting Short Royalty onto CurseForge
+# Short Royalty on CurseForge
 
 The release workflow (`.github/workflows/release.yml`, BigWigs packager)
-already uploads to CurseForge on every release, as a **WoW Forever** file,
-once two things exist: a CurseForge **project ID** in `ShortRoyalty.toc` and a
-**CF_API_KEY** secret on GitHub. Steps 1 to 5 are yours (they need your
-accounts); step 6 is mine.
+uploads to CurseForge automatically on every release, as a **WoW Forever**
+file, once two things exist: the CurseForge **project ID** in
+`ShortRoyalty.toc` and a **CF_API_KEY** secret on GitHub.
 
-## 1. Create the project (about 10 minutes)
-1. Sign in at **authors.curseforge.com** (a CurseForge account; you can sign
-   in with Google or Discord).
-2. **Create project** → Game: **World of Warcraft** → Class: **Addons**.
-3. Fill in:
-   - **Name:** Short Royalty (if it's taken, "Short Royalty Guild Sync").
-   - **Summary:** *Guild roster, gear, professions, recipes and cooldowns,
-     shared over guild addon chat. Height is not a stat.*
-   - **Description:** paste the text in the box below.
-   - **Main category:** Guild. Extra: Professions, Data Export (optional).
-   - **License:** MIT License.
-   - **Logo:** `preview/img/crest-large.png` from the repo (512 × 512).
-   - **Source:** GitHub, `https://github.com/elliskosborn/forever-shortkings`.
-4. Save. Note the **Project ID** (on the project page, under *About Project*).
+**Where we are (7 Nov 2026):** the project was created on 6 Nov as
+**Short Kings**, with the `ShortKings-v0.3.0-forever.zip` file. On 7 Nov the
+guild and the addon became **Short Royalty**: the window, the AddOns list,
+the folder (`ShortRoyalty`), the download (`ShortRoyalty-vX.Y.Z-forever.zip`)
+and the slash command (`/sr`). Part A updates the project. Part B is the
+one-time setup, for reference.
 
-## 2. First file (needed for CurseForge's review)
-New projects are reviewed by CurseForge before they go public (usually a day
-or two). The review needs a file:
-1. Download **`ShortRoyalty-v0.3.0-forever.zip`** from the GitHub release
-   (the real zip, not "Source code").
-2. On the project: **Files → Upload file**. Game version: **WoW Forever
-   1.60.1** (pick the Forever flavour). Release type: **Beta** (sync between
-   two players hasn't been tested yet; switch to Release later).
-   Changelog: copy the v0.3.0 section of `CHANGELOG.md`.
+---
 
-## 3. API token
-authors.curseforge.com → your avatar → **API tokens** → generate one called
-"GitHub". Copy it (you only see it once).
+## Part A: update the existing project to Short Royalty (about 10 minutes)
 
-## 4. GitHub secret
-GitHub repo → **Settings → Secrets and variables → Actions → New repository
-secret**. Name: `CF_API_KEY`. Value: the token. Never paste it in chat or in a
-file.
+### A1. Rename the project
+authors.curseforge.com → **Projects** → your project → **Settings** (or
+*Edit project*):
+- **Name:** `Short Royalty` (if it's taken: "Short Royalty Guild Sync").
+- **Summary:** *Guild roster, gear, professions, recipes and cooldowns,
+  shared over guild addon chat. Height is not a stat.*
+- **Description:** replace it with the text in [the box at the end](#description-to-paste).
+- **Logo:** keep it. The crown-and-beard crest is still ours
+  (`preview/img/crest-large.png`, 512 × 512, if you need it again).
+- **Source:** GitHub, `https://github.com/elliskosborn/forever-shortkings` (unchanged).
+- Save.
 
-## 5. Tell me the Project ID
-Just the number.
+**The web address** (e.g. `curseforge.com/wow/addons/short-kings`) may stay
+the same after a rename. That's fine: people find the addon by its name, and
+the old address keeps working. If you want a new address, check the project
+settings for a *slug* field. If there isn't one, CurseForge support can change it.
 
-## 6. (Me) wire it up: done 7 Nov (project ID 1788068 in the TOC)
-I add `## X-Curse-Project-ID: <number>` to `ShortRoyalty.toc`. From the next
-release on (publish it on GitHub as usual), the workflow uploads the same
-zip to CurseForge automatically. Tags with "beta" in the name (e.g.
-`v0.3.1-beta`) go up as Beta files; plain `vX.Y.Z` as Release.
+### A2. Upload the new file
+1. When the **v0.3.1** release is published on GitHub, download
+   **`ShortRoyalty-v0.3.1-forever.zip`** from its **Assets** (the real zip,
+   not "Source code"):
+   https://github.com/EllisKOsborn/forever-shortkings/releases/tag/v0.3.1
+2. Project → **Files → Upload file**:
+   - **Game version:** WoW Forever 1.60.1 (the Forever flavour).
+   - **Release type:** **Beta** (sync between two players hasn't been
+     tested yet; switch to Release later).
+   - **Display name:** `Short Royalty v0.3.1`.
+   - **Changelog:** copy the v0.3.1 section of `CHANGELOG.md` (it explains
+     the new folder name).
+
+### A3. Retire the old Short Kings file
+Project → **Files** → the `ShortKings-v0.3.0` file → **Archive** it (or
+delete it if it's still under review). This stops anyone installing the old
+`ShortKings` folder. The old and new versions can't sync with each other,
+and both would load side by side.
+
+### A4. Turn on automatic uploads (if you haven't already)
+- **API token and GitHub secret:** if you already created the token and
+  added `CF_API_KEY` on GitHub yesterday (Part B, steps 3–4), nothing changes.
+  The name change doesn't affect them.
+- **Send me the Project ID** (just the number, from the project page under
+  *About Project*). It **isn't in the addon yet**, so uploads aren't
+  automatic yet. I'll add `## X-Curse-Project-ID: <number>` to
+  `ShortRoyalty.toc`, and from the next release on, publishing on GitHub uploads
+  to CurseForge too, and you can skip A2.
+
+---
+
+## Part B: one-time setup (done on 6 Nov, kept for reference)
+
+1. **Create the project:** authors.curseforge.com → **Create project** →
+   Game: World of Warcraft → Class: Addons. Name, summary, description,
+   logo and source as in A1. Main category: **Guild** (extra: Professions,
+   Data Export). Licence: **MIT License**. Note the **Project ID**.
+2. **First file:** new projects are reviewed before they go public (usually a
+   day or two) and need a file. Upload as in A2.
+3. **API token:** authors.curseforge.com → your avatar → **API tokens** →
+   generate one called "GitHub". Copy it (you only see it once).
+4. **GitHub secret:** repo → **Settings → Secrets and variables → Actions →
+   New repository secret**. Name: `CF_API_KEY`. Value: the token. Never paste
+   it in chat or in a file.
+5. **Tell me the Project ID.**
+6. **(Me)** I add `## X-Curse-Project-ID: <number>` to `ShortRoyalty.toc`.
+   From then on, every release published on GitHub also goes to CurseForge.
+   Tags with "beta" in the name (e.g. `v0.3.2-beta`) go up as Beta files;
+   plain `vX.Y.Z` as Release.
 
 ## Things to know
 - **Anyone can install it.** It works for any guild: data is kept per guild
-  name and only shared over that guild's addon channel. The crest and
+  and only shared over that guild's addon channel. The crest and the
   "Short Royalty" name stay ours.
 - **Licences are fine for publishing:** our code is MIT, the bundled
   libraries are BSD/MIT/zlib (licence files included), Chakra Petch is OFL
-  (licence file in `Media/Fonts/`), the crest is drawn by `tools/textures.js`.
+  (licence file in `Media/Fonts/`), and the crest is drawn by `tools/textures.js`.
+- **CurseForge app users** who installed the old Short Kings file get the
+  new `ShortRoyalty` folder when they update. If an old `ShortKings` folder is
+  left behind in AddOns, delete it.
 - **WoWInterface** isn't possible yet (the packager has no Forever category
   there). **Wago** is possible later with a `WAGO_API_TOKEN` and
-  `## X-Wago-ID`, same idea.
+  `## X-Wago-ID`, the same way.
 
 ## Description to paste
 
@@ -79,5 +116,8 @@ Notes, officer notes, gold, bags and chat are never shared. You choose whether y
 ### Light and safe
 Small, rate-limited messages; sync pauses in combat and instances. Everything received is checked before it's stored.
 
-Type `/sk` or use the minimap button. Source and full feature list: https://github.com/elliskosborn/forever-shortkings
+### Upgrading from Short Kings?
+The addon was renamed. After updating, delete the old `ShortKings` folder from your AddOns folder if it's still there.
+
+Type `/sr` (or `/shortroyalty`) or use the minimap button. Source and full feature list: https://github.com/elliskosborn/forever-shortkings
 ```

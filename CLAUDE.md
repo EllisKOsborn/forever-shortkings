@@ -327,6 +327,10 @@ messages → sender ignored for the session).
   two players (see "Sync protocol" below). Released v0.3.2 and earlier can't
   share profiles between players at all; v0.3.3 can't talk to them either.
   Not yet on `main` or released. TESTING 108–110.
+- **CurseForge uploads are automatic** (checked 7 Nov: the v0.3.2 Release run
+  logged "Uploading ShortRoyalty-v0.3.2-forever.zip (1.60.1 release) …
+  Success!"). Owner still renames the project from "Short Kings" and archives
+  the old files (`docs/CURSEFORGE.md`).
   Plan and what was left out: **PLAN.md section 11**.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sr debug` "Live-client checks"), its decision table,
