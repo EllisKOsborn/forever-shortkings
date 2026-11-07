@@ -4,8 +4,10 @@
 `ShortRoyalty.toc` (`## X-Curse-Project-ID`) and the `CF_API_KEY` secret is set
 on GitHub. When v0.3.2 was published, the release workflow uploaded
 `ShortRoyalty-v0.3.2-forever.zip` to CurseForge by itself ("Success!" in the
-Release log). **From now on: publish a release on GitHub, and it goes to
-CurseForge too.** You don't upload files by hand any more.
+Release log). **Since v0.3.5 releases publish themselves:** when Claude puts a
+new version on `main` (top heading of CHANGELOG.md, with a date), GitHub tags
+it, builds the zip, makes the release and uploads it to CurseForge. You don't
+publish anything by hand any more (doing it on the website still works).
 
 Plain tags (`v0.3.3`) go up as **Release** files. A tag with "beta" in it
 (`v0.3.3-beta`) goes up as **Beta**.

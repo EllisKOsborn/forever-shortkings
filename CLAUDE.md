@@ -174,7 +174,15 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
 - **`main`** holds the released state (created 2 Nov 2026 with v0.2.0;
   v0.2.2 pushed 2 Nov). Push to `main` only when the user asks; the README's
   test badge tracks it.
-- **Releases:** pushing a tag `vX.Y.Z` on `main` runs `.github/workflows/release.yml`
+- **Releases are automatic since v0.3.5:** every push to `main` runs
+  `.github/workflows/release.yml`; if CHANGELOG.md's top heading is a dated
+  version (`## v0.3.6 (8 Nov 2026)`) with no tag yet, it tags that commit and
+  releases it (zip, GitHub Release, CurseForge). A heading containing "not
+  released" (keep using `## vX.Y.Z (not released yet)` on the working branch)
+  or an existing tag does nothing. So **before pushing to `main`, date the
+  top CHANGELOG heading**, bump the README badge, and never push a dated
+  heading to `main` that the owner hasn't asked to release. The owner no
+  longer publishes on the website. Earlier: pushing a tag `vX.Y.Z` on `main` runs `.github/workflows/release.yml`
   (BigWigs packager): it builds `ShortRoyalty-vX.Y.Z.zip` and a GitHub Release
   whose notes come from CHANGELOG.md (`.pkgmeta` manual-changelog). First
   release: **v0.2.2** (2 Nov 2026, the launch build); **v0.2.3** (3 Nov, the new
@@ -191,7 +199,8 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   project **1788068**); **v0.3.3** (7 Nov, sync fix: our own numbered
   pieces, protocol 2; can't talk to v0.3.2 or earlier); **v0.3.4** (7 Nov,
   crafter's recipes in Professions, who has the addon on the Overview, orange
-  profession reminder bar with an Open button). Tag only when
+  profession reminder bar with an Open button); **v0.3.5** (7 Nov, full
+  "doesn't have the addon" list on hover; first automatic release). Tag only when
   the user asks.
 
 ## Layout
@@ -349,7 +358,7 @@ messages → sender ignored for the session).
   TESTING 111–117. (`Compat.OpenProfession` is the old *read which window is
   open* function; don't confuse them.)
 - **v0.3.4 published 7 Nov** by the owner (GitHub release with the zip).
-- **v0.3.5 (built, not on `main`)**: Block rows take `tip = function(tooltip)`
+- **v0.3.5 (on `main` 7 Nov, released automatically)**: Block rows take `tip = function(tooltip)`
   (an invisible hover frame per row, `W.Block`); the Overview's "Don't have it
   yet" row and its names use `OverviewTab.WithoutTip` (all names, two per
   line, capped at `TIP_NAMES` 60). TESTING 118.

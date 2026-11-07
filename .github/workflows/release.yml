@@ -1,12 +1,27 @@
 name: Release
 
-# Runs when a version tag such as v0.1.0 is pushed. Builds ShortRoyalty-<version>.zip
-# and attaches it to a GitHub Release. If the CF_API_KEY secret is set and the
-# TOC has "## X-Curse-Project-ID", it also uploads to CurseForge.
+# Two ways in:
+# 1. Automatic (v0.3.5): every push to main. If the top heading of
+#    CHANGELOG.md is a dated version ("## v0.3.5 (7 Nov 2026)") that has no
+#    tag yet, this tags that commit and releases it. A heading that says
+#    "not released" does nothing, and so does a version that's already tagged.
+#    The tag is pushed with GITHUB_TOKEN, which doesn't start workflows, so
+#    the tag trigger below doesn't run a second time.
+# 2. By hand: publishing a release on GitHub's website (or pushing a tag such
+#    as v0.3.5) runs the same build.
+# Builds ShortRoyalty-<version>-forever.zip, attaches it to a GitHub Release
+# with notes from CHANGELOG.md, and uploads to CurseForge (CF_API_KEY secret
+# + "## X-Curse-Project-ID" in the TOC).
 on:
   push:
+    branches:
+      - main
     tags:
       - "v*"
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 # Third-party actions are pinned to a commit, not a tag that could be moved:
 # this job can publish releases, and its zip goes into everyone's game.
@@ -23,6 +38,30 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
+      - name: Decide whether to release
+        id: decide
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            echo "release=yes" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          heading=$(grep -m1 '^## ' CHANGELOG.md || true)
+          version=$(printf '%s\n' "$heading" | sed -nE 's/^## (v[0-9]+\.[0-9]+\.[0-9]+)( |$).*/\1/p')
+          if [ -z "$version" ] || printf '%s' "$heading" | grep -qi 'not released'; then
+            echo "Top of CHANGELOG.md is not a released version: $heading"
+            echo "release=no" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if git rev-parse -q --verify "refs/tags/$version" >/dev/null; then
+            echo "$version is already tagged; nothing to release."
+            echo "release=no" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$version" -m "$version"
+          git push origin "refs/tags/$version"
+          echo "Tagged $version"
+          echo "release=yes" >> "$GITHUB_OUTPUT"
       - name: Install Subversion (needed to fetch LibDBIcon)
+        if: steps.decide.outputs.release == 'yes'
         run: sudo apt-get update && sudo apt-get install -y subversion
       - uses: BigWigsMods/packager@e50a250f8705041e40f2fa1ddcb280a686d65aa0 # v2
+        if: steps.decide.outputs.release == 'yes'
