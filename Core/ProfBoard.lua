@@ -3,7 +3,8 @@
 --
 --   Coverage(ctx)            one row per profession (crafting, gathering, secondary)
 --   Crafters(ctx, skillLine) everyone with that profession
---   Recipes(ctx, skillLine, filter)  recipes known in the guild, with crafter counts
+--   Recipes(ctx, skillLine, filter, crafter)  recipes known in the guild (or by
+--                            one crafter), with crafter counts
 --   Cooldowns(ctx)           everyone's profession cooldowns, ready first
 --
 -- ctx = { guild, now, index (CraftIndex), profile = fn(guid), isMember = fn(guid) }
@@ -146,16 +147,23 @@ function PB.Unknown(ctx, skillLine)
 	return out
 end
 
+local function knows(r, guid)
+	for _, g in ipairs(r.crafters) do if g == guid then return true end end
+	return false
+end
+
 -- filter: "all" | "one" (one crafter) | "fav" | "nobody"
+-- crafter (optional GUID): only that character's recipes (v0.3.4, clicking a
+-- crafter in the Professions tab); the other filters still apply.
 -- Returns rows { recipeID, itemID, skillLine, name, count, fav, recipe }, loading.
-function PB.Recipes(ctx, skillLine, filter)
+function PB.Recipes(ctx, skillLine, filter, crafter)
 	filter = filter or "all"
 	local source = {}
 	if filter == "nobody" then
-		source = PB.Unknown(ctx, skillLine)
+		if not crafter then source = PB.Unknown(ctx, skillLine) end
 	else
 		for _, r in pairs(ctx.index.recipes) do
-			if r.skillLine == skillLine then source[#source + 1] = r end
+			if r.skillLine == skillLine and (not crafter or knows(r, crafter)) then source[#source + 1] = r end
 		end
 	end
 	local out, loading = {}, 0

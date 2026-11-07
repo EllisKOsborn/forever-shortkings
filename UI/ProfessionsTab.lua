@@ -1,6 +1,8 @@
 -- Professions tab (v0.3): the guild's coverage board, one profession at a
 -- time (crafters and recipes), and the cooldown board. Numbers come from
 -- Core/ProfBoard.lua; clicking a recipe opens it in the Crafters tab.
+-- In one profession, clicking a crafter shows that crafter's recipes on the
+-- right (v0.3.4), with a Character button to open their character sheet.
 local _, SK = ...
 
 local Prof = SK:NewModule("ProfessionsTab")
@@ -326,18 +328,20 @@ function Prof:Build(page)
 			elseif not SK.Data.GATHERING[Prof.skillLine] then
 				Theme.TipLine(GameTooltip, "Hasn't opened this profession window with the addon yet", "dim", true)
 			end
-			Theme.TipLine(GameTooltip, "Click to view character  ·  Right-click to " ..
-				(c.fav and "unstar" or "star"), "gold")
+			local picked = Prof.crafter == c.guid
+			Theme.TipLine(GameTooltip, (picked and "Click to show everyone's recipes" or "Click to see their recipes") ..
+				"  ·  Right-click to " .. (c.fav and "unstar" or "star"), "gold")
 			GameTooltip:Show()
 		end,
 		onClick = function(c, button)
 			if button == "RightButton" then
 				Fav.ToggleCrafter(c.guid)
 			else
-				SK.CharacterTab:ShowCharacter(c.guid)
+				Prof:PickCrafter(Prof.crafter ~= c.guid and c.guid or nil)
 			end
 		end,
 	})
+	self.crafters:SetSelected(function(c) return c.guid == Prof.crafter end)
 	self.crafters:SetPoint("TOPLEFT", 0, top)
 	self.crafters:SetPoint("BOTTOMLEFT")
 	self.crafters:SetWidth(Prof.CRAFTERS_W)
@@ -346,6 +350,27 @@ function Prof:Build(page)
 	right:SetPoint("TOPLEFT", self.crafters, "TOPRIGHT", SP.l, 0)
 	right:SetPoint("BOTTOMRIGHT")
 	self.right = right
+
+	-- The picked crafter: name and skill, Character, and back to everyone.
+	local picked = CreateFrame("Frame", nil, right)
+	picked:SetPoint("TOPLEFT")
+	picked:SetPoint("TOPRIGHT")
+	picked:SetHeight(S.control)
+	self.picked = picked
+	self.everyone = W.Button(picked, "Everyone", nil, S.controlSmall, function() Prof:PickCrafter(nil) end, "quiet")
+	self.everyone:SetPoint("RIGHT", 0, 0)
+	self.everyone.tooltip = "Show the recipes of everyone in the guild again"
+	self.charButton = W.Button(picked, "Character", nil, S.controlSmall, function()
+		if Prof.crafter then SK.CharacterTab:ShowCharacter(Prof.crafter) end
+	end)
+	self.charButton:SetPoint("RIGHT", self.everyone, "LEFT", -SP.s, 0)
+	self.charButton.tooltip = "Open their gear, talents and professions"
+	self.pickedName = Theme.Text(picked, "body", "text")
+	self.pickedName:SetPoint("LEFT", 0, 0)
+	self.pickedName:SetPoint("RIGHT", self.charButton, "LEFT", -SP.s, 0)
+	self.pickedName:SetJustifyH("LEFT")
+	self.pickedName:SetWordWrap(false)
+
 	self.filterChips = {}
 	prev = nil
 	for _, f in ipairs(RECIPE_FILTERS) do
@@ -358,6 +383,7 @@ function Prof:Build(page)
 		self.filterChips[#self.filterChips + 1] = c
 		prev = c
 	end
+	self.filterChips[2].tooltip = "Recipes only one character in the guild knows."
 	self.filterChips[4].tooltip = "Recipes the profession window lists that nobody in the guild has learned."
 	self.recipes = W.List(right, {
 		columns = RECIPE_COLUMNS, setCell = setRecipeCell,
@@ -379,7 +405,7 @@ function Prof:Build(page)
 			end
 		end,
 	})
-	self.recipes:SetPoint("TOPLEFT", 0, -(S.controlSmall + SP.s + 2))
+	self.recipes:SetPoint("TOPLEFT", 0, -(S.controlSmall + SP.s + 2)) -- moved down in RefreshOne when a crafter is picked
 	self.recipes:SetPoint("BOTTOMRIGHT")
 
 	local function refreshIfShown() if page:IsShown() then Prof:Refresh() end end
@@ -391,6 +417,14 @@ end
 function Prof:Open(skillLine)
 	self.skillLine = skillLine
 	self.filter = "all"
+	self.crafter = nil
+	self:Refresh()
+end
+
+-- Show one crafter's recipes on the right (nil = everyone's).
+function Prof:PickCrafter(guid)
+	self.crafter = guid
+	if guid and self.filter == "nobody" then self.filter = "all" end
 	self:Refresh()
 end
 
@@ -469,18 +503,35 @@ end
 
 function Prof:RefreshOne(ctx)
 	local skillLine = self.skillLine
-	self.heading:SetText(PB.ProfessionName(ctx, skillLine))
+	local profName = PB.ProfessionName(ctx, skillLine)
+	self.heading:SetText(profName)
 	local crafters = PB.Crafters(ctx, skillLine)
+	-- The picked crafter, if they still have this profession.
+	local picked
+	for _, c in ipairs(crafters) do if c.guid == self.crafter then picked = c end end
+	if not picked then self.crafter = nil end
 	self.crafters:SetItems(crafters)
 	self.crafters:SetEmptyText("Nobody in the guild has this profession yet.")
 
-	local unknown = #PB.Unknown(ctx, skillLine) > 0
+	self.picked:SetShown(picked ~= nil)
+	if picked then
+		local skill = picked.skill > 0 and Theme.Paint("dim", "  ·  " .. profName .. " " .. picked.skill) or ""
+		self.pickedName:SetText(Theme.ClassText(picked.name, picked.class) .. skill)
+	end
+	local chipsY = picked and -(S.control + SP.s) or -1
+	for i, c in ipairs(self.filterChips) do
+		if i == 1 then c:SetPoint("TOPLEFT", 0, chipsY) end
+	end
+	self.recipes:SetPoint("TOPLEFT", 0, chipsY - (S.controlSmall + SP.s + 1))
+
+	local unknown = not picked and #PB.Unknown(ctx, skillLine) > 0
 	if self.filter == "nobody" and not unknown then self.filter = "all" end
 	for _, c in ipairs(self.filterChips) do
 		c:SetActive(c.value == self.filter)
 		if c.value == "nobody" then c:SetShown(unknown) end
+		if c.value == "one" then c.label:SetText(picked and "Only they know" or "Only one crafter") end
 	end
-	local rows, loading = PB.Recipes(ctx, skillLine, self.filter)
+	local rows, loading = PB.Recipes(ctx, skillLine, self.filter, picked and picked.guid)
 	self.recipes:SetItems(rows)
 	self.recipes:SetLoading(loading > 0 and #rows == 0)
 	local gathering = SK.Data.GATHERING[skillLine]
@@ -492,11 +543,24 @@ function Prof:RefreshOne(ctx)
 		fav = "No starred recipes. Right-click a recipe to star it.",
 		nobody = "Everything the profession window lists is known by someone.",
 	}
+	if picked then
+		local first = picked.name:match("^(%S+)") or picked.name
+		if picked.hidden then
+			empty.all = first .. " keeps their recipes private."
+		elseif not picked.scanned then
+			empty.all = first .. " hasn't opened their " .. profName .. " window with Short Royalty yet, " ..
+				"so we don't know their recipes."
+		else
+			empty.all = "No " .. profName .. " recipes recorded for " .. first .. "."
+		end
+		empty.one = "No recipe that only " .. first .. " knows."
+		empty.fav = "None of " .. first .. "'s recipes are starred."
+	end
 	self.recipes:SetEmptyText(empty[self.filter])
 	local online = 0
 	for _, c in ipairs(crafters) do if c.status ~= "offline" then online = online + 1 end end
 	self.status:SetText(Theme.Count(#crafters, "character") .. ", " .. online .. " online  ·  " ..
-		Theme.Count(#rows, "recipe"))
+		(picked and ((picked.name:match("^(%S+)") or picked.name) .. " knows ") or "") .. Theme.Count(#rows, "recipe"))
 end
 
 SK.MainFrame:AddTab("professions", "Professions", Prof)

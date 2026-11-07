@@ -18,6 +18,7 @@ function Overview.Build(guild, now)
 	now = now or SK.Compat.Now()
 	local o = {
 		members = 0, online = 0, withAddon = 0, withData = 0, players = 0,
+		hasAddon = 0, without = {}, addonNoData = 0,
 		levels = {}, maxLevel = 0,
 		stale = 0, noData = 0, unscanned = 0, outdated = 0, newest = nil, selfOutdated = false,
 		profs = {}, raids = {}, recipes = { total = 0, crafters = 0, single = 0, singleExamples = {} },
@@ -68,6 +69,13 @@ function Overview.Build(guild, now)
 		for i, b in ipairs(Overview.LEVEL_BANDS) do
 			if lvl >= b[1] and lvl <= b[2] then o.levels[i] = o.levels[i] + 1 end
 		end
+		if SK.Identity.HasAddon(guid, m, p) then
+			o.hasAddon = o.hasAddon + 1
+			if not p then o.addonNoData = o.addonNoData + 1 end
+		else
+			o.without[#o.without + 1] = { guid = guid, name = m.name or "?", class = m.class, level = m.level or 0,
+				online = m.online and true or false }
+		end
 		if not p then
 			o.noData = o.noData + 1
 		else
@@ -89,6 +97,12 @@ function Overview.Build(guild, now)
 		local v = mine and SK.VERSION or m.addon
 		if v and o.newest and v ~= "dev" and newer(o.newest, v) then o.outdated = o.outdated + 1 end
 	end
+
+	-- Members without the addon: online first (you can ask them now), then by name.
+	table.sort(o.without, function(a, b)
+		if a.online ~= b.online then return a.online end
+		return a.name:lower() < b.name:lower()
+	end)
 
 	-- Raids of the first wave: attunement among max-level characters.
 	for _, raid in ipairs(SK.Data.ShownAttunements()) do

@@ -329,6 +329,15 @@ messages → sender ignored for the session).
   share profiles between players at all; v0.3.3 can't talk to them either.
   On `main` 7 Nov (the owner publishes the release; it uploads to CurseForge
   automatically). TESTING 108–110.
+- **v0.3.4 (built 7 Nov, not released)** on `claude/short-kings-addon-hlf0t4`,
+  owner's request: clicking a crafter in one profession shows **their**
+  recipes (`ProfessionsTab:PickCrafter`, `ProfBoard.Recipes(ctx, line,
+  filter, crafterGUID)`), with **Character** and **Everyone** buttons; the
+  Overview's Guild section counts who has Short Royalty and lists up to 10
+  who don't (`Overview.Build` → `hasAddon`, `without`, `addonNoData`;
+  `Identity.HasAddon` = own account, a version heard (HI), or any profile).
+  *Without addon* = `RosterTab:ShowWithoutAddon` (Version column sorts
+  no-addon first). TESTING 111–115.
 - **CurseForge uploads are automatic** (checked 7 Nov: the v0.3.2 Release run
   logged "Uploading ShortRoyalty-v0.3.2-forever.zip (1.60.1 release) …
   Success!"). Owner still renames the project from "Short Kings" and archives

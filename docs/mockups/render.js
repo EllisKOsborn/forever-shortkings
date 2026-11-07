@@ -23,6 +23,7 @@ const SHOTS = {
   crafters: ["shot=1&screen=crafters&data=full", W, H],
   professions: ["shot=1&screen=professions&data=full", W, H],
   "professions-one": ["shot=1&screen=professions&data=full&prof=171", W, H],
+  "professions-crafter": ["shot=1&screen=professions&data=full&prof=171&crafter=Brambletoe", W, H],
   cooldowns: ["shot=1&screen=professions&data=full&profView=cooldowns", W, H],
   "all-recipes": ["shot=1&screen=professions&data=full&profView=recipes", W, H],
   "getting-started": ["shot=1&screen=overview&data=full&start=1", W, H],

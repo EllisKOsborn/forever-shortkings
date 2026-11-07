@@ -18,15 +18,32 @@ local function n(v) return tostring(v or 0) end
 ---------------------------------------------------------------------------
 -- Section rows (pure; tested). See W.Block for the row format.
 ---------------------------------------------------------------------------
+Ov.NAMES_SHOWN = 10 -- names listed under "Don't have it yet"; the rest go to the Roster
+
+-- "Bob, Cat, Dan and 12 more": first names, class colours, a dot for online.
+function Ov.WithoutText(without, max)
+	max = max or Ov.NAMES_SHOWN
+	local names = {}
+	for i = 1, math.min(#without, max) do
+		local w = without[i]
+		local first = w.name:match("^(%S+)") or w.name
+		names[i] = (w.online and (SK.RosterTab.DOT.online .. " ") or "") .. Theme.ClassText(first, w.class)
+	end
+	local text = table.concat(names, ", ")
+	if #without > max then text = text .. Theme.Paint("dim", " and " .. (#without - max) .. " more") end
+	return text
+end
+
 function Ov.GuildRows(o)
 	local rows = {
 		{ label = "Members", value = n(o.members) },
 		{ label = "Players (alts counted once)", value = n(o.players) },
-		{ label = "Online now", value = n(o.online) },
-		{ label = "Running Short Royalty", value = n(o.withAddon) },
-		{ label = "Shared their data", value = n(o.withData) },
-		{ sub = "Levels" },
+		{ label = "Online now", value = Theme.Paint("dim", n(o.withAddon) .. " with addon   ") .. n(o.online) },
+		{ label = "Have Short Royalty", value = n(o.hasAddon), tone = o.hasAddon > 0 and "good" or "dim" },
+		{ label = "Don't have it yet", value = n(#o.without), tone = #o.without > 0 and "spark" or "good" },
 	}
+	if #o.without > 0 then rows[#rows + 1] = { text = Ov.WithoutText(o.without), indent = true } end
+	rows[#rows + 1] = { sub = "Levels" }
 	for i, b in ipairs(SK.Overview.LEVEL_BANDS) do
 		rows[#rows + 1] = { label = b[3], value = n(o.levels[i]), indent = true }
 	end
@@ -62,7 +79,7 @@ function Ov.HealthRows(o)
 	local function item(count, one, many, tone)
 		if count > 0 then rows[#rows + 1] = { label = count == 1 and one or many, value = n(count), tone = tone or "spark" } end
 	end
-	item(o.noData, "Member without Short Royalty data", "Members without Short Royalty data", "dim")
+	item(o.addonNoData, "Has the addon, no data here yet", "Have the addon, no data here yet")
 	item(o.stale, "Profile older than a week", "Profiles older than a week")
 	item(o.unscanned, "Profession window never opened", "Profession windows never opened")
 	item(o.outdated, "Running an old Short Royalty", "Running an old Short Royalty")
@@ -73,7 +90,7 @@ function Ov.HealthRows(o)
 	if #rows == 0 then
 		rows[1] = { text = "All good: everyone's data is current.", tone = "good" }
 	else
-		rows[#rows + 1] = { text = "No data usually means no addon, or a trial account (trials can't share)." }
+		rows[#rows + 1] = { text = "Trial accounts can't share, so they count as not having the addon." }
 	end
 	return rows
 end
@@ -155,10 +172,8 @@ function Ov:Build(page)
 		b:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -SP.xl)
 	end
 
-	self.guild = block(1, "Guild", { text = "Open roster", tooltip = "The full roster", onClick = function()
-		SK.DB.settings.roster.raid = nil
-		SK.MainFrame:Select("roster")
-	end })
+	self.guild = block(1, "Guild", { text = "Without addon", onClick = function() SK.RosterTab:ShowWithoutAddon() end,
+		tooltip = "Roster with everyone who doesn't have Short Royalty first" })
 	self.health = block(1, "Data health", { text = "Oldest first", onClick = function() SK.RosterTab:ShowOldestFirst() end,
 		tooltip = "Roster sorted so missing and oldest data come first" })
 	below(self.health, self.guild)
@@ -245,7 +260,7 @@ function Ov:Refresh()
 	self.feed.list:SetItems(entries)
 
 	local steps, allDone = SK.Onboarding.Steps(SK.Profile:Own(), SK.DB.settings.seen, SK.DB.settings.main,
-		o.withAddon, o.members)
+		o.hasAddon, o.members)
 	local showStart = SK.Onboarding.Visible(allDone)
 	self.start:SetShown(showStart)
 	self.feed:SetShown(not showStart)

@@ -337,6 +337,20 @@ in game if anything looks different and send it.
         and no "Last incomplete message" line. If there is one, send it to me.
 110. [ ] Search the other person's recipe in **Crafters**: they're listed.
 
+## v0.3.4 (crafter view, who has the addon)
+
+111. [ ] Professions → open **Tailoring** (or any profession) → click a crafter:
+        the right side shows only their recipes, with their name and skill
+        above; the window stays on Professions. Click them again (or
+        **Everyone**): everyone's recipes come back.
+112. [ ] With a crafter picked, **Character** opens their character sheet. Go
+        back to Professions: they're still picked.
+113. [ ] Pick someone who keeps recipes private, or hasn't opened that window:
+        the list says so instead of being blank.
+114. [ ] Overview → Guild: **Have Short Royalty** + **Don't have it yet** add up
+        to Members, and the names listed really don't have it.
+115. [ ] **Without addon** opens the Roster with those members on top.
+
 ## Known gaps in v0.1
 
 - No Raids tab yet (v0.4).

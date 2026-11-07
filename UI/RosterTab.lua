@@ -60,6 +60,7 @@ local function makeRow(guild, guid, m, now, newest)
 		online = m.online, lastSeen = m.lastSeen, hasData = p ~= nil, updated = p and p.updated,
 		ilvl = p and p.ilvl, spec = spec, mainTree = mainTree, profText = profText, profs = profs,
 		status = Roster.Status(m, isSelf, now), addon = version, isSelf = isSelf,
+		hasAddon = SK.Identity.HasAddon(guid, m, p),
 		outdated = version and newest and version ~= "dev" and SK.Sync.versionNewer(newest, version) or false,
 		note = m.note, officerNote = m.officerNote,
 		missingEnchants = p and p.gear and #SK.Data.Enchants.Missing(p.gear, p.class, p.level) or nil,
@@ -187,6 +188,17 @@ local function byNum(key) return function(a, b)
 	return x < y
 end end
 
+-- Version column: members without the addon first, then newest version first.
+function Roster.ByVersion(a, b)
+	if a.hasAddon ~= b.hasAddon then return not a.hasAddon end
+	local x, y = a.addon or "", b.addon or ""
+	if x ~= y then
+		if x == "" or y == "" then return y == "" end
+		return SK.Sync.versionNewer(x, y) or (not SK.Sync.versionNewer(y, x) and x > y)
+	end
+	return byName(a, b)
+end
+
 -- Widths add up to the content width minus the scroll bar (836). The name
 -- gets the most room; numbers are right-aligned.
 local COLUMNS = {
@@ -200,7 +212,7 @@ local COLUMNS = {
 		if a.status ~= b.status then return STATUS_RANK[a.status] > STATUS_RANK[b.status] end
 		return (a.lastSeen or 0) > (b.lastSeen or 0)
 	end },
-	{ key = "addon", title = "Version", width = 52, align = "RIGHT", sort = function(a, b) return (a.addon or "") > (b.addon or "") end },
+	{ key = "addon", title = "Version", width = 52, align = "RIGHT", sort = Roster.ByVersion },
 	{ key = "data", title = "Data", width = 50, align = "RIGHT", sort = byNum("updated") },
 }
 
@@ -256,7 +268,7 @@ local function setCell(fs, r, col)
 			fs:SetText(dot .. "online")
 		end
 	elseif k == "addon" then
-		if not r.addon then fs:SetText(Theme.DASH)
+		if not r.addon then fs:SetText(r.hasAddon and C("dim") .. "?|r" or Theme.DASH)
 		elseif r.outdated then fs:SetText(C("spark") .. r.addon .. "|r")
 		else fs:SetText(C("dim") .. r.addon .. "|r") end
 	elseif k == "att" then
@@ -305,8 +317,11 @@ local function tooltip(row, r)
 		end
 	end
 	GameTooltip:AddLine(" ")
-	if not r.hasData then
-		Theme.TipLine(GameTooltip, "No data yet. They may not have the addon, or be on a trial account (trials can't sync).", "dim", true)
+	if not r.hasData and r.hasAddon then
+		Theme.TipLine(GameTooltip, "Has Short Royalty" .. (r.addon and (" " .. r.addon) or "") ..
+			", but their data hasn't reached you yet.", "spark", true)
+	elseif not r.hasData then
+		Theme.TipLine(GameTooltip, "Doesn't have Short Royalty yet (or is on a trial account: trials can't sync).", "dim", true)
 	elseif r.addon then
 		if not r.isSelf and Theme.IsStale(r.updated, now) then
 			Theme.TipLine(GameTooltip, "Data is " .. Theme.Ago(r.updated, now) .. " old and may be out of date", "spark")
@@ -427,6 +442,16 @@ function Roster:ShowOldestFirst()
 	SK.MainFrame:Select("roster")
 	for i, col in ipairs(COLUMNS) do
 		if col.key == "data" then self.list.sortCol, self.list.sortDesc = i, false end
+	end
+	self.list:Sort()
+end
+
+-- Overview "Without addon": the plain roster, people without Short Royalty first.
+function Roster:ShowWithoutAddon()
+	SK.DB.settings.roster.raid = nil
+	SK.MainFrame:Select("roster")
+	for i, col in ipairs(COLUMNS) do
+		if col.key == "addon" then self.list.sortCol, self.list.sortDesc = i, false end
 	end
 	self.list:Sort()
 end

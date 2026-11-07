@@ -126,7 +126,11 @@ describe("v0.2.2 Overview numbers", function()
 		assert.equal(1, o.stale)       -- Ben, 10 days old
 		assert.equal(2, o.unscanned)   -- Pip's Tailoring (we never opened it) and Ann Alt's Alchemy
 		assert.equal(1, o.outdated)    -- Ben runs 0.0.1
-		assert.truthy(SK.OverviewTab.HealthText(o):find("Member without Short Royalty data  " .. SK.Theme.Code("dim") .. "1|r", 1, true))
+		assert.is_nil(SK.OverviewTab.HealthText(o):find("no data here yet", 1, true)) -- Cid has no addon at all
+		SK.Identity:Member("C").addon = "0.3.4" -- now he has it, but nothing arrived yet
+		o = SK.Overview.Build(guild, W.now)
+		assert.equal(1, o.addonNoData)
+		assert.truthy(SK.OverviewTab.HealthText(o):find("Has the addon, no data here yet  " .. SK.Theme.Code("spark") .. "1|r", 1, true))
 	end)
 
 	it("summarises professions and recipes", function()

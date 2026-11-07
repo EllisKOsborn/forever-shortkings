@@ -53,9 +53,9 @@
 The first tab: six sections in three columns, set like a spec sheet. Each
 section has a link to the place where you can act on it.
 
-- **Guild**: members, players (alts counted once), online now, running Short Royalty, shared their data, and levels in bands (60, 50–59, 40–49, 1–39). *Open roster*.
+- **Guild**: members, players (alts counted once), online now (and how many of them run Short Royalty), **who has Short Royalty and who doesn't yet**, with the first ten names of those who don't (online ones first, with a dot, so you can ask them now), and levels in bands (60, 50–59, 40–49, 1–39). *Without addon* opens the Roster with everyone who doesn't have it on top.
 - **Raids**: the one big number, days until raids open on 9 Dec. Barrow Deeps (10) and Hyjal Summit (20) need no attunement, so it counts your level 60s. Onyxia's Lair (40) shows attuned / not attuned / unknown, and how many have the quest done but the Drakefire Amulet out of their bags. *Onyxia list*.
-- **Data health**: members without Short Royalty data, profiles older than a week, profession windows never opened, and anyone on an old Short Royalty (you included). "All good" when there's nothing to fix. *Oldest first* opens the Roster with missing and oldest data on top.
+- **Data health**: members who have the addon but whose data hasn't reached you yet, profiles older than a week, profession windows never opened, and anyone on an old Short Royalty (you included). "All good" when there's nothing to fix. *Oldest first* opens the Roster with missing and oldest data on top.
 - **Professions**: characters per crafting profession, how many are at 300 (or the best so far), **nobody** in red where the guild has a gap, and one line for gathering. *Find a crafter*.
 - **Recipes**: recipes the guild knows, from how many crafters, and how many **only one character** knows, with examples, so you can see where there's no backup. *Search recipes*.
 - **Getting started** (new players, in place of milestones): open your profession windows (it names which), check your Character tab, choose what you share, mark your main on an alt, and how many guildmates have Short Royalty. Ticks itself off and goes away when done, or click **Hide**.
@@ -130,6 +130,9 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 <p align="center"><img src="docs/images/all-recipes.png" alt="All recipes search" width="100%"></p>
 
 - **One profession:** everyone with it (status dot, star, *alt of X*, skill, specialisation, "recipes recorded 3d ago" in orange after a week, **Whisper**) and every recipe known in the guild with its crafter count (a lone crafter in orange). Filters: **All**, **Only one crafter**, **Favourites**, and **Nobody knows** (every recipe of that profession in the game that nobody in the guild has learned). Hover a recipe for its reagents; click to open it in Crafters; right-click to star it.
+- **One crafter's recipes:** click a crafter to see only **their** recipes in that profession (the crafter count still shows who else can make each one; **Only they know** lists the ones nobody else has). **Character** opens their character sheet; **Everyone** (or clicking them again) goes back to the whole guild. If the list is empty it says why: recipes kept private, or they haven't opened that profession window with the addon yet.
+
+<p align="center"><img src="docs/images/professions-crafter.png" alt="One crafter's recipes" width="100%"></p>
 
 <p align="center"><img src="docs/images/cooldowns.png" alt="Cooldown board" width="100%"></p>
 
@@ -338,6 +341,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.3**: fix: guildmates can see each other's data (big messages sent as numbered pieces)
+- [ ] **v0.3.4** (built, not released): click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't
 - [x] **v0.3.2**: every recipe in the game with search (name, group, material), Wowhead links, Getting started, on CurseForge
 - [x] **v0.3.0 Professions**: guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
 - [x] **v0.3.1**: renamed to **Short Royalty** (window, folder, download and `/sr`)

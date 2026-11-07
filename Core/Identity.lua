@@ -119,6 +119,16 @@ function Identity.Status(m, isSelf, now)
 	return "online"
 end
 
+-- Has this member ever run Short Royalty? One of our own characters, a
+-- version we heard from them (HI), or a profile of theirs (from them or
+-- relayed by someone else) means yes. Trial accounts can't send, so they
+-- read as "no" even with the addon installed.
+function Identity.HasAddon(guid, m, profile)
+	if SK.DB.account[guid] then return true end
+	if m and m.addon then return true end
+	return profile ~= nil
+end
+
 function Identity:IsMember(guid)
 	local g = SK.DBM:Guild()
 	local m = g and guid and g.members[guid]

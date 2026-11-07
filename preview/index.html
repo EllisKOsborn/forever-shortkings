@@ -326,16 +326,23 @@ function overview() {
   const players = live.length - live.reduce((a, m) => a + (m.alts ? 1 : 0), 0);
   const bands = [[60, 60, "60"], [50, 59, "50-59"], [40, 49, "40-49"], [1, 39, "1-39"]].map((b) => [b[2], live.filter((m) => m.level >= b[0] && m.level <= b[1]).length]);
   const header = G.name ? `<span>${esc(G.name)}</span> · ${plural(live.length, "member")} · ${online} online` : `<span>No guild</span> · 0 members · 0 online · join a guild to see guildmates here`;
-  const guildRows = [{ label: "Members", value: live.length }, { label: "Players (alts counted once)", value: players }, { label: "Online now", value: online },
-    { label: "Running Short Royalty", value: withAddon }, { label: "Shared their data", value: withData }, { sub: "Levels" }, ...bands.map((b) => ({ label: b[0], value: b[1], indent: true }))];
-  const noData = live.length - withData, stale = live.filter((m) => m.hasData && m.updatedDays > 7).length, old = live.filter((m) => m.addon === "0.2.1").length;
+  const hasIt = live.filter((m) => m.self || m.hasData || m.addon);
+  const without = live.filter((m) => !hasIt.includes(m)).sort((a, b) => a.online !== b.online ? (a.online ? -1 : 1) : a.name.localeCompare(b.name));
+  const shown = without.slice(0, 10).map((m) => (m.online ? dot("text") : "") + cls(m)).join(", ")
+    + (without.length > 10 ? `<span class="dim"> and ${without.length - 10} more</span>` : "");
+  const guildRows = [{ label: "Members", value: live.length }, { label: "Players (alts counted once)", value: players },
+    { label: "Online now", value: `<span class="dim">${withAddon} with addon&nbsp;&nbsp;&nbsp;</span>${online}` },
+    { label: "Have Short Royalty", value: hasIt.length, tone: hasIt.length ? "good" : "dim" },
+    { label: "Don't have it yet", value: without.length, tone: without.length ? "spark" : "good" },
+    ...(without.length ? [{ text: shown, html: 1, indent: 1 }] : []), { sub: "Levels" }, ...bands.map((b) => ({ label: b[0], value: b[1], indent: true }))];
+  const stale = live.filter((m) => m.hasData && m.updatedDays > 7).length, old = live.filter((m) => m.addon === "0.2.1").length;
   const health = [];
-  if (noData) health.push({ label: noData === 1 ? "Member without Short Royalty data" : "Members without Short Royalty data", value: noData, tone: "dim" });
+  if (G.name) health.push({ label: "Has the addon, no data here yet", value: 1, tone: "spark" });
   if (stale) health.push({ label: stale === 1 ? "Profile older than a week" : "Profiles older than a week", value: stale, tone: "spark" });
   if (G.name) health.push({ label: "Profession windows never opened", value: 3, tone: "spark" });
   if (old) health.push({ label: "Running an old Short Royalty", value: old, tone: "spark" });
   if (!health.length) health.push({ text: "All good: everyone's data is current.", tone: "good" });
-  else health.push({ text: "No data usually means no addon, or a trial account (trials can't share)." });
+  else health.push({ text: "Trial accounts can't share, so they count as not having the addon." });
   const max = live.filter((m) => m.level === 60);
   const raidRows = [{ figure: 36, caption: "days until raids open, 9 Dec" }];
   RAIDS.forEach((r) => {
@@ -360,7 +367,7 @@ function overview() {
     ["2d", G.members[7], "completed Onyxia's Lair attunement", true], ["3d", G.members[0], "reached 300 Tailoring", false]] : [];
   const W = Math.floor((T.sizes.windowW - 2 * T.space.l - 2 * T.space.xl) / 3), x = (i) => (i - 1) * (W + T.space.xl);
   return `<div class="abs dim ell" style="left:0;right:0;top:-2px">${header.replace(/<span>/, '<span style="color:var(--text)">')}</div>
-    <div class="abs" style="left:${x(1)}px;top:28px;width:${W}px">${block("Guild", guildRows, ["Open roster", "roster"], "position:static")}
+    <div class="abs" style="left:${x(1)}px;top:28px;width:${W}px">${block("Guild", guildRows, ["Without addon", "roster"], "position:static")}
       ${block("Data health", health, ["Oldest first", "roster"], "position:static;margin-top:20px")}</div>
     <div class="abs" style="left:${x(2)}px;top:28px;width:${W}px">${block("Raids", raidRows, ["Onyxia list", "raid"], "position:static")}
       ${block("Professions", profRows, ["Find a crafter", "crafters"], "position:static;margin-top:20px")}</div>
@@ -525,12 +532,21 @@ function professions() {
     const ccell = (k, c) => c.key === "n" ? dot(k[3] === "addon" ? "good" : k[3] === "online" ? "text" : "faint") + star(k[6]) + `<span style="color:${CLASS[k[1]]}">${esc(k[0])}</span>${k[4] ? ` <span class="dim">&nbsp;${k[4]}</span>` : ""}`
       : c.key === "s" ? k[2] : c.key === "p" ? "" : c.key === "r" ? recAgo(k[5]) : btn("Whisper", "small" + (k[3] === "offline" ? " disabled" : ""));
     const rcell = (r, c) => c.key === "n" ? star(r[3]) + `<span style="color:${r[1]}">${esc(r[0])}</span>` : r[2] === 1 ? `<span class="spark">1</span>` : r[2];
+    // v0.3.4: ?crafter=Brambletoe shows one crafter's recipes, with Character / Everyone.
+    const picked = S.crafter && PROF_CRAFTERS.find((k) => k[0] === S.crafter);
+    const BRAMBLE = ["Elixir of Giants", "Flask of the Titans", "Major Mana Potion", "Transmute: Arcanite", "Transmute: Undeath to Water"];
+    const recipes = picked ? PROF_RECIPES.filter((r) => BRAMBLE.includes(r[0])) : PROF_RECIPES;
+    const ctl = T.sizes.control, chipsTop = picked ? 36 + ctl + T.space.s : 36;
+    const bar = picked ? `<div class="abs" style="left:456px;right:0;top:36px;height:${ctl}px;display:flex;align-items:center;gap:${T.space.s}px">
+        <span class="ell" style="flex:1"><span style="color:${CLASS[picked[1]]}">${esc(picked[0])}</span><span class="dim">&nbsp;&nbsp;·&nbsp;&nbsp;Alchemy ${picked[2]}</span></span>
+        ${btn("Character", "small")}${btn("Everyone", "quiet")}</div>` : "";
     return `${btn("All professions", "", 'style="position:absolute;left:0;top:0"')}<div class="abs" style="left:130px;top:3px;font-size:15px">Alchemy</div>
-      <div class="abs dim ell" style="right:0;top:4px;font-size:12px">6 characters, 2 online · ${PROF_RECIPES.length} recipes</div>
+      <div class="abs dim ell" style="right:0;top:4px;font-size:12px">6 characters, 2 online · ${picked ? picked[0] + " knows " : ""}${recipes.length} recipes</div>
       ${list([{ key: "n", t: "Character", w: 152 }, { key: "s", t: "Skill", w: 50, r: 1 }, { key: "p", t: "Speciality", w: 92 }, { key: "r", t: "Recipes", w: 70, r: 1 }, { key: "b", t: "", w: 64 }],
-        PROF_CRAFTERS, ccell, { click: true, style: "left:0;top:36px;bottom:0;width:440px" })}
-      <div class="abs" style="left:456px;top:36px;display:flex;gap:4px">${chips([["all", "All"], ["one", "Only one crafter"], ["fav", "Favourites"], ["nobody", "Nobody knows"]], "all")}</div>
-      ${list([{ key: "n", t: "Recipe", w: 290 }, { key: "c", t: "Crafters", w: 90, r: 1 }], PROF_RECIPES, rcell, { click: true, style: "left:456px;right:0;top:68px;bottom:0" })}`;
+        PROF_CRAFTERS, ccell, { click: true, sel: (k) => k === picked, style: "left:0;top:36px;bottom:0;width:440px" })}
+      ${bar}
+      <div class="abs" style="left:456px;top:${chipsTop}px;display:flex;gap:4px">${chips([["all", "All"], ["one", picked ? "Only they know" : "Only one crafter"], ["fav", "Favourites"]].concat(picked ? [] : [["nobody", "Nobody knows"]]), "all")}</div>
+      ${list([{ key: "n", t: "Recipe", w: 290 }, { key: "c", t: "Crafters", w: 90, r: 1 }], recipes, rcell, { click: true, style: `left:456px;right:0;top:${chipsTop + 32}px;bottom:0` })}`;
   }
   if (S.profView === "recipes") {
     const ALL = [["Arcanite Bar", "#ffffff", "Alchemy", "Transmutes", 2, "Thorium Bar"], ["Arcanite Reaper", "#a335ee", "Blacksmithing", "Axes", 1, "Thorium Bar"],
@@ -737,7 +753,7 @@ function seg(id) {
 try { Object.assign(S, JSON.parse(localStorage.getItem("skPreview") || "{}")); } catch (e) { /* ignore */ }
 // ?screen=roster&data=worst&view=before&raid=ony  (and &shot=1 for the README pictures: window only, no chrome)
 const Q = new URLSearchParams(location.search);
-for (const k of ["screen", "data", "view", "raid", "prof", "profView", "start"]) if (Q.get(k)) S[k] = Q.get(k);
+for (const k of ["screen", "data", "view", "raid", "prof", "profView", "start", "crafter"]) if (Q.get(k)) S[k] = Q.get(k);
 const SHOT = Q.get("shot");
 if (SHOT) {
   document.body.classList.add("shot"); S.view = SHOT === "compare" ? "before" : "after"; S.reduce = true;

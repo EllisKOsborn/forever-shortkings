@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.3.4 (not released yet): one crafter's recipes, who has the addon
+
+- **Professions: click a crafter to see their recipes.** In one profession
+  (say Tailoring), clicking a name used to jump to the Character tab. Now it
+  shows only that person's recipes on the right, with their name and skill
+  above. **Only they know** lists the recipes nobody else in the guild has.
+  A **Character** button opens their character sheet; **Everyone** (or
+  clicking the name again) shows the whole guild's recipes again. An empty
+  list says why (private recipes, or the window never opened with the addon).
+- **Overview: who has Short Royalty.** The Guild section now says how many
+  members **have Short Royalty** and how many **don't have it yet**, and lists
+  the first ten who don't (online first, with a dot, so you can ask them
+  now). **Without addon** opens the Roster with all of them on top. "Have it"
+  means we've heard from them or have their data; trial accounts can't send,
+  so they count as not having it.
+- "Online now" also says how many of those online run the addon. Data health
+  now flags members who **have the addon but whose data hasn't reached you**
+  (the case to report), instead of repeating the "don't have it" count.
+- Roster: the Version column sorts members without the addon first; hovering
+  someone without data says whether they have the addon or not.
+- Getting started's "Get guildmates to install it" counts everyone who has
+  it, not just who's online right now.
+
 ## v0.3.3 (7 Nov 2026): guildmates can see each other
 
 **Everyone has to update.** v0.3.3 can't exchange data with v0.3.2 or
