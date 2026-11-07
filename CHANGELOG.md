@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.1 (not released yet): Short Royalty
+## v0.3.1 (7 Nov 2026): Short Royalty
 
 The guild is now **Short Royalty**, and so is the addon. Works alongside
 guildmates on **this version only**: the sync channel was renamed too,

@@ -184,7 +184,9 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   sends were counted as errors; the owner publishes it on the website because
   tag pushes from cloud sessions drop); **v0.2.7** (5 Nov, `/sr debug`
   profession checks only, for v0.3 Step 1); **v0.3.0** (6 Nov, the Professions
-  tab, reagents, favourites, specialisations, reminders). Tag only when
+  tab, reagents, favourites, specialisations, reminders); **v0.3.1** (7 Nov,
+  renamed to Short Royalty, technical names included; first zip named
+  `ShortRoyalty-…`). Tag only when
   the user asks.
 
 ## Layout
@@ -258,9 +260,10 @@ messages → sender ignored for the session).
   Marcellus from fonts.gstatic.com (don't commit the font).
 
 ## Status (7 Nov 2026)
-- **v0.3.1 (Short Royalty rename)** on branch `claude/short-kings-addon-hlf0t4`:
-  display name everywhere, `DBM.AdoptRenamedGuild` (saved guild data follows
-  a rename), `/sr` + `/shortroyalty`. Not yet on `main` or released.
+- **v0.3.1 (Short Royalty rename)** on `main` 7 Nov (the owner publishes the
+  release): new name everywhere, technical names too (folder, SavedVariables,
+  prefix, zip `ShortRoyalty-vX.Y.Z-forever.zip`), `DBM.AdoptRenamedGuild`
+  (saved guild data follows future renames), `/sr` + `/shortroyalty` + `/sk`.
 - v0.3.0 Professions released 6 Nov (see CHANGELOG).
 - **v0.2.5 released 5 Nov**: the first build after an in-game test (owner,
   solo: loads, GUID stable, interface 16001, a test send worked). It

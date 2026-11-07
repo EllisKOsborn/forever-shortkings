@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-FFC000?labelColor=000000">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.3.0%20alpha-F06BB0?labelColor=000000">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.3.1%20alpha-F06BB0?labelColor=000000">
   <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FF6A1A?labelColor=000000">
 </p>
 
@@ -328,6 +328,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.0 Professions**: guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
+- [x] **v0.3.1**: renamed to **Short Royalty** (window, folder, download and `/sr`)
 - [ ] **In-game test round** with guildmates (TESTING.md), then fixes
 - [ ] **v0.4**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
 - [ ] **v0.5**: craft requests, a short status line, lockout board
