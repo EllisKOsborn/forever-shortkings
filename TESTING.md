@@ -347,9 +347,9 @@ in game if anything looks different and send it.
         back to Professions: they're still picked.
 113. [ ] Pick someone who keeps recipes private, or hasn't opened that window:
         the list says so instead of being blank.
-114. [ ] Overview → Guild: **Have Short Royalty** + **Don't have it yet** add up
+114. [ ] Overview → Guild: **Have Short Royalty** + **Not seen with the addon yet** add up
         to Members, and the names listed really don't have it.
-115. [ ] **Without addon** opens the Roster with those members on top.
+115. [ ] **Not seen yet** opens the Roster with those members on top.
 
 116. [ ] On a character with a profession whose window you haven't opened with
         the addon (or after `/run ShortRoyaltyDB.own=nil` and `/reload`): the
@@ -361,13 +361,13 @@ in game if anything looks different and send it.
 
 ## v0.3.5
 
-118. [ ] Overview → point at **Don't have it yet** or the names under it: a
+118. [ ] Overview → point at **Not seen with the addon yet** or the names under it: a
         tooltip lists everyone without the addon, two per line, online first.
 
 ## v0.3.6
 
 119. [ ] A guildmate still on v0.3.2 or older (if anyone is): they're **not** in
-        "Don't have it yet"; the Roster's Version column says **old**.
+        "Not seen with the addon yet"; the Roster's Version column says **old**.
 120. [ ] `/sr debug` → "Battle.net accounts the game shares: N of M". Send me
         the number: 0 means the game doesn't share them for guildmates.
 121. [ ] Character tab → one of your alts that hasn't logged in with the addon
@@ -377,7 +377,12 @@ in game if anything looks different and send it.
         the addon) shows under "Alts of players who have it", not "Don't have
         it yet". Point at the line: it says "guild note".
 123. [ ] Someone you've never been online with, who has the addon: after a
-        guildmate with the addon logs in, they disappear from "Don't have it yet".
+        guildmate with the addon logs in, they disappear from "Not seen with the addon yet".
+
+## v0.3.7
+
+124. [ ] Overview → Guild says **Not seen with the addon yet** (not "Don't have
+        it yet"), and its button says **Not seen yet**.
 
 ## Known gaps in v0.1
 

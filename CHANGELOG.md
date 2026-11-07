@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.3.7 (not released yet)
+
+- **Clearer wording on the Overview:** "Don't have it yet" is now **Not seen
+  with the addon yet**, because the addon only knows which *characters* it has
+  heard from: someone may have Short Royalty on their main while their alt
+  still shows here until they log in on it. The button is now **Not seen yet**,
+  and the tooltips (Overview and Roster) say so.
+
 ## v0.3.6 (7 Nov 2026): fewer people wrongly listed as "doesn't have it"
 
 People who do have Short Royalty were showing under **Don't have it yet** on

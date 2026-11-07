@@ -53,7 +53,7 @@
 The first tab: six sections in three columns, set like a spec sheet. Each
 section has a link to the place where you can act on it.
 
-- **Guild**: members, players (alts counted once), online now (and how many of them run Short Royalty), **who has Short Royalty and who doesn't yet**, with the first ten names of those who don't (online ones first, with a dot, so you can ask them now); point at them for **everyone** in a tooltip; **alts of players who have it** in a separate line (spotted by Battle.net account where the game shares it, **This is my alt**, or a guild note naming the player), and levels in bands (60, 50–59, 40–49, 1–39). *Without addon* opens the Roster with everyone who doesn't have it on top.
+- **Guild**: members, players (alts counted once), online now (and how many of them run Short Royalty), **who has Short Royalty, and who hasn't been seen with it yet** (some may have it on another character), with the first ten names of those not seen (online ones first, with a dot, so you can ask them now); point at them for **everyone** in a tooltip; **alts of players who have it** in a separate line (spotted by Battle.net account where the game shares it, **This is my alt**, or a guild note naming the player), and levels in bands (60, 50–59, 40–49, 1–39). *Not seen yet* opens the Roster with them on top.
 - **Raids**: the one big number, days until raids open on 9 Dec. Barrow Deeps (10) and Hyjal Summit (20) need no attunement, so it counts your level 60s. Onyxia's Lair (40) shows attuned / not attuned / unknown, and how many have the quest done but the Drakefire Amulet out of their bags. *Onyxia list*.
 - **Data health**: members who have the addon but whose data hasn't reached you yet, profiles older than a week, profession windows never opened, and anyone on an old Short Royalty (you included). "All good" when there's nothing to fix. *Oldest first* opens the Roster with missing and oldest data on top.
 - **Professions**: characters per crafting profession, how many are at 300 (or the best so far), **nobody** in red where the guild has a gap, and one line for gathering. *Find a crafter*.
@@ -345,6 +345,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.3**: fix: guildmates can see each other's data (big messages sent as numbered pieces)
+- [ ] **v0.3.7** (built, not released): "Not seen with the addon yet" instead of "Don't have it yet"
 - [x] **v0.3.6**: fewer people wrongly listed as "doesn't have it" (old versions, alts, never online together)
 - [x] **v0.3.5**: point at "Don't have it yet" on the Overview for the full list
 - [x] **v0.3.4**: click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't; orange "open your profession windows" bar with an Open button

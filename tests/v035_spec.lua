@@ -26,7 +26,7 @@ describe("v0.3.5 full list of who doesn't have the addon", function()
 		local tt = fakeTooltip()
 		SK.OverviewTab.WithoutTip(tt, people(14))
 		local all = table.concat(tt.lines, "\n")
-		assert.truthy(all:find("Don't have Short Royalty yet (14)", 1, true))
+		assert.truthy(all:find("Not seen with Short Royalty yet (14)", 1, true))
 		for i = 1, 14 do assert.truthy(all:find(string.format("N%02d Surname", i), 1, true), i) end
 		assert.truthy(tt.lines[2]:find("N01 Surname", 1, true) and tt.lines[2]:find("N02 Surname", 1, true)) -- two per line
 		assert.truthy(tt.lines[2]:find(SK.RosterTab.DOT.online, 1, true)) -- N01 is online

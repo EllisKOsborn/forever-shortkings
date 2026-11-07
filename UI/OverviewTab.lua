@@ -18,7 +18,7 @@ local function n(v) return tostring(v or 0) end
 ---------------------------------------------------------------------------
 -- Section rows (pure; tested). See W.Block for the row format.
 ---------------------------------------------------------------------------
-Ov.NAMES_SHOWN = 10 -- names listed under "Don't have it yet"; the rest go to the Roster
+Ov.NAMES_SHOWN = 10 -- names listed under "Not seen with the addon yet"; the rest go to the Roster
 
 -- "Bob, Cat, Dan and 12 more": first names, class colours, a dot for online.
 function Ov.WithoutText(without, max)
@@ -52,7 +52,7 @@ Ov.TIP_NAMES = 60 -- names in the hover list (two per line); the Roster has the 
 
 -- Hover list of everyone without the addon: two names per line, online first.
 function Ov.WithoutTip(tt, without)
-	Theme.TipLine(tt, "Don't have Short Royalty yet (" .. #without .. ")")
+	Theme.TipLine(tt, "Not seen with Short Royalty yet (" .. #without .. ")")
 	local function name(w)
 		if not w then return "" end
 		return (w.online and (SK.RosterTab.DOT.online .. " ") or "") .. Theme.ClassText(w.name, w.class)
@@ -61,11 +61,12 @@ function Ov.WithoutTip(tt, without)
 	for i = 1, shown, 2 do
 		Theme.TipDouble(tt, name(without[i]), i + 1 <= shown and name(without[i + 1]) or "")
 	end
-	if #without > shown then Theme.TipLine(tt, "and " .. (#without - shown) .. " more: Without addon lists everyone", "dim") end
-	Theme.TipLine(tt, "Online first (white dot). Alts of players who have it are listed separately when the " ..
-		"addon can tell (Battle.net account, \"This is my alt\", or a guild note). Trial accounts show here " ..
-		"too: they can't share.", "dim", true)
-	Theme.TipLine(tt, "Without addon (top right) opens them in the Roster", "gold")
+	if #without > shown then Theme.TipLine(tt, "and " .. (#without - shown) .. " more: Not seen yet lists everyone", "dim") end
+	Theme.TipLine(tt, "Characters your addon hasn't heard from with Short Royalty. Some may have it on " ..
+		"another character: an alt shows here until they log in on it with the addon (or it's linked by " ..
+		"Battle.net account, \"This is my alt\" or a guild note). Trial accounts show here too: they can't " ..
+		"share. Online first (white dot).", "dim", true)
+	Theme.TipLine(tt, "Not seen yet (top right) opens them in the Roster", "gold")
 end
 
 function Ov.GuildRows(o)
@@ -74,7 +75,7 @@ function Ov.GuildRows(o)
 		{ label = "Players (alts counted once)", value = n(o.players) },
 		{ label = "Online now", value = Theme.Paint("dim", n(o.withAddon) .. " with addon   ") .. n(o.online) },
 		{ label = "Have Short Royalty", value = n(o.hasAddon), tone = o.hasAddon > 0 and "good" or "dim" },
-		{ label = "Don't have it yet", value = n(#o.without), tone = #o.without > 0 and "spark" or "good" },
+		{ label = "Not seen with the addon yet", value = n(#o.without), tone = #o.without > 0 and "spark" or "good" },
 	}
 	if #o.without > 0 then
 		local tip = function(tt) Ov.WithoutTip(tt, o.without) end
@@ -132,7 +133,7 @@ function Ov.HealthRows(o)
 	if #rows == 0 then
 		rows[1] = { text = "All good: everyone's data is current.", tone = "good" }
 	else
-		rows[#rows + 1] = { text = "Trial accounts can't share, so they count as not having the addon." }
+		rows[#rows + 1] = { text = "Trial accounts can't share, so they show as not seen with the addon." }
 	end
 	return rows
 end
@@ -214,8 +215,8 @@ function Ov:Build(page)
 		b:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -SP.xl)
 	end
 
-	self.guild = block(1, "Guild", { text = "Without addon", onClick = function() SK.RosterTab:ShowWithoutAddon() end,
-		tooltip = "Roster with everyone who doesn't have Short Royalty first" })
+	self.guild = block(1, "Guild", { text = "Not seen yet", onClick = function() SK.RosterTab:ShowWithoutAddon() end,
+		tooltip = "Roster with everyone not seen with Short Royalty yet first" })
 	self.health = block(1, "Data health", { text = "Oldest first", onClick = function() SK.RosterTab:ShowOldestFirst() end,
 		tooltip = "Roster sorted so missing and oldest data come first" })
 	below(self.health, self.guild)

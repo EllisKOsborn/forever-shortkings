@@ -341,7 +341,8 @@ local function tooltip(row, r)
 		Theme.TipLine(GameTooltip, "Has Short Royalty" .. (r.addon and (" " .. r.addon) or "") ..
 			", but their data hasn't reached you yet.", "spark", true)
 	elseif not r.hasData then
-		Theme.TipLine(GameTooltip, "Doesn't have Short Royalty yet (or is on a trial account: trials can't sync).", "dim", true)
+		Theme.TipLine(GameTooltip, "Not seen with Short Royalty yet. They may have it on another character, " ..
+			"or be on a trial account (trials can't sync).", "dim", true)
 	elseif r.addon then
 		if not r.isSelf and Theme.IsStale(r.updated, now) then
 			Theme.TipLine(GameTooltip, "Data is " .. Theme.Ago(r.updated, now) .. " old and may be out of date", "spark")
@@ -466,7 +467,7 @@ function Roster:ShowOldestFirst()
 	self.list:Sort()
 end
 
--- Overview "Without addon": the plain roster, people without Short Royalty first.
+-- Overview "Not seen yet": the plain roster, people not seen with Short Royalty first.
 function Roster:ShowWithoutAddon()
 	SK.DB.settings.roster.raid = nil
 	SK.MainFrame:Select("roster")

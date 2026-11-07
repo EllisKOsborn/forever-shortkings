@@ -395,6 +395,16 @@ messages → sender ignored for the session).
     can't fake "newer version" notices). An SQ with `a` gets an SO even with
     no profiles to offer (`g = {}`, which doesn't use the accept-one slot).
   TESTING 119–123.
+- **v0.3.7 (built, not on `main`)**: wording only. The owner asked whether
+  to remove alt features; advice was no (removing them wouldn't fix the
+  per-character gap and would lose roster grouping and "on alt" whispers).
+  "Don't have it yet" → **"Not seen with the addon yet"**, button "Not seen
+  yet". Pending: owner's in-game test of the Warband currency API
+  (`C_CurrencyInfo.RequestCurrencyDataForAccountCharacters` +
+  `FetchCurrencyDataFromAccountCharacters(currencyID)` → characterGUID/name of
+  the player's own characters holding an account-transferable currency;
+  Forever loads Blizzard_CurrencyTransfer). If it lists alts, build automatic
+  "my alts" claims on it. TESTING 124.
 - **CurseForge uploads are automatic** (checked 7 Nov: the v0.3.2 Release run
   logged "Uploading ShortRoyalty-v0.3.2-forever.zip (1.60.1 release) …
   Success!"). Owner still renames the project from "Short Kings" and archives

@@ -149,7 +149,7 @@ describe("v0.3.4 who has Short Royalty", function()
 		assert.same({ "Zed Last", "Abe", "Cat" }, names)
 		local text = SK.OverviewTab.GuildText(o)
 		assert.truthy(text:find("Have Short Royalty", 1, true))
-		assert.truthy(text:find("Don't have it yet  " .. SK.Theme.Code("spark") .. "3|r", 1, true))
+		assert.truthy(text:find("Not seen with the addon yet  " .. SK.Theme.Code("spark") .. "3|r", 1, true))
 		local list = SK.OverviewTab.WithoutText(o.without)
 		assert.truthy(list:find("Zed", 1, true) and not list:find("Last", 1, true)) -- first names
 		assert.truthy(list:find(SK.RosterTab.DOT.online, 1, true))                -- Zed is online

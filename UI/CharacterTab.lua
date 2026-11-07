@@ -143,12 +143,12 @@ function Char:Build(page)
 	end)
 	self.whisper:SetPoint("RIGHT", self.askLatest, "LEFT", -SP.s, 0)
 	-- v0.3.6: mark a guildmate character as yours (an alt that hasn't logged
-	-- in with the addon yet), so the Overview doesn't list it as "doesn't have it".
+	-- in with the addon yet), so the Overview doesn't list it as "not seen with the addon".
 	self.myAlt = W.Button(page, "This is my alt", nil, S.control, function()
 		if Char.shownGuid then SK.Profile:ToggleMyAlt(Char.shownGuid); Char:Refresh() end
 	end, "quiet")
 	self.myAlt.tooltip = "One of your characters that hasn't logged in with Short Royalty yet? Mark it, and " ..
-		"guildmates see it as your alt instead of \"doesn't have the addon\". Click again to undo."
+		"guildmates see it as your alt instead of \"not seen with the addon\". Click again to undo."
 	self.myAlt:SetPoint("RIGHT", self.whisper, "LEFT", -SP.s, 0)
 	self.makeMain = W.Button(page, "Make this my main", nil, S.control, function()
 		if Char.shownGuid then SK.Profile:SetMain(Char.shownGuid); Char:Refresh() end
