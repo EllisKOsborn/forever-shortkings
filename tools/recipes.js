@@ -1,0 +1,158 @@
+// Builds Data/Recipes.lua: every profession recipe in WoW Forever, from the
+// game's own data tables as published by wago.tools (datamined from
+// Blizzard's client files for that exact build).
+//
+// Usage:
+//   node tools/recipes.js                 newest Forever build on wago.tools
+//   node tools/recipes.js 1.60.1.70862    a specific build
+//   node tools/recipes.js <build> --from <dir>   use CSVs already downloaded
+//                                                (SkillLineAbility.csv, ...)
+//
+// What goes in: recipe (spell) ID, profession, the window's category, the
+// item it makes and its reagents. Names are NOT stored: the addon reads them
+// from each player's own game (always right, in their language). Categories
+// named "Season of Discovery", "PROTOTYPE" or "[DNT]" are left out: they are
+// in the client files but not part of Forever.
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
+const { execFileSync } = require("child_process");
+
+const ROOT = path.join(__dirname, "..");
+const OUT = path.join(ROOT, "Data", "Recipes.lua");
+const TABLES = ["SkillLineAbility", "TradeSkillCategory", "SpellReagents", "SpellEffect"];
+
+// The professions Short Kings knows (Data/Professions.lua).
+const PROFESSIONS = { 171: "Alchemy", 164: "Blacksmithing", 333: "Enchanting", 202: "Engineering", 182: "Herbalism",
+  165: "Leatherworking", 186: "Mining", 393: "Skinning", 197: "Tailoring", 185: "Cooking", 129: "First Aid", 356: "Fishing" };
+const EXCLUDE = /season of discovery|prototype|\[dnt\]/i;
+const CREATE_ITEM = "24"; // SpellEffect.Effect: create an item
+
+function curl(url, file) {
+  execFileSync("curl", ["-sSfL", "-m", "300", "-o", file, url], { stdio: ["ignore", "ignore", "inherit"] });
+}
+
+function latestBuild() {
+  const tmp = path.join(os.tmpdir(), "sk-builds.json");
+  curl("https://wago.tools/api/builds", tmp);
+  const builds = JSON.parse(fs.readFileSync(tmp, "utf8")).wowf; // wowf = WoW Forever
+  if (!builds || !builds.length) throw new Error("wago.tools lists no Forever (wowf) builds");
+  return builds[0].version;
+}
+
+// Small CSV reader (quoted fields, doubled quotes, commas inside quotes).
+function parseCSV(text) {
+  const rows = [];
+  let row = [], field = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else field += c;
+    } else if (c === '"') quoted = true;
+    else if (c === ",") { row.push(field); field = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(field); field = "";
+      if (row.length > 1 || row[0] !== "") rows.push(row);
+      row = [];
+    } else field += c;
+  }
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  const head = rows.shift();
+  return rows.map((r) => Object.fromEntries(head.map((h, i) => [h, r[i]])));
+}
+
+function load(dir, name) {
+  return parseCSV(fs.readFileSync(path.join(dir, name + ".csv"), "utf8"));
+}
+
+const luaStr = (s) => '"' + String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n") + '"';
+
+function build(dir, version) {
+  const sla = load(dir, "SkillLineAbility");
+  const cats = Object.fromEntries(load(dir, "TradeSkillCategory").map((r) => [r.ID, r]));
+  const excluded = (id) => {
+    for (let c = cats[id], n = 0; c && n < 10; c = cats[c.ParentTradeSkillCategoryID], n++) {
+      if (EXCLUDE.test(c.Name_lang || "")) return true;
+    }
+    return false;
+  };
+
+  const recipes = new Map(); // spell -> { skillLine, cat }
+  for (const r of sla) {
+    if (!PROFESSIONS[r.SkillLine] || r.TradeSkillCategoryID === "0" || excluded(r.TradeSkillCategoryID)) continue;
+    if (!recipes.has(r.Spell)) recipes.set(r.Spell, { skillLine: +r.SkillLine, cat: +r.TradeSkillCategoryID });
+  }
+
+  const items = {};
+  for (const e of load(dir, "SpellEffect")) {
+    if (e.Effect === CREATE_ITEM && recipes.has(e.SpellID) && +e.EffectItemType > 0 && !items[e.SpellID]) {
+      items[e.SpellID] = +e.EffectItemType;
+    }
+  }
+  const reagents = {};
+  for (const r of load(dir, "SpellReagents")) {
+    if (!recipes.has(r.SpellID) || reagents[r.SpellID]) continue;
+    const parts = [];
+    for (let i = 0; i < 8; i++) {
+      const id = +r["Reagent_" + i], n = +r["ReagentCount_" + i];
+      if (id > 0 && n > 0) parts.push(id + ":" + n);
+    }
+    reagents[r.SpellID] = parts.join(",");
+  }
+
+  // Categories in use, plus their parents (for "Camping in Herbalism").
+  const usedCats = new Set();
+  for (const { cat } of recipes.values()) {
+    for (let id = String(cat), n = 0; id && id !== "0" && cats[id] && n < 10; id = cats[id].ParentTradeSkillCategoryID, n++) usedCats.add(id);
+  }
+
+  const bySkill = {};
+  for (const [spell, r] of recipes) (bySkill[r.skillLine] = bySkill[r.skillLine] || []).push([+spell, r]);
+
+  const L = [];
+  L.push("-- GENERATED by tools/recipes.js. Do not edit by hand: run `node tools/recipes.js`.");
+  L.push("-- Every profession recipe in WoW Forever, from the game's own data tables");
+  L.push("-- (SkillLineAbility, TradeSkillCategory, SpellEffect, SpellReagents) as published");
+  L.push("-- by wago.tools for build " + version + ". Names come from each player's game at");
+  L.push("-- runtime. Entry: { recipe (spell) ID, item made (0 = none), category, reagents \"item:count,...\" }");
+  L.push("local _, SK = ...");
+  L.push("SK.Data = SK.Data or {}");
+  L.push("");
+  L.push(`SK.Data.RECIPE_SOURCE = { build = ${luaStr(version)}, site = "wago.tools", count = ${recipes.size} }`);
+  L.push("");
+  L.push("-- [categoryID] = { English name (fallback when the game can't say), parent categoryID }");
+  L.push("SK.Data.RECIPE_CATS = {");
+  for (const id of [...usedCats].sort((a, b) => a - b)) {
+    L.push(`\t[${id}] = { ${luaStr(cats[id].Name_lang || "")}, ${+cats[id].ParentTradeSkillCategoryID || 0} },`);
+  }
+  L.push("}");
+  L.push("");
+  L.push("SK.Data.RECIPE_LIST = {");
+  for (const skill of Object.keys(bySkill).sort((a, b) => a - b)) {
+    L.push(`\t[${skill}] = { -- ${PROFESSIONS[skill]}: ${bySkill[skill].length}`);
+    for (const [spell, r] of bySkill[skill].sort((a, b) => a[0] - b[0])) {
+      L.push(`\t\t{ ${spell}, ${items[spell] || 0}, ${r.cat}, ${luaStr(reagents[spell] || "")} },`);
+    }
+    L.push("\t},");
+  }
+  L.push("}");
+  fs.writeFileSync(OUT, L.join("\n") + "\n");
+  console.log(`wrote ${path.relative(ROOT, OUT)}: ${recipes.size} recipes, ${usedCats.size} categories (build ${version})`);
+  for (const skill of Object.keys(bySkill)) console.log(`  ${PROFESSIONS[skill]}: ${bySkill[skill].length}`);
+}
+
+const args = process.argv.slice(2);
+const fromIdx = args.indexOf("--from");
+let dir = fromIdx >= 0 ? args[fromIdx + 1] : null;
+const version = args.find((a, i) => /^\d+\.\d+\.\d+\.\d+$/.test(a) && i !== fromIdx + 1) || latestBuild();
+if (!dir) {
+  dir = fs.mkdtempSync(path.join(os.tmpdir(), "sk-recipes-"));
+  for (const t of TABLES) {
+    console.log("downloading", t);
+    curl(`https://wago.tools/db2/${t}/csv?build=${version}`, path.join(dir, t + ".csv"));
+  }
+}
+build(dir, version);

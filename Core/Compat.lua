@@ -456,6 +456,17 @@ function Compat.RecipeSchematic(recipeID)
 	return out
 end
 
+-- Does this spell exist on this client? C_Spell.DoesSpellExist is in
+-- Forever's SpellDocumentation ("regardless of whether the player has
+-- learned it"). nil = can't tell.
+function Compat.SpellExists(spellID)
+	if has("C_Spell", "DoesSpellExist") then
+		local ok, v = pcall(C_Spell.DoesSpellExist, spellID)
+		if ok then return v and true or false end
+	end
+	return nil
+end
+
 -- Does the player know this spell? C_SpellBook.IsSpellKnown(spellID[, bank])
 -- is in Forever's SpellBookDocumentation (bank defaults to Player). The
 -- globals are older fallbacks. Returns known (nil = can't tell), source.
@@ -789,6 +800,8 @@ Compat.PROBES = {
 	"C_TradeSkillUI.GetRecipeSchematic", "C_TradeSkillUI.GetCategoryInfo", "C_TradeSkillUI.GetCategories",
 	"C_TradeSkillUI.GetShowLearned", "C_TradeSkillUI.GetShowUnlearned",
 	"C_TradeSkillUI.GetProfessionInfoBySkillLineID", "C_SpellBook.IsSpellKnown", "IsPlayerSpell",
+	-- v0.3.1 recipe list
+	"C_Spell.DoesSpellExist",
 }
 
 function Compat.ProbeAll()

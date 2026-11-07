@@ -11,7 +11,7 @@ local S, SP = Theme.SIZES, Theme.SPACE
 Prof.CRAFTERS_W = 440
 Prof.RECIPES_W = S.window[1] - 2 * SP.l - Prof.CRAFTERS_W - SP.l
 
-local VIEWS = { { "board", "Guild" }, { "cooldowns", "Cooldowns" } }
+local VIEWS = { { "board", "Guild" }, { "recipes", "All recipes" }, { "cooldowns", "Cooldowns" } }
 local RECIPE_FILTERS = {
 	{ "all", "All" }, { "one", "Only one crafter" }, { "fav", "Favourites" }, { "nobody", "Nobody knows" },
 }
@@ -68,6 +68,14 @@ local CRAFTER_COLUMNS = {
 local RECIPE_COLUMNS = {
 	{ key = "name", title = "Recipe", width = 290 },
 	{ key = "count", title = "Crafters", width = 90, align = "RIGHT" },
+}
+
+-- All recipes: 836.
+local ALL_COLUMNS = {
+	{ key = "name", title = "Recipe", width = 330 },
+	{ key = "prof", title = "Profession", width = 130 },
+	{ key = "group", title = "Group", width = 266 },
+	{ key = "count", title = "Crafters", width = 110, align = "RIGHT" },
 }
 
 -- Cooldowns: 836.
@@ -133,6 +141,21 @@ local function setRecipeCell(fs, r, col)
 		if r.count == 0 then fs:SetText(Theme.Paint("spark", "nobody"))
 		elseif r.count == 1 then fs:SetText(Theme.Paint("spark", "1"))
 		else fs:SetText(r.count) end
+	end
+end
+
+local function setAllCell(fs, r, col)
+	local k = col.key
+	if k == "name" then
+		setRecipeCell(fs, r, col)
+	elseif k == "prof" then
+		fs:SetText(Theme.Paint("dim", PB.ProfessionName(Prof.ctx, r.skillLine)))
+	elseif k == "group" then
+		local g = r.group ~= "" and r.group or Theme.DASH
+		if r.match == "material" and r.matched then g = g .. Theme.Paint("dim", "  ·  uses " .. r.matched) end
+		fs:SetText(Theme.Paint("dim", g))
+	else
+		setRecipeCell(fs, r, col)
 	end
 end
 
@@ -235,6 +258,54 @@ function Prof:Build(page)
 	self.cooldowns:SetPoint("TOPLEFT", 0, top)
 	self.cooldowns:SetPoint("BOTTOMRIGHT")
 
+	-- All recipes: every recipe in the game (Data/Recipes.lua), searchable by
+	-- name, the window's group ("camping") or material ("thorium bar").
+	self.query, self.allProf = "", nil
+	self.search = W.SearchBox(page, 300, "Search recipes, groups or materials", function(text)
+		Prof.query = text
+		Prof:Refresh()
+	end)
+	self.search:SetPoint("TOPLEFT", 0, top)
+	self.profMenu = W.Menu(page, {
+		width = 170,
+		items = function()
+			local items = { { value = "all", text = "All professions" } }
+			local ids = {}
+			for id in pairs(SK.Data.RECIPE_LIST or {}) do ids[#ids + 1] = id end
+			table.sort(ids, function(a, b) return PB.ProfessionName(Prof.ctx or {}, a) < PB.ProfessionName(Prof.ctx or {}, b) end)
+			for _, id in ipairs(ids) do items[#items + 1] = { value = id, text = PB.ProfessionName(Prof.ctx or {}, id) } end
+			return items
+		end,
+		get = function() return Prof.allProf or "all" end,
+		set = function(v)
+			Prof.allProf = v ~= "all" and v or nil
+			Prof:Refresh()
+		end,
+	})
+	self.profMenu:SetPoint("LEFT", self.search, "RIGHT", SP.s, 0)
+	self.profMenu.tooltip = "Pick a profession to list all its recipes"
+	self.allList = W.List(page, {
+		columns = ALL_COLUMNS, setCell = setAllCell,
+		onEnter = function(row, r)
+			GameTooltip:SetOwner(row, "ANCHOR_RIGHT")
+			if r.itemID > 0 and GameTooltip.SetItemByID then GameTooltip:SetItemByID(r.itemID)
+			else GameTooltip:SetText(r.name) end
+			local reagents = SK.Reagents.Text(SK.Reagents.Lines(r.recipeID), Theme.Code)
+			if reagents then Theme.TipLine(GameTooltip, "Needs: " .. reagents, "dim", true) end
+			Theme.TipLine(GameTooltip, r.count > 0 and Theme.Count(r.count, "crafter") .. " in the guild" or
+				"Nobody in the guild knows it yet", r.count > 0 and "good" or "spark")
+			Theme.TipLine(GameTooltip, "Click for crafters, reagents and a Wowhead link  ·  Right-click to " ..
+				(r.fav and "unstar" or "star"), "gold")
+			GameTooltip:Show()
+		end,
+		onClick = function(r, button)
+			if button == "RightButton" then Fav.ToggleRecipe(r.recipeID)
+			else SK.CraftersTab:ShowRecipe(r.recipeID, r.skillLine) end
+		end,
+	})
+	self.allList:SetPoint("TOPLEFT", 0, top - S.control - SP.m)
+	self.allList:SetPoint("BOTTOMRIGHT")
+
 	-- One profession: crafters on the left, recipes on the right.
 	self.crafters = W.List(page, {
 		columns = CRAFTER_COLUMNS, setCell = setCrafterCell,
@@ -329,8 +400,9 @@ end
 function Prof:Refresh()
 	if not self.board then return end
 	local ctx = PB.Context()
-	self.now = ctx.now
-	local view = SK.DB.settings.profView == "cooldowns" and "cooldowns" or "board"
+	self.now, self.ctx = ctx.now, ctx
+	local view = SK.DB.settings.profView
+	if view ~= "cooldowns" and view ~= "recipes" then view = "board" end
 	local one = self.skillLine ~= nil
 	for _, c in ipairs(self.viewChips) do
 		c:SetShown(not one)
@@ -340,6 +412,9 @@ function Prof:Refresh()
 	self.heading:SetShown(one)
 	self.board:SetShown(not one and view == "board")
 	self.cooldowns:SetShown(not one and view == "cooldowns")
+	self.search:SetShown(not one and view == "recipes")
+	self.profMenu:SetShown(not one and view == "recipes")
+	self.allList:SetShown(not one and view == "recipes")
 	self.crafters:SetShown(one)
 	self.right:SetShown(one)
 
@@ -351,8 +426,11 @@ function Prof:Refresh()
 	local top = -(S.control + SP.m) - shift
 	self.board:SetPoint("TOPLEFT", 0, top)
 	self.cooldowns:SetPoint("TOPLEFT", 0, top)
+	self.search:SetPoint("TOPLEFT", 0, top)
+	self.allList:SetPoint("TOPLEFT", 0, top - S.control - SP.m)
 
 	if one then return self:RefreshOne(ctx) end
+	if view == "recipes" then return self:RefreshAll(ctx) end
 	if view == "cooldowns" then
 		local rows = PB.Cooldowns(ctx)
 		local ready = 0
@@ -368,6 +446,24 @@ function Prof:Refresh()
 		self.board:SetItems(rows)
 		self.status:SetText(missing > 0 and (Theme.Count(missing, "profession") .. " nobody has") or
 			"Every profession is covered")
+	end
+end
+
+function Prof:RefreshAll(ctx)
+	self.profMenu:Refresh()
+	local rows, state, loading = SK.RecipeDB.Search(self.query, self.allProf, ctx.index)
+	self.allList:SetItems(rows)
+	self.allList:SetLoading(state == "ok" and #rows == 0 and loading > 0)
+	if state == "short" then
+		self.allList:SetEmptyText("Type at least " .. SK.RecipeDB.MIN_QUERY .. " letters of a recipe, item, group or " ..
+			"material (\"mooncloth\", \"camping\", \"thorium bar\"), or pick a profession to see all of its recipes.")
+		self.status:SetText(Theme.Count(SK.RecipeDB.Count(), "recipe") .. " in the game")
+	else
+		self.allList:SetEmptyText(loading > 0 and "Loading names from the game..." or "No recipe matches that.")
+		local text = (#rows >= SK.RecipeDB.MAX_RESULTS) and (SK.RecipeDB.MAX_RESULTS .. "+ results, type more")
+			or Theme.Count(#rows, "recipe")
+		if loading > 0 then text = text .. "  ·  " .. Theme.Paint("spark", "loading " .. loading .. " names...") end
+		self.status:SetText(text)
 	end
 end
 

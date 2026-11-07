@@ -20,7 +20,10 @@ local DEFAULTS = {
 		feed = true,                              -- record guild milestones for the Overview (v0.2.2)
 		reduceMotion = false,                     -- turn off UI animation (v0.2.3 design refresh)
 		profNudges = true,                        -- "open your Tailoring window" reminders (v0.3)
-		profView = "board",                       -- Professions tab: "board" or "cooldowns" (v0.3)
+		profView = "board",                       -- Professions tab: "board", "recipes" or "cooldowns" (v0.3)
+		welcomed = false,                         -- first-load welcome line shown (v0.3.1)
+		seen = {},                                -- tabs looked at, for "Getting started" (v0.3.1)
+		onboarding = { hidden = false },          -- "Getting started" card hidden by the player (v0.3.1)
 	},
 	own = {},             -- [guid] = full profile of our own characters (never sent)
 	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns

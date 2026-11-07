@@ -132,13 +132,24 @@ describe("v0.3 one profession", function()
 		local fav = SK.ProfBoard.Recipes(SK.ProfBoard.Context(W.now), 171, "fav")
 		assert.equal(1, #fav)
 		assert.is_true(fav[1].fav)
-		-- nothing unknown until a window has listed an unlearned recipe
-		assert.equal(0, #SK.ProfBoard.Unknown(ctx, 171))
+		-- v0.3.1: every Alchemy recipe in the game data that nobody knows, plus
+		-- anything our own window listed
+		local inData = 0
+		for _, r in ipairs(SK.RecipeDB.List(171)) do
+			if r.recipeID ~= R_ARCANITE and r.recipeID ~= R_TITAN then inData = inData + 1 end
+		end
+		assert.is_true(inData > 100)
+		assert.equal(inData, #SK.ProfBoard.Unknown(ctx, 171))
 		SK.DBM:Guild().recipeUniverse[171] = { [R_ARCANITE] = ARCANITE_BAR, [99] = 5 }
 		local nobody = SK.ProfBoard.Recipes(SK.ProfBoard.Context(W.now), 171, "nobody")
-		assert.equal(1, #nobody)
-		assert.equal(99, nobody[1].recipeID)
-		assert.equal(0, nobody[1].count)
+		assert.equal(inData + 1, #nobody)
+		local found
+		for _, r in ipairs(nobody) do
+			assert.equal(0, r.count)
+			assert.is_not.equal(R_ARCANITE, r.recipeID)
+			if r.recipeID == 99 then found = true end
+		end
+		assert.is_true(found)
 	end)
 end)
 
@@ -251,8 +262,8 @@ describe("v0.3 reagents", function()
 	end)
 
 	it("an empty answer is not cached, and a new game build clears the cache", function()
-		assert.is_nil(SK.Reagents.Lines(R_TITAN))
-		assert.is_nil(SK.DB.reagents.list[R_TITAN])
+		assert.is_nil(SK.Reagents.Lines(99999)) -- not in the game data either
+		assert.is_nil(SK.DB.reagents.list[99999])
 		SK.Reagents.Learn(R_ARCANITE)
 		SK.DB.reagents.build = "older"
 		C_TradeSkillUI.GetRecipeSchematic = nil
@@ -364,7 +375,10 @@ describe("v0.3 gathering professions with recipes (Forever's camping items)", fu
 		assert.same({ [1263070] = 279947 }, SK.Profile:Own().recipes[182])
 		local ctx = SK.ProfBoard.Context(W.now)
 		assert.equal(1, #SK.ProfBoard.Recipes(ctx, 182, "all"))
-		assert.equal(1, #SK.ProfBoard.Unknown(ctx, 182))
+		-- the other camping recipes from the game data (and the one our window listed)
+		local unknown = SK.ProfBoard.Unknown(ctx, 182)
+		assert.is_true(#unknown >= 3)
+		for _, r in ipairs(unknown) do assert.is_not.equal(1263070, r.recipeID) end
 		local me = SK.ProfBoard.Crafters(ctx, 182)[1]
 		assert.equal(W.now - 1, me.scanned)
 		local text = SK.CharacterTab.DetailText(SK.Profile:Own(), W.now)
@@ -383,7 +397,7 @@ describe("v0.3 Professions tab", function()
 		tab:Open(171)
 		assert.equal(3, #tab.crafters.items)
 		assert.equal(2, #tab.recipes.items)
-		assert.is_false(tab.filterChips[4]:IsShown()) -- "Nobody knows": nothing unknown yet
+		assert.is_true(tab.filterChips[4]:IsShown()) -- "Nobody knows": from the game's recipe list
 		tab.filter = "one"
 		tab:Refresh()
 		assert.equal(1, #tab.recipes.items)

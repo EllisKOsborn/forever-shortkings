@@ -197,7 +197,8 @@ describe("v0.2.2 Overview tab", function()
 		assert.equal("Player-1-B", SK.RosterTab.list.items[1].guid) -- no data comes first
 		SK.MainFrame:Select("overview")
 		SK.OverviewTab.recipes.button:GetScript("OnClick")(SK.OverviewTab.recipes.button)
-		assert.equal("crafters", SK.MainFrame.current)
+		assert.equal("professions", SK.MainFrame.current) -- v0.3.1: the all-recipes search
+		assert.equal("recipes", SK.DB.settings.profView)
 	end)
 
 	it("lists milestones with a Grats button that only pre-fills guild chat", function()

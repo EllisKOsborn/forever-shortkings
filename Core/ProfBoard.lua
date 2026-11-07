@@ -129,17 +129,20 @@ function PB.Crafters(ctx, skillLine)
 	return SK.CraftIndex.SortCrafters(out)
 end
 
--- Is there anything in the window's recipe list that nobody in the guild
--- knows? Only possible when the game lists unlearned recipes.
+-- Recipes of this profession that nobody in the guild knows: every recipe
+-- in the game's data (Data/Recipes.lua) plus anything your own profession
+-- window listed, minus what guildmates have learned.
 function PB.Unknown(ctx, skillLine)
-	local out = {}
-	local uni = ctx.guild and ctx.guild.recipeUniverse and ctx.guild.recipeUniverse[skillLine]
-	for recipeID, itemID in pairs(type(uni) == "table" and uni or {}) do
-		if not ctx.index.recipes[recipeID] then
-			out[#out + 1] = { recipeID = recipeID, itemID = type(itemID) == "number" and itemID or 0,
-				skillLine = skillLine, crafters = {} }
-		end
+	local out, seen = {}, {}
+	local function add(recipeID, itemID)
+		if seen[recipeID] or ctx.index.recipes[recipeID] then return end
+		seen[recipeID] = true
+		out[#out + 1] = { recipeID = recipeID, itemID = type(itemID) == "number" and itemID or 0,
+			skillLine = skillLine, crafters = {} }
 	end
+	for _, r in ipairs(SK.RecipeDB.List(skillLine)) do add(r.recipeID, r.itemID) end
+	local uni = ctx.guild and ctx.guild.recipeUniverse and ctx.guild.recipeUniverse[skillLine]
+	for recipeID, itemID in pairs(type(uni) == "table" and uni or {}) do add(recipeID, itemID) end
 	return out
 end
 
@@ -156,6 +159,7 @@ function PB.Recipes(ctx, skillLine, filter)
 		end
 	end
 	local out, loading = {}, 0
+	SK.CraftIndex.SetBudget(SK.RecipeDB.REQUESTS_PER_SEARCH)
 	for _, r in ipairs(source) do
 		local fav = SK.Favourites.IsRecipe(r.recipeID)
 		local count = #r.crafters
@@ -166,6 +170,7 @@ function PB.Recipes(ctx, skillLine, filter)
 				name = name or "...", count = count, fav = fav, recipe = r }
 		end
 	end
+	SK.CraftIndex.SetBudget(nil)
 	table.sort(out, function(a, b)
 		if (a.name == "...") ~= (b.name == "...") then return b.name == "..." end
 		if a.name ~= b.name then return a.name < b.name end

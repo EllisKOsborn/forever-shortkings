@@ -216,6 +216,13 @@ function Commands.BuildReport()
 	add("")
 	add("== Professions API ==")
 	add("Trade skill API: %s", Compat.TradeSkillAPI())
+	local src = SK.Data.RECIPE_SOURCE or {}
+	local notOnClient = 0
+	for _, list in pairs(SK.Data.RECIPE_LIST or {}) do
+		for _, e in ipairs(list) do if Compat.SpellExists(e[1]) == false then notOnClient = notOnClient + 1 end end
+	end
+	add("Recipe list: %d recipes from %s build %s (this client: %s); not on this client: %d", SK.RecipeDB.Count(),
+		tostring(src.site), tostring(src.build), tostring(b.version) .. "." .. tostring(b.build), notOnClient)
 	local ls = SK.Professions.lastScan
 	if ls then
 		add("Last scan: %s, %d learned of %d listed, full list API: %s", tostring(ls.name), ls.learned, ls.total, yesno(ls.complete))

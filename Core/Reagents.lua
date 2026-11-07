@@ -47,10 +47,20 @@ end
 
 R.Get = R.Learn
 
+-- The bundled game data (Data/Recipes.lua) when the game itself gives
+-- nothing (the window is closed, or another profession).
+local function bundled(recipeID)
+	local list = SK.RecipeDB and SK.RecipeDB.Reagents(recipeID) or {}
+	if #list == 0 then return nil end
+	local out = { r = {} }
+	for _, x in ipairs(list) do out.r[#out.r + 1] = { i = x.itemID, q = x.qty } end
+	return out
+end
+
 -- { { itemID, currencyID, qty, name, have, icon } } or nil.
 -- `have` is the count in your bags (nil when the game can't tell).
 function R.Lines(recipeID)
-	local entry = R.Learn(recipeID)
+	local entry = R.Learn(recipeID) or bundled(recipeID)
 	if not entry then return nil end
 	local out = {}
 	for i, x in ipairs(entry.r) do

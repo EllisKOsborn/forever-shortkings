@@ -10,6 +10,7 @@ local S, SP = Theme.SIZES, Theme.SPACE
 
 Crafters.RESULTS_W = 476
 Crafters.SIDE_W = S.window[1] - 2 * SP.l - Crafters.RESULTS_W - SP.l
+Crafters.STAR_W = 48 -- the Star chip next to the title
 Crafters.REAGENTS_H = 3 * Theme.SIZE.small + 4 * Theme.SPACE.xs -- up to three lines of reagents
 
 local function profName(skillLine) return CI.ProfessionName(CI:Get(true), skillLine) end
@@ -125,7 +126,7 @@ function Crafters:Build(page)
 	self.side = side
 	self.title = Theme.Text(side, "title", "text")
 	self.title:SetPoint("TOPLEFT", SP.m, -SP.m)
-	self.title:SetPoint("TOPRIGHT", -SP.m, -SP.m)
+	self.title:SetPoint("TOPRIGHT", -(SP.m + Crafters.STAR_W + SP.s), -SP.m)
 	-- Long item names wrap to a second line rather than being cut off.
 	self.title:SetWordWrap(true)
 	if self.title.SetMaxLines then self.title:SetMaxLines(2) end
@@ -177,13 +178,15 @@ function Crafters:Build(page)
 	self.favButton = W.Chip(side, "Star", function()
 		if Crafters.selected then SK.Favourites.ToggleRecipe(Crafters.selected) end
 	end)
-	self.favButton:SetPoint("BOTTOMRIGHT", -SP.m, SP.m + 1)
+	self.favButton:SetPoint("TOPRIGHT", -SP.m, -SP.m)
 	self.favButton.tooltip = "Starred recipes show under Favourites, here and on the Professions tab."
 	self.post = W.Button(side, "Post to guild chat", nil, S.control, function() Crafters:PostToGuild() end, "primary")
 	self.post:SetPoint("BOTTOMLEFT", SP.m, SP.m)
 	self.copy = W.Button(side, "Copy", nil, S.control, function() Crafters:CopyText() end)
 	self.copy:SetPoint("LEFT", self.post, "RIGHT", SP.s, 0)
 	self.copy.tooltip = "Copy the crafter list as plain text (for Discord)."
+	self.wowhead = W.Button(side, "Wowhead", nil, S.control, function() Crafters:WowheadLink() end)
+	self.wowhead.tooltip = "The recipe's Wowhead page, as a link to copy into your browser."
 	self.post.tooltip = "Types the list into your chat box. Press Enter to send it."
 	self.empty = Theme.Text(side, "body", "dim")
 	self.empty:SetPoint("TOPLEFT", SP.m, -SP.m)
@@ -210,11 +213,24 @@ function Crafters:ShowRecipe(recipeID, skillLine)
 	self:Refresh()
 end
 
--- The picked recipe: from the index, or a known-to-nobody one.
+function Crafters:WowheadLink()
+	local r = self:Picked(CI:Get())
+	if not r then return end
+	local url = SK.RecipeDB.WowheadURL(r.recipeID, r.itemID)
+	SK.DebugWindow:ShowText("Wowhead link", url)
+	return url
+end
+
+-- The picked recipe: from the index, or a known-to-nobody one (from the
+-- game's recipe list or your own profession window).
 function Crafters:Picked(index)
 	if not self.selected then return nil end
 	local r = index.recipes[self.selected]
 	if r then return r end
+	local db = SK.RecipeDB.Get(self.selected)
+	if db then
+		return { recipeID = db.recipeID, itemID = db.itemID, skillLine = db.skillLine, crafters = {} }
+	end
 	local guild = SK.DBM:Guild()
 	local uni = guild and self.selectedSkill and guild.recipeUniverse[self.selectedSkill]
 	if uni and uni[self.selected] ~= nil then
@@ -296,6 +312,13 @@ function Crafters:Refresh()
 	self.crafters:SetShown(r ~= nil)
 	self.post:SetShown(r ~= nil and #r.crafters > 0)
 	self.copy:SetShown(r ~= nil and #r.crafters > 0)
+	self.wowhead:SetShown(r ~= nil)
+	self.wowhead:ClearAllPoints()
+	if r and #r.crafters > 0 then
+		self.wowhead:SetPoint("LEFT", self.copy, "RIGHT", SP.s, 0)
+	else
+		self.wowhead:SetPoint("BOTTOMLEFT", SP.m, SP.m)
+	end
 	self.reagents:SetShown(r ~= nil)
 	self.favButton:SetShown(r ~= nil)
 	self.empty:SetShown(r == nil)

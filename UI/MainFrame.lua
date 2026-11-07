@@ -188,6 +188,7 @@ function Main:Select(key)
 	end
 	self.current = key
 	SK.DB.settings.window.tab = key
+	SK.Onboarding.Seen(key)
 	self:Refresh()
 end
 

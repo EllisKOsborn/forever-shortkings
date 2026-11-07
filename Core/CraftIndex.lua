@@ -117,6 +117,9 @@ end
 ---------------------------------------------------------------------------
 CI.itemNames, CI.spellNames = {}, {}
 CI.pendingItems, CI.pendingSpells = {}, {}
+-- Names the game couldn't load: not asked for again this session, so they
+-- can't use up every search's request budget.
+CI.failedItems, CI.failedSpells = {}, {}
 local budget = math.huge
 
 local function itemName(id)
@@ -124,7 +127,7 @@ local function itemName(id)
 	if n then return n end
 	n = Compat.ItemName(id)
 	if n then CI.itemNames[id] = n; return n end
-	if not CI.pendingItems[id] and budget > 0 then
+	if not CI.pendingItems[id] and not CI.failedItems[id] and budget > 0 then
 		budget = budget - 1
 		CI.pendingItems[id] = true
 		Compat.RequestItem(id)
@@ -137,7 +140,7 @@ local function spellName(id)
 	if n then return n end
 	n = Compat.SpellName(id)
 	if n then CI.spellNames[id] = n; return n end
-	if not CI.pendingSpells[id] and budget > 0 then
+	if not CI.pendingSpells[id] and not CI.failedSpells[id] and budget > 0 then
 		budget = budget - 1
 		CI.pendingSpells[id] = true
 		Compat.RequestSpell(id)
@@ -145,6 +148,10 @@ local function spellName(id)
 	return nil
 end
 CI.ItemName, CI.SpellName = itemName, spellName
+
+-- Limit how many name loads the next lookups may start (nil = no limit).
+-- Searches set it so one keystroke never asks the game for thousands of names.
+function CI.SetBudget(n) budget = n or math.huge end
 
 -- Display name: the item's, or the recipe (spell) name for enchants.
 function CI.NameOf(r)
@@ -159,20 +166,16 @@ end
 function CI:OnItemLoaded(itemID, success)
 	if not self.pendingItems[itemID] then return end
 	self.pendingItems[itemID] = nil
-	if success ~= false then
-		local n = Compat.ItemName(itemID)
-		if n then self.itemNames[itemID] = n end
-	end
+	local n = success ~= false and Compat.ItemName(itemID)
+	if n then self.itemNames[itemID] = n else self.failedItems[itemID] = true end
 	namesArrived()
 end
 
 function CI:OnSpellLoaded(spellID, success)
 	if not self.pendingSpells[spellID] then return end
 	self.pendingSpells[spellID] = nil
-	if success ~= false then
-		local n = Compat.SpellName(spellID)
-		if n then self.spellNames[spellID] = n end
-	end
+	local n = success ~= false and Compat.SpellName(spellID)
+	if n then self.spellNames[spellID] = n else self.failedSpells[spellID] = true end
 	namesArrived()
 end
 

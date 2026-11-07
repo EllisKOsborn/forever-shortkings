@@ -209,10 +209,20 @@ function Ov:Build(page)
 	feed.list:SetEmptyText("Level-ups, profession milestones, attunements and new recipes show here as your addon sees them.")
 	feed.empty = feed.list.message
 
-	self.recipes = block(3, "Recipes", { text = "Search recipes", onClick = function() SK.MainFrame:Select("crafters") end,
-		tooltip = "Open the Crafters tab" })
+	-- Getting started (v0.3.1): takes the milestones' place until it's done
+	-- or hidden (a new player has no milestones yet anyway).
+	self.start = block(3, "Getting started", { text = "Hide", onClick = function() SK.Onboarding.Hide() end,
+		tooltip = "Hide this list (it also goes away by itself once everything's done)" })
+
+	self.recipes = block(3, "Recipes", { text = "Search recipes", onClick = function()
+		SK.DB.settings.profView = "recipes"
+		SK.MainFrame:Select("professions")
+	end, tooltip = "Search every recipe in the game (Professions tab)" })
 	below(self.recipes, feed)
 
+	SK:On("ONBOARDING_CHANGED", function()
+		if page:IsShown() then Ov:Refresh() end
+	end)
 	SK:On("FEED_UPDATED", function()
 		if page:IsShown() then SK:Debounce("overviewfeed", 0.5, function() Ov:Refresh() end) end
 	end)
@@ -233,6 +243,27 @@ function Ov:Refresh()
 	self.recipes:SetRows(Ov.RecipeRows(o))
 	local entries = SK.Feed.Entries(guild, SK.Feed.MAX)
 	self.feed.list:SetItems(entries)
+
+	local steps, allDone = SK.Onboarding.Steps(SK.Profile:Own(), SK.DB.settings.seen, SK.DB.settings.main,
+		o.withAddon, o.members)
+	local showStart = SK.Onboarding.Visible(allDone)
+	self.start:SetShown(showStart)
+	self.feed:SetShown(not showStart)
+	if showStart then self.start:SetRows(Ov.StartRows(steps)) end
+	self.recipes:ClearAllPoints()
+	self.recipes:SetPoint("TOPLEFT", showStart and self.start or self.feed, "BOTTOMLEFT", 0, -SP.xl)
+end
+
+-- Getting started rows (pure; tested).
+function Ov.StartRows(steps)
+	local rows = {}
+	for _, s in ipairs(steps) do
+		rows[#rows + 1] = { label = s.text, labelTone = s.done and "dim" or "text",
+			value = s.done and "done" or (s.optional and "optional" or "to do"),
+			tone = s.done and "good" or (s.optional and "dim" or "spark") }
+		if s.detail and not s.done then rows[#rows + 1] = { text = s.detail, tone = "dim", indent = true } end
+	end
+	return rows
 end
 
 SK.MainFrame:AddTab("overview", "Overview", Ov)

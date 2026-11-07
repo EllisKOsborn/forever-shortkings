@@ -20,11 +20,14 @@ Core\CraftIndex.lua
 Core\Favourites.lua
 Core\Reagents.lua
 Core\ProfBoard.lua
+Core\RecipeDB.lua
+Core\Onboarding.lua
 Core\Export.lua
 Core\Feed.lua
 Core\Overview.lua
 
 Data\Professions.lua
+Data\Recipes.lua
 Data\Attunements.lua
 Data\Factions.lua
 Data\Enchants.lua
