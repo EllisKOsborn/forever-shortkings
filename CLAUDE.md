@@ -136,6 +136,14 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   - `TooltipDataProcessor` exists.
   - `C_Spell.GetSpellCooldown` returns a table.
   - Trial accounts can't send addon messages.
+- **Confirmed in game 7 Nov (owner's v0.3.6 `/sr debug`, build 70862):** no
+  Lua errors; own profile passes the safety check; a guildmate's message
+  arrived ("Slay Qween"). `Compat.AccountIDs` found Battle.net accounts for
+  **3 of 27** members: the game only fills them for some (most likely your
+  Battle.net friends), so "bnet" alt links are a bonus; "This is my alt" and
+  guild notes do most of the work. "Sent 0" in that report = taken in the
+  first 10–20 s after login (the first HI waits that long); recheck if it
+  stays 0.
 - **Realmless:** characters have two-part names that are unique per region.
   Key everything by **player GUID**. The `sender` format in addon messages is
   unconfirmed, so `Core/Identity.lua` matches it several ways.
