@@ -28,6 +28,7 @@ local DEFAULTS = {
 	own = {},             -- [guid] = full profile of our own characters (never sent)
 	cooldownSpells = {},  -- [guid] = { [recipeID] = true } recipes with cooldowns
 	account = {},  -- [guid] = true for characters seen on this account
+	myAlts = {},   -- [guid] = true: guildmates this player marked "This is my alt" (v0.3.6, sent as profile.claims)
 	seenGuids = {}, -- [name] = { guid, first, logins, changedFrom } (GUID stability check for /sr debug)
 	feed = {},      -- recent milestones, newest first, max 50 (local only, never sent)
 	favourites = { recipes = {}, crafters = {} }, -- starred recipes and crafters (v0.3, local only)

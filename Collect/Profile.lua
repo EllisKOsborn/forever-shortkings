@@ -125,6 +125,25 @@ local function refreshCooldowns(guid, cds, now)
 	end
 end
 
+-- "This is my alt" marks as a sorted list for the profile (v0.3.6): only
+-- current members that aren't our own logged-in characters. Pure; tested.
+function Profile.Claims(myAlts, guild)
+	local out = {}
+	for guid in pairs(type(myAlts) == "table" and myAlts or {}) do
+		local m = guild and guild.members[guid]
+		if m and not m.leftAt and not SK.DB.account[guid] then out[#out + 1] = guid end
+	end
+	table.sort(out)
+	while #out > SK.Merge.LIMITS.family do table.remove(out) end
+	return #out > 0 and out or nil
+end
+
+function Profile:ToggleMyAlt(guid)
+	if not guid or SK.DB.account[guid] then return end
+	SK.DB.myAlts[guid] = (not SK.DB.myAlts[guid]) or nil
+	self:BuildSelf() -- fires SELF_UPDATED, which announces the change
+end
+
 function Profile:BuildSelf()
 	local guild = SK.DBM:Guild()
 	local guid = Compat.PlayerGUID()
@@ -148,6 +167,7 @@ function Profile:BuildSelf()
 		reps = SK.Reputation.Read(),
 		att = SK.Attunements.Read(),
 		family = familyOf(guild, guid),
+		claims = Profile.Claims(SK.DB.myAlts, guild),
 		main = (main and SK.DB.account[main] and guild.members[main]) and main or nil,
 		recipes = {},
 		cds = {},

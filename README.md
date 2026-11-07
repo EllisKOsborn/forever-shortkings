@@ -53,7 +53,7 @@
 The first tab: six sections in three columns, set like a spec sheet. Each
 section has a link to the place where you can act on it.
 
-- **Guild**: members, players (alts counted once), online now (and how many of them run Short Royalty), **who has Short Royalty and who doesn't yet**, with the first ten names of those who don't (online ones first, with a dot, so you can ask them now); point at them for **everyone** in a tooltip, and levels in bands (60, 50–59, 40–49, 1–39). *Without addon* opens the Roster with everyone who doesn't have it on top.
+- **Guild**: members, players (alts counted once), online now (and how many of them run Short Royalty), **who has Short Royalty and who doesn't yet**, with the first ten names of those who don't (online ones first, with a dot, so you can ask them now); point at them for **everyone** in a tooltip; **alts of players who have it** in a separate line (spotted by Battle.net account where the game shares it, **This is my alt**, or a guild note naming the player), and levels in bands (60, 50–59, 40–49, 1–39). *Without addon* opens the Roster with everyone who doesn't have it on top.
 - **Raids**: the one big number, days until raids open on 9 Dec. Barrow Deeps (10) and Hyjal Summit (20) need no attunement, so it counts your level 60s. Onyxia's Lair (40) shows attuned / not attuned / unknown, and how many have the quest done but the Drakefire Amulet out of their bags. *Onyxia list*.
 - **Data health**: members who have the addon but whose data hasn't reached you yet, profiles older than a week, profession windows never opened, and anyone on an old Short Royalty (you included). "All good" when there's nothing to fix. *Oldest first* opens the Roster with missing and oldest data on top.
 - **Professions**: characters per crafting profession, how many are at 300 (or the best so far), **nobody** in red where the guild has a gap, and one line for gathering. *Find a crafter*.
@@ -72,7 +72,7 @@ only (the last 50); nothing extra is sent. Turn them off in Settings.
 <p align="center"><img src="docs/images/roster.png" alt="Roster tab" width="100%"></p>
 
 - **Every guild member**, including people without the addon.
-- **Columns:** **Name** in class colour (*(you)* in pink on your characters, **+2** when alts are folded in), **Level**, **Rank**, **Spec** (main tree and points), **Professions**, **iLvl**, **Online** (a dot, then *online*, *on alt* or how long ago), **Version** (orange when out of date; **old** for v0.3.2 or earlier, which can't share with newer versions) and **Data** (how fresh their profile is; orange after a week).
+- **Columns:** **Name** in class colour (*(you)* in pink on your characters, **+2** when alts are folded in), **Level**, **Rank**, **Spec** (main tree and points), **Professions**, **iLvl**, **Online** (a dot, then *online*, *on alt* or how long ago), **Version** (orange when out of date; **old** for v0.3.2 or earlier, which can't share with newer versions; **alt** for an alt of someone who has it) and **Data** (how fresh their profile is; orange after a week).
 - **Status dots:** 🟢 online with Short Royalty · ⚪ online without it · ⚫ offline.
 - **Sort** by clicking a column (an arrow marks the sorted one). Online members come first.
 - **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name. A search with no matches says so.
@@ -94,7 +94,7 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 ### 🛡️ Character
 <p align="center"><img src="docs/images/character.png" alt="Character tab" width="100%"></p>
 
-- **Top:** *Back to roster*, *My character*, *Whisper* and the gold **Ask for latest** button (or *Make this my main* on your own alts).
+- **Top:** *Back to roster*, *My character*, *Whisper* and the gold **Ask for latest** button (or *Make this my main* on your own alts). On a guildmate who hasn't logged in with the addon, **This is my alt** marks one of your own characters, so the guild sees it as your alt instead of "doesn't have the addon" (*Not my alt* undoes it).
 - **Ask for latest** asks them (or their online alt) for their newest data. It works while they're online with Short Royalty, at most every 30 seconds; otherwise it's greyed out and says why.
 - **Header:** name in class colour, level, race, class and rank, plus how old the data is and where it came from (*this account*, *from them*, *relayed by a guildmate*). Old data says *may be out of date*.
 - **Paperdoll:** all 19 slots with item-quality borders. Hover for the **real item tooltip**, Shift-click to link it, Ctrl-click for the dressing room. The middle shows **average item level** in gold, the main talent tree, and how many enchants are missing (an orange **!** marks each slot).
@@ -345,7 +345,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.3**: fix: guildmates can see each other's data (big messages sent as numbered pieces)
-- [ ] **v0.3.6** (built, not released): guildmates on an old version no longer listed as "doesn't have it"
+- [ ] **v0.3.6** (built, not released): fewer people wrongly listed as "doesn't have it" (old versions, alts, never online together)
 - [x] **v0.3.5**: point at "Don't have it yet" on the Overview for the full list
 - [x] **v0.3.4**: click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't; orange "open your profession windows" bar with an Open button
 - [x] **v0.3.2**: every recipe in the game with search (name, group, material), Wowhead links, Getting started, on CurseForge

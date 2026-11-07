@@ -136,6 +136,11 @@ local FIELDS = {
 	att = function(v)
 		return v == nil or each(v, L.att, function(k, x) return str(k, L.str) and type(x) == "boolean" end)
 	end,
+	-- v0.3.6: characters the player says are their alts (not logged in with
+	-- the addon yet). Only used to show "alt of X" instead of "doesn't have it".
+	claims = function(v)
+		return v == nil or each(v, L.family, function(k, g) return isNum(k) and str(g, L.str) end)
+	end,
 	family = function(v)
 		return v == nil or each(v, L.family, function(k, g) return isNum(k) and str(g, L.str) end)
 	end,

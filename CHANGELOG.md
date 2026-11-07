@@ -1,15 +1,32 @@
 # Changelog
 
-## v0.3.6 (not released yet)
+## v0.3.6 (not released yet): fewer people wrongly listed as "doesn't have it"
 
-- **Fixed: guildmates on an old Short Royalty were listed as not having it.**
-  Messages from v0.3.2 and earlier are in the old format, which newer
-  versions can't read, so they were thrown away before the addon noted who
-  sent them. Now they count as having the addon: the Roster's Version column
-  says **old** (orange) and Data health counts them under "Running an old
-  Short Royalty", so you know to tell them to update.
-- The "Don't have it yet" tooltip explains that each character counts on its
-  own: an alt shows there until it has logged in once with the addon.
+People who do have Short Royalty were showing under **Don't have it yet** on
+the Overview. Three causes, three fixes:
+
+- **Guildmates on an old version** (v0.3.2 or earlier) send messages newer
+  versions can't read, and those were thrown away before the addon noted who
+  sent them. Now they count as having it: the Roster's Version column says
+  **old** (orange), and Data health counts them under "Running an old Short
+  Royalty", so you know to tell them to update.
+- **Alts** that haven't logged in with the addon yet are now listed
+  separately, as **Alts of players who have it** (point at it for "Bobby, alt
+  of Bob"). The game doesn't tell addons which characters belong to one
+  player, so Short Royalty uses three clues:
+  - the same **Battle.net account**, where the game shares it (it may only do
+    that for your Battle.net friends: `/sr debug` says how many it found);
+  - **This is my alt**: a new button on the Character tab when you look at
+    one of your characters that hasn't logged in with the addon. Your
+    guildmates then see it as your alt. Click again to undo;
+  - **guild notes**: a note (or officer note, if you can read it) that names
+    exactly one guildmate who has the addon, like "Bob's alt".
+  The Roster's Version column says **alt** for them.
+- **Guildmates who are never online at the same time as you.** You only
+  heard that someone has the addon when you were both online. Now, when
+  someone logs in, their addon passes on who it has seen running Short
+  Royalty, so everyone's list fills in over time. Older versions just ignore
+  the extra information.
 
 ## v0.3.5 (7 Nov 2026)
 

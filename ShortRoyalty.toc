@@ -25,6 +25,7 @@ Core\RecipeDB.lua
 Core\Onboarding.lua
 Core\Export.lua
 Core\Feed.lua
+Core\Accounts.lua
 Core\Overview.lua
 
 Data\Professions.lua

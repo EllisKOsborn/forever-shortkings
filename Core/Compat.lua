@@ -242,6 +242,38 @@ local function readClubRoster()
 	return out, #ids
 end
 
+-- Battle.net account of guild members, where the game shares it (v0.3.6):
+-- the guild community's member info has bnetAccountId (the same number for
+-- every character of one Battle.net account), and C_BattleNet answers for
+-- your Battle.net friends. Either may be empty for most guildmates; /sr debug
+-- says how many were found. Returns { [guid] = id }, count.
+function Compat.AccountIDs(guids)
+	local out, n = {}, 0
+	local function put(guid, id)
+		id = clean(id)
+		if type(guid) == "string" and type(id) == "number" and id > 0 and not out[guid] then
+			out[guid], n = id, n + 1
+		end
+	end
+	if has("C_Club", "GetGuildClubId") and has("C_Club", "GetClubMembers") and has("C_Club", "GetMemberInfo") then
+		local clubId = C_Club.GetGuildClubId()
+		local ids = clubId and C_Club.GetClubMembers(clubId)
+		for _, memberId in ipairs(type(ids) == "table" and ids or {}) do
+			local ok, info = pcall(C_Club.GetMemberInfo, clubId, memberId)
+			if ok and type(info) == "table" then put(clean(info.guid), info.bnetAccountId) end
+		end
+	end
+	if has("C_BattleNet", "GetAccountInfoByGUID") then
+		for _, guid in ipairs(guids or {}) do
+			if not out[guid] then
+				local ok, info = pcall(C_BattleNet.GetAccountInfoByGUID, guid)
+				if ok and type(info) == "table" then put(guid, info.bnetAccountID) end
+			end
+		end
+	end
+	return out, n
+end
+
 -- Returns list, complete, source. `complete` means we believe offline
 -- members are included (needed before we mark anyone as "left").
 function Compat.ReadRoster()

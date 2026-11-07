@@ -3,7 +3,7 @@
 --   HI  GUILD    my account's characters {g = guid, u = updated, h = hash}
 --   RQ  WHISPER  "please send me these profiles" { w = {guid, ...} }
 --   PR  WHISPER  one profile { prof = Profile }
---   SQ  GUILD    once per session: { k = {[guid] = updated} } for what I hold
+--   SQ  GUILD    once per session: { k = {[guid] = updated}, a = {guid...} } what I hold, who has the addon (a: v0.3.6)
 --   SO  GUILD    "I have newer copies for <to>" { to = guid, g = {guid, ...} }
 --                (sent after a random delay; others cancel theirs on seeing it)
 --
@@ -191,7 +191,7 @@ function Sync:SendQuery()
 	for guid, p in pairs(guild.profiles) do
 		if not SK.DB.account[guid] then k[guid] = p.updated end
 	end
-	self:Enqueue("SQ", "GUILD", nil, "NORMAL", { t = "SQ", k = k })
+	self:Enqueue("SQ", "GUILD", nil, "NORMAL", { t = "SQ", k = k, a = Sync.KnownUsers() })
 end
 
 local function request(self, ownerGUID, wantList)
@@ -343,8 +343,46 @@ handlers.PR = function(self, msg, from)
 	SK:Debug("profile %s from %s: %s", tostring(prof.name), tostring(from), reason)
 end
 
+-- v0.3.6: who we know runs Short Royalty (heard from them, have their data,
+-- or our own characters), passed on in SQ and SO so guildmates who were
+-- never online together still learn it. A list of GUIDs, nothing else.
+Sync.MAX_KNOWN = 200
+function Sync.KnownUsers()
+	local guild = SK.DBM:Guild()
+	local out = {}
+	if not guild then return out end
+	for guid, m in pairs(guild.members) do
+		if not m.leftAt and (SK.DB.account[guid] or m.addon or m.oldAddon or guild.profiles[guid]) then
+			out[#out + 1] = guid
+		end
+	end
+	table.sort(out)
+	while #out > Sync.MAX_KNOWN do table.remove(out) end
+	return out
+end
+
+-- Mark relayed users. Only fills a gap (a direct sighting always wins) and
+-- never sets a version: a relayed claim can't change "newest version" notices.
+-- Returns how many were new to us.
+function Sync.NoteKnownUsers(list)
+	if type(list) ~= "table" then return 0 end
+	local guild = SK.DBM:Guild()
+	if not guild then return 0 end
+	local now, added = Compat.Now(), 0
+	for i, guid in ipairs(list) do
+		if i > Sync.MAX_KNOWN then break end
+		local m = type(guid) == "string" and guild.members[guid]
+		if m and not m.leftAt and not SK.DB.account[guid] then
+			if not SK.Identity.HasAddon(guid, m, guild.profiles[guid]) then added = added + 1 end
+			m.addonRelay = now
+		end
+	end
+	return added
+end
+
 handlers.SQ = function(self, msg, from)
 	if type(msg.k) ~= "table" then return end
+	Sync.NoteKnownUsers(msg.a)
 	local guild = SK.DBM:Guild()
 	local offer = {}
 	for guid, p in pairs(guild.profiles) do
@@ -356,22 +394,34 @@ handlers.SQ = function(self, msg, from)
 			end
 		end
 	end
-	if #offer == 0 then return end
+	-- v0.3.6: a sender that sends `a` understands an SO that only carries
+	-- `a` (who has the addon), so offer that even with no profiles to offer.
+	local theyKnow = {}
+	for _, g in ipairs(type(msg.a) == "table" and msg.a or {}) do theyKnow[g] = true end
+	local news = false
+	if type(msg.a) == "table" then
+		for _, g in ipairs(Sync.KnownUsers()) do
+			if g ~= from and not theyKnow[g] then news = true; break end
+		end
+	end
+	if #offer == 0 and not news then return end
 	self.pendingOffers[from] = true
 	local delay = self.OFFER_DELAY_MIN + math.random() * (self.OFFER_DELAY_MAX - self.OFFER_DELAY_MIN)
 	SK.After(delay, function()
 		if not self.pendingOffers[from] then return end -- someone else offered first
 		self.pendingOffers[from] = nil
-		self:Enqueue("SO:" .. from, "GUILD", nil, "NORMAL", { t = "SO", to = from, g = offer })
+		self:Enqueue("SO:" .. from, "GUILD", nil, "NORMAL", { t = "SO", to = from, g = offer, a = Sync.KnownUsers() })
 	end)
 end
 
 handlers.SO = function(self, msg, from)
+	Sync.NoteKnownUsers(msg.a) -- everyone hearing an offer learns who has the addon
 	if type(msg.to) ~= "string" or type(msg.g) ~= "table" then return end
 	if msg.to ~= myGUID() then
 		self.pendingOffers[msg.to] = nil
 		return
 	end
+	if #msg.g == 0 then return end -- only "who has the addon" (v0.3.6)
 	local now = Compat.Now()
 	if self.offerAcceptedAt and now - self.offerAcceptedAt < 300 then return end
 	self.offerAcceptedAt = now

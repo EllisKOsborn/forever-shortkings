@@ -368,6 +368,16 @@ in game if anything looks different and send it.
 
 119. [ ] A guildmate still on v0.3.2 or older (if anyone is): they're **not** in
         "Don't have it yet"; the Roster's Version column says **old**.
+120. [ ] `/sr debug` → "Battle.net accounts the game shares: N of M". Send me
+        the number: 0 means the game doesn't share them for guildmates.
+121. [ ] Character tab → one of your alts that hasn't logged in with the addon
+        → **This is my alt**. On the Overview it moves to "Alts of players who
+        have it". A guildmate sees the same within a minute or two.
+122. [ ] A character whose guild note says "<name>'s alt" (name = someone with
+        the addon) shows under "Alts of players who have it", not "Don't have
+        it yet". Point at the line: it says "guild note".
+123. [ ] Someone you've never been online with, who has the addon: after a
+        guildmate with the addon logs in, they disappear from "Don't have it yet".
 
 ## Known gaps in v0.1
 

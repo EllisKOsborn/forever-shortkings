@@ -167,6 +167,17 @@ function Commands.BuildReport()
 			if guild.profiles[guid] then withData = withData + 1 end
 		end
 		add("Members: %d active, %d left (pruned after 30 days), %d with data", active, left, withData)
+		-- v0.3.6: alts of addon users, and whether the game shares Battle.net accounts.
+		if SK.Accounts then
+			local links = SK.Accounts.Current(guild)
+			local how = { bnet = 0, claim = 0, note = 0 }
+			for _, l in pairs(links) do how[l.how] = how[l.how] + 1 end
+			local c = SK.Accounts.cache
+			add("Alts spotted: %d by Battle.net account, %d marked by their player, %d from guild notes",
+				how.bnet, how.claim, how.note)
+			add("Battle.net accounts the game shares: %d of %d members (0 = it doesn't for guildmates)",
+				c and c.count or 0, active)
+		end
 	end
 
 	add("")

@@ -87,8 +87,17 @@ function Roster.Rows(guild, now, filter, group)
 	local newest = Roster.NewestVersion(guild)
 
 	local byGuid = {}
+	local links = SK.Accounts.Current(guild, now)
 	for guid, m in pairs(guild.members) do
-		if not m.leftAt then byGuid[guid] = makeRow(guild, guid, m, now, newest) end
+		if not m.leftAt then
+			local row = makeRow(guild, guid, m, now, newest)
+			local l = links[guid]
+			if l then
+				local owner = guild.members[l.owner]
+				row.altOf = { name = owner and owner.name or "?", class = owner and owner.class, how = l.how }
+			end
+			byGuid[guid] = row
+		end
 	end
 
 	if group then
@@ -193,6 +202,7 @@ end end
 -- Version column: members without the addon first, then newest version first.
 function Roster.ByVersion(a, b)
 	if a.hasAddon ~= b.hasAddon then return not a.hasAddon end
+	if (a.altOf ~= nil) ~= (b.altOf ~= nil) then return b.altOf ~= nil end -- alts of users after real gaps
 	local x, y = a.addon or "", b.addon or ""
 	if x ~= y then
 		if x == "" or y == "" then return y == "" end
@@ -271,6 +281,7 @@ local function setCell(fs, r, col)
 		end
 	elseif k == "addon" then
 		if not r.addon and r.oldAddon then fs:SetText(C("spark") .. "old|r")
+		elseif not r.addon and r.altOf then fs:SetText(C("dim") .. "alt|r")
 		elseif not r.addon then fs:SetText(r.hasAddon and C("dim") .. "?|r" or Theme.DASH)
 		elseif r.outdated then fs:SetText(C("spark") .. r.addon .. "|r")
 		else fs:SetText(C("dim") .. r.addon .. "|r") end
@@ -320,7 +331,10 @@ local function tooltip(row, r)
 		end
 	end
 	GameTooltip:AddLine(" ")
-	if r.oldAddon then
+	if r.altOf and not r.hasAddon then
+		Theme.TipLine(GameTooltip, "Alt of " .. Theme.ClassText(r.altOf.name, r.altOf.class) .. " (" ..
+			SK.Accounts.HOW[r.altOf.how] .. "): hasn't logged in with Short Royalty yet.", "dim", true)
+	elseif r.oldAddon then
 		Theme.TipLine(GameTooltip, "Runs an old Short Royalty (v0.3.2 or earlier) that can't share with yours. " ..
 			"They need to update.", "spark", true)
 	elseif not r.hasData and r.hasAddon then
