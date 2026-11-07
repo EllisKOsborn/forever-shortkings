@@ -1,23 +1,24 @@
 # Short Royalty on CurseForge
 
-The release workflow (`.github/workflows/release.yml`, BigWigs packager)
-uploads to CurseForge automatically on every release, as a **WoW Forever**
-file, once two things exist: the CurseForge **project ID** in
-`ShortRoyalty.toc` and a **CF_API_KEY** secret on GitHub.
+**Status (7 Nov 2026): automatic uploads work.** Project **1788068** is in
+`ShortRoyalty.toc` (`## X-Curse-Project-ID`) and the `CF_API_KEY` secret is set
+on GitHub. When v0.3.2 was published, the release workflow uploaded
+`ShortRoyalty-v0.3.2-forever.zip` to CurseForge by itself ("Success!" in the
+Release log). **From now on: publish a release on GitHub, and it goes to
+CurseForge too.** You don't upload files by hand any more.
 
-**Where we are (7 Nov 2026):** the project was created on 6 Nov as
-**Short Kings**, with the `ShortKings-v0.3.0-forever.zip` file. On 7 Nov the
-guild and the addon became **Short Royalty**: the window, the AddOns list,
-the folder (`ShortRoyalty`), the download (`ShortRoyalty-vX.Y.Z-forever.zip`)
-and the slash command (`/sr`). Part A updates the project. Part B is the
-one-time setup, for reference.
+Plain tags (`v0.3.3`) go up as **Release** files. A tag with "beta" in it
+(`v0.3.3-beta`) goes up as **Beta**.
 
 ---
 
-## Part A: update the existing project to Short Royalty (about 10 minutes)
+## What's left for you on CurseForge (about 10 minutes, once)
 
-### A1. Rename the project
-authors.curseforge.com → **Projects** → your project → **Settings** (or
+The project was created on 6 Nov as **Short Kings**. On 7 Nov the guild and
+the addon became **Short Royalty**.
+
+### 1. Rename the project
+authors.curseforge.com → **Projects** → the project → **Settings** (or
 *Edit project*):
 - **Name:** `Short Royalty` (if it's taken: "Short Royalty Guild Sync").
 - **Summary:** *Guild roster, gear, professions, recipes and cooldowns,
@@ -25,63 +26,38 @@ authors.curseforge.com → **Projects** → your project → **Settings** (or
 - **Description:** replace it with the text in [the box at the end](#description-to-paste).
 - **Logo:** keep it. The crown-and-beard crest is still ours
   (`preview/img/crest-large.png`, 512 × 512, if you need it again).
-- **Source:** GitHub, `https://github.com/elliskosborn/forever-shortkings` (unchanged).
 - Save.
 
-**The web address** (e.g. `curseforge.com/wow/addons/short-kings`) may stay
-the same after a rename. That's fine: people find the addon by its name, and
-the old address keeps working. If you want a new address, check the project
-settings for a *slug* field. If there isn't one, CurseForge support can change it.
+The web address (e.g. `…/wow/addons/short-kings`) may stay the same after a
+rename, and old links keep working. If you want a new address and there's no
+*slug* field in the settings, CurseForge support can change it.
 
-### A2. Upload the new file
-1. When the **v0.3.1** release is published on GitHub, download
-   **`ShortRoyalty-v0.3.1-forever.zip`** from its **Assets** (the real zip,
-   not "Source code"):
-   https://github.com/EllisKOsborn/forever-shortkings/releases/tag/v0.3.1
-2. Project → **Files → Upload file**:
-   - **Game version:** WoW Forever 1.60.1 (the Forever flavour).
-   - **Release type:** **Beta** (sync between two players hasn't been
-     tested yet; switch to Release later).
-   - **Display name:** `Short Royalty v0.3.1`.
-   - **Changelog:** copy the v0.3.1 section of `CHANGELOG.md` (it explains
-     the new folder name).
+### 2. Archive the files that shouldn't be installed
+Project → **Files**:
+- **`ShortKings-v0.3.0`**: archive it (old folder name; it can't sync with anything newer).
+- **`ShortRoyalty-v0.3.2`**: archive it **once v0.3.3 is up**. v0.3.2 and
+  earlier can't share profiles between players (fixed in v0.3.3), and they
+  can't talk to v0.3.3 either.
 
-### A3. Retire the old Short Kings file
-Project → **Files** → the `ShortKings-v0.3.0` file → **Archive** it (or
-delete it if it's still under review). This stops anyone installing the old
-`ShortKings` folder. The old and new versions can't sync with each other,
-and both would load side by side.
+Archived files stay listed for the record, but the CurseForge app won't install them.
 
-### A4. Turn on automatic uploads (if you haven't already)
-- **API token and GitHub secret:** if you already created the token and
-  added `CF_API_KEY` on GitHub yesterday (Part B, steps 3–4), nothing changes.
-  The name change doesn't affect them.
-- **Send me the Project ID** (just the number, from the project page under
-  *About Project*). It **isn't in the addon yet**, so uploads aren't
-  automatic yet. I'll add `## X-Curse-Project-ID: <number>` to
-  `ShortRoyalty.toc`, and from the next release on, publishing on GitHub uploads
-  to CurseForge too, and you can skip A2.
+### 3. Optional: Beta until the guild has tested sync
+Uploads currently go up as **Release**. Until two players have confirmed in
+game that they see each other's data (TESTING.md 108–110), you can tell me
+to tag the next one `-beta` instead.
 
 ---
 
-## Part B: one-time setup (done on 6 Nov, kept for reference)
-
-1. **Create the project:** authors.curseforge.com → **Create project** →
-   Game: World of Warcraft → Class: Addons. Name, summary, description,
-   logo and source as in A1. Main category: **Guild** (extra: Professions,
-   Data Export). Licence: **MIT License**. Note the **Project ID**.
-2. **First file:** new projects are reviewed before they go public (usually a
-   day or two) and need a file. Upload as in A2.
-3. **API token:** authors.curseforge.com → your avatar → **API tokens** →
-   generate one called "GitHub". Copy it (you only see it once).
-4. **GitHub secret:** repo → **Settings → Secrets and variables → Actions →
-   New repository secret**. Name: `CF_API_KEY`. Value: the token. Never paste
-   it in chat or in a file.
-5. **Tell me the Project ID.**
-6. **(Me)** I add `## X-Curse-Project-ID: <number>` to `ShortRoyalty.toc`.
-   From then on, every release published on GitHub also goes to CurseForge.
-   Tags with "beta" in the name (e.g. `v0.3.2-beta`) go up as Beta files;
-   plain `vX.Y.Z` as Release.
+## Reference: how it was set up (6–7 Nov)
+1. Project created at authors.curseforge.com (World of Warcraft → Addons,
+   category Guild, MIT licence, source on GitHub).
+2. API token (authors.curseforge.com → avatar → **API tokens**) saved as the
+   GitHub secret **`CF_API_KEY`** (repo → Settings → Secrets and variables →
+   Actions). Never paste it in chat or in a file.
+3. Project ID **1788068** added to `ShortRoyalty.toc`.
+4. `.github/workflows/release.yml` (BigWigs packager) builds the zip on each
+   published release and uploads it to GitHub and CurseForge, as a
+   **WoW Forever 1.60.1** file.
 
 ## Things to know
 - **Anyone can install it.** It works for any guild: data is kept per guild
@@ -103,11 +79,11 @@ and both would load side by side.
 **Short Royalty** is a guild addon for WoW Forever. Everyone in your guild who runs it can browse each other's gear, talents, professions, recipes, cooldowns, raid attunements and reputations in game. Data is shared only over your guild's addon channel: no website, no server, no uploads.
 
 ### What's inside
-- **Overview:** who's around, raid readiness, data health, professions and recent milestones.
+- **Overview:** who's around, raid readiness, data health, professions and recent milestones, plus a Getting started checklist.
 - **Roster:** the whole guild, sortable and searchable, with alts under their main and a raid-attunement view.
 - **Character:** anyone's gear, talents, professions, cooldowns, attunements and reputations.
 - **Crafters:** search an item and see who can make it (online first), with its reagents and how many you have. Whisper them or post the list to guild chat.
-- **Professions:** every profession in the guild (including the ones nobody has), each profession's crafters and recipes, the cooldown board, specialisations and favourites.
+- **Professions:** every profession in the guild (including the ones nobody has), each profession's crafters and recipes, every recipe in the game with search, the cooldown board, specialisations and favourites.
 - **Item tooltips:** "Crafted by" guild crafters.
 
 ### Privacy
@@ -115,6 +91,9 @@ Notes, officer notes, gold, bags and chat are never shared. You choose whether y
 
 ### Light and safe
 Small, rate-limited messages; sync pauses in combat and instances. Everything received is checked before it's stored.
+
+### Everyone in the guild needs the same version
+Guildmates on different versions may not see each other's data. When the addon says a newer version is out, please update.
 
 ### Upgrading from Short Kings?
 The addon was renamed. After updating, delete the old `ShortKings` folder from your AddOns folder if it's still there.
