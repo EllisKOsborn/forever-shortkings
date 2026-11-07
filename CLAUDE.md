@@ -212,7 +212,8 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   profession reminder bar with an Open button); **v0.3.5** (7 Nov, full
   "doesn't have the addon" list on hover; first automatic release); **v0.3.6**
   (7 Nov, old versions / alts / never-online-together no longer listed as
-  "doesn't have it"). Tag only when
+  "doesn't have it"); **v0.4.0** (7 Nov, Raids tab read-only, simpler "who has
+  the addon", Alt rank left out of the Overview, alt guessing removed). Tag only when
   the user asks.
 
 ## Layout
@@ -395,8 +396,7 @@ messages → sender ignored for the session).
     can't fake "newer version" notices). An SQ with `a` gets an SO even with
     no profiles to offer (`g = {}`, which doesn't use the accept-one slot).
   TESTING 119–123.
-- **v0.4.0 Raids, read-only (built 7 Nov, not on `main`; the owner said
-  "don't release yet")**. It also carries the v0.3.7 wording change (that
+- **v0.4.0 Raids, read-only (on `main` 7 Nov, released automatically)**. It also carries the v0.3.7 wording change (that
   version was never released, its CHANGELOG entry is folded into v0.4.0).
   Built from `docs/prompts/next-v0.4-raids.md` with these decisions:
   - `Compat` calendar layer: `GuildEvents`, `CalendarNow`

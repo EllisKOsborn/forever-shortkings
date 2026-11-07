@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.4.0 (not released yet): Raids
+## v0.4.0 (7 Nov 2026): Raids
 
 A new **Raids** tab, after Crafters, built on **Blizzard's guild calendar**.
 Read-only for now: signing up still happens in Blizzard's calendar.

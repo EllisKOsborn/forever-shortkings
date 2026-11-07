@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml"><img alt="Tests" src="https://github.com/EllisKOsborn/forever-shortkings/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <img alt="WoW Forever 1.60.1" src="https://img.shields.io/badge/WoW%20Forever-1.60.1%20%C2%B7%2016001-FFC000?labelColor=000000">
-  <img alt="Version" src="https://img.shields.io/badge/version-0.3.6%20alpha-F06BB0?labelColor=000000">
+  <img alt="Version" src="https://img.shields.io/badge/version-0.4.0%20alpha-F06BB0?labelColor=000000">
   <img alt="Licence MIT" src="https://img.shields.io/badge/licence-MIT-FF6A1A?labelColor=000000">
 </p>
 
@@ -376,7 +376,7 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.3.0 Professions**: guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
 - [x] **v0.3.1**: renamed to **Short Royalty** (window, folder, download and `/sr`)
 - [ ] **In-game test round** with guildmates (TESTING.md), then fixes
-- [ ] **v0.4.0** (built, not released): **Raids** tab, read-only: calendar raids, who signed up with role, spec, item level and attunement, role counts, readiness, Copy
+- [x] **v0.4.0**: **Raids** tab, read-only: calendar raids, who signed up with role, spec, item level and attunement, role counts, readiness, Copy
 - [ ] **v0.4.1**: sign-up buttons, raid reminders, invite everyone signed up
 - [ ] **v0.5**: craft requests, a short status line, lockout board
 - [ ] **Later**: raid attendance, shopping lists, guild bank viewer and more in the [plan](PLAN.md#later-in-rough-priority-order)
