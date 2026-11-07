@@ -328,6 +328,15 @@ in game if anything looks different and send it.
 107. [ ] `/sr debug`, "== Professions API ==": the "Recipe list" line shows
         about 2,250 recipes and "not on this client: 0" (or a small number).
 
+## v0.3.3 (numbered pieces): needs two players, both on v0.3.3
+
+108. [ ] Both open each other on the Character tab (or press **Ask for
+        latest**): within a minute you see each other's gear, talents and
+        professions. `/sr debug` → Sync: **accepted** is more than 0.
+109. [ ] `/sr debug` → "Pieces": received is more than 0, **gave up 0**, malformed 0,
+        and no "Last incomplete message" line. If there is one, send it to me.
+110. [ ] Search the other person's recipe in **Crafters**: they're listed.
+
 ## Known gaps in v0.1
 
 - No Raids tab yet (v0.4).

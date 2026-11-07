@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.3.3 (not released yet): guildmates can see each other
+
+**Everyone has to update.** v0.3.3 can't exchange data with v0.3.2 or
+earlier (its messages are packaged differently), and `/sr debug` says so if a
+guildmate is still on an old version.
+
+- **Fixed: nobody could see anyone else's data.** In the first test between
+  two players (7 Nov), every profile arrived broken ("bad compression") and was
+  thrown away. Small messages worked, so the Roster showed people, but never
+  their gear, talents or recipes. Big messages were split by the message
+  library (AceComm), and those split messages didn't survive the trip between
+  two players. Tests in game proved the chat itself is fine: every single
+  message arrived complete and in order. So Short Royalty now splits big
+  messages **itself** into numbered pieces, each a complete message of its own,
+  and rebuilds them by number in whatever order they arrive.
+- If a piece ever goes missing, `/sr debug` now names the sender and the
+  missing piece ("Last incomplete message: from Aura Guardian: 4 of 5 pieces
+  (missing 3)"), instead of the vague "bad compression".
+- `/sr debug` also counts pieces received, messages waiting, ones given up on,
+  duplicates and malformed pieces.
 ## v0.3.2 (7 Nov 2026): every recipe, search, Getting started, CurseForge
 
 - **Every recipe in the game.** Professions → **All recipes** lists all

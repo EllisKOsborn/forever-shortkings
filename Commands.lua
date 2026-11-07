@@ -182,6 +182,13 @@ function Commands.BuildReport()
 	add("Ignored senders this session: %d (%d messages)   Loose name matches confirmed: %d",
 		SK.Count(SK.Sync.blocked), st.blocked, SK.Count(SK.Identity.confirmed))
 	add("Last raw sender: %q   Last reject reason: %s", tostring(SK.Sync.lastSender), tostring(SK.Sync.lastReject))
+	local asm = SK.Sync.assembler
+	local fs = asm and asm.stats or { pieces = 0, expired = 0, duplicates = 0, bad = 0 }
+	local waiting = 0
+	for _, list in pairs(asm and asm.open or {}) do for _ in pairs(list) do waiting = waiting + 1 end end
+	add("Pieces (protocol %d): received %d, messages waiting %d, gave up %d, duplicates %d, malformed %d",
+		SK.PROTOCOL, fs.pieces, waiting, fs.expired, fs.duplicates, fs.bad)
+	if asm and asm.lastIncomplete then add("Last incomplete message: %s", asm.lastIncomplete) end
 
 	add("")
 	add("== Your data ==")

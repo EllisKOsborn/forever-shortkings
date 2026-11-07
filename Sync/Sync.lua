@@ -31,6 +31,7 @@ Sync.REBUILD_INTERVAL = 10      -- an RQ for our own character rebuilds it at mo
 Sync.MAX_STRIKES = 3            -- undecodable/oversized messages before a sender is ignored for the session
 Sync.MAX_RATE_KEYS = 200        -- forget idle senders in the rate table beyond this many
 Sync.CHANNELS = { GUILD = true, WHISPER = true } -- we never send on any other
+Sync.PIECE_RATE_MAX = 1500     -- raw pieces per sender per window (a full backfill is ~1000)
 
 Sync.queue = {}
 Sync.queued = {}               -- key -> queue item
@@ -154,7 +155,10 @@ function Sync:Flush()
 			-- Receivers would drop it anyway; say so instead of failing silently.
 			SK:RecordError("send " .. tostring(item.msg.t), "message too large (" .. #text .. " bytes)")
 		elseif ok then
-			self.transport(text, item.dist, item.target, item.prio, onChunkSent, item)
+			-- Our own numbered pieces, each one complete addon message (Frames.lua).
+			for _, wire in ipairs(SK.Frames.Split(text)) do
+				self.transport(wire, item.dist, item.target, item.prio, onChunkSent, item)
+			end
 			self.stats.sent = self.stats.sent + 1
 		else
 			SK:Debug("encode failed: %s", tostring(text))
@@ -457,10 +461,12 @@ function Sync:Handle(text, dist, sender)
 	if h then h(self, msg, from, dist) end
 end
 
--- At most RATE_MAX messages per sender per RATE_WINDOW seconds, checked
+-- At most RATE_MAX whole messages (or PIECE_RATE_MAX raw pieces, with
+-- `pieces`) per sender per RATE_WINDOW seconds, checked
 -- before any decoding. Returns false when the message should be dropped.
-function Sync:AllowFrom(sender, now)
-	local key = tostring(sender)
+function Sync:AllowFrom(sender, now, pieces)
+	local key = (pieces and "#" or "") .. tostring(sender)
+	local max = pieces and self.PIECE_RATE_MAX or self.RATE_MAX
 	local r = self.rate[key]
 	if not r or now - r.start >= self.RATE_WINDOW then
 		if not r then
@@ -478,18 +484,44 @@ function Sync:AllowFrom(sender, now)
 		self.rate[key] = r
 	end
 	r.count = r.count + 1
-	if r.count > self.RATE_MAX then
-		if r.count == self.RATE_MAX + 1 then SK:Debug("rate limit: dropping messages from %s", key) end
+	if r.count > max then
+		if r.count == max + 1 then SK:Debug("rate limit: dropping messages from %s", key) end
 		return false
 	end
 	return true
 end
 
-function Sync:OnCommReceived(prefix, text, dist, sender)
+Sync.assembler = nil -- SK.Frames assembler, created on first use
+
+function Sync:OnCommReceived(prefix, wire, dist, sender)
 	if prefix ~= SK.PREFIX or not self:Enabled() then return end
-	self.stats.received = self.stats.received + 1
+	local now = Compat.Now()
 	self.lastSender = sender
-	if not self:AllowFrom(sender, Compat.Now()) then
+	-- Strangers, other channels and ignored senders are dropped before any
+	-- piece is stored (the same checks Handle makes before decoding).
+	if not self.CHANNELS[dist] or self.blocked[sender] or not SK.Identity:KnownSender(sender) then
+		self.stats.dropped = self.stats.dropped + 1
+		if self.blocked[sender] then self.stats.blocked = self.stats.blocked + 1 end
+		return
+	end
+	if not self:AllowFrom(sender, now, true) then
+		self.stats.limited = self.stats.limited + 1
+		return
+	end
+	self.assembler = self.assembler or SK.Frames.NewAssembler()
+	local text, why = SK.Frames.Add(self.assembler, sender, wire, now)
+	if not text then
+		if why == "old protocol" then
+			self.stats.dropped = self.stats.dropped + 1
+			self.lastReject = "sent by an older Short Royalty (before v0.3.3): they need to update"
+		elseif why == "bad frame" then
+			self.stats.dropped = self.stats.dropped + 1
+			self.lastReject = why
+		end
+		return -- or just a piece of a message still arriving
+	end
+	self.stats.received = self.stats.received + 1
+	if not self:AllowFrom(sender, now) then
 		self.stats.limited = self.stats.limited + 1
 		return
 	end

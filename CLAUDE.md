@@ -227,7 +227,22 @@ docs/     FEATURE-REVIEW.md, SECURITY-REVIEW.md, mockups/render.js, images/ (+ b
           design/ (Lamborghini reference); DESIGN.md + PRODUCT.md at the root
 ```
 
-## Sync protocol (prefix `ShortRoyalty`, protocol 1)
+## Sync protocol (prefix `ShortRoyalty`, protocol 2)
+
+**Transport (protocol 2, v0.3.3):** every encoded message goes out through
+`Sync/Frames.lua`: up to 250 bytes as one message (`"\030" .. data`), longer
+ones as numbered pieces (`"\031" .. id(2) .. seq .. total .. data`, 240
+data bytes each), so **AceComm never splits anything**. The receiver rebuilds
+by number in any order, gives up after 120 s without a new piece (reported in
+/sr debug as "Last incomplete message"), keeps at most 4 unfinished messages
+per sender, and drops strangers before storing pieces. The 60-per-minute
+limit counts whole messages; raw pieces have their own cap (1500).
+Why: on 7 Nov the first two-player test (owner + Aura, different server IDs
+6937/6855) lost every profile to "bad compression", although in-game tests
+showed single addon messages arrive intact (all byte values, 255 bytes,
+GUILD and WHISPER, 20 in a row in order). AceComm/ChatThrottleLib reassemble
+correctly in simulation, so the multi-part messages broke in transit between
+players. **Don't go back to AceComm multi-part messages.**
 | Msg | Channel | Purpose |
 |---|---|---|
 | `HI` | GUILD | Own account's characters `{g, u, h}`. Sent at login, every 10 min, and 30 s after changes (debounced) |
@@ -306,6 +321,12 @@ messages → sender ignored for the session).
   built on top of the v0.3.1 rename from another session): every recipe in the
   game from wago.tools data, All recipes search, Wowhead links, Getting
   started, CurseForge ID. Not tested in game: TESTING 87–107.
+- **v0.3.3 (sync fix, 7 Nov)** on branch `claude/short-kings-addon-hlf0t4`,
+  built on `main` after v0.3.2: our own numbered pieces (`Sync/Frames.lua`,
+  protocol 2) because AceComm multi-part messages arrived corrupted between
+  two players (see "Sync protocol" below). Released v0.3.2 and earlier can't
+  share profiles between players at all; v0.3.3 can't talk to them either.
+  Not yet on `main` or released. TESTING 108–110.
   Plan and what was left out: **PLAN.md section 11**.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sr debug` "Live-client checks"), its decision table,

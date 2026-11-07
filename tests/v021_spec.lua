@@ -142,6 +142,7 @@ describe("v0.2.1 sync hardening", function()
 		SK, W = H.load()
 		W.member("Pip", W.player.guid)
 		W.member("Bob", "Player-1-B")
+		W.member("Cat", "Player-1-C")
 		SK.Identity:ReadRoster()
 		SK.Profile:BuildSelf()
 	end)
@@ -167,13 +168,13 @@ describe("v0.2.1 sync hardening", function()
 	it("limits incoming messages per sender, per minute", function()
 		local handled = 0
 		SK.Sync.Handle = function() handled = handled + 1 end
-		for _ = 1, 70 do SK.Sync:OnCommReceived(SK.PREFIX, "x", "GUILD", "Bob") end
+		for _ = 1, 70 do SK.Sync:OnCommReceived(SK.PREFIX, "\030x", "GUILD", "Bob") end
 		assert.equal(60, handled)
 		assert.equal(10, SK.Sync.stats.limited)
-		SK.Sync:OnCommReceived(SK.PREFIX, "x", "GUILD", "Cat") -- others unaffected
+		SK.Sync:OnCommReceived(SK.PREFIX, "\030x", "GUILD", "Cat") -- others unaffected
 		assert.equal(61, handled)
 		W.advance(61)
-		SK.Sync:OnCommReceived(SK.PREFIX, "x", "GUILD", "Bob") -- new window
+		SK.Sync:OnCommReceived(SK.PREFIX, "\030x", "GUILD", "Bob") -- new window
 		assert.equal(62, handled)
 	end)
 end)

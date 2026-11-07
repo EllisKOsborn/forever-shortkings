@@ -3,7 +3,7 @@ local ADDON_NAME, SK = ...
 
 SK.ADDON_NAME = ADDON_NAME
 SK.PREFIX = "ShortRoyalty" -- addon message prefix (max 16 chars)
-SK.PROTOCOL = 1          -- bump when the sync format changes incompatibly
+SK.PROTOCOL = 2          -- bump when the sync format changes incompatibly (2: Frames.lua pieces, v0.3.3)
 SK.SCHEMA = 1            -- bump when the SavedVariables layout changes
 SK.TAGLINE = "Height is not a stat." -- also in ShortRoyalty.toc (Notes), README, preview
 

@@ -16,7 +16,7 @@ local FILES = {
 	"Data/Professions.lua", "Data/Recipes.lua", "Data/Attunements.lua", "Data/Factions.lua", "Data/Enchants.lua",
 	"Collect/Character.lua", "Collect/Talents.lua", "Collect/Professions.lua",
 	"Collect/Reputation.lua", "Collect/Attunements.lua", "Collect/Profile.lua",
-	"Sync/Codec.lua", "Sync/Merge.lua", "Sync/Sync.lua",
+	"Sync/Codec.lua", "Sync/Frames.lua", "Sync/Merge.lua", "Sync/Sync.lua",
 }
 
 -- UI files in TOC order (the stubbed frames are enough for them to build).
@@ -52,7 +52,11 @@ end
 -- Capture everything Sync sends. Returns the list (decoded messages).
 local function captureSends(SK)
 	local sent = {}
-	SK.Sync.transport = function(text, dist, target, prio)
+	local asm = SK.Frames.NewAssembler()
+	SK.Sync.transport = function(wire, dist, target, prio)
+		-- Reassemble our numbered pieces like a receiver would.
+		local text = SK.Frames.Add(asm, "test", wire, 0)
+		if not text then return end
 		local msg = SK.Codec.Decode(text)
 		sent[#sent + 1] = { msg = msg, dist = dist, target = target, prio = prio }
 	end
@@ -63,7 +67,7 @@ end
 local function peerMessage(SK, t, fields, fromGUID, version)
 	local msg = { t = t, p = SK.PROTOCOL, s = fromGUID, v = version or "0.1.0" }
 	for k, v in pairs(fields or {}) do msg[k] = v end
-	return SK.Codec.Encode(msg)
+	return SK.Frames.WHOLE .. SK.Codec.Encode(msg)
 end
 
 return {

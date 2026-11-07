@@ -41,6 +41,7 @@ Collect\Attunements.lua
 Collect\Profile.lua
 
 Sync\Codec.lua
+Sync\Frames.lua
 Sync\Merge.lua
 Sync\Sync.lua
 

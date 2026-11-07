@@ -67,7 +67,7 @@ describe("Security", function()
 
 		it("ignores a sender for the session after repeated bad messages", function()
 			local text = bomb(SK.Codec.MAX_DECODED + 1)
-			for _ = 1, SK.Sync.MAX_STRIKES do SK.Sync:OnCommReceived(SK.PREFIX, text, "WHISPER", "Bob Smith") end
+			for _ = 1, SK.Sync.MAX_STRIKES do SK.Sync:OnCommReceived(SK.PREFIX, SK.Frames.WHOLE .. text, "WHISPER", "Bob Smith") end
 			assert.is_true(SK.Sync.blocked["Bob Smith"])
 			local decoded = 0
 			local real = SK.Codec.Decode
