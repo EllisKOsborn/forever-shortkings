@@ -43,6 +43,7 @@
 | 👥 **Roster** | The whole guild in one sortable, searchable list, with alts folded under mains and a raid-attunement view |
 | 🛡️ **Character** | Anyone's gear, talents, professions, cooldowns, attunements and reputations |
 | ⚒️ **Crafters** | Search an item or recipe and see who in the guild can make it, online first, with its reagents and your bag counts |
+| 🐉 **Raids** | Upcoming raids from the guild calendar and who signed up, with role, spec, item level and attunement, role counts and a readiness check |
 | 🧪 **Professions** | Every profession in the guild, **every recipe in the game** (search by name, group or material), each profession's crafters, everyone's cooldowns, specialisations and favourites |
 | ⚙️ **Settings** | Sharing and privacy switches, display options, window size, tools and a live status read-out |
 | 🧨 **Everywhere** | `/sr`, a minimap button, "Crafted by" lines on item tooltips, chat reminders and a copyable debug report |
@@ -115,6 +116,18 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 - **Reagents** under the crafter list: icon, name, how many, and how many you have in your bags (green when you have enough). From your own game when it can say, otherwise from the built-in recipe list, so they show even for recipes nobody knows. Never sent to anyone.
 - **Favourites:** right-click a result or a crafter to star it (a pink star). The **Favourites** chip lists only starred recipes; starred crafters come first among the same status. Saved on your computer only.
 - Recipes come from each crafter's last visit to their profession window. While item names load from the game, placeholder rows show where results will appear.
+
+### 🐉 Raids
+<p align="center"><img src="docs/images/raids.png" alt="Raids tab" width="100%"></p>
+
+Built on **Blizzard's guild calendar**, so raids live on Blizzard's servers: they're there when the organiser is offline, and members **without** the addon can sign up too.
+
+- **Upcoming raids** for the next 30 days (calendar events of type *Raid*), soonest first, with the day and time. Short Royalty works out which raid it is from the title (**Ony**, **Onyxia**, **BD**, **Barrow**, **Hyjal**); if it can't, pick it from the menu (saved on your computer).
+- **Who signed up:** click a raid to see everyone on it: status (Signed up, Confirmed, Tentative, Standby, Declined…), name in class colour, **role**, spec, item level and **attunement** for that raid (Barrow Deeps and Hyjal need none; Onyxia shows "!" when the Drakefire Amulet isn't in their bags). Members without the addon still show (name, class, level, status). Click someone for their Character tab.
+- **Counts:** "Tanks 2 · Healers 6 · DPS 18 · 26 / 40", and **readiness**: missing tanks or healers, tentatives, not attuned, the item-level range, missing enchants, data older than a week, and anyone signed up on two characters.
+- **My roles:** pick your main and second raid role for the character you're on (Tank, Healer, DPS). Guildmates see it in line-ups. Until someone picks, their role is a greyed guess from their class and talents.
+- **New raid** opens Blizzard's calendar (addons aren't allowed to create events). **Copy** gives the line-up as plain text for Discord; **Read again** refreshes the sign-ups.
+- Sign-ups are read only while Blizzard's calendar window is closed, never in combat. Signing up itself still happens in Blizzard's calendar for now (sign-up buttons come next).
 
 ### 🧪 Professions
 <p align="center"><img src="docs/images/professions.png" alt="Professions tab, guild board" width="100%"></p>
@@ -237,6 +250,17 @@ recipes are recorded (the addon reminds you), and log in on each **alt** once.
 ## ❓ FAQ
 
 <details>
+<summary><b>How do I make a raid, and how do people sign up?</b></summary>
+
+Press **New raid** on the Raids tab (or open Blizzard's calendar), make a
+**Guild Event** of type **Raid**, and put **Ony**, **BD** or **Hyjal** in the
+title. Anyone in the guild can make one. Guildmates sign up in Blizzard's
+calendar (right-click the event); the Raids tab then shows who's coming, with
+roles, specs, item level and attunement. Set your own role at the top of the
+Raids tab.
+</details>
+
+<details>
 <summary><b>Someone shows no data. Why?</b></summary>
 
 They don't have Short Royalty, haven't logged in since installing it, or are on
@@ -345,7 +369,6 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.2.6**: hotfix, no more false "send errors"
 - [x] **v0.2.7**: `/sr debug` profession checks (what the game shows, before v0.3 is built)
 - [x] **v0.3.3**: fix: guildmates can see each other's data (big messages sent as numbered pieces)
-- [ ] **v0.3.7** (built, not released): "Not seen with the addon yet" instead of "Don't have it yet"
 - [x] **v0.3.6**: fewer people wrongly listed as "doesn't have it" (old versions, alts, never online together)
 - [x] **v0.3.5**: point at "Don't have it yet" on the Overview for the full list
 - [x] **v0.3.4**: click a crafter for their recipes; Overview shows who has Short Royalty and who doesn't; orange "open your profession windows" bar with an Open button
@@ -353,7 +376,8 @@ The full design, data format and merge rules are in [PLAN.md](PLAN.md).
 - [x] **v0.3.0 Professions**: guild coverage, crafters and recipes per profession, cooldown board, specialisations, reagents, favourites, reminders
 - [x] **v0.3.1**: renamed to **Short Royalty** (window, folder, download and `/sr`)
 - [ ] **In-game test round** with guildmates (TESTING.md), then fixes
-- [ ] **v0.4**: **Raids**, built on the guild calendar: sign-ups, roles, line-up with attunement and readiness, reminders, invite-all (before raids open on 9 Dec)
+- [ ] **v0.4.0** (built, not released): **Raids** tab, read-only: calendar raids, who signed up with role, spec, item level and attunement, role counts, readiness, Copy
+- [ ] **v0.4.1**: sign-up buttons, raid reminders, invite everyone signed up
 - [ ] **v0.5**: craft requests, a short status line, lockout board
 - [ ] **Later**: raid attendance, shopping lists, guild bank viewer and more in the [plan](PLAN.md#later-in-rough-priority-order)
 - [ ] CurseForge release
@@ -415,12 +439,12 @@ any tab before and after the redesign.
 
 | Folder | What lives there |
 |---|---|
-| `Core/` | start-up, events, saved data, guild roster, alts, the crafter index, Overview numbers, milestones, text export; `Compat.lua` is the **only** file that touches client-specific APIs |
+| `Core/` | start-up, events, saved data, guild roster, alts, the crafter index, Overview numbers, raid line-ups, milestones, text export; `Compat.lua` is the **only** file that touches client-specific APIs |
 | `Collect/` | reads gear, talents, professions, recipes, reputation and attunements |
 | `Sync/` | encoding (LibSerialize + LibDeflate), merge rules, the HI/RQ/PR/SQ/SO protocol |
 | `UI/` | `Theme.lua` (**every** colour, font, size, spacing step and motion timing; a test fails if one is hard-coded elsewhere), `Motion.lua`, widgets, tabs, the item-tooltip line |
 | `Media/` | Chakra Petch (SIL OFL), Arial Narrow font families, the crest and four small icons |
-| `Data/` | profession, attunement and faction tables (IDs verified or marked TODO, never guessed) |
+| `Data/` | profession, attunement (with raid title keywords), role-guess and faction tables (IDs verified or marked TODO, never guessed) |
 | `preview/`, `tools/`, `docs/` | the browser preview, the texture and token scripts, mock-up renderer and design notes |
 
 **Releasing:** push a tag like `v0.2.3` on `main`. The *Release* workflow runs

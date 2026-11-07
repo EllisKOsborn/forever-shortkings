@@ -384,6 +384,26 @@ in game if anything looks different and send it.
 124. [ ] Overview → Guild says **Not seen with the addon yet** (not "Don't have
         it yet"), and its button says **Not seen yet**.
 
+## v0.4.0 Raids (read-only)
+
+125. [ ] Press **New raid** on the Raids tab: Blizzard's calendar opens. Make a
+        Guild Event of type **Raid** called "Ony test" for any day this month.
+126. [ ] Close the calendar. The Raids tab lists "Ony test" with its day and
+        time and "Onyxia's Lair". Click it: "Reading sign-ups..." then the
+        line-up. Is your own name there with your status?
+127. [ ] Sign up in Blizzard's calendar (right-click the event), close it,
+        press **Read again**: your status changes. Ask a guildmate to sign up
+        too: they appear, with role, spec, item level and attunement if they
+        have the addon.
+128. [ ] Set **My roles** (e.g. Healer, then DPS). On a guildmate's game, your
+        role shows without the "?" within a minute or two.
+129. [ ] Open Blizzard's calendar and leave it open, then press Read again on
+        the Raids tab: it says "close Blizzard's calendar first" and nothing
+        in the calendar window changes.
+130. [ ] `/sr debug` → "Raids tab: N raid events …, last problem: nil".
+131. [ ] An event the title doesn't match ("Thursday raid"): the menu on the
+        right lets you pick the raid; the size and attunement column follow.
+
 ## Known gaps in v0.1
 
 - No Raids tab yet (v0.4).

@@ -21,6 +21,7 @@ const SHOTS = {
   attunement: ["shot=1&screen=roster&data=full&raid=ony", W, H],
   character: ["shot=1&screen=character&data=full", W, H],
   crafters: ["shot=1&screen=crafters&data=full", W, H],
+  raids: ["shot=1&screen=raids&data=full", W, H],
   professions: ["shot=1&screen=professions&data=full", W, H],
   "professions-one": ["shot=1&screen=professions&data=full&prof=171", W, H],
   "professions-crafter": ["shot=1&screen=professions&data=full&prof=171&crafter=Brambletoe", W, H],

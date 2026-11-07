@@ -519,6 +519,37 @@ function crafters() {
     <div class="side" style="left:492px;right:0;top:36px;bottom:0">${side}</div>`;
 }
 
+// ---------------------------------------------------------------- raids (v0.4.0)
+function raids() {
+  const none = !G.name || S.data === "empty";
+  const EVENTS = none ? [] : [["Tue 9 Dec 19:30", "BD clear", "Barrow Deeps"], ["Thu 11 Dec 20:00", "Ony Thursday", "Onyxia's Lair"],
+    ["Sat 13 Dec 20:00", "Hyjal farm", "Hyjal Summit"], ["Tue 16 Dec 20:00", "Alt run", ""]];
+  const ecell = (e, c) => c.key === "w" ? `<span class="dim">${e[0]}</span>` : `${esc(e[1])}${e[2] ? ` <span class="dim">&nbsp;${e[2]}</span>` : ""}`;
+  const ROLE = { WARRIOR: "Tank", PALADIN: "Healer", PRIEST: "Healer", DRUID: "Healer", SHAMAN: "Healer" };
+  const ppl = G.members.filter((m) => m.level === 60).slice(0, 14).map((m, i) => ({ m, st: i === 11 ? "Tentative" : i === 13 ? "Declined" : i % 4 === 0 ? "Confirmed" : "Signed up",
+    role: /Protection|Feral/.test(m.spec || "") ? "Tank" : /Holy|Restoration|Discipline/.test(m.spec || "") ? "Healer" : (ROLE[m.cls] && !m.spec ? ROLE[m.cls] : "DPS"), guess: !m.hasData || i % 5 === 3, att: m.att || "unknown", amulet: m.amulet }));
+  const tone = { Confirmed: "good", "Signed up": "good", Tentative: "", Declined: "faint" };
+  const lcell = (r, c) => c.key === "s" ? `<span class="${tone[r.st]}">${r.st}</span>` : c.key === "n" ? cls(r.m)
+    : c.key === "r" ? (r.guess ? `<span class="dim">${r.role}?</span>` : r.role) : c.key === "p" ? (r.m.spec ? `<span class="dim">${r.m.spec} ${(r.m.specPts || []).join("/")}</span>` : DASH)
+    : c.key === "i" ? (r.m.ilvl || DASH) : r.att === "yes" ? `<span class="${r.amulet ? "good" : "spark"}">yes${r.amulet ? "" : " !"}</span>` : r.att === "no" ? `<span class="bad">no</span>` : `<span class="dim">?</span>`;
+  const coming = ppl.filter((r) => r.st === "Signed up" || r.st === "Confirmed");
+  const n = (role) => coming.filter((r) => r.role === role).length;
+  const right = none ? "" : `<div class="abs" style="left:316px;right:0;top:36px;bottom:0">
+      <div class="abs ell" style="left:0;top:2px;right:300px;font-size:15px">Ony Thursday</div>
+      <div class="abs" style="right:0;top:0;display:flex;gap:4px">${btn("Onyxia's Lair", "", 'style="width:150px;justify-content:space-between"')}${btn("Read again", "quiet")}${btn("Copy", "quiet")}</div>
+      <div class="abs ell" style="left:0;right:0;top:28px">Tanks ${n("Tank")} &nbsp;·&nbsp; Healers ${n("Healer")} &nbsp;·&nbsp; DPS ${n("DPS")} &nbsp;·&nbsp; ${coming.length} / 40<span class="dim"> &nbsp;·&nbsp; read 2m ago</span></div>
+      <div class="abs dim" style="left:0;right:0;top:50px;font-size:12px;line-height:1.35">1 tentative &nbsp;·&nbsp; <span class="bad">4 not attuned</span> &nbsp;·&nbsp; <span class="spark">1 without the amulet in their bags</span> &nbsp;·&nbsp; Item level 58 to 75 &nbsp;·&nbsp; <span class="spark">2 missing enchants</span> &nbsp;·&nbsp; 3 roles guessed from talents</div>
+      ${list([{ key: "s", t: "Status", w: 84 }, { key: "n", t: "Name", w: 136 }, { key: "r", t: "Role", w: 76 }, { key: "p", t: "Spec", w: 112 }, { key: "i", t: "iLvl", w: 40, r: 1 }, { key: "a", t: "Attuned", w: 72, r: 1 }],
+        ppl, lcell, { click: true, style: "left:0;right:0;top:92px;bottom:0" })}</div>`;
+  return `<div class="abs" style="left:0;top:4px;display:flex;align-items:center;gap:8px"><span class="dim" style="font-size:12px">My roles</span>
+      ${btn("Healer", "", 'style="width:110px;justify-content:space-between"')}${btn("DPS", "", 'style="width:110px;justify-content:space-between"')}</div>
+    <div class="abs dim ell" style="right:120px;top:8px;font-size:12px">${EVENTS.length} raids in the next 30 days</div>
+    ${btn("New raid", "", 'style="position:absolute;right:0;top:0"')}
+    ${list([{ key: "w", t: "When", w: 126 }, { key: "t", t: "Event", w: 162 }], EVENTS, ecell,
+      { click: true, sel: (e) => e[1] === "Ony Thursday", empty: "No raids in the next 30 days. Press New raid to make one in Blizzard's calendar.", style: "left:0;top:36px;bottom:0;width:300px" })}
+    ${right}`;
+}
+
 // ---------------------------------------------------------------- professions (v0.3)
 const PROF_BOARD = [
   ["Alchemy", 6, 3, 2, 300, 1, ""], ["Blacksmithing", 4, 2, 1, 300, 2, "Weaponsmith 2, Armorsmith 1"], ["Enchanting", 5, 2, 3, 300, 0, ""],
@@ -634,8 +665,8 @@ function settings() {
 }
 
 // ---------------------------------------------------------------- window
-const TABS = [["overview", "Overview"], ["roster", "Roster"], ["character", "Character"], ["crafters", "Crafters"], ["professions", "Professions"], ["settings", "Settings"]];
-const RENDER = { overview, roster, character, crafters, professions, settings };
+const TABS = [["overview", "Overview"], ["roster", "Roster"], ["character", "Character"], ["crafters", "Crafters"], ["raids", "Raids"], ["professions", "Professions"], ["settings", "Settings"]];
+const RENDER = { overview, roster, character, crafters, raids, professions, settings };
 function windowHTML() {
   const err = S.data === "error", paused = err || !G.name || S.data === "loading";
   const why = err ? "combat" : "roster not loaded";

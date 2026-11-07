@@ -504,7 +504,7 @@ open on **9 Dec**. The owner asked what to build next.
 ### Recommended now
 | # | What | Why now | Size | Notes |
 |---|---|---|---|---|
-| 1 | **Raids tab, read-only (v0.4.0)** | The 9 Dec deadline; needs time for in-game testing | L | `docs/prompts/next-v0.4-raids.md`: calendar events, who signed up with spec, role, ilvl, attunement, role counts, readiness card. Nothing new on the wire except a main/second role in the profile |
+| 1 | ✅ built 7 Nov (not released) **Raids tab, read-only (v0.4.0)** | The 9 Dec deadline; needs time for in-game testing | L | `docs/prompts/next-v0.4-raids.md`: calendar events, who signed up with spec, role, ilvl, attunement, role counts, readiness card. Nothing new on the wire except a main/second role in the profile |
 | 2 | **API safety check in CI (P17)** | Agreed on 2 Nov, never built. A Forever patch that renames an API would break things silently | S | CI compares every API the addon calls against Blizzard's Forever source |
 | 3 | **Levelling buddies** (new) | The guild is levelling *now*; data is already there (roster level, zone, online) | S | Overview card: "Online near your level (±3)": name, level, zone, Whisper and **Invite** (button press only; `C_PartyInfo.InviteUnit`). No new sync |
 | 4 | **"Ask them to install" button** (new) | Adoption is the real bottleneck (8 of 27 share data) | S | Next to "Not seen with the addon yet": pre-types a guild-chat line with the CurseForge link; you press Enter (never sent automatically) |

@@ -30,8 +30,8 @@ end
 ---------------------------------------------------------------------------
 -- Events: 300 - 12 = 288.
 local EVENT_COLUMNS = {
-	{ key = "when", title = "When", width = 112 },
-	{ key = "title", title = "Event", width = 176 },
+	{ key = "when", title = "When", width = 126 },
+	{ key = "title", title = "Event", width = 162 },
 }
 
 -- Line-up: 532 - 12 = 520.

@@ -1,12 +1,30 @@
 # Changelog
 
-## v0.3.7 (not released yet)
+## v0.4.0 (not released yet): Raids
 
-- **Clearer wording on the Overview:** "Don't have it yet" is now **Not seen
-  with the addon yet**, because the addon only knows which *characters* it has
-  heard from: someone may have Short Royalty on their main while their alt
-  still shows here until they log in on it. The button is now **Not seen yet**,
-  and the tooltips (Overview and Roster) say so.
+A new **Raids** tab, after Crafters, built on **Blizzard's guild calendar**.
+Read-only for now: signing up still happens in Blizzard's calendar.
+
+- **Upcoming raids** for the next 30 days (calendar events of type Raid),
+  with day and time. The raid is worked out from the title (Ony, Onyxia, BD,
+  Barrow, Hyjal); if not, pick it from a menu.
+- **Who signed up**, read from the calendar: status, name, **role**, spec,
+  item level and **attunement** for that raid. Members without the addon
+  still show. Role counts ("Tanks 2 · Healers 6 · DPS 18 · 26 / 40") and a
+  readiness line: missing tanks or healers, tentatives, not attuned, no
+  amulet in bags, item-level range, missing enchants, old data, and anyone
+  signed up on two characters.
+- **My roles:** pick your main and second raid role at the top of the tab
+  (per character). Guildmates see it; until then, roles are a greyed guess
+  from class and talents.
+- **New raid** opens Blizzard's calendar; **Copy** gives the line-up as text.
+- Sign-ups are only read while Blizzard's calendar window is closed, never in
+  combat or chat lockdown. `/sr debug` has a new Raids line.
+- Works with guildmates on v0.3.3 and later (the new `roles` profile field
+  is simply ignored by older versions).
+- Overview wording: "Don't have it yet" is now **Not seen with the addon
+  yet** (the addon only knows which *characters* it has heard from; someone's
+  alt shows there until they log in on it), and its button is **Not seen yet**.
 
 ## v0.3.6 (7 Nov 2026): fewer people wrongly listed as "doesn't have it"
 
