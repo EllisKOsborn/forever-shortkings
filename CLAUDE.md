@@ -164,7 +164,9 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   sends were counted as errors; the owner publishes it on the website because
   tag pushes from cloud sessions drop); **v0.2.7** (5 Nov, `/sk debug`
   profession checks only, for v0.3 Step 1); **v0.3.0** (6 Nov, the Professions
-  tab, reagents, favourites, specialisations, reminders). Tag only when
+  tab, reagents, favourites, specialisations, reminders); **v0.3.1** (7 Nov, every
+  recipe from wago.tools data, search, Wowhead links, Getting started; the
+  first release meant for CurseForge, project **1788068**). Tag only when
   the user asks.
 
 ## Layout
@@ -268,10 +270,11 @@ messages → sender ignored for the session).
   The owner says the titles **look fine in game** even though v0.2.7's
   /sk debug reported the display font as failed (the check may have been a
   false alarm; v0.3.0's debug line counts it per text).
-  **Next: CurseForge** (owner asked 6 Nov): `docs/CURSEFORGE.md`, waiting for
-  the owner's project ID and `CF_API_KEY` secret.
-  **v0.3.1 built 7 Nov** (not released): every recipe in the game from
-  wago.tools data, All recipes search, Wowhead links, Getting started.
+  **CurseForge:** project ID **1788068** is in the TOC (`X-Curse-Project-ID`);
+  the release workflow uploads when the `CF_API_KEY` GitHub secret exists
+  (owner's job, `docs/CURSEFORGE.md`). **v0.3.1 released 7 Nov** (on `main`):
+  every recipe in the game from wago.tools data, All recipes search, Wowhead
+  links, Getting started. Not tested in game: TESTING 87–103.
   Plan and what was left out: **PLAN.md section 11**.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
   gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,

@@ -43,7 +43,7 @@ file.
 ## 5. Tell me the Project ID
 Just the number.
 
-## 6. (Me) wire it up
+## 6. (Me) wire it up: done 7 Nov (project ID 1788068 in the TOC)
 I add `## X-Curse-Project-ID: <number>` to `ShortKings.toc`. From the next
 release on (publish it on GitHub as usual), the workflow uploads the same
 zip to CurseForge automatically. Tags with "beta" in the name (e.g.

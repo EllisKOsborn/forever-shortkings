@@ -7,6 +7,7 @@
 ## IconTexture: Interface\Icons\INV_Misc_Bomb_04
 ## X-License: MIT
 ## X-Website: https://github.com/elliskosborn/forever-shortkings
+## X-Curse-Project-ID: 1788068
 
 embeds.xml
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.1 (not released yet): every recipe, search, Getting started
+## v0.3.1 (7 Nov 2026): every recipe, search, Getting started
 
 - **Every recipe in the game.** Professions → **All recipes** lists all
   ~2,250 profession recipes in Forever, learned or not. Search by name, by
