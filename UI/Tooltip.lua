@@ -14,7 +14,7 @@ function Tip.Add(tooltip, itemID)
 	if not guild then return end
 	local text = SK.CraftIndex.TooltipText(SK.CraftIndex:Get(true), itemID, guild, SK.Compat.Now(), 3)
 	if text then
-		SK.Theme.TipLine(tooltip, SK.Theme.Code("beard") .. "Short Kings:|r " .. text, "text", true)
+		SK.Theme.TipLine(tooltip, SK.Theme.Code("beard") .. "Short Royalty:|r " .. text, "text", true)
 	end
 end
 

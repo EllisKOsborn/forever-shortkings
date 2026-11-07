@@ -1,11 +1,11 @@
-# Prompt: Short Kings v0.3 (Professions)
+# Prompt: Short Royalty v0.3 (Professions)
 
 Copy everything below the line into a new Claude Code chat on the
 `forever-shortkings` repo.
 
 ---
 
-You're continuing work on **Short Kings**, a World of Warcraft: Forever guild
+You're continuing work on **Short Royalty**, a World of Warcraft: Forever guild
 addon in this repo. I'm not a developer and I'm usually on my phone. Explain
 things in plain language, keep replies short, push back on bad ideas, and
 never claim something works in game until I've tested it.

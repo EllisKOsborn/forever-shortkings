@@ -24,7 +24,7 @@ local ATT = { yes = "attuned", no = "not attuned", unknown = "unknown", none = "
 -- opts = { title = "...", now = ts, hideOwnGear = bool, raidName = "..." }
 function Export.Roster(rows, opts)
 	opts = opts or {}
-	local out = { opts.title or "Short Kings roster" }
+	local out = { opts.title or "Short Royalty roster" }
 	for _, r in ipairs(rows) do
 		local parts = { Export.Plain(r.name) }
 		if r.level and r.level > 0 then parts[#parts + 1] = "lvl " .. r.level end

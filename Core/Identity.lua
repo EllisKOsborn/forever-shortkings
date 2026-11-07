@@ -112,7 +112,7 @@ end
 
 Identity.ADDON_FRESH = 25 * 60 -- a HI arrives every 10 min; allow two misses
 
--- "addon" = online with Short Kings, "online" = online without it, "offline".
+-- "addon" = online with Short Royalty, "online" = online without it, "offline".
 function Identity.Status(m, isSelf, now)
 	if not m or not m.online then return "offline" end
 	if isSelf or (m.addonSeen and now - m.addonSeen < Identity.ADDON_FRESH) then return "addon" end
@@ -200,6 +200,13 @@ function Identity:ReadRoster()
 	self.rosterSource = source
 	self.rosterSample = entries[1] and entries[1].name or nil
 	if #entries == 0 then return end
+	local guids = {}
+	for i, e in ipairs(entries) do guids[i] = e.guid end
+	local oldKey = SK.DBM.AdoptRenamedGuild(SK.guildKey, guids)
+	if oldKey then
+		SK:Debug("guild renamed: kept data from %q", oldKey)
+		self.renamedFrom = oldKey
+	end
 	self:ApplyRoster(entries, complete, Compat.Now())
 	SK:Debug("roster: %d members (%s, complete=%s)", #entries, source, tostring(complete))
 end

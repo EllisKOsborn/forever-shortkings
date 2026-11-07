@@ -445,7 +445,7 @@ function Sync:Handle(text, dist, sender)
 	if from == myGUID() or SK.DB.account[from] then return end -- our own echo
 	if not versionWarned and msg.v and SK.VERSION ~= "dev" and versionNewer(msg.v, SK.VERSION) then
 		versionWarned = true
-		SK:Print("A guildmate has Short Kings %s (you have %s). Please update.", msg.v, SK.VERSION)
+		SK:Print("A guildmate has Short Royalty %s (you have %s). Please update.", msg.v, SK.VERSION)
 	end
 	SK.Identity:NoteSender(from, sender)
 	-- Any message proves the sender runs the addon (status dots, version column).

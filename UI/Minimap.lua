@@ -16,7 +16,7 @@ local function onClick(_, button)
 end
 
 local function onTooltip(tt)
-	Theme.TipLine(tt, "Short Kings", "gold")
+	Theme.TipLine(tt, "Short Royalty", "gold")
 	Theme.TipLine(tt, SK.TAGLINE, "dim")
 	Theme.TipLine(tt, "Left-click: open / close", "text")
 	Theme.TipLine(tt, "Right-click: settings", "text")
@@ -74,7 +74,7 @@ function MM:OnLogin()
 	local DBIcon = LibStub("LibDBIcon-1.0", true)
 	if LDB and DBIcon then
 		local obj = LDB:NewDataObject("ShortKings", {
-			type = "launcher", text = "Short Kings", icon = MM.ICON,
+			type = "launcher", text = "Short Royalty", icon = MM.ICON,
 			OnClick = onClick, OnTooltipShow = onTooltip,
 		})
 		DBIcon:Register("ShortKings", obj, settings)

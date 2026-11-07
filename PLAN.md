@@ -1,4 +1,4 @@
-# Short Kings — addon plan (awaiting approval)
+# Short Royalty — addon plan (awaiting approval)
 
 > Status: **v0.1 to v0.2.1 code complete (not yet tested in game).** Roadmap: section 7.
 > Researched against Blizzard's own UI source for the Forever client,
@@ -366,7 +366,7 @@ built until steps 1 to 3 are done.
 1. Download **ShortKings-v0.2.2.zip** from the GitHub **Releases** page
    (under *Assets*). Unzip it so you have `AddOns/ShortKings/ShortKings.toc`
    (path in the README's Install section). Share the same link with the guild.
-2. Character screen → **AddOns**: Short Kings is listed and not "out of date"
+2. Character screen → **AddOns**: Short Royalty is listed and not "out of date"
    (if it is, tick *Load out of date AddOns* and tell me).
 3. In game, type `/console scriptErrors 1` once so Lua errors show.
 4. Type `/dump select(4, GetBuildInfo())` and note the number (expect 16001).

@@ -9,7 +9,7 @@ function W.reset()
 	W.timers = {}
 	W.player = { guid = "Player-1-0000000A", name = "Pip", realm = nil, class = "MAGE",
 		race = "Gnome", level = 60, faction = "Alliance" }
-	W.guild = { name = "Short Kings" }
+	W.guild = { name = "Short Royalty" }
 	W.roster = {}            -- { {name=, guid=, rank=, rankIndex=, level=, class=, online=} }
 	W.showOffline = true
 	W.combat = false

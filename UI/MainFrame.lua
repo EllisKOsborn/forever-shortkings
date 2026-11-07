@@ -73,7 +73,7 @@ function Main:Build()
 	f.crest = crest
 	local title = Theme.Text(bar, "brand", "text")
 	title:SetPoint("TOPLEFT", crest, "TOPRIGHT", SP.m, 2)
-	title:SetText("SHORT KINGS")
+	title:SetText("SHORT ROYALTY")
 	local tagline = Theme.Text(bar, "small", "dim")
 	tagline:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -1)
 	tagline:SetText(SK.TAGLINE)

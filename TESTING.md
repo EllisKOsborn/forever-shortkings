@@ -8,7 +8,7 @@ the `/sk debug` text when something looks wrong.
 - [ ] Type `/dump select(4, GetBuildInfo())` in chat. It should print **16001**.
       If it prints a different number, tell me (the `## Interface:` line in
       `ShortKings.toc` must match).
-- [ ] On the character screen, **AddOns** lists *Short Kings* and it isn't
+- [ ] On the character screen, **AddOns** lists *Short Royalty* and it isn't
       marked "out of date". (If it is, tick "Load out of date AddOns" for now.)
 
 ## v0.1 — on your own
@@ -56,7 +56,7 @@ the `/sk debug` text when something looks wrong.
 ## v0.1.x additions
 
 22. [ ] **Status dots** in the Roster's Online column: green = online with
-        Short Kings, yellow = online without it, grey = offline.
+        Short Royalty, yellow = online without it, grey = offline.
 23. [ ] **Group alts** (ticked by default): log in on two characters at least
         once each. They show as one row, "+1", with the alt in the tooltip.
         Untick it and both show separately.
@@ -93,7 +93,7 @@ the `/sk debug` text when something looks wrong.
 35. [ ] `/reload`: the raid and filter you picked are still selected.
         Pick *All raids* to get the normal Roster back.
 36. [ ] **Ask for latest** (Character tab, on a guildmate who is online with
-        Short Kings): the header says "Asked for the latest data…", then
+        Short Royalty): the header says "Asked for the latest data…", then
         "Got their latest data" a few seconds later. Pressing it again
         within 30 s says "Already asked".
 37. [ ] On someone who is offline, the button is greyed out and its tooltip
@@ -126,7 +126,7 @@ the `/sk debug` text when something looks wrong.
         is clickable. Nothing is sent until you press Enter. (Tell me if it
         opens on Say instead of Guild, or shows a Lua error.)
 46. [ ] **Tooltips**: hover an item someone in the guild can make (in your
-        bags, a chat link or the auction house). A line "Short Kings: …"
+        bags, a chat link or the auction house). A line "Short Royalty: …"
         lists up to 3 crafters, online first, then "+N more".
 47. [ ] Settings → untick **Show guild crafters in item tooltips**: the line
         disappears. Tick it again and it's back.
@@ -189,7 +189,7 @@ the `/sk debug` text when something looks wrong.
 Compare with `preview/index.html` (open it in a browser). Take a screenshot
 in game if anything looks different and send it.
 
-67. [ ] **Title font:** "SHORT KINGS", the tab names and the section headings
+67. [ ] **Title font:** "SHORT ROYALTY", the tab names and the section headings
         use the square-cut Chakra Petch font. If they look like the normal
         game font instead, run `/sk debug`: the line "Display font (Chakra
         Petch) loaded" says NO when the game refused the file.
@@ -228,7 +228,7 @@ in game if anything looks different and send it.
         explains what the panel is for.
 79. [ ] **Other addons:** with ElvUI/Bagnon/DBM (or whatever you use) on,
         the window sits above the default UI, menus open on top, and item
-        tooltips still show the "Short Kings:" crafter line.
+        tooltips still show the "Short Royalty:" crafter line.
 
 ## v0.2.5 additions (security fixes)
 
@@ -296,6 +296,13 @@ in game if anything looks different and send it.
 97. [ ] With Herbalism (or any gathering profession), open its window:
         Professions → Herbalism lists the camping recipes the window shows
         under **Nobody knows** (or **All** once learned).
+
+## v0.3.1 (Short Royalty)
+
+98. [ ] The window title, AddOns list and minimap tooltip say **Short Royalty**.
+99. [ ] `/sr` and `/shortroyalty` open the window (`/sk` still does too).
+100. [ ] Your guildmates and your own data are still there after the rename
+        (the Roster isn't empty). `/sk debug` → Guild shows key "Short Royalty-…".
 
 ## Known gaps in v0.1
 

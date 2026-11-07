@@ -47,7 +47,7 @@ describe("v0.1.2 raid attunement rows", function()
 		assert.equal("yes", r.A.att)
 		assert.equal("yes", r.A2.att)       -- alts are not folded into their main
 		assert.equal("no", r.B.att)
-		assert.equal("unknown", r.C.att)    -- no Short Kings data
+		assert.equal("unknown", r.C.att)    -- no Short Royalty data
 		assert.equal("unknown", r.D.att)    -- gear/talents hidden
 		assert.equal("no", r[W.player.guid].att)
 		assert.same({ yes = 3, no = 2, unknown = 2, none = 0 }, counts)

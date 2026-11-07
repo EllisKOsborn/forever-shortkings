@@ -1,4 +1,4 @@
--- Slash commands: /sk and /shortkings
+-- Slash commands: /sk, /sr, /shortroyalty and /shortkings
 --   /sk            open or close the window
 --   /sk debug      show what the addon sees on this client (copyable)
 --   /sk log        the debug report plus the recent log
@@ -97,7 +97,7 @@ function Commands.BuildReport()
 	local function add(fmt, ...) L[#L + 1] = select("#", ...) > 0 and string.format(fmt, ...) or fmt end
 
 	local b = Compat.BuildInfo()
-	add("== Short Kings %s ==", SK.VERSION)
+	add("== Short Royalty %s ==", SK.VERSION)
 	add("Client: %s build %s (%s), interface %s", tostring(b.version), tostring(b.build), tostring(b.date), tostring(b.interface))
 	add("Time: server %s, local %s", tostring(Compat.Now()), date and date("%Y-%m-%d %H:%M") or "?")
 
@@ -307,5 +307,7 @@ end
 function Commands:OnInit()
 	SLASH_SHORTKINGS1 = "/sk"
 	SLASH_SHORTKINGS2 = "/shortkings"
+	SLASH_SHORTKINGS3 = "/sr"           -- Short Royalty (guild renamed 7 Nov 2026)
+	SLASH_SHORTKINGS4 = "/shortroyalty"
 	SlashCmdList.SHORTKINGS = Commands.Run
 end

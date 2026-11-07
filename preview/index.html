@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Short Kings Preview</title>
+<title>Short Royalty Preview</title>
 <!-- A browser mock-up of the in-game windows. Colours, sizes, fonts and
      motion timings come from theme.css / theme.js, generated from
      UI/Theme.lua by tools/preview-tokens.js. All guild data is made up. -->
@@ -177,7 +177,7 @@
 </head>
 <body>
 <div class="chrome" role="toolbar" aria-label="Preview controls">
-  <h1>Short Kings · design preview</h1>
+  <h1>Short Royalty · design preview</h1>
   <div class="group"><span>View</span><div class="seg" id="segView"></div></div>
   <div class="group"><span>Screen</span><div class="seg" id="segScreen"></div></div>
   <div class="group"><span>Data</span><div class="seg" id="segData"></div></div>
@@ -189,7 +189,7 @@
   </div>
 </div>
 <div class="stage" id="stage"></div>
-<div class="bannerArt" aria-hidden="true"><i></i><div><b>Short Kings</b><span>Height is not a stat.</span><em></em></div></div>
+<div class="bannerArt" aria-hidden="true"><i></i><div><b>Short Royalty</b><span>Height is not a stat.</span><em></em></div></div>
 <div class="paletteArt" id="paletteArt" aria-hidden="true"></div>
 <p class="note">Everything in the window uses the addon's own values: colours, sizes, spacing and motion timings are generated from
   <code>UI/Theme.lua</code> (<code>node tools/preview-tokens.js</code>), and the title font is the bundled Chakra Petch. Item icons are game files,
@@ -256,7 +256,7 @@ function makeGuild(kind) {
     });
     if (i === 0) Object.assign(members[0], { addon: "0.2.3", updatedDays: 0, updatedHours: 0, level: 60, ilvl: 71, cls: "MAGE" });
   }
-  return { name: kind === "worst" ? "Short Kings of Ironforge" : "Short Kings", members };
+  return { name: kind === "worst" ? "Short Royalty of Ironforge" : "Short Royalty", members };
 }
 
 const RAIDS = [{ name: "Barrow Deeps", size: 10, need: false }, { name: "Hyjal Summit", size: 20, need: false }, { name: "Onyxia's Lair", size: 40, need: true }];
@@ -270,7 +270,7 @@ const RECIPES = [
 const WORST_RECIPE = { name: "Thunderfury, Blessed Blade of the Windseeker (Heroic Replica of the Lost Ages)", q: "#ff8000", prof: "Blacksmithing",
   crafters: Array.from({ length: 23 }, (_, i) => [i % 3 === 0 ? WORST_NAMES[i % WORST_NAMES.length] : NAMES[i + 3], Object.keys(CLASS)[i % 8], 300 - i, i % 4 === 0]) };
 const GEAR = { 1: ["Netherwind Crown", "#a335ee"], 2: ["Choker of Enlightenment", "#a335ee"], 3: ["Netherwind Mantle", "#a335ee"], 15: ["Cloak of the Shrouded Mists", "#a335ee"],
-  5: ["Robe of Volatile Power", "#a335ee"], 4: null, 19: ["Short Kings Tabard", "#ffffff"], 9: ["Mana Igniting Cord", "#a335ee"], 10: ["Felheart Gloves", "#a335ee"],
+  5: ["Robe of Volatile Power", "#a335ee"], 4: null, 19: ["Short Royalty Tabard", "#ffffff"], 9: ["Mana Igniting Cord", "#a335ee"], 10: ["Felheart Gloves", "#a335ee"],
   6: ["Netherwind Belt", "#a335ee"], 7: ["Netherwind Pants", "#a335ee"], 8: ["Boots of the Shadow Flame", "#a335ee", true], 11: ["Ring of Spell Power", "#a335ee"],
   12: ["Band of Forced Concentration", "#a335ee"], 13: ["Talisman of Ephemeral Power", "#a335ee"], 14: ["Mind Quickening Gem", "#a335ee"],
   16: ["Azuresong Mageblade", "#a335ee", true], 17: ["Fire Ruby", "#0070dd"], 18: ["Star of Mystaria", "#a335ee"] };
@@ -327,13 +327,13 @@ function overview() {
   const bands = [[60, 60, "60"], [50, 59, "50-59"], [40, 49, "40-49"], [1, 39, "1-39"]].map((b) => [b[2], live.filter((m) => m.level >= b[0] && m.level <= b[1]).length]);
   const header = G.name ? `<span>${esc(G.name)}</span> · ${plural(live.length, "member")} · ${online} online` : `<span>No guild</span> · 0 members · 0 online · join a guild to see guildmates here`;
   const guildRows = [{ label: "Members", value: live.length }, { label: "Players (alts counted once)", value: players }, { label: "Online now", value: online },
-    { label: "Running Short Kings", value: withAddon }, { label: "Shared their data", value: withData }, { sub: "Levels" }, ...bands.map((b) => ({ label: b[0], value: b[1], indent: true }))];
+    { label: "Running Short Royalty", value: withAddon }, { label: "Shared their data", value: withData }, { sub: "Levels" }, ...bands.map((b) => ({ label: b[0], value: b[1], indent: true }))];
   const noData = live.length - withData, stale = live.filter((m) => m.hasData && m.updatedDays > 7).length, old = live.filter((m) => m.addon === "0.2.1").length;
   const health = [];
-  if (noData) health.push({ label: noData === 1 ? "Member without Short Kings data" : "Members without Short Kings data", value: noData, tone: "dim" });
+  if (noData) health.push({ label: noData === 1 ? "Member without Short Royalty data" : "Members without Short Royalty data", value: noData, tone: "dim" });
   if (stale) health.push({ label: stale === 1 ? "Profile older than a week" : "Profiles older than a week", value: stale, tone: "spark" });
   if (G.name) health.push({ label: "Profession windows never opened", value: 3, tone: "spark" });
-  if (old) health.push({ label: "Running an old Short Kings", value: old, tone: "spark" });
+  if (old) health.push({ label: "Running an old Short Royalty", value: old, tone: "spark" });
   if (!health.length) health.push({ text: "All good: everyone's data is current.", tone: "good" });
   else health.push({ text: "No data usually means no addon, or a trial account (trials can't share)." });
   const max = live.filter((m) => m.level === 60);
@@ -443,14 +443,14 @@ function character() {
       <div class="abs dim" style="left:270px;top:96px;right:0">Pick someone on the Roster to see their gear, talents and professions.</div>`;
   }
   const meta = !m.hasData ? "No data synced yet" + (S.data === "error" ? ' · <span class="spark">No answer yet: showing their last known data</span>' : "")
-    : `Updated ${m.updatedDays > 7 ? m.updatedDays + "d ago" : ago(m.updatedHours) + " ago"} (${m.self ? "this account" : "from them"}) · Short Kings ${m.addon}` + (m.updatedDays > 7 ? ' · <span class="spark">may be out of date</span>' : "")
+    : `Updated ${m.updatedDays > 7 ? m.updatedDays + "d ago" : ago(m.updatedHours) + " ago"} (${m.self ? "this account" : "from them"}) · Short Royalty ${m.addon}` + (m.updatedDays > 7 ? ' · <span class="spark">may be out of date</span>' : "")
       + (S.data === "error" && !m.self ? ' · <span class="spark">No answer yet: showing their last known data</span>' : "");
   const info = `Level ${m.level} Gnome ${m.cls[0] + m.cls.slice(1).toLowerCase()} · ${esc(m.rank)}`;
   let center = `<div class="abs display gold" style="left:0;right:0;top:122px;text-align:center;font-size:24px">${m.hasData ? m.ilvl + ".4" : "-"}</div>
     <div class="abs dim" style="left:0;right:0;top:150px;text-align:center;font-size:11px">average item level</div>`;
   if (m.hasData) center += `<div class="abs" style="left:55px;width:140px;top:180px;text-align:center">${esc(m.spec)}<br><span>31/20/0</span></div><div class="abs spark" style="left:55px;width:140px;top:224px;text-align:center;font-size:12px">2 missing enchants</div>`;
   const colW = Math.floor((T.sizes.windowW - 2 * T.space.l - 250 - T.space.xl - (T.space.xl + T.space.m) - T.space.m) / 2);
-  const details = !m.hasData ? `<div class="abs dim" style="left:270px;top:96px;right:0;line-height:1.35">No data synced yet. They may not have Short Kings, or they're on a trial account (trials can't sync). Their profile appears here the next time they log in with it.</div>`
+  const details = !m.hasData ? `<div class="abs dim" style="left:270px;top:96px;right:0;line-height:1.35">No data synced yet. They may not have Short Royalty, or they're on a trial account (trials can't sync). Their profile appears here the next time they log in with it.</div>`
     : `<div class="sheet" style="left:270px;top:96px;bottom:0;width:${colW + 12}px">
         ${m.alts ? block("Alts", [{ label: `<span style="color:${CLASS.PRIEST}">${esc(G.members[(m.i + 5) % G.members.length].name)}</span>`, lhtml: 1, value: "main", tone: "beard" }]) : ""}
         ${m.note ? block("Notes", [{ text: m.note, tone: "" }]) : ""}
@@ -593,7 +593,7 @@ function windowHTML() {
   const err = S.data === "error", paused = err || !G.name || S.data === "loading";
   const why = err ? "combat" : "roster not loaded";
   const st = `${esc(G.name || "No guild")}  ·  ${paused ? "Sync paused: " + why : "Sync on"}${err ? '  ·  <span class="spark">2 errors</span>' : ""}`;
-  return `<div class="titlebar"><div class="crest" role="img" aria-label="Short Kings crest"></div><div class="brand display">Short Kings</div><div class="tagline">Height is not a stat.</div>
+  return `<div class="titlebar"><div class="crest" role="img" aria-label="Short Royalty crest"></div><div class="brand display">Short Royalty</div><div class="tagline">Height is not a stat.</div>
       <div class="status" title="${paused ? "Sync paused" : "Sync on. The dot flashes when new data arrives."}"><span class="sdot ${paused ? "paused" : ""}"><i class="ring"></i></span><span class="text ell">${st}</span></div>
       <div class="close" id="closeBtn" title="Close (Esc)"><i></i></div></div>
     <div class="tabbar">${TABS.map((t) => `<div class="tab display ${S.screen === t[0] ? "on" : ""}" data-tab="${t[0]}">${t[1]}</div>`).join("")}<i class="underline" id="ul"></i></div>
@@ -601,7 +601,7 @@ function windowHTML() {
     ${S.copy ? copyWin() : ""}`;
 }
 function copyWin() {
-  const lines = ["Short Kings roster", ...rosterRows().slice(0, 30).map((m) => `${m.name}  ${m.level}  ${m.rank}  ${m.spec || "-"}  ${m.ilvl || "-"}`)];
+  const lines = ["Short Royalty roster", ...rosterRows().slice(0, 30).map((m) => `${m.name}  ${m.level}  ${m.rank}  ${m.spec || "-"}  ${m.ilvl || "-"}`)];
   return `<div class="copywin"><div class="abs display" style="left:16px;top:16px;font-size:13px">Copy as text</div>
     <div class="abs dim" style="left:16px;top:34px;font-size:12px">Click the text, press Ctrl+A (Cmd+A on Mac) then Ctrl+C (Cmd+C) to copy it.</div>
     <div class="close" id="copyClose" style="right:8px;top:8px"><i></i></div><pre>${esc(lines.join("\n"))}</pre></div>`;
@@ -656,7 +656,7 @@ function wire() {
   document.querySelectorAll("[data-m]").forEach((el) => {
     const m = G.members[+el.dataset.m];
     el.onclick = () => { S.charIdx = m.i; S.screen = "character"; render({ reveal: true }); };
-    el.onmousemove = (e) => showTip(e, `<div style="color:${CLASS[m.cls]}">${esc(m.name)}</div><div style="color:#ccc">${status(m) === "addon" ? "Online with Short Kings" : status(m) === "online" ? "Online without Short Kings" : "Offline"}</div>`
+    el.onmousemove = (e) => showTip(e, `<div style="color:${CLASS[m.cls]}">${esc(m.name)}</div><div style="color:#ccc">${status(m) === "addon" ? "Online with Short Royalty" : status(m) === "online" ? "Online without Short Royalty" : "Offline"}</div>`
       + (m.spec ? `<div>${m.spec} 31/20/0</div>` : "") + m.profs.map((p) => `<div class="dl"><span>${p[0]}</span><span>${p[2]}</span></div>`).join("")
       + (m.note ? `<div style="color:var(--beard)">Note: ${esc(m.note)}</div>` : "") + (m.hasData ? "" : `<div style="color:#aaa">No data yet. They may not have the addon, or be on a trial account (trials can't sync).</div>`)
       + `<div style="color:var(--gold)">Click to view character</div>`);
@@ -708,7 +708,7 @@ function seg(id) {
   el.querySelectorAll("button").forEach((b) => (b.onclick = () => {
     let v = b.dataset.v; if (key === "scale") v = +v;
     S[key] = v;
-    if (key === "data") { G = makeGuild(v === "loading" || v === "error" ? "full" : v); if (v === "loading") G.members = []; S.search = ""; S.recipe = 0; S.charIdx = v === "worst" ? 1 : 1; if (v === "loading") G.name = "Short Kings"; }
+    if (key === "data") { G = makeGuild(v === "loading" || v === "error" ? "full" : v); if (v === "loading") G.members = []; S.search = ""; S.recipe = 0; S.charIdx = v === "worst" ? 1 : 1; if (v === "loading") G.name = "Short Royalty"; }
     seg(id); render({ reveal: key === "screen" });
     try { localStorage.setItem("skPreview", JSON.stringify({ view: S.view, screen: S.screen, data: S.data })); } catch (e) { /* private window */ }
   }));

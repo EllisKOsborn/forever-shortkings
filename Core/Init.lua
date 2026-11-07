@@ -1,4 +1,4 @@
--- Short Kings: namespace, version, events, timers and module lifecycle.
+-- Short Royalty: namespace, version, events, timers and module lifecycle.
 local ADDON_NAME, SK = ...
 
 SK.ADDON_NAME = ADDON_NAME

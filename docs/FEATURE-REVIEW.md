@@ -1,7 +1,7 @@
 # Feature review: what other guild addons do (1 Nov 2026)
 
 We reviewed the **feature lists** of comparable addons. No code was read or
-copied. The goal: find features worth adding to Short Kings now, later, or not at all.
+copied. The goal: find features worth adding to Short Royalty now, later, or not at all.
 
 ## Addons reviewed
 
@@ -16,9 +16,9 @@ copied. The goal: find features worth adding to Short Kings now, later, or not a
 | [Gargul](https://www.curseforge.com/wow/addons/gargul) | Classic, Retail | Loot master: soft reserves, wishlists, rolls (Forever support unconfirmed) | n/a |
 | [Party Buff Tracker Forever](https://www.curseforge.com/wow/addons/party-buff-tracker-forever) | Forever | Raid readiness: food, flasks, buffs, durability | n/a |
 
-**What this means for us:** Perpetua is the closest match to Short Kings,
+**What this means for us:** Perpetua is the closest match to Short Royalty,
 and Guild Muster and ForeverGuild+ already cover nearly everything a guild
-might want. Short Kings' strengths are that it's **ours** (our name, our
+might want. Short Royalty' strengths are that it's **ours** (our name, our
 look, MIT, no website) and **focused**. So we should add features that
 build on the data we already collect, and leave loot and officer admin to
 dedicated addons.
@@ -93,7 +93,7 @@ Effort: **S** = an evening, **M** = a few days, **L** = a week or more.
   there's no conflict (different message prefixes), but it's double the
   traffic. Fine at 50 members.
 - **Midnight restrictions:** anything that reads combat, loot or auras inside
-  instances may be blocked. Short Kings deliberately reads only
+  instances may be blocked. Short Royalty deliberately reads only
   out-of-combat data.
 - **Chat automation:** `SendChatMessage` is restricted in Forever, so every
   "post to chat" feature must be triggered by a button press.

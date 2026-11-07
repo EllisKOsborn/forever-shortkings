@@ -78,7 +78,7 @@ local function slotButton(parent, slot)
 			GameTooltip:SetHyperlink(self.link)
 			if self.missingEnchant then
 				GameTooltip:AddLine(" ")
-				Theme.TipLine(GameTooltip, "Short Kings: no enchant on this item", "spark")
+				Theme.TipLine(GameTooltip, "Short Royalty: no enchant on this item", "spark")
 				GameTooltip:Show()
 			end
 		else
@@ -414,7 +414,7 @@ function Char:Refresh()
 	local ago = Theme.Ago(p.updated, now)
 	ago = ago == "now" and "just now" or (ago .. " ago")
 	local stale = (not mine and Theme.IsStale(p.updated, now)) and ("  ·  " .. Theme.Paint("spark", "may be out of date")) or ""
-	self.meta:SetText(string.format("Updated %s (%s)  ·  Short Kings %s", ago, source, p.addon or "?") .. stale .. askText)
+	self.meta:SetText(string.format("Updated %s (%s)  ·  Short Royalty %s", ago, source, p.addon or "?") .. stale .. askText)
 
 	local hidden = p.hidden or {}
 	local missing = {}
@@ -450,7 +450,7 @@ end
 -- What the details area says when there's no profile. Pure; tested.
 function Char.EmptyText(isMember)
 	if not isMember then return "Pick someone on the Roster to see their gear, talents and professions." end
-	return "No data synced yet. They may not have Short Kings, or they're on a trial account (trials can't sync)."
+	return "No data synced yet. They may not have Short Royalty, or they're on a trial account (trials can't sync)."
 		.. " Their profile appears here the next time they log in with it."
 end
 

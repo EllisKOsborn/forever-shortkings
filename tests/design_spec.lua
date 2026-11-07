@@ -132,7 +132,7 @@ describe("Main window", function()
 	end)
 
 	it("says what sync is doing and counts errors", function()
-		assert.equal("Short Kings  ·  Sync on", SK.MainFrame.StatusText("Short Kings", false))
+		assert.equal("Short Royalty  ·  Sync on", SK.MainFrame.StatusText("Short Royalty", false))
 		assert.equal("No guild  ·  Sync paused: combat", SK.MainFrame.StatusText(nil, true, "combat"))
 		assert.truthy(SK.MainFrame.StatusText("G", false, nil, 2):find("2 errors", 1, true))
 	end)

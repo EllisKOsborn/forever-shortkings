@@ -126,7 +126,7 @@ describe("v0.2.2 Overview numbers", function()
 		assert.equal(1, o.stale)       -- Ben, 10 days old
 		assert.equal(2, o.unscanned)   -- Pip's Tailoring (we never opened it) and Ann Alt's Alchemy
 		assert.equal(1, o.outdated)    -- Ben runs 0.0.1
-		assert.truthy(SK.OverviewTab.HealthText(o):find("Member without Short Kings data  " .. SK.Theme.Code("dim") .. "1|r", 1, true))
+		assert.truthy(SK.OverviewTab.HealthText(o):find("Member without Short Royalty data  " .. SK.Theme.Code("dim") .. "1|r", 1, true))
 	end)
 
 	it("summarises professions and recipes", function()

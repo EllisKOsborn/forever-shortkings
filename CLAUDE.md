@@ -1,10 +1,24 @@
-# Short Kings: project notes for Claude
+# Short Royalty: project notes for Claude
 
 Read this first in every session. Keep it current: if you change a decision,
 the status or a convention, update this file in the same commit.
 
+## Names (7 Nov 2026)
+- The guild and the addon are now **Short Royalty** (was "Short Kings"). Use
+  that name everywhere a person can read it: titles, chat, tooltips, docs.
+- **On purpose, these stay `ShortKings`:** the addon folder and TOC
+  (`ShortKings/ShortKings.toc`), SavedVariables `ShortKingsDB`, the addon
+  message prefix `ShortKings`, frame names, the `SK` namespace, the release
+  zip `ShortKings-vX.Y.Z-forever.zip`, and the repo `forever-shortkings`.
+  Renaming the folder or SavedVariables would wipe everyone's saved data, and
+  renaming the prefix would split the guild between versions. Don't change
+  them without a migration plan and the owner's OK.
+- Slash commands: `/sk`, `/shortkings`, and (new) `/sr`, `/shortroyalty`.
+- The CHANGELOG's past entries and the outside proposal files keep the old
+  name (they're history).
+
 ## What this is
-A World of Warcraft: **Forever** addon for the guild **Short Kings**
+A World of Warcraft: **Forever** addon for the guild **Short Royalty**
 (Alliance, PvE, about 50 members). Members browse each other's gear,
 talents, professions, recipes, attunements and reputations in game. Data is
 shared only over the guild **addon channel**: no website, no server, no uploads.
@@ -42,8 +56,10 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
     LibDataBroker and LibDBIcon missing).
   - `C_QuestLog.GetTitleForQuestID` returns nil for uncached quests (it isn't
     proof that a quest is missing). Item 16309 (Drakefire Amulet) resolves.
-  - The guild is called **"Sweaty Pumpers"** for now (the name "Short Kings"
-    was taken). The final name is undecided; data is keyed per guild name.
+  - The guild is called **"Short Royalty"** (renamed 7 Nov 2026; it was
+    "Sweaty Pumpers" at launch because "Short Kings" was taken). Data is keyed
+    per guild name; `DBM.AdoptRenamedGuild` carries a renamed guild's data
+    over to the new key (v0.3.1).
 - **Source of truth for APIs:** Blizzard's UI source, `forever` branch of
   Gethe/wow-ui-source. Sparse-clone it and grep
   `Interface/AddOns/Blizzard_APIDocumentationGenerated/` plus the
@@ -237,7 +253,11 @@ messages → sender ignored for the session).
 - Mockups: Playwright and Chromium are preinstalled. The stand-in font is
   Marcellus from fonts.gstatic.com (don't commit the font).
 
-## Status (5 Nov 2026)
+## Status (7 Nov 2026)
+- **v0.3.1 (Short Royalty rename)** on branch `claude/short-kings-addon-hlf0t4`:
+  display name everywhere, `DBM.AdoptRenamedGuild` (saved guild data follows
+  a rename), `/sr` + `/shortroyalty`. Not yet on `main` or released.
+- v0.3.0 Professions released 6 Nov (see CHANGELOG).
 - **v0.2.5 released 5 Nov**: the first build after an in-game test (owner,
   solo: loads, GUID stable, interface 16001, a test send worked). It
   includes the security fixes from `docs/SECURITY-REVIEW.md`. Sync between
@@ -335,8 +355,8 @@ a test send worked. The Mac AddOns path is still not confirmed by name
 (the owner installed successfully).
 1. Install the **v0.2.5** release (the real `-forever.zip`), send `/sk debug`,
    and work through `TESTING.md` (on their own, then with one guildmate).
-2. The final guild name (if it changes from "Sweaty Pumpers", data starts
-   fresh under the new name, which is expected).
+2. ~~The final guild name~~: done, **Short Royalty** (7 Nov). Saved data
+   carries over automatically (v0.3.1).
 4. Onyxia attunement: whether any Horde members exist (Horde chain differs), and
    in-game check that the Drakefire Amulet check works.
 

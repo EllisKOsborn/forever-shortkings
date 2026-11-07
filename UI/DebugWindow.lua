@@ -72,7 +72,7 @@ function Debug:Open(withLog)
 	end
 	self.text = table.concat(lines, "\n")
 	local f = self:Build()
-	f.title:SetText("SHORT KINGS DEBUG REPORT")
+	f.title:SetText("SHORT ROYALTY DEBUG REPORT")
 	f.refresh:Show()
 	f.log:Show()
 	f.edit:SetText(self.text)

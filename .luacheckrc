@@ -1,4 +1,4 @@
--- luacheck configuration for Short Kings (WoW runs Lua 5.1).
+-- luacheck configuration for Short Royalty (WoW runs Lua 5.1).
 std = "lua51"
 max_line_length = 140
 exclude_files = { "Libs/**", ".luarocks/**", ".release/**" }
@@ -13,7 +13,7 @@ ignore = {
 globals = {
 	"ShortKingsBody13",
 	"ShortKingsDB", "ShortKings",
-	"SLASH_SHORTKINGS1", "SLASH_SHORTKINGS2", "SlashCmdList", "UISpecialFrames",
+	"SLASH_SHORTKINGS1", "SLASH_SHORTKINGS2", "SLASH_SHORTKINGS3", "SLASH_SHORTKINGS4", "SlashCmdList", "UISpecialFrames",
 }
 
 read_globals = {

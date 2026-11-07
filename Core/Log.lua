@@ -5,7 +5,7 @@ local MAX_LINES = 300
 local lines = {}
 local head = 0
 
-SK.CHAT_PREFIX = "|cffD94FA0Short Kings|r: "
+SK.CHAT_PREFIX = "|cffD94FA0Short Royalty|r: "
 
 function SK:Print(fmt, ...)
 	local msg = select("#", ...) > 0 and string.format(fmt, ...) or tostring(fmt)

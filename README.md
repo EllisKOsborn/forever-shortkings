@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.png" alt="Short Kings: Height is not a stat." width="100%">
+  <img src="docs/images/banner.png" alt="Short Royalty: Height is not a stat." width="100%">
 </p>
 
 <p align="center">
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <b>The guild addon for the Short Kings of World of Warcraft: Forever.</b><br>
+  <b>The guild addon for the Short Royalty of World of Warcraft: Forever.</b><br>
   Everyone's gear, talents, professions, recipes and raid readiness in one window.<br>
   No website, no server, no uploads: it all travels over the guild's addon channel.
 </p>
@@ -25,7 +25,7 @@
 </p>
 
 > [!NOTE]
-> **Not run in game yet.** Short Kings is built against Blizzard's own Forever
+> **Not run in game yet.** Short Royalty is built against Blizzard's own Forever
 > 1.60.1 interface code and tested against a simulated WoW client. The
 > pictures here are drawn by the [browser preview](preview/index.html) from
 > the addon's real colours, fonts and layout. Item icons are placeholders;
@@ -53,9 +53,9 @@
 The first tab: six sections in three columns, set like a spec sheet. Each
 section has a link to the place where you can act on it.
 
-- **Guild**: members, players (alts counted once), online now, running Short Kings, shared their data, and levels in bands (60, 50–59, 40–49, 1–39). *Open roster*.
+- **Guild**: members, players (alts counted once), online now, running Short Royalty, shared their data, and levels in bands (60, 50–59, 40–49, 1–39). *Open roster*.
 - **Raids**: the one big number, days until raids open on 9 Dec. Barrow Deeps (10) and Hyjal Summit (20) need no attunement, so it counts your level 60s. Onyxia's Lair (40) shows attuned / not attuned / unknown, and how many have the quest done but the Drakefire Amulet out of their bags. *Onyxia list*.
-- **Data health**: members without Short Kings data, profiles older than a week, profession windows never opened, and anyone on an old Short Kings (you included). "All good" when there's nothing to fix. *Oldest first* opens the Roster with missing and oldest data on top.
+- **Data health**: members without Short Royalty data, profiles older than a week, profession windows never opened, and anyone on an old Short Royalty (you included). "All good" when there's nothing to fix. *Oldest first* opens the Roster with missing and oldest data on top.
 - **Professions**: characters per crafting profession, how many are at 300 (or the best so far), **nobody** in red where the guild has a gap, and one line for gathering. *Find a crafter*.
 - **Recipes**: recipes the guild knows, from how many crafters, and how many **only one character** knows, with examples, so you can see where there's no backup. *Search recipes*.
 - **Recent milestones**: level-ups (every 10 levels), profession 75/150/225/300, Onyxia attunement and new recipes. Hover for when, click to open the character, **Grats** types "Grats Bramble on level 60!" into guild chat (you press Enter).
@@ -69,11 +69,11 @@ only (the last 50); nothing extra is sent. Turn them off in Settings.
 
 - **Every guild member**, including people without the addon.
 - **Columns:** **Name** in class colour (*(you)* in pink on your characters, **+2** when alts are folded in), **Level**, **Rank**, **Spec** (main tree and points), **Professions**, **iLvl**, **Online** (a dot, then *online*, *on alt* or how long ago), **Version** (orange when out of date) and **Data** (how fresh their profile is; orange after a week).
-- **Status dots:** 🟢 online with Short Kings · ⚪ online without it · ⚫ offline.
+- **Status dots:** 🟢 online with Short Royalty · ⚪ online without it · ⚫ offline.
 - **Sort** by clicking a column (an arrow marks the sorted one). Online members come first.
 - **Search** by name, profession, spec, class, rank, a word from their note, or an alt's name. A search with no matches says so.
 - **Group alts** (on by default) shows each player once, under their main.
-- **Counter**: characters, how many have data, how many need an update, and whether a newer Short Kings is out.
+- **Counter**: characters, how many have data, how many need an update, and whether a newer Short Royalty is out.
 - **Copy** gives the list exactly as shown, as plain text for Discord. Notes are never included.
 - **Hover a row** for online status, every profession, missing enchants, the public note (and officer note if you're an officer), their alts and their addon version. **Click** to open the character.
 
@@ -91,7 +91,7 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 <p align="center"><img src="docs/images/character.png" alt="Character tab" width="100%"></p>
 
 - **Top:** *Back to roster*, *My character*, *Whisper* and the gold **Ask for latest** button (or *Make this my main* on your own alts).
-- **Ask for latest** asks them (or their online alt) for their newest data. It works while they're online with Short Kings, at most every 30 seconds; otherwise it's greyed out and says why.
+- **Ask for latest** asks them (or their online alt) for their newest data. It works while they're online with Short Royalty, at most every 30 seconds; otherwise it's greyed out and says why.
 - **Header:** name in class colour, level, race, class and rank, plus how old the data is and where it came from (*this account*, *from them*, *relayed by a guildmate*). Old data says *may be out of date*.
 - **Paperdoll:** all 19 slots with item-quality borders. Hover for the **real item tooltip**, Shift-click to link it, Ctrl-click for the dressing room. The middle shows **average item level** in gold, the main talent tree, and how many enchants are missing (an orange **!** marks each slot).
 - **Details** in two columns:
@@ -138,11 +138,11 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
 - **What guildmates see from you:** a read-only list of exactly what you share, what stays private, and what's never shared.
 
 ### 🧨 Everywhere
-- **Open it** with `/sk` (or `/shortkings`) or the **minimap button**: left-click opens the window, right-click opens Settings, drag to move it.
+- **Open it** with `/sk` (or `/sr`, `/shortroyalty`, `/shortkings`) or the **minimap button**: left-click opens the window, right-click opens Settings, drag to move it.
 - **The window** opens on the Overview the first time, then on your last tab. Drag it by the title bar; it remembers where you left it. **Esc** closes it. The title bar shows the crest, your guild and the sync status.
 - **Automatic collection** on every character you play: gear, item level, talents, reputations, professions, recipes (when you open the profession window), cooldowns, attunements and your other characters.
-- **"Crafted by" on item tooltips:** hover any item to see "Short Kings: Bramble (online), Dabble +2 more". Online crafters first, at most three names.
-- **Chat reminders** for profession windows still to open (and, rarely, ones to reopen after your skill went up), a newer Short Kings, and trial accounts that can't share.
+- **"Crafted by" on item tooltips:** hover any item to see "Short Royalty: Bramble (online), Dabble +2 more". Online crafters first, at most three names.
+- **Chat reminders** for profession windows still to open (and, rarely, ones to reopen after your skill went up), a newer Short Royalty, and trial accounts that can't share.
 - **`/sk debug`** opens a copyable report of what the addon can see, starting with the live-client checks and the profession checks for v0.3 (unlearned recipes, recipe categories, reagents, specialisations), and ending with the last Lua errors it caught. **Send it when something looks wrong.**
 
 ### 🔒 Under the hood
@@ -168,7 +168,9 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
    > **Not "Source code (zip)".** GitHub adds those links to every release.
    > They unzip to a folder like `forever-shortkings-0.2.4` and are missing
    > two libraries. Renaming that folder doesn't fix it.
-2. Unzip it. You get a folder called **`ShortKings`**.
+2. Unzip it. You get a folder called **`ShortKings`**. The addon was called
+   Short Kings before the guild became Short Royalty. The folder keeps the
+   old name on purpose, so everyone's saved data carries over.
 3. Move that folder into your Forever **AddOns** folder:
 
    🍎 **Mac**
@@ -180,7 +182,7 @@ Onyxia's Lair, Forever's first wave) to see who's attuned:
    C:\Program Files (x86)\World of Warcraft\_forever_\Interface\AddOns\
    ```
 
-4. Restart the game. *Short Kings* is listed under **AddOns** on the character screen.
+4. Restart the game. *Short Royalty* is listed under **AddOns** on the character screen.
 
 > [!TIP]
 > **Can't find the folder?** In the Battle.net app, pick **WoW Forever**,
@@ -210,7 +212,7 @@ recipes are recorded (the addon reminds you), and log in on each **alt** once.
 | `/sk sync` | share your data now and ask for anything missing |
 | `/sk reset` | put the window back in the middle of the screen |
 
-`/shortkings` works too, if another addon already uses `/sk`.
+`/sr`, `/shortroyalty` and `/shortkings` work too, if another addon already uses `/sk`.
 
 ---
 
@@ -221,7 +223,7 @@ recipes are recorded (the addon reminds you), and log in on each **alt** once.
 <details>
 <summary><b>Someone shows no data. Why?</b></summary>
 
-They don't have Short Kings, haven't logged in since installing it, or are on
+They don't have Short Royalty, haven't logged in since installing it, or are on
 a **trial account** (trial accounts can't send addon messages). From the
 outside the addon can't tell these apart, so it says all three.
 </details>
@@ -272,7 +274,7 @@ Settings → tick **Reduce motion**. Everything then happens instantly.
 <details>
 <summary><b>The titles look like the normal game font.</b></summary>
 
-The game may have refused the bundled font. Nothing breaks: Short Kings falls
+The game may have refused the bundled font. Nothing breaks: Short Royalty falls
 back to the game font. Type `/sk debug` and send the text so we can check.
 </details>
 
@@ -427,4 +429,4 @@ licence). The black-and-gold direction started from the Lamborghini-inspired
 DESIGN.md by [getdesign](https://www.npmjs.com/package/getdesign). The crest
 is drawn from simple shapes by `tools/textures.js`.
 
-Released under the [MIT licence](LICENSE). Made with 💖 and 🧨 by the Short Kings.
+Released under the [MIT licence](LICENSE). Made with 💖 and 🧨 by the Short Royalty.

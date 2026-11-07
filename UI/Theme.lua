@@ -118,7 +118,7 @@ Theme.SIZE = { micro = 11, small = 12, body = 13, title = 15, figure = 24 }
 
 -- Roles: which face and size each kind of text uses.
 Theme.TYPE = {
-	brand   = { "display", 20 },            -- SHORT KINGS in the title bar
+	brand   = { "display", 20 },            -- SHORT ROYALTY in the title bar
 	tab     = { "display", 13 },            -- main navigation
 	heading = { "display", 13 },            -- section headings (uppercase)
 	figure  = { "display", 24 },            -- one key number per screen

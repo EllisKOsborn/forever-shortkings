@@ -32,7 +32,7 @@ end
 --   "none"    the raid needs no attunement
 --   "yes"     quest done, or the required item is in their bags
 --   "no"      quest not done and the item isn't in their bags
---   "unknown" no Short Kings data, gear/talents hidden, quests not known yet,
+--   "unknown" no Short Royalty data, gear/talents hidden, quests not known yet,
 --             or a profile from a version that didn't record it
 -- The note says "amulet not in bags" when the quest is done but the item
 -- (e.g. the Drakefire Amulet) isn't in their bags.
