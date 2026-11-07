@@ -203,7 +203,9 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   pieces, protocol 2; can't talk to v0.3.2 or earlier); **v0.3.4** (7 Nov,
   crafter's recipes in Professions, who has the addon on the Overview, orange
   profession reminder bar with an Open button); **v0.3.5** (7 Nov, full
-  "doesn't have the addon" list on hover; first automatic release). Tag only when
+  "doesn't have the addon" list on hover; first automatic release); **v0.3.6**
+  (7 Nov, old versions / alts / never-online-together no longer listed as
+  "doesn't have it"). Tag only when
   the user asks.
 
 ## Layout
@@ -366,7 +368,7 @@ messages → sender ignored for the session).
   (an invisible hover frame per row, `W.Block`); the Overview's "Don't have it
   yet" row and its names use `OverviewTab.WithoutTip` (all names, two per
   line, capped at `TIP_NAMES` 60). TESTING 118.
-- **v0.3.6 (built, not on `main`)**: fewer false "doesn't have it" (owner:
+- **v0.3.6 (on `main` 7 Nov, released automatically)**: fewer false "doesn't have it" (owner:
   "it's all of those reasons, fix all"):
   - old protocol (`\133…`, v0.3.2 and earlier) from an exact roster name →
     `m.oldAddon` (local): counts as having it, Roster "old", Overview outdated;

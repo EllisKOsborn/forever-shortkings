@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.6 (not released yet): fewer people wrongly listed as "doesn't have it"
+## v0.3.6 (7 Nov 2026): fewer people wrongly listed as "doesn't have it"
 
 People who do have Short Royalty were showing under **Don't have it yet** on
 the Overview. Three causes, three fixes:
