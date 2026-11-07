@@ -1,4 +1,4 @@
--- Onboarding: a welcome line the first time Short Kings loads, and the
+-- Onboarding: a welcome line the first time Short Royalty loads, and the
 -- "Getting started" checklist on the Overview. Steps tick themselves off
 -- from what the addon can see; the card goes away once everything is done
 -- or the player hides it (settings.onboarding.hidden).
@@ -60,7 +60,7 @@ end
 function Onb:Welcome()
 	if SK.DB.settings.welcomed then return false end
 	SK.DB.settings.welcomed = true
-	SK:Print("Welcome to Short Kings! Type /sk (or click the minimap button) to open it.")
+	SK:Print("Welcome to Short Royalty! Type /sr (or click the minimap button) to open it.")
 	SK:Print("The Overview has a short \"Getting started\" list: start by opening each of your profession windows once.")
 	return true
 end

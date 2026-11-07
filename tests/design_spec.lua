@@ -51,12 +51,12 @@ describe("Theme", function()
 
 	it("uses the body font family (with CJK fallbacks) when the client has loaded it", function()
 		local used
-		_G.ShortKingsBody13 = {}
+		_G.ShortRoyaltyBody13 = {}
 		local fs = { SetFontObject = function(_, f) used = f end, SetFont = function() error("raw font used") end,
 			SetTextColor = function() end, SetShadowOffset = function() end, SetShadowColor = function() end }
 		SK.Theme.Font(fs, "body")
-		assert.equal(_G.ShortKingsBody13, used)
-		_G.ShortKingsBody13 = nil
+		assert.equal(_G.ShortRoyaltyBody13, used)
+		_G.ShortRoyaltyBody13 = nil
 	end)
 
 	it("falls back to the game font if the bundled font can't load", function()
@@ -70,14 +70,14 @@ describe("Theme", function()
 	end)
 
 	it("uses the preloaded display font object, and checks it really took", function()
-		local file = "Interface\\AddOns\\ShortKings\\Media\\Fonts\\ChakraPetch-SemiBold.ttf"
-		_G.ShortKingsDisplay13 = {}
+		local file = "Interface\\AddOns\\ShortRoyalty\\Media\\Fonts\\ChakraPetch-SemiBold.ttf"
+		_G.ShortRoyaltyDisplay13 = {}
 		local used
 		local fs = { SetFontObject = function(_, f) used = f end, GetFont = function() return file, 13 end,
 			SetFont = function() error("raw font used") end,
 			SetTextColor = function() end, SetShadowOffset = function() end, SetShadowColor = function() end }
 		SK.Theme.Font(fs, "heading")
-		assert.equal(_G.ShortKingsDisplay13, used)
+		assert.equal(_G.ShortRoyaltyDisplay13, used)
 		assert.is_false(SK.Theme.displayFailed)
 		assert.equal(1, SK.Theme.displayStats.ok)
 		-- the object exists but the file didn't load: game font, and it's reported
@@ -88,7 +88,7 @@ describe("Theme", function()
 		assert.is_true(SK.Theme.displayFailed)
 		assert.equal(1, SK.Theme.displayStats.failed)
 		assert.is_false(fell:find("ChakraPetch", 1, true) ~= nil)
-		_G.ShortKingsDisplay13 = nil
+		_G.ShortRoyaltyDisplay13 = nil
 	end)
 end)
 
@@ -132,7 +132,7 @@ describe("Main window", function()
 	end)
 
 	it("says what sync is doing and counts errors", function()
-		assert.equal("Short Kings  ·  Sync on", SK.MainFrame.StatusText("Short Kings", false))
+		assert.equal("Short Royalty  ·  Sync on", SK.MainFrame.StatusText("Short Royalty", false))
 		assert.equal("No guild  ·  Sync paused: combat", SK.MainFrame.StatusText(nil, true, "combat"))
 		assert.truthy(SK.MainFrame.StatusText("G", false, nil, 2):find("2 errors", 1, true))
 	end)

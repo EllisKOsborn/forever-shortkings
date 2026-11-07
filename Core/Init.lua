@@ -1,11 +1,11 @@
--- Short Kings: namespace, version, events, timers and module lifecycle.
+-- Short Royalty: namespace, version, events, timers and module lifecycle.
 local ADDON_NAME, SK = ...
 
 SK.ADDON_NAME = ADDON_NAME
-SK.PREFIX = "ShortKings" -- addon message prefix (max 16 chars)
+SK.PREFIX = "ShortRoyalty" -- addon message prefix (max 16 chars)
 SK.PROTOCOL = 1          -- bump when the sync format changes incompatibly
 SK.SCHEMA = 1            -- bump when the SavedVariables layout changes
-SK.TAGLINE = "Height is not a stat." -- also in ShortKings.toc (Notes), README, preview
+SK.TAGLINE = "Height is not a stat." -- also in ShortRoyalty.toc (Notes), README, preview
 
 do
 	local v
@@ -157,4 +157,4 @@ function SK.ApplyDefaults(t, defaults)
 	return t
 end
 
-_G.ShortKings = SK -- handy for /dump ShortKings in game
+_G.ShortRoyalty = SK -- handy for /dump ShortRoyalty in game

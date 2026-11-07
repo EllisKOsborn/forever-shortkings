@@ -1,4 +1,4 @@
-# Short Kings design system
+# Short Royalty design system
 
 The look of the in-game addon. Every value here lives in `UI/Theme.lua`;
 this file says why. Started from the Lamborghini-inspired reference in

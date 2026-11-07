@@ -93,7 +93,7 @@ end
 ---------------------------------------------------------------------------
 -- Fonts
 ---------------------------------------------------------------------------
-local MEDIA = "Interface\\AddOns\\ShortKings\\Media\\"
+local MEDIA = "Interface\\AddOns\\ShortRoyalty\\Media\\"
 Theme.MEDIA = MEDIA
 
 -- Display: Chakra Petch SemiBold (SIL OFL, bundled), uppercase, for the
@@ -118,7 +118,7 @@ Theme.SIZE = { micro = 11, small = 12, body = 13, title = 15, figure = 24 }
 
 -- Roles: which face and size each kind of text uses.
 Theme.TYPE = {
-	brand   = { "display", 20 },            -- SHORT KINGS in the title bar
+	brand   = { "display", 20 },            -- SHORT ROYALTY in the title bar
 	tab     = { "display", 13 },            -- main navigation
 	heading = { "display", 13 },            -- section headings (uppercase)
 	figure  = { "display", 24 },            -- one key number per screen
@@ -129,7 +129,7 @@ Theme.TYPE = {
 	micro   = { "body", 11 },
 }
 
-Theme.displayFailed = false -- set if the bundled font can't be loaded (shown in /sk debug)
+Theme.displayFailed = false -- set if the bundled font can't be loaded (shown in /sr debug)
 Theme.displayStats = { ok = 0, failed = 0 }
 
 -- Did this font string end up on the bundled display face?
@@ -141,7 +141,7 @@ end
 
 local function setDisplay(fs, size)
 	-- 1. The font object from Media/Fonts.xml (its file is loaded with the addon).
-	local obj = _G["ShortKingsDisplay" .. size]
+	local obj = _G["ShortRoyaltyDisplay" .. size]
 	if obj and fs.SetFontObject then
 		fs:SetFontObject(obj)
 		if onDisplayFace(fs) then return true end
@@ -155,7 +155,7 @@ function Theme.Font(fs, role, color)
 	local t = Theme.TYPE[role] or Theme.TYPE.body
 	-- Body text uses the font families in Media/Fonts.xml (they fall back
 	-- to Korean/Chinese fonts for names in those alphabets).
-	local family = t[1] == "body" and _G["ShortKingsBody" .. t[2]]
+	local family = t[1] == "body" and _G["ShortRoyaltyBody" .. t[2]]
 	if family and fs.SetFontObject then
 		fs:SetFontObject(family)
 	elseif t[1] == "display" then

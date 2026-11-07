@@ -17,7 +17,7 @@ fonts, sizes and spacing live in `UI/Theme.lua`. Tests: busted against a
 stubbed WoW API (`tests/helpers/wow.lua`).
 
 ## Users
-About 50 members of the guild Short Kings (Alliance, PvE). Primary user:
+About 50 members of the guild Short Royalty (Alliance, PvE). Primary user:
 **everyone, casually** (confirmed 3 Nov 2026): members opening the window
 in town or between pulls to look up a guildmate's gear, find who can craft
 an item, or check who's online. Speed of finding a name matters most.
@@ -43,10 +43,10 @@ and on laptops; sometimes opened in combat (sync pauses then).
 - Only fonts that ship with the game or the addon render. Textures must be
   .tga/.blp, power-of-two sizes.
 - Motion only through AnimationGroups (alpha, translation, scale, rotation).
-- SavedVariables (`ShortKingsDB`) must stay compatible.
+- SavedVariables (`ShortRoyaltyDB`) must stay compatible.
 
 ## Brand Commitments
-- Name **Short Kings**, tagline "Height is not a stat." (chosen 3 Nov 2026; replaced "Small in stature. Big in loot.")
+- Name **Short Royalty**, tagline "Height is not a stat." (chosen 3 Nov 2026; replaced "Small in stature. Big in loot.")
 - Mascot: a gnome with a **pink beard** holding **lit dynamite**.
 - No real crest artwork exists; a simple shape-drawn crest is fine
   (confirmed 3 Nov 2026). Never fabricate mascot art.

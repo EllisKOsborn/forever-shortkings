@@ -1,7 +1,7 @@
 -- Raid attunements. RULE: never guess an ID.
 --   status = "classic" -> quest ID checked against Wowhead (Classic) on 2026-11-01;
 --                         not yet confirmed that Forever uses the same quest.
---                         /sk debug shows whether this client knows the quest.
+--                         /sr debug shows whether this client knows the quest.
 --   status = "none"    -> Blizzard says the raid needs no attunement.
 --   status = "todo"    -> not known yet; shown as "unknown".
 -- `quests` = any one of these completes it (e.g. Alliance/Horde variants).

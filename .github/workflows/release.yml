@@ -1,6 +1,6 @@
 name: Release
 
-# Runs when a version tag such as v0.1.0 is pushed. Builds ShortKings-<version>.zip
+# Runs when a version tag such as v0.1.0 is pushed. Builds ShortRoyalty-<version>.zip
 # and attaches it to a GitHub Release. If the CF_API_KEY secret is set and the
 # TOC has "## X-Curse-Project-ID", it also uploads to CurseForge.
 on:

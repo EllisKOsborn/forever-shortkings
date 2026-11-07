@@ -1,8 +1,8 @@
-# Getting Short Kings onto CurseForge
+# Getting Short Royalty onto CurseForge
 
 The release workflow (`.github/workflows/release.yml`, BigWigs packager)
 already uploads to CurseForge on every release, as a **WoW Forever** file,
-once two things exist: a CurseForge **project ID** in `ShortKings.toc` and a
+once two things exist: a CurseForge **project ID** in `ShortRoyalty.toc` and a
 **CF_API_KEY** secret on GitHub. Steps 1 to 5 are yours (they need your
 accounts); step 6 is mine.
 
@@ -11,7 +11,7 @@ accounts); step 6 is mine.
    in with Google or Discord).
 2. **Create project** → Game: **World of Warcraft** → Class: **Addons**.
 3. Fill in:
-   - **Name:** Short Kings (if it's taken, "Short Kings Guild Sync").
+   - **Name:** Short Royalty (if it's taken, "Short Royalty Guild Sync").
    - **Summary:** *Guild roster, gear, professions, recipes and cooldowns,
      shared over guild addon chat. Height is not a stat.*
    - **Description:** paste the text in the box below.
@@ -24,7 +24,7 @@ accounts); step 6 is mine.
 ## 2. First file (needed for CurseForge's review)
 New projects are reviewed by CurseForge before they go public (usually a day
 or two). The review needs a file:
-1. Download **`ShortKings-v0.3.0-forever.zip`** from the GitHub release
+1. Download **`ShortRoyalty-v0.3.0-forever.zip`** from the GitHub release
    (the real zip, not "Source code").
 2. On the project: **Files → Upload file**. Game version: **WoW Forever
    1.60.1** (pick the Forever flavour). Release type: **Beta** (sync between
@@ -44,7 +44,7 @@ file.
 Just the number.
 
 ## 6. (Me) wire it up: done 7 Nov (project ID 1788068 in the TOC)
-I add `## X-Curse-Project-ID: <number>` to `ShortKings.toc`. From the next
+I add `## X-Curse-Project-ID: <number>` to `ShortRoyalty.toc`. From the next
 release on (publish it on GitHub as usual), the workflow uploads the same
 zip to CurseForge automatically. Tags with "beta" in the name (e.g.
 `v0.3.1-beta`) go up as Beta files; plain `vX.Y.Z` as Release.
@@ -52,7 +52,7 @@ zip to CurseForge automatically. Tags with "beta" in the name (e.g.
 ## Things to know
 - **Anyone can install it.** It works for any guild: data is kept per guild
   name and only shared over that guild's addon channel. The crest and
-  "Short Kings" name stay ours.
+  "Short Royalty" name stay ours.
 - **Licences are fine for publishing:** our code is MIT, the bundled
   libraries are BSD/MIT/zlib (licence files included), Chakra Petch is OFL
   (licence file in `Media/Fonts/`), the crest is drawn by `tools/textures.js`.
@@ -63,7 +63,7 @@ zip to CurseForge automatically. Tags with "beta" in the name (e.g.
 ## Description to paste
 
 ```markdown
-**Short Kings** is a guild addon for WoW Forever. Everyone in your guild who runs it can browse each other's gear, talents, professions, recipes, cooldowns, raid attunements and reputations in game. Data is shared only over your guild's addon channel: no website, no server, no uploads.
+**Short Royalty** is a guild addon for WoW Forever. Everyone in your guild who runs it can browse each other's gear, talents, professions, recipes, cooldowns, raid attunements and reputations in game. Data is shared only over your guild's addon channel: no website, no server, no uploads.
 
 ### What's inside
 - **Overview:** who's around, raid readiness, data health, professions and recent milestones.

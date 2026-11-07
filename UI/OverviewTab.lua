@@ -23,7 +23,7 @@ function Ov.GuildRows(o)
 		{ label = "Members", value = n(o.members) },
 		{ label = "Players (alts counted once)", value = n(o.players) },
 		{ label = "Online now", value = n(o.online) },
-		{ label = "Running Short Kings", value = n(o.withAddon) },
+		{ label = "Running Short Royalty", value = n(o.withAddon) },
 		{ label = "Shared their data", value = n(o.withData) },
 		{ sub = "Levels" },
 	}
@@ -62,12 +62,12 @@ function Ov.HealthRows(o)
 	local function item(count, one, many, tone)
 		if count > 0 then rows[#rows + 1] = { label = count == 1 and one or many, value = n(count), tone = tone or "spark" } end
 	end
-	item(o.noData, "Member without Short Kings data", "Members without Short Kings data", "dim")
+	item(o.noData, "Member without Short Royalty data", "Members without Short Royalty data", "dim")
 	item(o.stale, "Profile older than a week", "Profiles older than a week")
 	item(o.unscanned, "Profession window never opened", "Profession windows never opened")
-	item(o.outdated, "Running an old Short Kings", "Running an old Short Kings")
+	item(o.outdated, "Running an old Short Royalty", "Running an old Short Royalty")
 	if o.selfOutdated then
-		rows[#rows + 1] = { text = string.format("Short Kings %s is out (you have %s).", tostring(o.newest), SK.VERSION),
+		rows[#rows + 1] = { text = string.format("Short Royalty %s is out (you have %s).", tostring(o.newest), SK.VERSION),
 			tone = "spark" }
 	end
 	if #rows == 0 then

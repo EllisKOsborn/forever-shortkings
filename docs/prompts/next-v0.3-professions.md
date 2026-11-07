@@ -1,11 +1,11 @@
-# Prompt: Short Kings v0.3 (Professions)
+# Prompt: Short Royalty v0.3 (Professions)
 
 Copy everything below the line into a new Claude Code chat on the
 `forever-shortkings` repo.
 
 ---
 
-You're continuing work on **Short Kings**, a World of Warcraft: Forever guild
+You're continuing work on **Short Royalty**, a World of Warcraft: Forever guild
 addon in this repo. I'm not a developer and I'm usually on my phone. Explain
 things in plain language, keep replies short, push back on bad ideas, and
 never claim something works in game until I've tested it.
@@ -38,7 +38,7 @@ to match.
   favourites don't exist yet.
 
 ## Step 1: get the facts (before writing code)
-1. Add `/sk debug` probes (`Commands.lua`, `Compat.PROBES`) for:
+1. Add `/sr debug` probes (`Commands.lua`, `Compat.PROBES`) for:
    - **Unlearned recipes:** does the profession window list them? The
      "Live-client checks" line exists but has never been answered.
    - **Reagents without the window:** does `C_TradeSkillUI.GetRecipeSchematic(recipeID, false)`
@@ -50,7 +50,7 @@ to match.
      Blueprints and camp objects (category names), so we can decide whether a
      camp planner is possible. Record only what the client reports. Don't guess.
 2. Give me exact in-game steps: learn a profession at a trainer, open its
-   window, run `/sk debug`, and paste the result. Make it a short release
+   window, run `/sr debug`, and paste the result. Make it a short release
    (**v0.2.7**, probes only) if I need a download to do it.
 3. Ask me **which 3 profession features the guild wants most**. Suggest a
    default order from the list below.

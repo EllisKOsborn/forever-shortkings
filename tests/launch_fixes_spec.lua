@@ -19,7 +19,7 @@ describe("Sending is not blocked by Blizzard's 'restricted' flag", function()
 		SK.Sync:SendHello()
 		SK.Sync:Flush()
 		assert.equal(1, #sent)
-		assert.is_true(SK.Compat.AddonChatFlag()) -- reported in /sk debug only
+		assert.is_true(SK.Compat.AddonChatFlag()) -- reported in /sr debug only
 	end)
 
 	it("trial accounts are still blocked", function()

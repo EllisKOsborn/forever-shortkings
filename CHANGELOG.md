@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.1 (7 Nov 2026): every recipe, search, Getting started
+## v0.3.2 (7 Nov 2026): every recipe, search, Getting started, CurseForge
 
 - **Every recipe in the game.** Professions → **All recipes** lists all
   ~2,250 profession recipes in Forever, learned or not. Search by name, by
@@ -14,9 +14,29 @@
   for recipes nobody knows.
 - **Wowhead link** for any recipe (Crafters panel), to copy into your browser.
 - **Getting started** checklist on the Overview for new players, and a
-  welcome line the first time Short Kings loads.
+  welcome line the first time Short Royalty loads.
+- **On CurseForge** from this version (project 1788068).
 - Fix: item names the game can't load are no longer asked for again and
   again (they could slow down searches).
+
+## v0.3.1 (7 Nov 2026): Short Royalty
+
+The guild is now **Short Royalty**, and so is the addon. Works alongside
+guildmates on **this version only**: the sync channel was renamed too,
+so earlier test builds (`ShortKings`) and this one don't see each other.
+
+- **New name everywhere you can read it:** the window title, the AddOns
+  list, chat messages, tooltips, the minimap button, `/sk debug`, README and
+  pictures.
+- **Saved data follows future guild renames.** Guild data is stored under
+  the guild's name, so a rename would start everyone from an empty roster.
+  Now, when most of an old guild's members are in your new roster, its data
+  moves over automatically. A different guild's data is never taken.
+- Slash commands: **`/sr`** and **`/shortroyalty`** (`/sk` still works).
+- **The addon folder is now `ShortRoyalty`** and the download is
+  **`ShortRoyalty-vX.Y.Z-forever.zip`**. If you tried an earlier test build,
+  **delete the old `ShortKings` folder** from AddOns. Its saved settings don't
+  carry over (nobody had real data yet), and it can't sync with this version.
 
 ## v0.3.0 (6 Nov 2026): Professions
 

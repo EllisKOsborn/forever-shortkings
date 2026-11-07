@@ -1,6 +1,6 @@
 -- Reagents (B2): what a recipe needs, read from the game on this computer
 -- (C_TradeSkillUI.GetRecipeSchematic via Compat) and cached in
--- ShortKingsDB.reagents. Reagents are game data, not player data, so they
+-- ShortRoyaltyDB.reagents. Reagents are game data, not player data, so they
 -- are never added to synced profiles. The cache is cleared when the game
 -- build changes.
 local _, SK = ...

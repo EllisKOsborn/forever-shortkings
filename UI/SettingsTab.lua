@@ -97,7 +97,7 @@ function Settings:Build(page)
 			SK.Sync:SendHello(); SK.Sync:SendQuery(); SK:Print("Sync requested.")
 		end },
 		{ "Reset window position", nil, function() SK.MainFrame:ResetPosition() end },
-		{ "Debug report", "Same as /sk debug: what the addon can see on this client.", function()
+		{ "Debug report", "Same as /sr debug: what the addon can see on this client.", function()
 			SK.DebugWindow:Open()
 		end },
 	}

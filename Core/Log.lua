@@ -1,11 +1,11 @@
--- Chat output and a small debug ring buffer (shown by /sk debug).
+-- Chat output and a small debug ring buffer (shown by /sr debug).
 local _, SK = ...
 
 local MAX_LINES = 300
 local lines = {}
 local head = 0
 
-SK.CHAT_PREFIX = "|cffD94FA0Short Kings|r: "
+SK.CHAT_PREFIX = "|cffD94FA0Short Royalty|r: "
 
 function SK:Print(fmt, ...)
 	local msg = select("#", ...) > 0 and string.format(fmt, ...) or tostring(fmt)
@@ -48,7 +48,7 @@ end
 
 ---------------------------------------------------------------------------
 -- Error capture: the last few Lua errors caught in our own code, so they
--- show in /sk debug even for players without an error-display addon.
+-- show in /sr debug even for players without an error-display addon.
 -- Memory only (lost on /reload); nothing is sent anywhere.
 ---------------------------------------------------------------------------
 SK.MAX_ERRORS = 10

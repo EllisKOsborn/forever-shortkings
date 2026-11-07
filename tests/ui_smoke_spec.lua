@@ -8,7 +8,7 @@ describe("UI smoke test", function()
 	local SK, W
 	before_each(function()
 		SK, W = H.load()
-		for _, f in ipairs(UI_FILES) do assert(loadfile(f))("ShortKings", SK) end
+		for _, f in ipairs(UI_FILES) do assert(loadfile(f))("ShortRoyalty", SK) end
 		SK.Commands:OnInit()
 		W.member("Pip", W.player.guid)
 		W.member("Bob", "Player-1-B", { online = false, lastOnlineHours = 5 })
@@ -36,7 +36,7 @@ describe("UI smoke test", function()
 	it("builds the debug report", function()
 		SK.Commands.Run("debug")
 		local text = table.concat(SK.DB.lastReport, "\n")
-		assert.truthy(text:find("Short Kings", 1, true))
+		assert.truthy(text:find("Short Royalty", 1, true))
 		assert.truthy(text:find("Profession Tailoring", 1, true))
 		SK.Commands.Run("log")
 	end)

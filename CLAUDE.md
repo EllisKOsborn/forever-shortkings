@@ -1,10 +1,28 @@
-# Short Kings: project notes for Claude
+# Short Royalty: project notes for Claude
 
 Read this first in every session. Keep it current: if you change a decision,
 the status or a convention, update this file in the same commit.
 
+## Names (7 Nov 2026)
+- The guild and the addon are now **Short Royalty** (was "Short Kings"). Use
+  that name everywhere a person can read it: titles, chat, tooltips, docs.
+- **Technical names were renamed too (v0.3.1)**, because the addon hadn't
+  been rolled out yet (no saved data to lose): folder and TOC
+  `ShortRoyalty/ShortRoyalty.toc`, SavedVariables `ShortRoyaltyDB`, addon
+  message prefix `ShortRoyalty`, frame names, media paths
+  `Interface\AddOns\ShortRoyalty\Media\`, release zip
+  `ShortRoyalty-vX.Y.Z-forever.zip` (`.pkgmeta` package-as). Releases up to
+  v0.3.0 were `ShortKings`; v0.3.1 can't talk to them (different prefix).
+  Still unchanged: the Lua namespace variable `SK` (invisible) and the repo
+  name `forever-shortkings` (only the owner can rename it on GitHub).
+  **From now on** the folder, SavedVariables and prefix are fixed: changing
+  them after rollout would wipe saved data or split the guild.
+- Slash commands: `/sr`, `/shortroyalty`, and `/sk` (kept, short).
+- The CHANGELOG's past entries and the outside proposal files keep the old
+  name (they're history).
+
 ## What this is
-A World of Warcraft: **Forever** addon for the guild **Short Kings**
+A World of Warcraft: **Forever** addon for the guild **Short Royalty**
 (Alliance, PvE, about 50 members). Members browse each other's gear,
 talents, professions, recipes, attunements and reputations in game. Data is
 shared only over the guild **addon channel**: no website, no server, no uploads.
@@ -23,7 +41,7 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   restrictions. TOC game type `camelot` (alias `forever`).
 - TOC **`## Interface: 16001`**: **confirmed in game** on 5 Nov 2026.
   Single TOC with no suffix. The BigWigs packager detects it as Forever.
-- **Confirmed in game on 5 Nov 2026** (owner's first `/sk debug`):
+- **Confirmed in game on 5 Nov 2026** (owner's first `/sr debug`):
   - `SendAddonMessage(..., "GUILD")` returns **0 (Success)** and arrives,
     even though `C_ChatInfo.AreOutgoingAddonChatMessagesRestricted()` returns
     **true**. That flag only gates Blizzard's esports CooldownBroadcaster.
@@ -37,13 +55,15 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
     (`"Pocus", "Hocus"`). `GetGuildInfo`'s realm is an internal name
     (`CAMWOWEU5Realm3PvE`).
   - Player GUIDs (`Player-6937-…`) stay the same between logins.
-  - The real release zip is `ShortKings-vX.Y.Z-forever.zip`. The owner first
+  - The real release zip is `ShortRoyalty-vX.Y.Z-forever.zip`. The owner first
     installed GitHub's "Source code (zip)" by mistake (version "dev",
     LibDataBroker and LibDBIcon missing).
   - `C_QuestLog.GetTitleForQuestID` returns nil for uncached quests (it isn't
     proof that a quest is missing). Item 16309 (Drakefire Amulet) resolves.
-  - The guild is called **"Sweaty Pumpers"** for now (the name "Short Kings"
-    was taken). The final name is undecided; data is keyed per guild name.
+  - The guild is called **"Short Royalty"** (renamed 7 Nov 2026; it was
+    "Sweaty Pumpers" at launch because "Short Kings" was taken). Data is keyed
+    per guild name; `DBM.AdoptRenamedGuild` carries a renamed guild's data
+    over to the new key (v0.3.1).
 - **Source of truth for APIs:** Blizzard's UI source, `forever` branch of
   Gethe/wow-ui-source. Sparse-clone it and grep
   `Interface/AddOns/Blizzard_APIDocumentationGenerated/` plus the
@@ -69,7 +89,7 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   - Professions use `C_TradeSkillUI`; the Classic `GetTradeSkillInfo` and
     `GetCraftInfo` are gone.
   - Talents are `C_Traits` trees.
-  - **Confirmed in game 5 Nov (owner's v0.2.7 `/sk debug`, level 1, no
+  - **Confirmed in game 5 Nov (owner's v0.2.7 `/sr debug`, level 1, no
     profession yet):** every profession API we probe exists on the client
     (`GetRecipeSchematic`, `GetCategoryInfo`, `GetCategories`,
     `GetShowLearned`/`GetShowUnlearned`, `GetAllRecipeIDs`,
@@ -92,7 +112,7 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
       window open** (Seed Hybridizer: 4× 13465, 1× 8925, 2× 14047).
     - The display font was reported **"NO, using the game font"** (first
       SetFont with the bundled .ttf failed). v0.3.0 preloads it as XML Font
-      objects (`ShortKingsDisplay13/20/24` in `Media/Fonts.xml`) and checks
+      objects (`ShortRoyaltyDisplay13/20/24` in `Media/Fonts.xml`) and checks
       `GetFont()`; unconfirmed whether that fixes it.
     - Still unknown: reagents with the window **closed**, reagents for a
       learned recipe, `IsSpellKnown` for a spec owner. Drakefire Amulet name
@@ -142,7 +162,7 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   sender confirmed on GUILD this session. GitHub Actions are pinned to commit
   SHAs (update the SHA and the `# vN` comment together).
 - **Privacy:** notes and officer notes are never synced. Our own characters
-  keep a **full** profile in `ShortKingsDB.own[guid]`, and only the
+  keep a **full** profile in `ShortRoyaltyDB.own[guid]`, and only the
   **public** copy (`Profile.Public`, which respects the share toggles) goes
   into `guild.profiles` and onto the wire.
 - Every change ships with:
@@ -155,23 +175,25 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   v0.2.2 pushed 2 Nov). Push to `main` only when the user asks; the README's
   test badge tracks it.
 - **Releases:** pushing a tag `vX.Y.Z` on `main` runs `.github/workflows/release.yml`
-  (BigWigs packager): it builds `ShortKings-vX.Y.Z.zip` and a GitHub Release
+  (BigWigs packager): it builds `ShortRoyalty-vX.Y.Z.zip` and a GitHub Release
   whose notes come from CHANGELOG.md (`.pkgmeta` manual-changelog). First
   release: **v0.2.2** (2 Nov 2026, the launch build); **v0.2.3** (3 Nov, the new
   look); **v0.2.4** (3 Nov, tagline "Height is not a stat."); **v0.2.5** (5 Nov,
   launch-day fixes: sync no longer blocked by the misleading flag, enchant
   check at max level, plus the security fixes); **v0.2.6** (5 Nov, hotfix: successful
   sends were counted as errors; the owner publishes it on the website because
-  tag pushes from cloud sessions drop); **v0.2.7** (5 Nov, `/sk debug`
+  tag pushes from cloud sessions drop); **v0.2.7** (5 Nov, `/sr debug`
   profession checks only, for v0.3 Step 1); **v0.3.0** (6 Nov, the Professions
-  tab, reagents, favourites, specialisations, reminders); **v0.3.1** (7 Nov, every
-  recipe from wago.tools data, search, Wowhead links, Getting started; the
-  first release meant for CurseForge, project **1788068**). Tag only when
+  tab, reagents, favourites, specialisations, reminders); **v0.3.1** (7 Nov,
+  renamed to Short Royalty, technical names included; first zip named
+  `ShortRoyalty-…`); **v0.3.2** (7 Nov, every recipe from wago.tools
+  data, search, Wowhead links, Getting started; first release for CurseForge,
+  project **1788068**). Tag only when
   the user asks.
 
 ## Layout
 ```
-ShortKings.toc  embeds.xml  Commands.lua (/sk, /sk debug report)
+ShortRoyalty.toc  embeds.xml  Commands.lua (/sk, /sr debug report)
 Core/     Init (events, timers, modules), Log (+ error capture: SK:Safe,
           SK:RecordError), Compat, DB (SavedVariables, pruning), Identity
           (roster, sender→GUID, Status dots, GUID-stability check), Alts
@@ -205,7 +227,7 @@ docs/     FEATURE-REVIEW.md, SECURITY-REVIEW.md, mockups/render.js, images/ (+ b
           design/ (Lamborghini reference); DESIGN.md + PRODUCT.md at the root
 ```
 
-## Sync protocol (prefix `ShortKings`, protocol 1)
+## Sync protocol (prefix `ShortRoyalty`, protocol 1)
 | Msg | Channel | Purpose |
 |---|---|---|
 | `HI` | GUILD | Own account's characters `{g, u, h}`. Sent at login, every 10 min, and 30 s after changes (debounced) |
@@ -242,7 +264,15 @@ messages → sender ignored for the session).
 - Mockups: Playwright and Chromium are preinstalled. The stand-in font is
   Marcellus from fonts.gstatic.com (don't commit the font).
 
-## Status (5 Nov 2026)
+## Status (7 Nov 2026)
+- **v0.3.1 (Short Royalty rename)** on `main` 7 Nov (the owner publishes the
+  release): new name everywhere, technical names too (folder, SavedVariables,
+  prefix, zip `ShortRoyalty-vX.Y.Z-forever.zip`), `DBM.AdoptRenamedGuild`
+  (saved guild data follows future renames), `/sr` + `/shortroyalty` + `/sk`.
+- v0.3.0 Professions released 6 Nov (see CHANGELOG).
+- **v0.3.2** (7 Nov): every recipe, search, Getting started, CurseForge
+  (project 1788068). Two Claude sessions worked on `main` the same morning:
+  always `git fetch origin main` and merge before pushing to `main`.
 - **v0.2.5 released 5 Nov**: the first build after an in-game test (owner,
   solo: loads, GUID stable, interface 16001, a test send worked). It
   includes the security fixes from `docs/SECURITY-REVIEW.md`. Sync between
@@ -260,7 +290,7 @@ messages → sender ignored for the session).
 - **Next (5 Nov):** **v0.3 Professions**: `docs/prompts/next-v0.3-professions.md`
   (the guild says professions matter most; Raids moves to v0.4, still before
   9 Dec). v0.2.6 hotfix is on `main` (5 Nov); the owner publishes the release.
-  **v0.2.7** (probes only: `/sk debug` block "Profession checks for v0.3",
+  **v0.2.7** (probes only: `/sr debug` block "Profession checks for v0.3",
   `Commands.ProfessionProbes`) is on `main`; the tag push dropped, so the
   owner publishes the release on the website. **v0.3.0 Professions is built**
   on `claude/affectionate-archimedes-tirbrl` (owner said "do all of them";
@@ -268,16 +298,17 @@ messages → sender ignored for the session).
   request (on `main`; tag push may drop, the owner publishes on the website).
   Not tested in game yet: TESTING 87–97, and reagents with the window closed.
   The owner says the titles **look fine in game** even though v0.2.7's
-  /sk debug reported the display font as failed (the check may have been a
+  /sr debug reported the display font as failed (the check may have been a
   false alarm; v0.3.0's debug line counts it per text).
   **CurseForge:** project ID **1788068** is in the TOC (`X-Curse-Project-ID`);
   the release workflow uploads when the `CF_API_KEY` GitHub secret exists
-  (owner's job, `docs/CURSEFORGE.md`). **v0.3.1 released 7 Nov** (on `main`):
-  every recipe in the game from wago.tools data, All recipes search, Wowhead
-  links, Getting started. Not tested in game: TESTING 87–103.
+  (owner's job, `docs/CURSEFORGE.md`). **v0.3.2 released 7 Nov** (on `main`,
+  built on top of the v0.3.1 rename from another session): every recipe in the
+  game from wago.tools data, All recipes search, Wowhead links, Getting
+  started, CurseForge ID. Not tested in game: TESTING 87–107.
   Plan and what was left out: **PLAN.md section 11**.
 - Earlier plan: PLAN.md **section 10, "Once Forever is live"**: the in-game test
-  gate (TESTING.md, `/sk debug` "Live-client checks"), its decision table,
+  gate (TESTING.md, `/sr debug` "Live-client checks"), its decision table,
   fixes only (now **v0.2.5**: v0.2.3 = new look, v0.2.4 = tagline). Raids is now
   **v0.4** before 9 Dec (`docs/prompts/next-v0.4-raids.md`); Professions is v0.3.
 - Calendar facts (1.60.1 docs): invites carry `guid`; no role field; only
@@ -301,15 +332,15 @@ messages → sender ignored for the session).
     (`status = "ok"` or the client's spell name equals the Data name). Synced
     as `profs[skillLine].specs` (spell IDs); display only for IDs in
     `SK.Data.SPEC_BY_SPELL`.
-  - Reagents are local only (`ShortKingsDB.reagents`, keyed by game build),
+  - Reagents are local only (`ShortRoyaltyDB.reagents`, keyed by game build),
     learned during scans and on demand. Never in profiles.
-  - Favourites: `ShortKingsDB.favourites` (local). Right-click to star.
+  - Favourites: `ShortRoyaltyDB.favourites` (local). Right-click to star.
   - Nudges: `Professions.NUDGE_POINTS` 15, `NUDGE_EVERY` 3 days, once per
-    session, `settings.profNudges`; scan ranks in `ShortKingsDB.scanRank`.
+    session, `settings.profNudges`; scan ranks in `ShortRoyaltyDB.scanRank`.
   - "At 300" uses `SK.Data.SKILL_CAP` (original-game cap; confirm in game).
   - Clicking a recipe in Professions opens it in Crafters
     (`CraftersTab:ShowRecipe`), including recipes nobody knows.
-- Decisions in v0.3.1:
+- Decisions in v0.3.2 (built as "v0.3.1" before the rename took that number):
   - Recipe list: `node tools/recipes.js [build]` downloads SkillLineAbility,
     TradeSkillCategory, SpellEffect (Effect 24 = create item) and SpellReagents
     CSVs from wago.tools (product `wowf` = Forever) and writes
@@ -332,7 +363,7 @@ messages → sender ignored for the session).
     Character and Overview.
   - Milestones (`Core/Feed.lua`) are derived from old vs new profile copies
     in `Sync` (PR accepted) and `Profile:Commit`; first copy = no events;
-    stored in `ShortKingsDB.feed` (max 50), never sent.
+    stored in `ShortRoyaltyDB.feed` (max 50), never sent.
   - The window opens on the Overview once (`settings.overviewShown`), then
     the last tab.
 
@@ -359,10 +390,10 @@ Full post-launch checklist: PLAN.md section 10.
 Done on 5 Nov: interface 16001 confirmed, the addon loads, GUID stable,
 a test send worked. The Mac AddOns path is still not confirmed by name
 (the owner installed successfully).
-1. Install the **v0.2.5** release (the real `-forever.zip`), send `/sk debug`,
+1. Install the **v0.2.5** release (the real `-forever.zip`), send `/sr debug`,
    and work through `TESTING.md` (on their own, then with one guildmate).
-2. The final guild name (if it changes from "Sweaty Pumpers", data starts
-   fresh under the new name, which is expected).
+2. ~~The final guild name~~: done, **Short Royalty** (7 Nov). Saved data
+   carries over automatically (v0.3.1).
 4. Onyxia attunement: whether any Horde members exist (Horde chain differs), and
    in-game check that the Drakefire Amulet check works.
 

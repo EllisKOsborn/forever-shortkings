@@ -1,9 +1,9 @@
 ## Interface: 16001
-## Title: |cffD94FA0Short Kings|r
-## Notes: Guild gear, professions, recipes and raid sign-ups for the Short Kings guild. Height is not a stat.
-## Author: Short Kings guild
+## Title: |cffD94FA0Short Royalty|r
+## Notes: Guild gear, professions, recipes and raid sign-ups for the Short Royalty guild. Height is not a stat.
+## Author: Short Royalty guild
 ## Version: @project-version@
-## SavedVariables: ShortKingsDB
+## SavedVariables: ShortRoyaltyDB
 ## IconTexture: Interface\Icons\INV_Misc_Bomb_04
 ## X-License: MIT
 ## X-Website: https://github.com/elliskosborn/forever-shortkings

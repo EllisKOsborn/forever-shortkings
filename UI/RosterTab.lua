@@ -7,12 +7,12 @@ local Roster = SK:NewModule("RosterTab")
 local Theme, W = SK.Theme, SK.Widgets
 local S, SP = Theme.SIZES, Theme.SPACE
 
--- "addon" = online with Short Kings, "online" = online without it, "offline".
+-- "addon" = online with Short Royalty, "online" = online without it, "offline".
 -- (Lives in Identity so non-UI code such as Sync and CraftIndex can use it.)
 Roster.Status = SK.Identity.Status
 
 local STATUS_RANK = { addon = 3, online = 2, offline = 1 }
--- Round dots: green = online with Short Kings, white = online without it,
+-- Round dots: green = online with Short Royalty, white = online without it,
 -- dark grey = offline. (Gold and spark stay free for actions and alerts.)
 local DOT = {
 	addon = Theme.Dot("good"),
@@ -270,8 +270,8 @@ local function setCell(fs, r, col)
 end
 
 local STATUS_TEXT = {
-	addon = "Online with Short Kings",
-	online = "Online without Short Kings (or not heard from yet)",
+	addon = "Online with Short Royalty",
+	online = "Online without Short Royalty (or not heard from yet)",
 	offline = "Offline",
 }
 
@@ -311,7 +311,7 @@ local function tooltip(row, r)
 		if not r.isSelf and Theme.IsStale(r.updated, now) then
 			Theme.TipLine(GameTooltip, "Data is " .. Theme.Ago(r.updated, now) .. " old and may be out of date", "spark")
 		end
-		Theme.TipLine(GameTooltip, "Short Kings " .. r.addon .. (r.outdated and "  (update available)" or ""),
+		Theme.TipLine(GameTooltip, "Short Royalty " .. r.addon .. (r.outdated and "  (update available)" or ""),
 			r.outdated and "spark" or "dim")
 	end
 	Theme.TipLine(GameTooltip, "Click to view character", "gold")
@@ -436,7 +436,7 @@ function Roster:CopyText()
 	local rs = SK.DB.settings.roster
 	local raid = rs.raid and Roster.Raid(rs.raid)
 	local list = raid and self.attList or self.list
-	local title = "Short Kings roster" .. (raid and (": " .. raid.name) or "")
+	local title = "Short Royalty roster" .. (raid and (": " .. raid.name) or "")
 	if self.filter and self.filter ~= "" then title = title .. " (search: " .. self.filter .. ")" end
 	local text = SK.Export.Roster(list.items, { title = title, hideOwnGear = SK.DB.settings.share.gear == false })
 	SK.DebugWindow:ShowText("Copy as text", text)
@@ -492,7 +492,7 @@ function Roster:Refresh()
 	if outdated > 0 then text = text .. " · " .. Theme.Paint("spark", outdated .. " need an update") end
 	local newest = Roster.NewestVersion(guild)
 	if guild and newest and SK.VERSION ~= "dev" and SK.Sync.versionNewer(newest, SK.VERSION) then
-		text = text .. " · " .. Theme.Paint("spark", "Short Kings " .. newest .. " is out (you have " .. SK.VERSION .. ")")
+		text = text .. " · " .. Theme.Paint("spark", "Short Royalty " .. newest .. " is out (you have " .. SK.VERSION .. ")")
 	end
 	self.count:SetText(text)
 	self.groupCheck:Refresh()

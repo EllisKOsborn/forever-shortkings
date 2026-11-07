@@ -1,10 +1,10 @@
--- Slash commands: /sk and /shortkings
+-- Slash commands: /sr (also /shortroyalty and /sk)
 --   /sk            open or close the window
---   /sk debug      show what the addon sees on this client (copyable)
---   /sk log        the debug report plus the recent log
---   /sk scan       rescan your character now
---   /sk sync       announce your data and ask for missing profiles
---   /sk reset      put the window back in the middle of the screen
+--   /sr debug      show what the addon sees on this client (copyable)
+--   /sr log        the debug report plus the recent log
+--   /sr scan       rescan your character now
+--   /sr sync       announce your data and ask for missing profiles
+--   /sr reset      put the window back in the middle of the screen
 --   /sk help       list commands
 local _, SK = ...
 
@@ -64,7 +64,7 @@ function Commands.ProfessionProbes()
 				table.concat(e.c.names, "; "))
 		end
 	else
-		add("Last scan: none this session. Open a profession window, then /sk debug again.")
+		add("Last scan: none this session. Open a profession window, then /sr debug again.")
 	end
 	-- A learned recipe: from this session's scan, or from your saved recipes.
 	local learned = ls and ls.sampleLearned
@@ -97,13 +97,13 @@ function Commands.BuildReport()
 	local function add(fmt, ...) L[#L + 1] = select("#", ...) > 0 and string.format(fmt, ...) or fmt end
 
 	local b = Compat.BuildInfo()
-	add("== Short Kings %s ==", SK.VERSION)
+	add("== Short Royalty %s ==", SK.VERSION)
 	add("Client: %s build %s (%s), interface %s", tostring(b.version), tostring(b.build), tostring(b.date), tostring(b.interface))
 	add("Time: server %s, local %s", tostring(Compat.Now()), date and date("%Y-%m-%d %H:%M") or "?")
 
 	add("")
 	add("== Live-client checks (please send this part) ==")
-	add("Interface number: %s (ShortKings.toc says 16001)", tostring(b.interface))
+	add("Interface number: %s (ShortRoyalty.toc says 16001)", tostring(b.interface))
 	local seenName = SK.Identity.LoginKey()
 	local seen = seenName and SK.DB.seenGuids[seenName]
 	if not seen then
@@ -121,7 +121,7 @@ function Commands.BuildReport()
 			lastScan.total > lastScan.learned and "yes" or "no (or all learned)", tostring(lastScan.name),
 			lastScan.learned, lastScan.total)
 	else
-		add("Profession window lists unlearned recipes: open a profession window, then run /sk debug again")
+		add("Profession window lists unlearned recipes: open a profession window, then run /sr debug again")
 	end
 	local calPresent, calEvents = Compat.CalendarStatus()
 	add("Calendar: C_Calendar present=%s, guild events listed=%s, AddEvent present=%s (open the calendar once; 0 is normal before that)",
@@ -129,7 +129,7 @@ function Commands.BuildReport()
 	add("Display font (Chakra Petch) loaded: %s   Body font: %s   Reduce motion: %s",
 		SK.Theme and string.format("%s (%d texts ok, %d failed; font object %s)", SK.Theme.displayFailed and
 			"NO, some use the game font" or "yes (or window not opened yet)", SK.Theme.displayStats.ok,
-			SK.Theme.displayStats.failed, _G.ShortKingsDisplay13 and "present" or "missing") or "n/a",
+			SK.Theme.displayStats.failed, _G.ShortRoyaltyDisplay13 and "present" or "missing") or "n/a",
 		SK.Theme and tostring(SK.Theme.BodyFont()) or "n/a", yesno(SK.DB.settings.reduceMotion))
 	add("Recent Lua errors caught: %d (details at the end)", #SK.errors)
 
@@ -281,12 +281,12 @@ function Commands.BuildReport()
 end
 
 local HELP = {
-	"/sk - open or close the window",
-	"/sk debug - what the addon sees (copyable)",
-	"/sk log - debug report plus recent log",
-	"/sk scan - rescan your character",
-	"/sk sync - share your data now",
-	"/sk reset - centre the window",
+	"/sr - open or close the window (also /shortroyalty, /sk)",
+	"/sr debug - what the addon sees (copyable)",
+	"/sr log - debug report plus recent log",
+	"/sr scan - rescan your character",
+	"/sr sync - share your data now",
+	"/sr reset - centre the window",
 }
 
 function Commands.Run(msg)
@@ -312,7 +312,8 @@ function Commands.Run(msg)
 end
 
 function Commands:OnInit()
-	SLASH_SHORTKINGS1 = "/sk"
-	SLASH_SHORTKINGS2 = "/shortkings"
-	SlashCmdList.SHORTKINGS = Commands.Run
+	SLASH_SHORTROYALTY1 = "/sr"
+	SLASH_SHORTROYALTY2 = "/shortroyalty"
+	SLASH_SHORTROYALTY3 = "/sk"  -- kept from the Short Kings days, and short
+	SlashCmdList.SHORTROYALTY = Commands.Run
 end

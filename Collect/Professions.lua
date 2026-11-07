@@ -6,7 +6,7 @@ local Prof = SK:NewModule("Professions")
 local Compat = SK.Compat
 
 Prof.CHUNK = 50          -- recipes processed per frame
-Prof.lastScan = nil      -- summary for /sk debug
+Prof.lastScan = nil      -- summary for /sr debug
 
 -- Specialisations (B3) the player knows for a profession, as spell IDs.
 -- An ID counts only when it is confirmed (status "ok" in Data/Professions)
@@ -41,7 +41,7 @@ local retries = 0
 
 -- Process recipe IDs in chunks so a big profession never causes a hitch.
 -- `done(result)` gets { learned = {[id]=itemID|0}, universe = {...}, cds = {[id]=seconds},
--- cats = {[categoryID]={total, learned, names}} } (cats: /sk debug only, never stored or sent)
+-- cats = {[categoryID]={total, learned, names}} } (cats: /sr debug only, never stored or sent)
 Prof.CATEGORY_SAMPLES = 3
 function Prof.ProcessRecipes(ids, done, runNow)
 	local result = { learned = {}, universe = {}, cds = {}, cats = {} }

@@ -8,7 +8,7 @@ local Theme, W, Motion = SK.Theme, SK.Widgets, SK.Motion
 local S, SP, M = Theme.SIZES, Theme.SPACE, Theme.MOTION
 
 Main.tabs = {}        -- ordered { key, title, module }
-Main.FRAME_NAME = "ShortKingsMainFrame"
+Main.FRAME_NAME = "ShortRoyaltyMainFrame"
 
 -- Tab modules call this at load time. module:Build(content) once,
 -- module:Refresh() whenever data changes while the tab is visible.
@@ -73,7 +73,7 @@ function Main:Build()
 	f.crest = crest
 	local title = Theme.Text(bar, "brand", "text")
 	title:SetPoint("TOPLEFT", crest, "TOPRIGHT", SP.m, 2)
-	title:SetText("SHORT KINGS")
+	title:SetText("SHORT ROYALTY")
 	local tagline = Theme.Text(bar, "small", "dim")
 	tagline:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -1)
 	tagline:SetText(SK.TAGLINE)
@@ -211,7 +211,7 @@ function Main:StatusTooltip(owner)
 		or "Changes reach guildmates in about a minute. The dot flashes when new data arrives.", Theme.RGB("text"))
 	if #SK.errors > 0 then
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(#SK.errors .. " Lua error(s) caught. Type /sk debug and send the text to the addon author.",
+		GameTooltip:AddLine(#SK.errors .. " Lua error(s) caught. Type /sr debug and send the text to the addon author.",
 			Theme.RGB("spark"))
 	end
 	GameTooltip:Show()

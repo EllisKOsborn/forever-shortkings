@@ -3,35 +3,35 @@
 	fonts (Blizzard_Fonts_Shared/Mainline/GameFonts.xml, "PriceFont"), so
 	guildmates' names in any alphabet render. Sizes match Theme.TYPE. -->
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<FontFamily name="ShortKingsBody11" virtual="true">
+	<FontFamily name="ShortRoyaltyBody11" virtual="true">
 		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="11"/></Member>
 		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="10"/></Member>
 		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="10"/></Member>
 		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="10"/></Member>
 		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="11"/></Member>
 	</FontFamily>
-	<FontFamily name="ShortKingsBody12" virtual="true">
+	<FontFamily name="ShortRoyaltyBody12" virtual="true">
 		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="12"/></Member>
 		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="11"/></Member>
 		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="11"/></Member>
 		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="11"/></Member>
 		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="12"/></Member>
 	</FontFamily>
-	<FontFamily name="ShortKingsBody13" virtual="true">
+	<FontFamily name="ShortRoyaltyBody13" virtual="true">
 		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="13"/></Member>
 		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="12"/></Member>
 		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="12"/></Member>
 		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="12"/></Member>
 		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="13"/></Member>
 	</FontFamily>
-	<FontFamily name="ShortKingsBody15" virtual="true">
+	<FontFamily name="ShortRoyaltyBody15" virtual="true">
 		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="15"/></Member>
 		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="14"/></Member>
 		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="14"/></Member>
 		<Member alphabet="traditionalchinese"><Font font="Fonts\arheiuhk_bd.TTF" height="14"/></Member>
 		<Member alphabet="russian"><Font font="Fonts\ARIALN.TTF" height="15"/></Member>
 	</FontFamily>
-	<FontFamily name="ShortKingsBody20" virtual="true">
+	<FontFamily name="ShortRoyaltyBody20" virtual="true">
 		<Member alphabet="roman"><Font font="Fonts\ARIALN.TTF" height="20"/></Member>
 		<Member alphabet="korean"><Font font="Fonts\2002.TTF" height="19"/></Member>
 		<Member alphabet="simplifiedchinese"><Font font="Fonts\ARKai_C.ttf" height="19"/></Member>
@@ -40,9 +40,9 @@
 	</FontFamily>
 	<!-- Display face (Chakra Petch), declared here so the game loads the file
 		when the addon loads. Calling SetFont with a file the client hasn't
-		loaded yet can fail the first time (owner's /sk debug on 6 Nov said
+		loaded yet can fail the first time (owner's /sr debug on 6 Nov said
 		"NO, using the game font"). Sizes match Theme.TYPE's display roles. -->
-	<Font name="ShortKingsDisplay13" font="Interface\AddOns\ShortKings\Media\Fonts\ChakraPetch-SemiBold.ttf" height="13"/>
-	<Font name="ShortKingsDisplay20" font="Interface\AddOns\ShortKings\Media\Fonts\ChakraPetch-SemiBold.ttf" height="20"/>
-	<Font name="ShortKingsDisplay24" font="Interface\AddOns\ShortKings\Media\Fonts\ChakraPetch-SemiBold.ttf" height="24"/>
+	<Font name="ShortRoyaltyDisplay13" font="Interface\AddOns\ShortRoyalty\Media\Fonts\ChakraPetch-SemiBold.ttf" height="13"/>
+	<Font name="ShortRoyaltyDisplay20" font="Interface\AddOns\ShortRoyalty\Media\Fonts\ChakraPetch-SemiBold.ttf" height="20"/>
+	<Font name="ShortRoyaltyDisplay24" font="Interface\AddOns\ShortRoyalty\Media\Fonts\ChakraPetch-SemiBold.ttf" height="24"/>
 </Ui>

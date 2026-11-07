@@ -1,5 +1,5 @@
--- Debug window: a copyable text box showing the /sk debug report.
--- The report is also saved in ShortKingsDB.lastReport so it can be read
+-- Debug window: a copyable text box showing the /sr debug report.
+-- The report is also saved in ShortRoyaltyDB.lastReport so it can be read
 -- from the SavedVariables file after logging out.
 local _, SK = ...
 
@@ -9,7 +9,7 @@ local S, SP = Theme.SIZES, Theme.SPACE
 
 function Debug:Build()
 	if self.frame then return self.frame end
-	local f = CreateFrame("Frame", "ShortKingsDebugFrame", UIParent)
+	local f = CreateFrame("Frame", "ShortRoyaltyDebugFrame", UIParent)
 	f:SetSize(640, 460)
 	f:SetPoint("CENTER")
 	f:SetFrameStrata("DIALOG")
@@ -20,7 +20,7 @@ function Debug:Build()
 	f:SetScript("OnDragStart", f.StartMoving)
 	f:SetScript("OnDragStop", f.StopMovingOrSizing)
 	Theme.Panel(f, { bg = "void", border = "line" })
-	tinsert(UISpecialFrames, "ShortKingsDebugFrame")
+	tinsert(UISpecialFrames, "ShortRoyaltyDebugFrame")
 
 	local title = Theme.Text(f, "heading", "text")
 	f.title = title
@@ -72,7 +72,7 @@ function Debug:Open(withLog)
 	end
 	self.text = table.concat(lines, "\n")
 	local f = self:Build()
-	f.title:SetText("SHORT KINGS DEBUG REPORT")
+	f.title:SetText("SHORT ROYALTY DEBUG REPORT")
 	f.refresh:Show()
 	f.log:Show()
 	f.edit:SetText(self.text)
