@@ -30,7 +30,7 @@ read_globals = {
 	"RAID_CLASS_COLORS", "ITEM_QUALITY_COLORS", "Settings", "ToggleCalendar", "Calendar_Toggle",
 	"FACTION_BAR_COLORS", "TooltipDataProcessor", "ItemRefTooltip", "unpack", "ColorPickerFrame", "SetPortraitTexture", "GetScreenWidth", "GetScreenHeight",
 	-- C_ namespaces
-	"C_Timer", "C_AddOns", "C_ChatInfo", "C_GuildInfo", "C_Club", "C_BattleNet", "C_CreatureInfo", "C_Traits",
+	"C_Timer", "C_AddOns", "C_ChatInfo", "C_GuildInfo", "C_Club", "C_BattleNet", "C_DateAndTime", "C_CreatureInfo", "C_Traits",
 	"C_SpecializationInfo", "C_ClassTalents", "C_TradeSkillUI", "C_SpellBook", "C_SkillInfo", "C_Reputation",
 	"C_QuestLog", "C_Item", "C_Spell", "C_ClassColor", "C_Calendar", "C_PartyInfo", "Enum",
 	-- Global API

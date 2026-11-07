@@ -126,6 +126,13 @@ function Commands.BuildReport()
 	local calPresent, calEvents = Compat.CalendarStatus()
 	add("Calendar: C_Calendar present=%s, guild events listed=%s, AddEvent present=%s (open the calendar once; 0 is normal before that)",
 		yesno(calPresent), tostring(calEvents), yesno(Compat.has("C_Calendar", "AddEvent")))
+	if SK.Raids then -- v0.4.0 Raids tab
+		local ok, list = pcall(SK.Raids.Events, SK.Raids)
+		local read = 0
+		for _ in pairs(SK.Raids.cache) do read = read + 1 end
+		add("Raids tab: %s raid events in the next %d days, %d line-ups read this session, last problem: %s",
+			ok and tostring(#list) or "error", SK.Raids.DAYS_AHEAD, read, tostring(SK.Raids.lastError))
+	end
 	add("Display font (Chakra Petch) loaded: %s   Body font: %s   Reduce motion: %s",
 		SK.Theme and string.format("%s (%d texts ok, %d failed; font object %s)", SK.Theme.displayFailed and
 			"NO, some use the game font" or "yes (or window not opened yet)", SK.Theme.displayStats.ok,

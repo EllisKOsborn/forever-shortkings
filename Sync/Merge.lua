@@ -138,6 +138,15 @@ local FIELDS = {
 	end,
 	-- v0.3.6: characters the player says are their alts (not logged in with
 	-- the addon yet). Only used to show "alt of X" instead of "doesn't have it".
+	-- v0.4.0: raid roles { main = "TANK"|"HEALER"|"DPS", second = same or nil }.
+	roles = function(v)
+		if v == nil then return true end
+		if type(v) ~= "table" then return false end
+		for k, r in pairs(v) do
+			if (k ~= "main" and k ~= "second") or (r ~= "TANK" and r ~= "HEALER" and r ~= "DPS") then return false end
+		end
+		return true
+	end,
 	claims = function(v)
 		return v == nil or each(v, L.family, function(k, g) return isNum(k) and str(g, L.str) end)
 	end,

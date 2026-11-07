@@ -18,12 +18,15 @@
 local _, SK = ...
 SK.Data = SK.Data or {}
 
+-- `keywords` (v0.4.0): words in a calendar event's title that mean this raid
+-- ("Ony Thursday 8pm", "BD clear"). Matched as whole words, any case.
 SK.Data.ATTUNEMENTS = {
-	{ key = "barrow", name = "Barrow Deeps", size = 10, status = "none", quests = {},
+	{ key = "barrow", name = "Barrow Deeps", size = 10, status = "none", quests = {}, keywords = { "barrow", "bd" },
 	  note = "No attunement needed (Blizzard raid overview). Opens 9 Dec 2026." },
-	{ key = "hyjal", name = "Hyjal Summit", size = 20, status = "none", quests = {},
+	{ key = "hyjal", name = "Hyjal Summit", size = 20, status = "none", quests = {}, keywords = { "hyjal", "hs" },
 	  note = "No attunement needed (Blizzard raid overview). Opens 9 Dec 2026." },
 	{ key = "ony",  name = "Onyxia's Lair", size = 40, status = "classic", faction = "Alliance",
+	  keywords = { "ony", "onyxia", "onyxia's" },
 	  quests = { 6502 }, item = 16309, itemName = "Drakefire Amulet",
 	  note = "Drakefire Amulet quest (Alliance) and the amulet in your bags. Opens 9 Dec 2026." },
 	{ key = "mc",   name = "Molten Core", status = "classic", hidden = true,

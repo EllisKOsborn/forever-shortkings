@@ -260,6 +260,11 @@ function W.Menu(parent, opts)
 		self:SetText("")
 	end
 
+	-- Pick a value as if it had been clicked (tests, and code that sets a menu).
+	function b:Choose(value)
+		opts.set(value)
+		self:Refresh()
+	end
 	function b:Close()
 		pop:Hide()
 		if openMenu == self then openMenu = nil end

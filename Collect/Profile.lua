@@ -138,6 +138,21 @@ function Profile.Claims(myAlts, guild)
 	return #out > 0 and out or nil
 end
 
+-- Raid roles for the profile (v0.4.0): only valid values, nil if none.
+local VALID_ROLE = { TANK = true, HEALER = true, DPS = true }
+function Profile.Roles(r)
+	if type(r) ~= "table" or not VALID_ROLE[r.main] then return nil end
+	return { main = r.main, second = (VALID_ROLE[r.second] and r.second ~= r.main) and r.second or nil }
+end
+
+-- Set this character's raid roles (main may be nil to clear both).
+function Profile:SetRoles(main, second)
+	local guid = Compat.PlayerGUID()
+	if not guid then return end
+	SK.DB.roles[guid] = main and { main = main, second = second } or nil
+	self:BuildSelf()
+end
+
 function Profile:ToggleMyAlt(guid)
 	if not guid or SK.DB.account[guid] then return end
 	SK.DB.myAlts[guid] = (not SK.DB.myAlts[guid]) or nil
@@ -168,6 +183,7 @@ function Profile:BuildSelf()
 		att = SK.Attunements.Read(),
 		family = familyOf(guild, guid),
 		claims = Profile.Claims(SK.DB.myAlts, guild),
+		roles = Profile.Roles(SK.DB.roles[guid]),
 		main = (main and SK.DB.account[main] and guild.members[main]) and main or nil,
 		recipes = {},
 		cds = {},

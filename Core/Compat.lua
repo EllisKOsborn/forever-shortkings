@@ -807,7 +807,7 @@ function Compat.SetAnimScale(anim, from, to)
 end
 
 ---------------------------------------------------------------------------
--- Calendar (read-only probe for /sr debug; the Raids tab comes in v0.3).
+-- Calendar probe for /sr debug.
 -- Returns present, numGuildEvents (nil if the call isn't there or fails).
 ---------------------------------------------------------------------------
 function Compat.CalendarStatus()
@@ -818,6 +818,115 @@ function Compat.CalendarStatus()
 		if ok then n = clean(v) end
 	end
 	return true, n
+end
+
+---------------------------------------------------------------------------
+-- Calendar for the Raids tab (v0.4.0). All read-only; checked against the
+-- forever branch of Blizzard's source (CalendarDocumentation.lua,
+-- Blizzard_Calendar). Events are created in Blizzard's calendar only
+-- (AddEvent is restricted). Reading an event's sign-ups uses OpenEvent, which
+-- shares state with Blizzard's calendar window, so callers only do it while
+-- that window is closed (Compat.CalendarShown) and outside chat lockdown
+-- (GetDayEvent and EventGetInvite are secret then).
+---------------------------------------------------------------------------
+Compat.EVENT_RAID = 0 -- Enum.CalendarEventType.Raid
+
+function Compat.CalendarReady()
+	return has("C_Calendar", "GetNumGuildEvents") and has("C_Calendar", "GetGuildEventInfo")
+end
+
+-- Ask the server for calendar data (cheap; needed once per session).
+function Compat.CalendarRequest()
+	if has("C_Calendar", "OpenCalendar") then pcall(C_Calendar.OpenCalendar) end
+end
+
+-- Now as { year, month, monthDay, hour, minute } (calendar time).
+function Compat.CalendarNow()
+	if has("C_DateAndTime", "GetCurrentCalendarTime") then
+		local ok, t = pcall(C_DateAndTime.GetCurrentCalendarTime)
+		if ok and type(t) == "table" and clean(t.year) then
+			return { year = clean(t.year), month = clean(t.month), monthDay = clean(t.monthDay),
+				hour = clean(t.hour) or 0, minute = clean(t.minute) or 0 }
+		end
+	end
+	local d = date("*t")
+	return { year = d.year, month = d.month, monthDay = d.day, hour = d.hour, minute = d.min }
+end
+
+-- Upcoming guild events: list of plain tables (secret values dropped).
+function Compat.GuildEvents()
+	local out = {}
+	if not Compat.CalendarReady() then return out end
+	local ok, n = pcall(C_Calendar.GetNumGuildEvents)
+	n = ok and clean(n) or 0
+	for i = 1, math.min(n, 100) do
+		local ok2, e = pcall(C_Calendar.GetGuildEventInfo, i)
+		if ok2 and type(e) == "table" and clean(e.eventID) then
+			out[#out + 1] = {
+				eventID = clean(e.eventID), title = clean(e.title) or "?", eventType = clean(e.eventType),
+				year = clean(e.year), month = clean(e.month), monthDay = clean(e.monthDay),
+				hour = clean(e.hour) or 0, minute = clean(e.minute) or 0, inviteStatus = clean(e.inviteStatus),
+			}
+		end
+	end
+	return out
+end
+
+function Compat.CalendarShown()
+	local f = _G.CalendarFrame
+	return f ~= nil and type(f.IsShown) == "function" and f:IsShown() and true or false
+end
+
+-- Blizzard's calendar window (to create or edit events).
+function Compat.ToggleCalendar()
+	if type(_G.ToggleCalendar) == "function" then
+		return pcall(_G.ToggleCalendar)
+	end
+	return false
+end
+
+-- Open one event for reading. Points the calendar at the current month
+-- first (only call while Blizzard's calendar is closed), finds the event's
+-- position on its day, and opens it. Returns true if the request went out;
+-- the invites arrive with CALENDAR_OPEN_EVENT.
+function Compat.CalendarOpenEvent(ev)
+	if not (has("C_Calendar", "OpenEvent") and has("C_Calendar", "GetNumDayEvents") and has("C_Calendar", "GetDayEvent")) then
+		return false, "no calendar"
+	end
+	local now = Compat.CalendarNow()
+	if has("C_Calendar", "SetAbsMonth") then pcall(C_Calendar.SetAbsMonth, now.month, now.year) end
+	local offset = (ev.year * 12 + ev.month) - (now.year * 12 + now.month)
+	local ok, n = pcall(C_Calendar.GetNumDayEvents, offset, ev.monthDay)
+	n = ok and clean(n) or 0
+	for i = 1, n do
+		local ok2, d = pcall(C_Calendar.GetDayEvent, offset, ev.monthDay, i)
+		if ok2 and type(d) == "table" and clean(d.eventID) == ev.eventID then
+			local ok3, opened = pcall(C_Calendar.OpenEvent, offset, ev.monthDay, i)
+			if ok3 and opened ~= false then return true end
+			return false, "open failed"
+		end
+	end
+	return false, "not found"
+end
+
+-- The open event's sign-ups. Call after CALENDAR_OPEN_EVENT.
+function Compat.CalendarInvites()
+	local out = {}
+	if not (has("C_Calendar", "GetNumInvites") and has("C_Calendar", "EventGetInvite")) then return out end
+	local ok, n = pcall(C_Calendar.GetNumInvites)
+	n = ok and clean(n) or 0
+	for i = 1, math.min(n, 200) do
+		local ok2, v = pcall(C_Calendar.EventGetInvite, i)
+		if ok2 and type(v) == "table" and clean(v.guid) then
+			out[#out + 1] = { guid = clean(v.guid), name = clean(v.name), level = clean(v.level),
+				class = clean(v.classFilename), status = clean(v.inviteStatus), mod = clean(v.modStatus) }
+		end
+	end
+	return out
+end
+
+function Compat.CalendarCloseEvent()
+	if has("C_Calendar", "CloseEvent") then pcall(C_Calendar.CloseEvent) end
 end
 
 ---------------------------------------------------------------------------
@@ -844,6 +953,9 @@ Compat.PROBES = {
 	"C_Calendar.GetNumDayEvents", "C_Calendar.EventSignUp", "C_Calendar.OpenEvent",
 	"C_Calendar.GetNumGuildEvents", "C_Calendar.GetGuildEventInfo", "C_Calendar.EventGetInvite",
 	"C_Calendar.AddEvent", "C_PartyInfo.InviteUnit", "C_PartyInfo.ConvertToRaid",
+	-- v0.4.0 Raids tab
+	"C_Calendar.OpenCalendar", "C_Calendar.GetDayEvent", "C_Calendar.SetAbsMonth", "C_Calendar.GetNumInvites",
+	"C_Calendar.CloseEvent", "C_DateAndTime.GetCurrentCalendarTime", "ToggleCalendar",
 	"C_Item.GetItemIconByID", "C_Item.GetItemInfoInstant", "C_Spell.GetSpellName", "C_Spell.GetSpellCooldown",
 	"C_GuildInfo.CanViewOfficerNote",
 	-- v0.2 Crafters and tooltips
