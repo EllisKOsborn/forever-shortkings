@@ -401,6 +401,9 @@ in game if anything looks different and send it.
         yet** = Members, and there's no "Alts of players" line.
 133. [ ] Character tab on someone else: no "This is my alt" or "Alt of…"; on
         your own alt: no "Make this my main".
+135. [ ] Overview: characters in your **Alt** rank aren't in "Not seen with the
+        addon yet" or the member count; point at **Members** for how many were
+        left out. Their professions still count in the Professions section.
 134. [ ] A long dropdown (Raids → the raid menu, Professions → All recipes'
         profession menu) scrolls with the mouse wheel.
 

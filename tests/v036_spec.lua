@@ -109,3 +109,49 @@ describe("v0.3.6 passing on who has the addon", function()
 		assert.truthy(SK.Identity:Member(BOB).addonRelay)
 	end)
 end)
+
+describe("v0.4.0 alt rank", function()
+	local SK, W
+	before_each(function()
+		SK, W = H.load()
+		H.loadUI(SK)
+		W.member("Pocus Hocus", W.player.guid, { rank = "Officer" })
+		W.member("Ann", "P-A", { rank = "Member", level = 60 })
+		W.member("Annbank", "P-A2", { rank = "Alt", level = 12 })
+		W.member("Bobalt", "P-B2", { rank = "Alts", level = 60, online = false })
+		SK.Identity:ReadRoster()
+		SK.Profile:BuildSelf()
+		SK.DBM:Guild().profiles["P-A2"] = { v = 1, guid = "P-A2", updated = 1, hash = "h",
+			profs = { [197] = { name = "Tailoring", rank = 300 } } }
+	end)
+
+	it("recognises the alt rank by name", function()
+		assert.is_true(SK.Identity.IsAltRank({ rank = "Alt" }))
+		assert.is_true(SK.Identity.IsAltRank({ rank = "alts" }))
+		assert.is_true(SK.Identity.IsAltRank({ rank = "Alt rank" }))
+		assert.is_false(SK.Identity.IsAltRank({ rank = "Altruist" }))
+		assert.is_false(SK.Identity.IsAltRank({ rank = "Member" }))
+		assert.is_false(SK.Identity.IsAltRank({}))
+	end)
+
+	it("leaves alt-rank characters out of the Overview, except professions", function()
+		local o = SK.Overview.Build(SK.DBM:Guild(), W.now)
+		assert.equal(2, o.members)          -- Pocus, Ann
+		assert.equal(2, o.altRank)
+		assert.equal(1, #o.without)         -- Ann; the alts aren't "not seen"
+		assert.equal("Ann", o.without[1].name)
+		assert.equal(1, o.profs[197].count) -- Annbank's Tailoring still counts
+		local ony
+		for _, r in ipairs(o.raids) do if r.key == "ony" then ony = r end end
+		assert.equal(2, ony.eligible)       -- Pocus and Ann at 60; Bobalt (alt rank) isn't counted
+	end)
+
+	it("Not seen yet in the Roster lists real gaps before the alt rank", function()
+		SK.MainFrame:Show("overview")
+		SK.OverviewTab.guild.button:GetScript("OnClick")(SK.OverviewTab.guild.button)
+		local items = SK.RosterTab.list.items
+		assert.equal("Ann", items[1].name)    -- not seen, not alt rank
+		assert.equal("Bobalt", items[2].name) -- not seen, alt rank: after the real gaps
+		assert.equal(0, #SK.errors)
+	end)
+end)

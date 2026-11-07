@@ -27,6 +27,12 @@ Read-only for now: signing up still happens in Blizzard's calendar.
   member count), and the list of names. It counts characters: an alt shows
   as "not seen" until its player logs in on it once with the addon. The
   button is **Not seen yet**.
+- **The Alt rank is left out of the Overview.** Characters in a rank named
+  "Alt" or "Alts" no longer count in members, online, who has the addon,
+  data health or raid numbers (pointing at Members says how many were left
+  out). They still count in Professions and Recipes, since alts are often
+  the crafters, and they're still in the Roster (listed after the real gaps
+  in "Not seen yet").
 - **Removed the alt guessing from v0.3.6** to keep things simple: the
   Battle.net matching, guild-note matching, **This is my alt** and the
   separate "Alts of players who have it" line are gone, and so is **Make

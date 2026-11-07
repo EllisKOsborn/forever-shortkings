@@ -434,6 +434,13 @@ messages → sender ignored for the session).
     `claims` validator (v0.3.6 clients still send it; ignored). Overview:
     **Have Short Royalty** + **Not seen with the addon yet** = members,
     counted per character. Don't bring the guessing back unless asked.
+  - **Alt rank (owner, 7 Nov):** the guild's rank named "Alt" is only used for
+    alts and is accurate. `Identity.IsAltRank(m)` = rank name has the word
+    "alt"/"alts". `Overview.Build` leaves those characters out of everything
+    (members, online, have / not seen, levels, data health, raids) except the
+    Professions card (alts are crafters); `o.altRank` = how many (Members
+    tooltip). Roster "Not seen yet" sorts them after real gaps. The owner
+    doesn't want an "Alts" line on the Overview. TESTING 135.
     TESTING 132–134.
   - Not yet: sign-up buttons, reminders, invite everyone (v0.4.1, after the
     in-game test). TESTING 125–131.

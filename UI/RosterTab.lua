@@ -61,6 +61,7 @@ local function makeRow(guild, guid, m, now, newest)
 		ilvl = p and p.ilvl, spec = spec, mainTree = mainTree, profText = profText, profs = profs,
 		status = Roster.Status(m, isSelf, now), addon = version, isSelf = isSelf,
 		hasAddon = SK.Identity.HasAddon(guid, m, p),
+		altRank = SK.Identity.IsAltRank(m),
 		outdated = (version and newest and version ~= "dev" and SK.Sync.versionNewer(newest, version))
 			or (not version and m.oldAddon ~= nil) or false,
 		oldAddon = not version and m.oldAddon ~= nil or nil,
@@ -193,6 +194,7 @@ end end
 -- Version column: members without the addon first, then newest version first.
 function Roster.ByVersion(a, b)
 	if a.hasAddon ~= b.hasAddon then return not a.hasAddon end
+	if a.altRank ~= b.altRank then return not a.altRank end -- alt rank after the real gaps (v0.4.0)
 	local x, y = a.addon or "", b.addon or ""
 	if x ~= y then
 		if x == "" or y == "" then return y == "" end

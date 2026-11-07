@@ -26,16 +26,21 @@ function Overview.Build(guild, now)
 	for i in ipairs(Overview.LEVEL_BANDS) do o.levels[i] = 0 end
 	if not guild then return o end
 
-	local active, profiles = {}, {}
+	-- v0.4.0: characters in the guild's alt rank are left out of the Overview
+	-- (counts, who has the addon, data health, raids), except the
+	-- Professions card: alts are often the crafters.
+	local active, everyone, profiles = {}, {}, {}
 	for guid, m in pairs(guild.members) do
 		if not m.leftAt then
-			active[#active + 1] = guid
+			everyone[#everyone + 1] = guid
+			if not SK.Identity.IsAltRank(m) then active[#active + 1] = guid end
 			local p = SK.Profile:Get(guid, guild)
 			if p then profiles[guid] = p end
 			if (m.level or 0) > o.maxLevel then o.maxLevel = m.level end
 		end
 	end
 	table.sort(active)
+	o.altRank = #everyone - #active
 	o.members = #active
 
 	-- Newest addon version seen (for "needs an update").
@@ -84,15 +89,6 @@ function Overview.Build(guild, now)
 			if not (p.hidden and p.hidden.recipes) and #SK.Professions.Unscanned(p) > 0 then
 				o.unscanned = o.unscanned + 1
 			end
-			for id, pr in pairs(p.profs or {}) do
-				local s = o.profs[id]
-				if s then
-					s.count = s.count + 1
-					local rank = pr.rank or 0
-					if rank > s.best then s.best = rank end
-					if rank >= 300 then s.maxed = s.maxed + 1 end
-				end
-			end
 		end
 		local v = mine and SK.VERSION or m.addon
 		if (v and o.newest and v ~= "dev" and newer(o.newest, v)) or (not v and m.oldAddon) then
@@ -105,6 +101,20 @@ function Overview.Build(guild, now)
 		if a.online ~= b.online then return a.online end
 		return a.name:lower() < b.name:lower()
 	end)
+
+	-- Professions: everyone, alts included.
+	for _, guid in ipairs(everyone) do
+		local p = profiles[guid]
+		for id, pr in pairs(p and p.profs or {}) do
+			local s = o.profs[id]
+			if s then
+				s.count = s.count + 1
+				local rank = pr.rank or 0
+				if rank > s.best then s.best = rank end
+				if rank >= 300 then s.maxed = s.maxed + 1 end
+			end
+		end
+	end
 
 	-- Raids of the first wave: attunement among max-level characters.
 	for _, raid in ipairs(SK.Data.ShownAttunements()) do

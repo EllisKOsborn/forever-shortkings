@@ -129,6 +129,17 @@ function Identity.HasAddon(guid, m, profile)
 	return profile ~= nil
 end
 
+-- Is this member in the guild's alt rank (v0.4.0)? Any rank whose name has
+-- the word "alt" or "alts" ("Alt", "Alts", "Alt rank"), any case. Ranks come
+-- from Blizzard's roster, so they're the same for everyone.
+function Identity.IsAltRank(m)
+	if not m or type(m.rank) ~= "string" then return false end
+	for w in m.rank:lower():gsub("[%p%c]", " "):gmatch("%S+") do
+		if w == "alt" or w == "alts" then return true end
+	end
+	return false
+end
+
 function Identity:IsMember(guid)
 	local g = SK.DBM:Guild()
 	local m = g and guid and g.members[guid]

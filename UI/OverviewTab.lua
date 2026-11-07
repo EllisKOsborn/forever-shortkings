@@ -48,14 +48,18 @@ function Ov.WithoutTip(tt, without)
 		Theme.TipDouble(tt, name(without[i]), i + 1 <= shown and name(without[i + 1]) or "")
 	end
 	if #without > shown then Theme.TipLine(tt, "and " .. (#without - shown) .. " more: Not seen yet lists everyone", "dim") end
-	Theme.TipLine(tt, "Characters that haven't logged in with Short Royalty yet. An alt drops off once its " ..
-		"player logs in on it with the addon. Online first (white dot).", "dim", true)
+	Theme.TipLine(tt, "Characters that haven't logged in with Short Royalty yet (the Alt rank isn't counted). " ..
+		"Online first (white dot).", "dim", true)
 	Theme.TipLine(tt, "Not seen yet (top right) opens them in the Roster", "gold")
 end
 
 function Ov.GuildRows(o)
 	local rows = {
-		{ label = "Members", value = n(o.members) },
+		{ label = "Members", value = n(o.members), tip = (o.altRank or 0) > 0 and function(tt)
+			Theme.TipLine(tt, "Members")
+			Theme.TipLine(tt, "Not counting the " .. Theme.Count(o.altRank, "character") .. " in the Alt rank. " ..
+				"The Overview leaves the Alt rank out, except in Professions.", "dim", true)
+		end or nil },
 		{ label = "Players (alts counted once)", value = n(o.players) },
 		{ label = "Online now", value = Theme.Paint("dim", n(o.withAddon) .. " with addon   ") .. n(o.online) },
 		{ label = "Have Short Royalty", value = n(o.hasAddon), tone = o.hasAddon > 0 and "good" or "dim" },
