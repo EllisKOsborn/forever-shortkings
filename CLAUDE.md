@@ -176,10 +176,13 @@ shared only over the guild **addon channel**: no website, no server, no uploads.
   test badge tracks it.
 - **Releases are automatic since v0.3.5:** every push to `main` runs
   `.github/workflows/release.yml`; if CHANGELOG.md's top heading is a dated
-  version (`## v0.3.6 (8 Nov 2026)`) with no tag yet, it tags that commit and
-  releases it (zip, GitHub Release, CurseForge). A heading containing "not
-  released" (keep using `## vX.Y.Z (not released yet)` on the working branch)
-  or an existing tag does nothing. So **before pushing to `main`, date the
+  version (`## v0.3.6 (8 Nov 2026)`) with no GitHub release yet, it tags that
+  commit and starts itself again on the tag (`gh workflow run --ref <tag>`;
+  the packager skips a tagged branch push, and GITHUB_TOKEN tag pushes don't
+  start workflows, but workflow_dispatch does), which builds the zip, GitHub
+  Release and CurseForge upload. A heading containing "not released" (keep
+  using `## vX.Y.Z (not released yet)` on the working branch) or an existing
+  release does nothing. So **before pushing to `main`, date the
   top CHANGELOG heading**, bump the README badge, and never push a dated
   heading to `main` that the owner hasn't asked to release. The owner no
   longer publishes on the website. Earlier: pushing a tag `vX.Y.Z` on `main` runs `.github/workflows/release.yml`
