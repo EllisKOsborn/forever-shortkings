@@ -359,6 +359,11 @@ in game if anything looks different and send it.
         the window goes back to its normal height. In combat the button is
         greyed out.
 
+## v0.3.5
+
+118. [ ] Overview → point at **Don't have it yet** or the names under it: a
+        tooltip lists everyone without the addon, two per line, online first.
+
 ## Known gaps in v0.1
 
 - No Raids tab yet (v0.4).

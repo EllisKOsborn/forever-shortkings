@@ -672,7 +672,18 @@ function W.Block(parent, width, title, action)
 				value = Theme.Text(b, "body", "text"),
 				text = Theme.Text(b, "small", "dim"),
 				figure = Theme.Text(b, "figure", "gold"),
+				-- hover area for rows with a tooltip (row.tip = function(tooltip))
+				hit = CreateFrame("Frame", nil, b),
 			}
+			r.hit:EnableMouse(true)
+			r.hit:SetScript("OnEnter", function(self)
+				if not self.tip then return end
+				GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+				self.tip(GameTooltip)
+				GameTooltip:Show()
+			end)
+			r.hit:SetScript("OnLeave", function() GameTooltip:Hide() end)
+			r.hit.tip = nil
 			r.label:SetWordWrap(false)
 			r.value:SetJustifyH("RIGHT")
 			r.value:SetWordWrap(false)
@@ -690,6 +701,7 @@ function W.Block(parent, width, title, action)
 		local y = self.headH
 		for i, row in ipairs(rows) do
 			local r = cell(i)
+			local top = y
 			if row.gap then
 				y = y + S.specRow / 2
 			elseif row.figure then
@@ -725,6 +737,13 @@ function W.Block(parent, width, title, action)
 				r.label:SetText(row.label or "")
 				r.label:Show()
 				y = y + S.specRow
+			end
+			r.hit.tip = row.tip
+			if row.tip then
+				r.hit:SetPoint("TOPLEFT", 0, -top)
+				r.hit:SetPoint("TOPRIGHT", 0, -top)
+				r.hit:SetHeight(math.max(1, y - top))
+				r.hit:Show()
 			end
 		end
 		for i = #rows + 1, #self.pool do cell(i) end

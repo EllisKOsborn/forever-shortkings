@@ -348,6 +348,11 @@ messages → sender ignored for the session).
   restricted in the forever source; not in combat. Unconfirmed in game.
   TESTING 111–117. (`Compat.OpenProfession` is the old *read which window is
   open* function; don't confuse them.)
+- **v0.3.4 published 7 Nov** by the owner (GitHub release with the zip).
+- **v0.3.5 (built, not on `main`)**: Block rows take `tip = function(tooltip)`
+  (an invisible hover frame per row, `W.Block`); the Overview's "Don't have it
+  yet" row and its names use `OverviewTab.WithoutTip` (all names, two per
+  line, capped at `TIP_NAMES` 60). TESTING 118.
 - **CurseForge uploads are automatic** (checked 7 Nov: the v0.3.2 Release run
   logged "Uploading ShortRoyalty-v0.3.2-forever.zip (1.60.1 release) …
   Success!"). Owner still renames the project from "Short Kings" and archives

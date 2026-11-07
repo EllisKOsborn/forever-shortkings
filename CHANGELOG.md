@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.5 (not released yet)
+
+- **Overview: the full list of who doesn't have Short Royalty.** "and 4 more"
+  wasn't much use. Now point at **Don't have it yet** (or the names under it)
+  and a tooltip lists everyone, two names per line, online first. Very large
+  lists stop at 60 names; **Without addon** shows the rest in the Roster.
+
 ## v0.3.4 (7 Nov 2026): one crafter's recipes, who has the addon, profession reminder
 
 - **Hard-to-miss profession reminder.** Until you've opened each of your

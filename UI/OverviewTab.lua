@@ -30,8 +30,26 @@ function Ov.WithoutText(without, max)
 		names[i] = (w.online and (SK.RosterTab.DOT.online .. " ") or "") .. Theme.ClassText(first, w.class)
 	end
 	local text = table.concat(names, ", ")
-	if #without > max then text = text .. Theme.Paint("dim", " and " .. (#without - max) .. " more") end
+	if #without > max then text = text .. Theme.Paint("dim", " and " .. (#without - max) .. " more (point here to see all)") end
 	return text
+end
+
+Ov.TIP_NAMES = 60 -- names in the hover list (two per line); the Roster has the rest
+
+-- Hover list of everyone without the addon: two names per line, online first.
+function Ov.WithoutTip(tt, without)
+	Theme.TipLine(tt, "Don't have Short Royalty yet (" .. #without .. ")")
+	local function name(w)
+		if not w then return "" end
+		return (w.online and (SK.RosterTab.DOT.online .. " ") or "") .. Theme.ClassText(w.name, w.class)
+	end
+	local shown = math.min(#without, Ov.TIP_NAMES)
+	for i = 1, shown, 2 do
+		Theme.TipDouble(tt, name(without[i]), i + 1 <= shown and name(without[i + 1]) or "")
+	end
+	if #without > shown then Theme.TipLine(tt, "and " .. (#without - shown) .. " more: Without addon lists everyone", "dim") end
+	Theme.TipLine(tt, "Online first (white dot). Trial accounts show here too: they can't share.", "dim", true)
+	Theme.TipLine(tt, "Without addon (top right) opens them in the Roster", "gold")
 end
 
 function Ov.GuildRows(o)
@@ -42,7 +60,11 @@ function Ov.GuildRows(o)
 		{ label = "Have Short Royalty", value = n(o.hasAddon), tone = o.hasAddon > 0 and "good" or "dim" },
 		{ label = "Don't have it yet", value = n(#o.without), tone = #o.without > 0 and "spark" or "good" },
 	}
-	if #o.without > 0 then rows[#rows + 1] = { text = Ov.WithoutText(o.without), indent = true } end
+	if #o.without > 0 then
+		local tip = function(tt) Ov.WithoutTip(tt, o.without) end
+		rows[#rows].tip = tip
+		rows[#rows + 1] = { text = Ov.WithoutText(o.without), indent = true, tip = tip }
+	end
 	rows[#rows + 1] = { sub = "Levels" }
 	for i, b in ipairs(SK.Overview.LEVEL_BANDS) do
 		rows[#rows + 1] = { label = b[3], value = n(o.levels[i]), indent = true }

@@ -336,7 +336,7 @@ function overview() {
   const hasIt = live.filter((m) => m.self || m.hasData || m.addon);
   const without = live.filter((m) => !hasIt.includes(m)).sort((a, b) => a.online !== b.online ? (a.online ? -1 : 1) : a.name.localeCompare(b.name));
   const shown = without.slice(0, 10).map((m) => (m.online ? dot("text") : "") + cls(m)).join(", ")
-    + (without.length > 10 ? `<span class="dim"> and ${without.length - 10} more</span>` : "");
+    + (without.length > 10 ? `<span class="dim"> and ${without.length - 10} more (point here to see all)</span>` : "");
   const guildRows = [{ label: "Members", value: live.length }, { label: "Players (alts counted once)", value: players },
     { label: "Online now", value: `<span class="dim">${withAddon} with addon&nbsp;&nbsp;&nbsp;</span>${online}` },
     { label: "Have Short Royalty", value: hasIt.length, tone: hasIt.length ? "good" : "dim" },
